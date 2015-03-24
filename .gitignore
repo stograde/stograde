@@ -1,0 +1,9 @@
+# ignore the cloned users
+_users/
+
+# ignore the list of people
+users.txt
+
+# files
+.DS_Store
+Thumbs.db

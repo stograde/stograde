@@ -115,12 +115,26 @@ if __name__ == '__main__':
     parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT', help='Only iterate over these students.')
     args = vars(parser.parse_args())
 
-    if not args['students']:
-        args['students'] = [ALL_USERS]
-
     # argparser puts it into a nested list because you could have two occurrences of the arg, each with a variable number of arguments
     # like --students amy max --students rives would become [[amy, max], [rives]]
-    args['students'] = flatten(args['students'] or [])
-    args['record'] = flatten(args['record'] or [])
+    args['students'] = list(flatten(args['students'] or []))
+    args['record'] = list(flatten(args['record'] or []))
+
+    if not args['students']:
+        if os.path.exists('./students.txt'):
+            with open('./students.txt') as infile:
+                args['students'] = infile.read().splitlines()
+
+        else:
+            print('Either provide a --student argument, a ./students.txt file, or usernames to stdin, please.', file=sys.stderr)
+            sys.exit(1)
+
+    elif '-' in args['students']:
+        args['students'] = flatten(args['students'] + sys.stdin.read().splitlines())
+        args['students'] = [student for student in args['students'] if student != '-']
+
+    elif '-' in args['record']:
+        args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
+        args['record'] = [to_record for to_record in args['record'] if to_record != '-']
 
     print(main(**args))

@@ -6,10 +6,7 @@ from _scripts.run_command import run
 from _scripts.markdownify import markdownify
 import shutil
 import os
-
-HAWKEN_USERS = ['rives']
-
-ALL_USERS = HAWKEN_USERS
+import sys
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
 

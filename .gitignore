@@ -1,7 +1,7 @@
 # ignore the cloned users
 _users/
-_comments/
-_logs/
+_comments/*
+_logs/*
 
 # ignore the list of people
 users.txt
@@ -9,3 +9,5 @@ users.txt
 # files
 .DS_Store
 Thumbs.db
+
+!.gitkeep

@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+
+from argparse import ArgumentParser
+from _scripts.columnize import main as columnize
+from _scripts.run_command import run
+from _scripts.markdownify import markdownify
+import shutil
+import os
+
+HAWKEN_USERS = ['rives']
+
+ALL_USERS = HAWKEN_USERS
+
+stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
+
+
+def flatten(l):
+    return [item for inner in l for item in inner]
+
+
+def size(path='.'):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(path):
+        for f in filenames:
+            if not f.startswith('.'):
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+    return total_size
+
+
+def progress(size, current, message='', longest=''):
+    if message:
+        message = ' (' + message + ')'
+        message = message.ljust(len(longest) + 4)
+
+    FILLED = ['·' for i in range(current)]
+    EMPTY  = [' ' for i in range(size - current)]
+    BAR = FILLED + EMPTY
+    print('\r[' + ''.join(BAR) + ']' + message, end='')
+
+
+def main(no_update=False, day='', clean=False, record=[], students=[]):
+    table = ''
+
+    if day:
+        day = run(['date', '-v1w', '-v-' + day, '+%Y-%m-%d'])
+        print('Checking out %s at 5:00pm' % day)
+
+    if record:
+        recordings = {}
+        for to_record in record:
+            recordings[to_record] = open('./_logs/log-%s.md' % to_record, 'w')
+
+    os.chdir('./_users')
+
+    for i, user in enumerate(students):
+        progress(len(students), i+1, message=user, longest=max(students, key=len))
+
+        if clean:
+            shutil.rmtree(user)
+
+        if not os.path.exists(user):
+            git_clone = 'git clone --quiet %s/%s.git' % (stogit, user)
+            run(git_clone.split())
+
+        os.chdir(user)
+
+        run('git stash -u'.split())
+        run('git stash clear'.split())
+
+        if not no_update:
+            run('git pull --rebase --quiet origin master'.split())
+
+        if day:
+            git_checkout = 'git checkout (git rev-list -n 1 --before="%s 18:00" master) --force --quiet' % (day)
+            run(git_checkout.split())
+
+        if record:
+            for to_record in record:
+                if os.path.exists(to_record):
+                    os.chdir(to_record)
+                    recordings[to_record].write(markdownify(to_record, user))
+                    os.chdir('..')
+
+        all_folders = [folder for folder in os.listdir('.') if (not folder.startswith('.') and os.path.isdir(folder))]
+
+        filtered = [folder for folder in all_folders if size(folder) > 100]
+        FOLDERS = sorted([folder.lower() for folder in filtered])
+        HWS = [foldername for foldername in FOLDERS if 'hw' in foldername]
+        LABS = [foldername for foldername in FOLDERS if 'hw' not in foldername]
+
+        table += "%s\t%s\t%s\n" % (user, ' '.join(HWS), ' '.join(LABS))
+
+        if day:
+            run('git checkout master --quiet --force'.split())
+
+        os.chdir('..')
+
+    os.chdir('..')
+
+    return '\n' + columnize(table.splitlines())
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description='The core of the CS251 toolkit.')
+    parser.add_argument('--no-update', action='store_true', help='Do not update the student folders before checking.')
+    parser.add_argument('--day', action='store', help='Check out the state of the student folder as of 5pm on the last <day> (mon, wed, fri, etc).')
+    parser.add_argument('--clean', action='store_true', help='Remove student folders and re-clone them')
+    parser.add_argument('--record', action='append', nargs='+', metavar='HW', help='Record information on the student\'s submissions. Must be folder name to record.')
+    parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT', help='Only iterate over these students.')
+    args = vars(parser.parse_args())
+
+    if not args['students']:
+        args['students'] = [ALL_USERS]
+
+    # argparser puts it into a nested list because you could have two occurrences of the arg, each with a variable number of arguments
+    # like --students amy max --students rives would become [[amy, max], [rives]]
+    args['students'] = flatten(args['students'] or [])
+    args['record'] = flatten(args['record'] or [])
+
+    print(main(**args))

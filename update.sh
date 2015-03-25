@@ -83,7 +83,7 @@ for idx in (seq (count $ALL_USERS))
     if set -q should_record
         if test -d $should_record
             cd $should_record
-            ~/cs251/_scripts/markdownify $should_record $user >> ~/cs251/_logs/log-$should_record.md
+            ~/cs251/_scripts/markdownify.py $should_record $user >> ~/cs251/_logs/log-$should_record.md
             cd -
         end
     end
@@ -114,4 +114,4 @@ end
 cd ..
 echo ''
 
-cat $TEMP_FILE | ~/cs251/_scripts/columnize
+cat $TEMP_FILE | ~/cs251/_scripts/columnize.py

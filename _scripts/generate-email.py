@@ -24,7 +24,7 @@ def make_email(user):
 	email_addr = '%s@stolaf.edu' % (user)
 
 	plain_text_body = add_newline_before('#', feedback)
-	html_body = run(['pandoc', '-f', 'markdown_github', '-t', 'html'], input=add_newline_before('#', feedback))
+	html_body = run('pandoc -f markdown_github -t html'.split(), input=add_newline_before('#', feedback))
 
 	email = [
 		'Subject: CS251 Homework Feedback (%s)' % (hws),

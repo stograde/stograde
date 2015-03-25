@@ -4,6 +4,7 @@ from functools import reduce
 import re, sys
 
 rex = re.compile(r'(\d+)$')
+
 def getNumber(string):
 	maybe_match = rex.search(string)
 	return int(maybe_match.group(1)) if maybe_match else 0
@@ -11,12 +12,12 @@ def getNumber(string):
 def sum(lst):
 	return reduce(lambda acc, item: acc + item, lst, 0)
 
-with sys.stdin as stdin:
+def main(inputData):
 	users = []
 
 	max_hwk = 0
 	max_lab = 0
-	for line in stdin:
+	for line in inputData:
 		line = line.strip().split('\t')
 		user = line[0].strip()
 
@@ -56,8 +57,7 @@ with sys.stdin as stdin:
 		find_columns(max_hwk),
 		find_columns(max_lab))
 
-	print(header)
-	print(''.ljust(len(header), '-'))
+	border = ''.ljust(len(header), '-')
 
 	success = '✓'
 	missing = '-'
@@ -65,6 +65,7 @@ with sys.stdin as stdin:
 	pad    = lambda string, size: '{0:>{1}}  '.format(string, len(str(size)))
 	concat = lambda lst, max: [pad(str(idx), idx) if idx in lst else pad(missing, idx) for idx in range(1, max+1)]
 
+	lines = ''
 	# for user in sorted(users, reverse=True, key=lambda user: sum(user['homework'])):
 	for user in sorted(users, key=lambda user: user['username']):
 		name = '{0:<{1}}'.format(user['username'], len(longest_user))
@@ -72,6 +73,15 @@ with sys.stdin as stdin:
 		homework = concat(user['homework'], max_hwk)
 		lab      = concat(user['labs'],     max_lab)
 
-		print('{0}  |  {1:<{2}}|  {3:<{4}}'.format(name,
+		line = ('{0}  |  {1:<{2}}|  {3:<{4}}'.format(name,
 			''.join(homework), max_hwk * len(' ' + str(max_hwk)),
 			''.join(lab),      max_lab * len(' ' + str(max_lab))))
+
+		lines += line + '\n'
+
+
+	return '\n'.join([header, border, lines])
+
+
+if __name__ == '__main__':
+	print(main(sys.stdin))

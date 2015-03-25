@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, os
-from run import run
+from .run_command import run
 
 hw11 = {
   'tiny.txt': '''3

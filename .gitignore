@@ -4,7 +4,7 @@ _comments/*
 _logs/*
 
 # ignore the list of people
-users.txt
+students.txt
 
 # files
 .DS_Store

@@ -15,7 +15,12 @@ stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
 
 
 def flatten(l):
-    return [item for inner in l for item in inner]
+    # from http://stackoverflow.com/a/2158532/2347774
+    for el in l:
+        if isinstance(el, list) and not isinstance(el, str):
+            yield from flatten(el)
+        else:
+            yield el
 
 
 def size(path='.'):

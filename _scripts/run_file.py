@@ -36,7 +36,7 @@ def run_file(hw, filePath):
   items = input_files.get(hw, empty).items()
   results = []
   for inputName, inputFile in items:
-    result = run([filePath], input=inputFile, timeout=4)
+    status, result = run([filePath], input=inputFile, timeout=4)
     results.append((inputName, result))
 
   return '\n'.join(['%s: \n\n%s\n\n' % (inputFile, result) for inputFile, result in results])

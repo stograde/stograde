@@ -3,8 +3,8 @@ _users/
 _comments/*
 _logs/*
 
-# ignore the list of people
-students.txt
+# ignore any lists of people
+/*students.txt
 
 # files
 .DS_Store

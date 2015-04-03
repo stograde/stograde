@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from _scripts.columnize import main as columnize
 from _scripts.run_command import run
 from _scripts.markdownify import markdownify
+from _scripts.progress import progress
 import shutil
 import os
 import sys
@@ -28,17 +29,6 @@ def size(path='.'):
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
     return total_size
-
-
-def progress(size, current, message='', longest=''):
-    if message:
-        message = ' (' + message + ')'
-        message = message.ljust(len(longest) + 4)
-
-    FILLED = ['·' for i in range(current)]
-    EMPTY  = [' ' for i in range(size - current)]
-    BAR = FILLED + EMPTY
-    print('\r[' + ''.join(BAR) + ']' + message, end='')
 
 
 def main(no_update=False, day='', clean=False, record=[], students=[]):

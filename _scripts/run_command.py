@@ -1,4 +1,4 @@
-from sys import stderr
+import sys
 import subprocess
 
 def run(*args, status=True, **kwargs):
@@ -15,11 +15,6 @@ def run(*args, status=True, **kwargs):
 	except subprocess.TimeoutExpired as err:
 		result = (1, err.output)
 	except FileNotFoundError as err:
-		result = (1, repr(err))
-	except UnicodeDecodeError as err:
-		result = (1, repr(err))
-	except Exception as err:
-		# print(repr(err), file=stderr)
 		result = (1, repr(err))
 
 	# result = bytes.decode(bytes_content, encoding='utf-8') if bytes_content else result

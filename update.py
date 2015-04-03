@@ -46,30 +46,36 @@ def main(no_update=False, day='', clean=False, record=[], students=[]):
     os.chdir('./_users')
 
     for i, user in enumerate(students):
-        progress(len(students), i+1, message=user, longest=max(students, key=len))
+        progress(len(students), i+1, message=user)
 
         if clean:
+            progress(len(students), i+1, message=user + ' [cleaning]')
             shutil.rmtree(user)
 
         if not os.path.exists(user):
+            progress(len(students), i+1, message=user + ' [cloning]')
             git_clone = 'git clone --quiet %s/%s.git' % (stogit, user)
             run(git_clone.split())
 
         os.chdir(user)
 
+        progress(len(students), i+1, message=user + ' [stashing]')
         run('git stash -u'.split())
         run('git stash clear'.split())
 
         if not no_update:
+            progress(len(students), i+1, message=user + ' [updating]')
             run('git pull --rebase --quiet origin master'.split())
 
         if day:
+            progress(len(students), i+1, message=user + ' [checkouting]')
             git_checkout = 'git checkout (git rev-list -n 1 --before="%s 18:00" master) --force --quiet' % (day)
             run(git_checkout.split())
 
         if record:
             for to_record in record:
                 if os.path.exists(to_record):
+                    progress(len(students), i+1, message=user + ' [recording %s]' % to_record)
                     os.chdir(to_record)
                     recordings[to_record].write(markdownify(to_record, user))
                     os.chdir('..')

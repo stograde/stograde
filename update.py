@@ -92,6 +92,9 @@ def main(no_update=False, day='', clean=False, record=[], students=[], output=No
 
         os.chdir('..')
 
+    if record:
+        [recordings[to_record].close() for to_record in record]
+
     os.chdir('..')
 
     # if record and output:

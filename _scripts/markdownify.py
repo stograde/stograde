@@ -20,14 +20,18 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 	for file in spec['files']:
 		file_loc = cwd + '/' + file
 		output = []
+
 		header = '### ' + file
-		contents_header = '**contents of %s**' % (file)
 
-		results_header = '**results of %s**' % (file)
+		output.extend([header, '\n'])
+		file_status, file_contents = run(['cat', file])
+		if file_status:
+			output.append('**file %s does not exist**\n')
+			results.append('\n'.join(output))
+			continue
 
-		output.append(header)
-		file_contents = run(['cat', file], status=False)
-		output.extend([contents_header, indent4(file_contents)])
+		output.extend(['**contents of %s**\n' % (file), indent4(file_contents)])
+		output.append('\n')
 
 		# wrapping the possible list in list() will always return a list
 		# but doesn't return an extra-nested list
@@ -43,32 +47,38 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 				warnings_header = '**no warnings: `%s`**' % (command)
 				output.extend([warnings_header])
 
+			output.append('\n')
+
 
 		inputs = spec.get('inputs', {})
 		tests = flatten([spec['tests'][file]])
 		for test in tests:
 			test = test.replace('$@', file)
+			output.append('**results of %s**\n' % (file))
 			if os.path.exists(file_loc):
 				if any([input in test for input in inputs]):
-					output.append(results_header)
 					for input, contents in inputs.items():
 						status, result = run_file(file_loc + '.exec', input=contents)
-						output.extend(["`%s`" % test, indent4(result)])
+						output.extend(["`%s`\n" % test, indent4(result)])
 				else:
 					status, result = run_file(file_loc + '.exec')
-					output.extend([results_header, indent4(result)])
+					output.extend(["`%s`\n" % test, indent4(result)])
 			else:
-				output.extend([results_header, 'File %s could not be found to run.' % file])
+				output.append('%s could not be found.\n' % file)
 
-		results.append('\n\n'.join(output))
+			output.append('\n')
+
+		output.extend(["\n\n"])
+
+		results.append('\n'.join(output))
 
 	[run(['rm', '-f', file + '.exec']) for file in spec['files']]
 	[os.remove(cwd + '/' + input) for input in spec.get('inputs', {})]
 
-	return '# %s — %s \n %s' % (
+	return '# %s — %s \n%s' % (
 		hw_number,
 		username,
-		'\n'.join(results))
+		''.join(results))
 
 
 if __name__ == '__main__':

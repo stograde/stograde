@@ -6,6 +6,7 @@ from _scripts.run_command import run
 from _scripts.markdownify import markdownify
 from _scripts.progress import progress
 from _scripts.flatten import flatten
+import _scripts.libs.yaml as yaml
 import shutil
 import os
 import sys
@@ -25,6 +26,7 @@ def size(path='.'):
 
 def main(no_update=False, day='', clean=False, record=[], students=[], output=None):
     table = ''
+    root = os.getcwd()
 
     if day:
         day = run(['date', '-v1w', '-v-' + day, '+%Y-%m-%d'])
@@ -37,9 +39,13 @@ def main(no_update=False, day='', clean=False, record=[], students=[], output=No
     if record:
         filenames = {}
         recordings = {}
+        specs = {}
         for to_record in record:
             filenames[to_record] = './_logs/log-' + to_record
             recordings[to_record] = open(filenames[to_record] + '.md', 'w')
+            specs[to_record] = open(root + '/_inputs/' + to_record + '.yaml', 'r').read()
+            if specs[to_record]:
+                specs[to_record] = yaml.load(specs[to_record])
 
     os.chdir('./_users')
 
@@ -75,7 +81,7 @@ def main(no_update=False, day='', clean=False, record=[], students=[], output=No
                 if os.path.exists(to_record):
                     progress(len(students), i+1, message=user + ' [recording %s]' % to_record)
                     os.chdir(to_record)
-                    recordings[to_record].write(markdownify(to_record, user))
+                    recordings[to_record].write(markdownify(to_record, user, specs[to_record]))
                     os.chdir('..')
 
         all_folders = [folder for folder in os.listdir('.') if (not folder.startswith('.') and os.path.isdir(folder))]

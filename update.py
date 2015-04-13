@@ -5,20 +5,12 @@ from _scripts.columnize import main as columnize
 from _scripts.run_command import run
 from _scripts.markdownify import markdownify
 from _scripts.progress import progress
+from _scripts.flatten import flatten
 import shutil
 import os
 import sys
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
-
-
-def flatten(l):
-    # from http://stackoverflow.com/a/2158532/2347774
-    for el in l:
-        if isinstance(el, list) and not isinstance(el, str):
-            yield from flatten(el)
-        else:
-            yield el
 
 
 def size(path='.'):

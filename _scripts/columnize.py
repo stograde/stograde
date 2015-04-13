@@ -66,7 +66,7 @@ def main(inputData):
 	concat = lambda lst, max: [pad(str(idx), idx) if idx in lst else pad(missing, idx) for idx in range(1, max+1)]
 
 	lines = ''
-	# for user in sorted(users, reverse=True, key=lambda user: sum(user['homework'])):
+	# for user in sorted(users, reverse=True, key=lambda user: sum([1 if hw else 0 for hw in user['homework']])):
 	for user in sorted(users, key=lambda user: user['username']):
 		name = '{0:<{1}}'.format(user['username'], len(longest_user))
 

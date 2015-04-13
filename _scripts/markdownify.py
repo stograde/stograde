@@ -22,7 +22,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		output = []
 		header = '### ' + file
 		contents_header = '**contents of %s**' % (file)
-		warnings_header = '**warnings about %s**' % (file)
+
 		results_header = '**results of %s**' % (file)
 
 		output.append(header)
@@ -33,10 +33,16 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		# but doesn't return an extra-nested list
 		steps = flatten([spec['files'][file]])
 		for step in steps:
-			# if step:
 			command = step.replace('$@', file)
 			status, compilation = run(command.split())
-			output.extend([warnings_header, "`%s`" % command, indent4(compilation)])
+
+			if compilation:
+				warnings_header = '**warnings: `%s`**' % (command)
+				output.extend([warnings_header, indent4(compilation)])
+			else:
+				warnings_header = '**no warnings: `%s`**' % (command)
+				output.extend([warnings_header])
+
 
 		inputs = spec.get('inputs', {})
 		tests = flatten([spec['tests'][file]])

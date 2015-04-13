@@ -26,7 +26,9 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		output.extend([header, '\n'])
 		file_status, file_contents = run(['cat', file])
 		if file_status:
-			output.append('**file %s does not exist**\n')
+			output.append('**file %s does not exist**\n' % file)
+			output.append('`ls .` says that these files exist:\n')
+			output.append(indent4('\n'.join(os.listdir('.'))))
 			results.append('\n'.join(output))
 			continue
 
@@ -36,9 +38,13 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		# wrapping the possible list in list() will always return a list
 		# but doesn't return an extra-nested list
 		steps = flatten([spec['files'][file]])
+		any_step_failed = False
 		for step in steps:
 			command = step.replace('$@', file)
 			status, compilation = run(command.split())
+			if status:
+				any_step_failed = True
+				break
 
 			if compilation:
 				warnings_header = '**warnings: `%s`**' % (command)
@@ -48,6 +54,9 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 				output.extend([warnings_header])
 
 			output.append('\n')
+
+		if any_step_failed:
+			continue
 
 
 		inputs = spec.get('inputs', {})

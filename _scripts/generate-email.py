@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 
+import sys
 import os
+import re
 from add_newline_before import add_newline_before
-from run import run
+from run_command import run
 
-USERS = ['rives']
+# from http://stackoverflow.com/a/16090640/2347774
+def natural_sort_key(s, _nsre=re.compile('([0-9]+)')):
+    return [int(text) if text.isdigit() else text.lower()
+            for text in re.split(_nsre, s)]
 
 def make_email(user):
 	print('making email for', user)
@@ -12,19 +17,22 @@ def make_email(user):
 	# Substitute the current filename for $user (except that it just stick it in afterwards)
 	# and then set it into the 'feedback' variable.
 	files = [file for file in os.listdir('.') if file.startswith('hw')]
-	relevant_lines = run(['awk', '/# %s/,/^Accuracy/; sub(/%s/, FILENAME);' % (user, user), ' '.join(files)])
+	files.sort(key=natural_sort_key)
+	relevant_lines = run(['awk', '/# %s/,/^Accuracy/; sub(/%s/, FILENAME);' % (user, user)] + files, status=False)
+	if not relevant_lines:
+		return False
 
 	no_user = [line for line in relevant_lines.splitlines(keepends=True) if not line.startswith('# %s' % user)]
 	feedback = '\n'.join([line.replace('.mdown', '') for line in no_user])
 
 	# our list of homeworks are the top-level headings, minus the heading octothorpe
-	hws = ' '.join([line[2:] for line in feedback.splitlines(keepends=True) if line.startswith('# ')])
+	hws = ' '.join([line[2:] for line in feedback.splitlines(keepends=False) if line.startswith('# ')])
 
 	email_file = '%s.eml' % (user)
 	email_addr = '%s@stolaf.edu' % (user)
 
 	plain_text_body = add_newline_before('#', feedback)
-	status, html_body = run('pandoc -f markdown_github -t html'.split(), input=add_newline_before('#', feedback))
+	html_body = run('pandoc -f markdown_github -t html'.split(), input=add_newline_before('#', feedback), status=False)
 
 	email = [
 		'Subject: CS251 Homework Feedback (%s)' % (hws),
@@ -58,4 +66,8 @@ def write_email(user, email):
 
 
 if __name__ == '__main__':
-	[write_email(user, make_email(user)) for user in USERS]
+	for user in sys.stdin:
+		user = user.strip()
+		email = make_email(user)
+		if email:
+			write_email(user, email)

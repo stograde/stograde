@@ -43,7 +43,7 @@ def main(no_update=False, day='', clean=False, record=[], students=[], output=No
         for to_record in record:
             filenames[to_record] = './_logs/log-' + to_record
             recordings[to_record] = open(filenames[to_record] + '.md', 'w')
-            specs[to_record] = open(root + '/_inputs/' + to_record + '.yaml', 'r').read()
+            specs[to_record] = open(root + '/_specs/' + to_record + '.yaml', 'r').read()
             if specs[to_record]:
                 specs[to_record] = yaml.load(specs[to_record])
 

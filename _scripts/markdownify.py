@@ -34,7 +34,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		if file_status:
 			output.append('**file %s does not exist**\n' % file)
 			output.append('`ls .` says that these files exist:\n')
-			output.append(indent4('\n'.join(os.listdir('.'))))
+			output.append(indent4('\n'.join(os.listdir('.'))) + '\n\n')
 			results.append('\n'.join(output))
 			continue
 

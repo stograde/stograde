@@ -1,7 +1,8 @@
 # ignore the cloned users
-_users/
 _comments/*
 _logs/*
+_specs/*
+_users/*
 
 # ignore any lists of people
 /*students.txt

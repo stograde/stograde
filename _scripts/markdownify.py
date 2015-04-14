@@ -45,12 +45,9 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		any_step_failed = False
 		no_test = False
 		for step in steps:
-			if step:
+			if step and not any_step_failed:
 				command = step.replace('$@', file)
 				status, compilation = run(command.split())
-				if status:
-					any_step_failed = True
-					break
 
 				if compilation:
 					warnings_header = '**warnings: `%s`**' % (command)
@@ -59,7 +56,14 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 					warnings_header = '**no warnings: `%s`**' % (command)
 					output.extend([warnings_header])
 
+				if status:
+					any_step_failed = True
+
 				output.append('\n')
+
+			elif any_step_failed:
+				break
+
 			else:
 				no_test = True
 				break

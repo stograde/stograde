@@ -3,8 +3,8 @@
 import sys, os
 from .run_command import run
 
-def run_file(filePath, input=''):
-  return run([filePath], input=input, timeout=4)
+def run_file(filePath, input='', **kwargs):
+  return run([filePath], input=input, timeout=4, **kwargs)
 
 
 if __name__ == '__main__':

@@ -21,6 +21,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 	files = [(filename, steps) for file in spec['files'] for filename, steps in file.items()]
 
 	for file, steps in files:
+		print(os.getcwd(), os.listdir())
 		steps = steps if type(steps) is list else [steps]
 
 		file_loc = cwd + '/' + file
@@ -43,7 +44,6 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 		output.append('\n')
 
 		any_step_failed = False
-		no_test = False
 		for step in steps:
 			if step and not any_step_failed:
 				command = step.replace('$@', file)
@@ -64,11 +64,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 			elif any_step_failed:
 				break
 
-			else:
-				no_test = True
-				break
-
-		if not steps or any_step_failed or no_test:
+		if not steps or any_step_failed:
 			results.append('\n'.join(output))
 			continue
 
@@ -83,10 +79,10 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 			if os.path.exists(file_loc):
 				if any([input in test for input in inputs]):
 					for input, contents in inputs.items():
-						status, result = run_file(file_loc + '.exec', input=contents)
+						status, result = run_file(test, input=contents, shell=True)
 						output.extend(["`%s`\n" % test, indent4(result)])
 				else:
-					status, result = run_file(file_loc + '.exec')
+					status, result = run_file(test)
 					output.extend(["`%s`\n" % test, indent4(result)])
 			else:
 				output.append('%s could not be found.\n' % file)

@@ -20,8 +20,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 
     files = [(filename, steps) for file in spec['files'] for filename, steps in file.items()]
 
-	for file, steps in files:
-		print(os.getcwd(), os.listdir())
+    for file, steps in files:
         steps = steps if type(steps) is list else [steps]
 
         file_loc = cwd + '/' + file
@@ -78,14 +77,14 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
             if os.path.exists(file_loc):
                 if any([input in test for input in inputs]):
                     for input, contents in inputs.items():
+                        status, result = run_file('./' + test, input=contents, shell=True)
                         output.extend(["`%s`\n" % test, indent4(result)])
                 else:
+                    status, result = run_file('./' + test)
                     output.extend(["`%s`\n" % test, indent4(result)])
             else:
                 output.append('%s could not be found.\n' % file)
 
-						status, result = run_file(test, input=contents, shell=True)
-					status, result = run_file(test)
             output.append('\n')
 
         output.extend(["\n\n"])

@@ -8,8 +8,8 @@ from _scripts.progress import progress
 from _scripts.flatten import flatten
 import _scripts.libs.yaml as yaml
 import shutil
-import os
 import sys
+import os
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
 
@@ -24,13 +24,15 @@ def size(path='.'):
     return total_size
 
 
-def main(no_update=False, day='', clean=False, record=[], students=[], output=None):
+def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None):
     table = ''
     root = os.getcwd()
 
     if day:
         day = run(['date', '-v1w', '-v-' + day, '+%Y-%m-%d'])
         print('Checking out %s at 5:00pm' % day)
+    elif date:
+        print('Checking out %s at 5:00pm' % date)
 
     ext = 'md'
     if output:
@@ -71,7 +73,7 @@ def main(no_update=False, day='', clean=False, record=[], students=[], output=No
             progress(len(students), i+1, message=user + ' [updating]')
             run('git pull --rebase --quiet origin master'.split())
 
-        if day:
+        if day or date:
             progress(len(students), i+1, message=user + ' [checkouting]')
             git_checkout = 'git checkout (git rev-list -n 1 --before="%s 18:00" master) --force --quiet' % (day)
             run(git_checkout.split())
@@ -116,6 +118,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='The core of the CS251 toolkit.')
     parser.add_argument('--no-update', action='store_true', help='Do not update the student folders before checking.')
     parser.add_argument('--day', action='store', help='Check out the state of the student folder as of 5pm on the last <day> (mon, wed, fri, etc).')
+    parser.add_argument('--date', action='store', help='Check out the state of the student folder as of 5pm on <date> (Y-M-D).')
     parser.add_argument('--clean', action='store_true', help='Remove student folders and re-clone them')
     parser.add_argument('--record', action='append', nargs='+', metavar='HW', help='Record information on the student\'s submissions. Must be folder name to record.')
     # parser.add_argument('--output', action='store', nargs='?', default=None, help='The type of log file that pandoc should generate.')

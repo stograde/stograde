@@ -24,7 +24,7 @@ def size(path='.'):
     return total_size
 
 
-def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None):
+def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None, quiet=False):
     table = ''
     root = os.getcwd()
 
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
         args['record'] = [to_record for to_record in args['record'] if to_record != '-']
 
-    if not quiet:
+    if not args['quiet']:
         print(main(**args))
     else:
         main(**args)

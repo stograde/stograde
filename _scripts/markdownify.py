@@ -48,7 +48,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
                 status, compilation = run(command.split())
 
                 if compilation:
-                    warnings_header = '**warnings: `%s`**' % (command)
+                    warnings_header = '**warnings: `%s`**\n' % (command)
                     output.extend([warnings_header, indent4(compilation)])
                 else:
                     warnings_header = '**no warnings: `%s`**' % (command)
@@ -91,11 +91,10 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 
         results.append('\n'.join(output))
 
-
     [run(['rm', '-f', file + '.exec']) for file, steps in files]
     [os.remove(cwd + '/' + input) for input in spec.get('inputs', {})]
 
-    return '# %s — %s \n%s' % (
+    return '# %s — %s \n\n%s' % (
         hw_number,
         username,
         ''.join(results))

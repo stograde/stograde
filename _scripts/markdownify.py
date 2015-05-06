@@ -7,8 +7,10 @@ from .flatten import flatten
 from .run_command import run
 from .run_file import run_file
 
+
 def indent4(string):
     return indent(string, '    ')
+
 
 def markdownify(hw_number, username, spec, output_type=None, to=None):
     cwd = os.getcwd()
@@ -18,7 +20,9 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         with open(cwd + '/' + input, 'w') as outfile:
             outfile.write(contents)
 
-    files = [(filename, steps) for file in spec['files'] for filename, steps in file.items()]
+    files = [(filename, steps)
+             for file in spec['files']
+             for filename, steps in file.items()]
 
     for file, steps in files:
         steps = steps if type(steps) is list else [steps]
@@ -38,7 +42,8 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
             results.append('\n'.join(output))
             continue
 
-        output.extend(['**contents of %s**\n' % (file), indent4(file_contents)])
+        output.extend(['**contents of %s**\n' % (file),
+                       indent4(file_contents)])
         output.append('\n')
 
         any_step_failed = False

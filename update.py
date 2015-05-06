@@ -86,7 +86,9 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
                     recordings[to_record].write(markdownify(to_record, user, specs[to_record]))
                     os.chdir('..')
 
-        all_folders = [folder for folder in os.listdir('.') if (not folder.startswith('.') and os.path.isdir(folder))]
+        all_folders = [folder
+                       for folder in os.listdir('.')
+                       if not folder.startswith('.') and os.path.isdir(folder)]
 
         filtered = [folder for folder in all_folders if size(folder) > 100]
         FOLDERS = sorted([folder.lower() for folder in filtered])

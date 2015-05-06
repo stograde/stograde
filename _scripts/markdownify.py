@@ -84,9 +84,8 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
             output.append('**results of %s**\n' % (file))
             if os.path.exists(file_loc):
                 if any([input in test for input in inputs]):
-                    for input, contents in inputs.items():
-                        status, result = run_file('./' + test, input=contents, shell=True)
-                        output.extend(["`%s`\n" % test, indent4(result)])
+                    status, result = run_file('./' + test, shell=True)
+                    output.extend(["`%s`\n" % test, indent4(result)])
                 else:
                     status, result = run_file('./' + test)
                     output.extend(["`%s`\n" % test, indent4(result)])

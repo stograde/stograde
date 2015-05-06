@@ -77,6 +77,8 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         tests = tests if type(tests) is list else [tests]
 
         for test in tests:
+            if not test:
+                continue
             test = test.replace('$@', file)
             output.append('**results of %s**\n' % (file))
             if os.path.exists(file_loc):

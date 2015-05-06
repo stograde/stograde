@@ -16,8 +16,9 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
     cwd = os.getcwd()
     results = []
 
-    for input, contents in spec.get('inputs', {}).items():
-        with open(cwd + '/' + input, 'w') as outfile:
+    for filename, contents in spec.get('inputs', {}).items():
+        path = cwd + '/' + filename
+        with open(path, 'w') as outfile:
             outfile.write(contents)
 
     files = [(filename, steps)

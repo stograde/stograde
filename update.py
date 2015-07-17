@@ -38,9 +38,9 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
     if output:
         ext = output
 
+    recordings = {}
     if record:
         filenames = {}
-        recordings = {}
         specs = {}
         for to_record in record:
             filenames[to_record] = './_logs/log-' + to_record
@@ -52,39 +52,34 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
     os.chdir('./_users')
 
     for i, user in enumerate(students):
-        progress(len(students), i+1, message=user)
+        i = i + 1
+        progress(len(students), i, message=user)
+
+        def msg(m): return '%s [%s]' % (user, m)
 
         if clean:
-            progress(len(students), i+1, message=user + ' [cleaning]')
+            progress(len(students), i, message=msg('cleaning'))
             shutil.rmtree(user)
 
         if not os.path.exists(user):
-            progress(len(students), i+1, message=user + ' [cloning]')
+            progress(len(students), i, message=msg('cloning'))
             git_clone = 'git clone --quiet %s/%s.git' % (stogit, user)
             run(git_clone.split())
 
         os.chdir(user)
 
-        progress(len(students), i+1, message=user + ' [stashing]')
+        progress(len(students), i, message=msg('stashing'))
         run('git stash -u'.split())
         run('git stash clear'.split())
 
         if not no_update:
-            progress(len(students), i+1, message=user + ' [updating]')
-            run('git pull --rebase --quiet origin master'.split())
+            progress(len(students), i, message=msg('updating'))
+            run('git pull --quiet origin master'.split())
 
         if day or date:
-            progress(len(students), i+1, message=user + ' [checkouting]')
+            progress(len(students), i, message=msg('checkouting'))
             git_checkout = 'git checkout (git rev-list -n 1 --before="%s 18:00" master) --force --quiet' % (day)
             run(git_checkout.split())
-
-        if record:
-            for to_record in record:
-                if os.path.exists(to_record):
-                    progress(len(students), i+1, message=user + ' [recording %s]' % to_record)
-                    os.chdir(to_record)
-                    recordings[to_record].write(markdownify(to_record, user, specs[to_record]))
-                    os.chdir('..')
 
         all_folders = [folder
                        for folder in os.listdir('.')
@@ -92,18 +87,28 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
 
         filtered = [folder for folder in all_folders if size(folder) > 100]
         FOLDERS = sorted([folder.lower() for folder in filtered])
-        HWS = [foldername for foldername in FOLDERS if 'hw' in foldername]
-        LABS = [foldername for foldername in FOLDERS if 'hw' not in foldername]
+        HWS = {foldername: ('hw' in foldername) for foldername in FOLDERS}
+        LABS = {foldername: ('hw' not in foldername) for foldername in FOLDERS}
 
-        table += "%s\t%s\t%s\n" % (user, ' '.join(HWS), ' '.join(LABS))
+        if record:
+            for to_record in record:
+                if os.path.exists(to_record):
+                    progress(len(students), i, message=msg('recording %s' % to_record))
+                    os.chdir(to_record)
+                    recording = markdownify(to_record, user, specs[to_record])
+                    recordings[to_record].write(recording)
+                    os.chdir('..')
+
+        table += "%s\t%s\t%s\n" % (user,
+                                   ' '.join([h for h, result in HWS.items() if result]),
+                                   ' '.join([l for l, result in LABS.items() if result]))
 
         if day:
             run('git checkout master --quiet --force'.split())
 
         os.chdir('..')
 
-    if record:
-        [recordings[to_record].close() for to_record in record]
+    [recording.close() for name, recording in recordings.items()]
 
     os.chdir('..')
 

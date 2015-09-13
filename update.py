@@ -124,7 +124,7 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
 if __name__ == '__main__':
     parser = ArgumentParser(description='The core of the CS251 toolkit.')
     parser.add_argument('--quiet', '-q', action='store_true', help='Be quieter')
-    parser.add_argument('--no-update', action='store_true', help='Do not update the student folders before checking.')
+    parser.add_argument('--no-update', '-n', action='store_true', help='Do not update the student folders before checking.')
     parser.add_argument('--day', action='store', help='Check out the state of the student folder as of 5pm on the last <day> (mon, wed, fri, etc).')
     parser.add_argument('--date', action='store', help='Check out the state of the student folder as of 5pm on <date> (Y-M-D).')
     parser.add_argument('--clean', action='store_true', help='Remove student folders and re-clone them')

@@ -1,0 +1,17 @@
+---
+assignment: hw15
+
+compilers:
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - class4.cpp: *cpp
+  - class5.cpp: *cpp
+  - class6.cpp: *cpp
+  - class7.cpp: *cpp
+
+tests:
+  class4.cpp: $@.exec
+  class5.cpp: $@.exec
+  class6.cpp: $@.exec
+  class7.cpp: $@.exec

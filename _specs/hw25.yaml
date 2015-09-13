@@ -1,0 +1,11 @@
+---
+assignment: hw25
+
+compilers:
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - virtual.cpp: *cpp
+
+tests:
+  virtual.cpp: $@.exec

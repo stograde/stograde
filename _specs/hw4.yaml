@@ -1,0 +1,18 @@
+---
+assignment: hw4
+
+compilers:
+  cpp: &cpp
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - iotest.cpp: *cpp
+  - countdown.cpp: *cpp
+  - countup.cpp: *cpp
+  - story.cpp: *cpp
+
+tests:
+  iotest.cpp: $@.exec
+  countdown.cpp: $@.exec
+  countup.cpp: $@.exec
+  story.cpp: $@.exec

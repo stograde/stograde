@@ -1,0 +1,202 @@
+---
+assignment: hw24
+
+compilers:
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp-to-obj 'g++ --std=c++11 -c $@'
+
+files:
+  - Menu.h: null
+  - Menu.cpp: null
+  - MenuItem.h: null
+  - MenuItem.cpp: null
+  - Menu_driver.cpp: null
+  - Makefile: null
+
+tests:
+  Makefile:
+    - make
+    - ./Menu_driver.exec < Menu_driver.in | diff - Menu_driver.out
+
+inputs:
+  Menu_driver.in: |
+    1
+    2
+    1
+
+  Menu_driver.out: |
+    *** Driver program for Menu class ***
+
+    *** Testing typical constructor, display, get_ and set_ methods ***
+
+
+    Test of typical constructor:
+      Menu menu1(4);
+      calling menu1.display(cout);
+        output is:
+    size=4 count=0 not_found=-1
+
+    Defining some MenuItem objects for further testing...:
+      MenuItem mi1(10, "first item");
+      MenuItem mi2(20, "second item");
+      MenuItem mi3(30, "third item");
+      MenuItem mi4(40, "fourth item");
+      MenuItem mi5(50, "fifth item");
+
+    Test of get_ methods:
+      calling menu1.display(cout);
+        output is:
+    size=4 count=0 not_found=-1
+
+      menu1.get_size() returns 4.
+      menu1.get_count() returns 0.
+      calling menu1.display(cout);
+        output is:
+    size=4 count=0 not_found=-1
+
+
+    *** Testing add_item, index operator, get_value ***
+
+
+    Test of add_item():
+      menu1.add_item(mi1) returns 1.
+      menu1.add_item(17, "another item") returns 1.
+      menu1.get_count() returns 2.
+      menu1.get_not_found() returns -1.
+      calling menu1.display(cout);
+        output is:
+    size=4 count=2 not_found=-1
+    0. [10] first item
+    1. [17] another item
+
+
+    Test of index operator:
+      menu1[1].display(cout);
+    [17] another item  menu1[0].set_val(11);
+      calling menu1.display(cout);
+        output is:
+    size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+
+    Test of get_value:
+      int val = -10;
+      val = menu1.get_value(cout, cin);
+      1. first item
+      2. another item
+    Your choice (1-2):   val returns 11.
+      val = menu1.get_value(cout, cin);
+      1. first item
+      2. another item
+    Your choice (1-2):   val returns 17.
+      val = menu1.get_value(cout, cin);
+      1. first item
+      2. another item
+    Your choice (1-2):   val returns 11.
+      calling menu1.display(cout);
+        output is:
+    size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+
+    *** Testing other constructors, assignment operator ***
+
+
+    Test of default constructor:
+      Menu menu2;
+      calling menu2.display(cout);
+        output is:
+    size=20 count=0 not_found=-1
+
+
+    Test of copy constructor:
+      Menu menu3(menu1);
+      calling menu3.display(cout);
+        output is:
+    size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+
+    Test of assignment operator:
+      Menu menu4(6);
+      menu4.add_item(5, "An item") returns 1.
+      menu4.add_item(mi2) returns 1.
+      menu1:  size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+      menu2:  size=20 count=0 not_found=-1
+
+      menu3:  size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+      menu4:  size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+
+      calling (menu1 = menu4).display(cout);
+        output is:
+    size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+      state change:
+      menu1:  size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+      menu2:  size=20 count=0 not_found=-1
+
+      menu3:  size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+      menu4:  size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+
+      further test of return value from assignment:
+      (menu4 = menu3).add_item(mi3);
+      state change:
+      menu1:  size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+      menu2:  size=20 count=0 not_found=-1
+
+      menu3:  size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+      menu4:  size=4 count=3 not_found=-1
+    0. [11] first item
+    1. [17] another item
+    2. [30] third item
+
+
+
+    Test of add_item, continued:
+      menu4.add_item(mi4) returns 1.
+      menu4.add_item(mi5) returns 0.
+    final values of all variables:
+      menu1:  size=6 count=2 not_found=-1
+    0. [5] An item
+    1. [20] second item
+
+      menu2:  size=20 count=0 not_found=-1
+
+      menu3:  size=4 count=2 not_found=-1
+    0. [11] first item
+    1. [17] another item
+
+      menu4:  size=4 count=4 not_found=-1
+    0. [11] first item
+    1. [17] another item
+    2. [30] third item
+    3. [40] fourth item

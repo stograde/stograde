@@ -11,7 +11,7 @@ import shutil
 import sys
 import os
 
-stogit = 'git@stogit.cs.stolaf.edu:sd-s15'
+stogit = 'git@stogit.cs.stolaf.edu:sd-f15'
 
 
 def size(path='.'):

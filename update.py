@@ -24,7 +24,7 @@ def size(path='.'):
     return total_size
 
 
-def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None, quiet=False):
+def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None, quiet=False, sort_by='name'):
     table = ''
     root = os.getcwd()
 
@@ -118,7 +118,7 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
     #         run(['pandoc', '--standalone', '--from=markdown_github', '--to='+output, '--output=%s.%s' % (filename, output), filename + '.md'])
     #     os.chdir('..')
 
-    return '\n' + columnize(table.splitlines())
+    return '\n' + columnize(table.splitlines(), sort_by=sort_by)
 
 
 if __name__ == '__main__':
@@ -131,6 +131,7 @@ if __name__ == '__main__':
     parser.add_argument('--record', action='append', nargs='+', metavar='HW', help='Record information on the student\'s submissions. Must be folder name to record.')
     # parser.add_argument('--output', action='store', nargs='?', default=None, help='The type of log file that pandoc should generate.')
     parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT', help='Only iterate over these students.')
+    parser.add_argument('--sort-by', action='store', default='name', type=str, choices=['name', 'homework'], help='Sort by either student name or homework count.')
     args = vars(parser.parse_args())
 
     # argparser puts it into a nested list because you could have two occurrences of the arg, each with a variable number of arguments

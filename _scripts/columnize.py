@@ -37,7 +37,7 @@ def find_columns(max):
         return ' '.join([str(i) for i in range(1, max+1)])
 
 
-def main(inputData):
+def main(inputData, sort_by):
     users = []
 
     max_hwk = 0
@@ -76,8 +76,17 @@ def main(inputData):
     border = ''.ljust(len(header), '-')
 
     lines = ''
-    # for user in sorted(users, reverse=True, key=lambda user: sum([1 if hw else 0 for hw in user['homework']])):
-    for user in sorted(users, key=lambda user: user['username']):
+
+    if sort_by == 'name':
+        def sorter(user):
+            return user['username']
+        reversed = False
+    elif sort_by == 'homework':
+        def sorter(user):
+            return sum([1 if hw else 0 for hw in user['homework']])
+        reversed = True
+
+    for user in sorted(users, reverse=reversed, key=sorter):
         name = '{0:<{1}}'.format(user['username'], len(longest_user))
 
         homework = concat(user['homework'], max_hwk)

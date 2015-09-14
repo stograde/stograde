@@ -1,0 +1,16 @@
+---
+assignment: hw1
+
+compilers:
+  cpp: &cpp
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - first.cpp: *cpp
+  - second.cpp: *cpp
+  - secondComment.cpp: *cpp
+
+tests:
+  first.cpp: $@.exec
+  second.cpp: $@.exec
+  secondComment.cpp: $@.exec

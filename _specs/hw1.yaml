@@ -6,11 +6,19 @@ compilers:
     'g++ --std=c++11 $@ -o $@.exec'
 
 files:
+  - hello.cpp: *cpp
   - first.cpp: *cpp
   - second.cpp: *cpp
   - secondComment.cpp: *cpp
+  - Dog.h: *cpp
+  - Dog.cpp: *cpp
+  - tryDog.cpp: *cpp
 
 tests:
+  hello.cpp: $@.exec
   first.cpp: $@.exec
   second.cpp: $@.exec
   secondComment.cpp: $@.exec
+  Dog.h: ''
+  Dog.cpp: ''
+  tryDog.cpp: $@.exec

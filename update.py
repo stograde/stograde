@@ -94,8 +94,8 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
 
         filtered = [folder for folder in all_folders if size(folder) > 100]
         FOLDERS = sorted([folder.lower() for folder in filtered])
-        HWS = {foldername: ('hw' in foldername) for foldername in FOLDERS}
-        LABS = {foldername: ('hw' not in foldername) for foldername in FOLDERS}
+        HWS = {foldername: foldername.startswith('hw') for foldername in FOLDERS}
+        LABS = {foldername: foldername.startswith('lab') for foldername in FOLDERS}
 
         if record:
             for to_record in record:

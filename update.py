@@ -5,7 +5,7 @@ import os
 sys.path += [os.getcwd() + '/_scripts/']
 
 from argparse import ArgumentParser
-from _scripts.columnize import main as columnize
+from _scripts.columnize import columnize
 from _scripts.run_command import run
 from _scripts.markdownify import markdownify
 from _scripts.progress import progress

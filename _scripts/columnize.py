@@ -37,7 +37,7 @@ def find_columns(max):
         return ' '.join([str(i) for i in range(1, max+1)])
 
 
-def main(inputData, sort_by):
+def columnize(inputData, sort_by):
     users = []
 
     max_hwk = 0
@@ -103,4 +103,4 @@ def main(inputData, sort_by):
 
 
 if __name__ == '__main__':
-    print(main(sys.stdin))
+    print(columnize(sys.stdin))

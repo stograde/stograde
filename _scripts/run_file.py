@@ -2,7 +2,7 @@
 
 import sys
 import os
-from .run_command import run
+from run_command import run
 
 
 def run_file(filePath, input='', **kwargs):

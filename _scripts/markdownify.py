@@ -3,9 +3,9 @@
 import sys
 import os
 from textwrap import indent
-from .flatten import flatten
-from .run_command import run
-from .run_file import run_file
+from flatten import flatten
+from run_command import run
+from run_file import run_file
 
 
 def indent4(string):

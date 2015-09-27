@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+import sys
+import os
+sys.path += [os.getcwd() + '/_scripts/']
+
 from argparse import ArgumentParser
 from _scripts.columnize import main as columnize
 from _scripts.run_command import run
@@ -8,8 +12,6 @@ from _scripts.progress import progress
 from _scripts.flatten import flatten
 import _scripts.libs.yaml as yaml
 import shutil
-import sys
-import os
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-f15'
 

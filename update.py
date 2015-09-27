@@ -163,7 +163,6 @@ if __name__ == '__main__':
         args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
         args['record'] = [to_record for to_record in args['record'] if to_record != '-']
 
+    output = main(**args)
     if not args['quiet']:
-        print(main(**args))
-    else:
-        main(**args)
+        print(output)

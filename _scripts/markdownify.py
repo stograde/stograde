@@ -75,7 +75,8 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         inputs = spec.get('inputs', {})
 
         tests = spec['tests'].get(file, [])
-        tests = tests if type(tests) is list else [tests]
+        if type(tests) is not list:
+            tests = [tests]
 
         for test in tests:
             if not test:

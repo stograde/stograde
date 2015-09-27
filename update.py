@@ -143,7 +143,7 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     # argparser puts it into a nested list because you could have two occurrences of the arg, each with a variable number of arguments
-    # like --students amy max --students rives would become [[amy, max], [rives]]
+    # like `--students amy max --students rives` would become `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students'] or []))
     args['record'] = list(flatten(args['record'] or []))
 

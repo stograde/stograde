@@ -76,8 +76,9 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
         os.chdir(user)
 
         progress(len(students), i, message=msg('stashing'))
-        run('git stash -u'.split())
-        run('git stash clear'.split())
+        if run('git status --porcelain'.split())[1]:
+            run('git stash -u'.split())
+            run('git stash clear'.split())
 
         if not no_update:
             progress(len(students), i, message=msg('updating'))

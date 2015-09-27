@@ -1,0 +1,18 @@
+---
+assignment: hw2
+
+compilers:
+  cpp: &cpp
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - types.cpp: *cpp
+  - numLiteral.cpp: *cpp
+  - strLiteral.cpp: *cpp
+  - constLiteral.cpp: *cpp
+
+tests:
+  types.cpp: $@.exec
+  numLiteral.cpp: $@.exec
+  strLiteral.cpp: $@.exec
+  constLiteral.cpp: $@.exec

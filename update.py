@@ -26,6 +26,10 @@ def size(path='.'):
     return total_size
 
 
+def message(user):
+    return lambda m: '%s [%s]' % (user, m)
+
+
 def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None, quiet=False, sort_by='name'):
     table = ''
     root = os.getcwd()
@@ -58,7 +62,7 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
         i = i + 1
         progress(len(students), i, message=user)
 
-        def msg(m): return '%s [%s]' % (user, m)
+        msg = message(user)
 
         if clean:
             progress(len(students), i, message=msg('cleaning'))

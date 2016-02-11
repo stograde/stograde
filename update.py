@@ -52,8 +52,8 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
             if specs[to_record]:
                 specs[to_record] = yaml.load(specs[to_record])
 
-    os.makedirs('./users', exist_ok=True)
-    os.chdir('./users')
+    os.makedirs('./students', exist_ok=True)
+    os.chdir('./students')
 
     for i, user in enumerate(students):
         i = i + 1

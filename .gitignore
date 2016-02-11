@@ -1,6 +1,6 @@
 # ignore the cloned users
 logs/*
-users/*
+students/*
 
 # ignore any lists of people
 /*students.txt

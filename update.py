@@ -7,7 +7,7 @@ from lib.run_command import run
 from lib.markdownify import markdownify
 from lib.progress import progress
 from lib.flatten import flatten
-import lib.libs.yaml as yaml
+import lib.yaml as yaml
 import shutil
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'

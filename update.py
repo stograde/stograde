@@ -27,7 +27,10 @@ def message(user):
     return lambda m: '%s [%s]' % (user, m)
 
 
-def main(no_update=False, day='', date='', clean=False, record=[], students=[], output=None, quiet=False, sort_by='name'):
+def main(record=[], students=[],
+         day='', date='',
+         no_update=False, clean=False, output=None,
+         quiet=False, sort_by='name'):
     table = ''
     root = os.getcwd()
 
@@ -117,29 +120,33 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
 
     os.chdir('..')
 
-    # if record and output:
-    #     os.chdir('_logs')
-    #     for filename in filenames:
-    #         run(['pandoc', '--standalone', '--from=markdown_github', '--to='+output, '--output=%s.%s' % (filename, output), filename + '.md'])
-    #     os.chdir('..')
-
     return '\n' + columnize(table.splitlines(), sort_by=sort_by)
 
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='The core of the CS251 toolkit.')
-    parser.add_argument('--quiet', '-q', action='store_true', help='Be quieter')
-    parser.add_argument('--no-update', '-n', action='store_true', help='Do not update the student folders before checking.')
-    parser.add_argument('--day', action='store', help='Check out the state of the student folder as of 5pm on the last <day> (mon, wed, fri, etc).')
-    parser.add_argument('--date', action='store', help='Check out the state of the student folder as of 5pm on <date> (Y-M-D).')
-    parser.add_argument('--clean', action='store_true', help='Remove student folders and re-clone them')
-    parser.add_argument('--record', action='append', nargs='+', metavar='HW', help='Record information on the student\'s submissions. Must be folder name to record.')
-    # parser.add_argument('--output', action='store', nargs='?', default=None, help='The type of log file that pandoc should generate.')
-    parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT', help='Only iterate over these students.')
-    parser.add_argument('--sort-by', action='store', default='name', type=str, choices=['name', 'homework'], help='Sort by either student name or homework count.')
+    parser.add_argument('--quiet', '-q', action='store_true',
+                        help='Be quieter')
+    parser.add_argument('--no-update', '-n', action='store_true',
+                        help='Do not update the student folders before checking.')
+    parser.add_argument('--day', action='store',
+                        help='Check out the state of the student folder as of 5pm on the last <day> (mon, wed, fri, etc).')
+    parser.add_argument('--date', action='store',
+                        help='Check out the state of the student folder as of 5pm on <date> (Y-M-D).')
+    parser.add_argument('--clean', action='store_true',
+                        help='Remove student folders and re-clone them')
+    parser.add_argument('--record', action='append', nargs='+', metavar='HW',
+                        help='Record information on the student\'s submissions. Must be folder name to record.')
+    # parser.add_argument('--output', action='store', nargs='?', default=None,
+    #                     help='The type of log file that pandoc should generate.')
+    parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT',
+                        help='Only iterate over these students.')
+    parser.add_argument('--sort-by', action='store', default='name', type=str, choices=['name', 'homework'],
+                        help='Sort by either student name or homework count.')
     args = vars(parser.parse_args())
 
-    # argparser puts it into a nested list because you could have two occurrences of the arg, each with a variable number of arguments
+    # argparser puts it into a nested list because you could have two
+    # occurrences of the arg, each with a variable number of arguments
     # like `--students amy max --students rives` would become `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students'] or []))
     args['record'] = list(flatten(args['record'] or []))
@@ -148,9 +155,8 @@ if __name__ == '__main__':
         if os.path.exists('./students.txt'):
             with open('./students.txt') as infile:
                 args['students'] = infile.read().splitlines()
-
         else:
-            print('Either provide a --student argument, a ./students.txt file, or usernames to stdin, please.', file=sys.stderr)
+            print('Either provide a --student argument, a ./students.txt file, or a list of usernames to stdin, please.', file=sys.stderr)
             sys.exit(1)
 
     elif '-' in args['students']:

@@ -4,7 +4,7 @@ due: 2015-05-13
 deadline: 2015-05-15
 
 compilers:
-  - &cpp 'g++-4.9 --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
   - bus.cpp: *cpp

@@ -3,8 +3,8 @@
 import sys
 import os
 import re
-from add_newline_before import add_newline_before
-from run_command import run
+from .add_newline_before import add_newline_before
+from .run_command import run
 
 
 # from http://stackoverflow.com/a/16090640/2347774

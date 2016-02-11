@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
-import sys
 import os
-sys.path += [os.getcwd() + '/_scripts/']
-
 from argparse import ArgumentParser
-from _scripts.columnize import columnize
-from _scripts.run_command import run
-from _scripts.markdownify import markdownify
-from _scripts.progress import progress
-from _scripts.flatten import flatten
-import _scripts.libs.yaml as yaml
+from lib.columnize import columnize
+from lib.run_command import run
+from lib.markdownify import markdownify
+from lib.progress import progress
+from lib.flatten import flatten
+import lib.libs.yaml as yaml
 import shutil
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-f15'
@@ -49,14 +46,14 @@ def main(no_update=False, day='', date='', clean=False, record=[], students=[], 
         filenames = {}
         specs = {}
         for to_record in record:
-            filenames[to_record] = './_logs/log-' + to_record
+            filenames[to_record] = './logs/log-' + to_record
             recordings[to_record] = open(filenames[to_record] + '.md', 'w')
-            specs[to_record] = open(root + '/_specs/' + to_record + '.yaml', 'r').read()
+            specs[to_record] = open(root + '/specs/' + to_record + '.yaml', 'r').read()
             if specs[to_record]:
                 specs[to_record] = yaml.load(specs[to_record])
 
-    os.makedirs('./_users', exist_ok=True)
-    os.chdir('./_users')
+    os.makedirs('./users', exist_ok=True)
+    os.chdir('./users')
 
     for i, user in enumerate(students):
         i = i + 1

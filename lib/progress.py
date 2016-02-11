@@ -1,6 +1,6 @@
 import shutil
 from sys import stderr
-from run_command import run
+from .run_command import run
 
 
 def progress(size, current, message=''):

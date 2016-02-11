@@ -10,7 +10,7 @@ from lib.flatten import flatten
 import lib.libs.yaml as yaml
 import shutil
 
-stogit = 'git@stogit.cs.stolaf.edu:sd-f15'
+stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
 
 
 def size(path='.'):

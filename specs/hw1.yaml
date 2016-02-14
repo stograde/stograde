@@ -4,15 +4,18 @@ assignment: hw1
 compilers:
   cpp: &cpp
     'g++ --std=c++11 $@ -o $@.exec'
+  make: &make
+    - 'rm -f tryDog tryDog.o Dog.o'
+    - 'make'
 
 files:
   - hello.cpp: *cpp
   - first.cpp: *cpp
   - second.cpp: *cpp
   - secondComment.cpp: *cpp
-  - Dog.h: *cpp
-  - Dog.cpp: *cpp
-  - tryDog.cpp: *cpp
+  - Dog.h: null
+  - Dog.cpp: null
+  - tryDog.cpp: *make
 
 tests:
   hello.cpp: $@.exec
@@ -21,4 +24,4 @@ tests:
   secondComment.cpp: $@.exec
   Dog.h: ''
   Dog.cpp: ''
-  tryDog.cpp: $@.exec
+  tryDog.cpp: ./tryDog

@@ -136,7 +136,7 @@ if __name__ == '__main__':
     parser.add_argument('--clean', action='store_true',
                         help='Remove student folders and re-clone them')
     parser.add_argument('--record', action='append', nargs='+', metavar='HW',
-                        help='Record information on the student\'s submissions. Must be folder name to record.')
+                        help="Record information on the student's submissions. Requires a spec file.")
     # parser.add_argument('--output', action='store', nargs='?', default=None,
     #                     help='The type of log file that pandoc should generate.')
     parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT',

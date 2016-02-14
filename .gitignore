@@ -3,7 +3,7 @@ logs/*
 students/*
 
 # ignore any lists of people
-/*students.txt
+/*students*.txt
 
 # files
 .DS_Store

@@ -9,4 +9,7 @@ students/*
 .DS_Store
 Thumbs.db
 
-!.gitkeep
+!logs/.gitkeep
+!specs/.gitkeep
+!students/.gitkeep
+!projects/.gitkeep

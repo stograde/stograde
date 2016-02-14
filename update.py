@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 from argparse import ArgumentParser
 from lib.columnize import columnize
 from lib.run_command import run

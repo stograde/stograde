@@ -4,8 +4,7 @@ Welcome to the CS251 toolkit, designed to help TAs and graders for St. Olaf's So
 
 Prerequisites:
 
-- [pandoc][pandoc]
-- Python 3 (3.4+?)
+- Python 3.4+
 - git
 
 To run:
@@ -18,12 +17,13 @@ The script reads from a students.txt file, by default. You can pass the `--stude
 
 The script also takes a `--record` parameter. Record does several things:
 
-- given a folder name, it cd's into that folder for each student
-- it cats out the contents of each cpp file within the folder
+- given a folder name, it `cd`'s into that folder for each student
+- it `cat`s the contents of each cpp file within the folder
 - it tries to compile each `.cpp` file, and records any warnings and errors
-- it runs each file, and records the output. It can also pass input to stdin during the execution.
+- it runs each file, and records the output. It can also pass input to stdin during the execution
+- These are controlled by the homework specs in the `specs` folder
 
-By default, `--record` spits out markdown logs. You can use the `--output` parameter to control the output type -- it's passed straight to pandoc, so you can produce pretty much anything: PDF, latex, html, docx, odt; heck, even InDesign documents, OPML for outliners, and GROFF for man pages. See [pandoc's homepage][pandoc] for more information.
+`--record`'s logs are spit out in the `logs` folder in the current directory.
 
 `update.py --help`:
 
@@ -49,5 +49,3 @@ By default, `--record` spits out markdown logs. You can use the `--output` param
 	                        Only iterate over these students.
 	  --sort-by {name,homework}
 	                        Sort by either student name or homework count.
-
-[pandoc]: http://johnmacfarlane.net/pandoc/

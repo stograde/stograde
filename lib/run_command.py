@@ -9,7 +9,6 @@ def run(*args, status=True, **kwargs):
         result = subprocess.check_output(
             *args,
             stderr=subprocess.STDOUT,
-            universal_newlines=True,
             **kwargs)
     except subprocess.CalledProcessError as err:
         code = 1
@@ -24,6 +23,10 @@ def run(*args, status=True, **kwargs):
         code = 1
         result = repr(err)
 
+    try:
+        result = str(result, 'utf-8')
+    except UnicodeDecodeError as err:
+        result = str(result, 'cp437')
     # print(result)
 
     return (code, result) if status else result

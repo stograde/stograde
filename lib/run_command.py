@@ -21,7 +21,7 @@ def run(*args, status=True, **kwargs):
         result = repr(err)
     except ProcessLookupError as err:
         try:
-            code, result = run(*args, status, **kwargs)
+            code, result = run(*args, status=status, **kwargs)
         except:
             code = 1
             result = repr(err)

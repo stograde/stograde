@@ -171,7 +171,7 @@ def main():
     finally:
         [recording.close() for name, recording in recordings.items()]
 
-        os.chdir('..')
+        os.chdir(root)
 
     if not args['quiet']:
         print('\n' + columnize(table.splitlines(), sort_by=args['sort_by']))

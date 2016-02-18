@@ -75,7 +75,8 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         if args['day']:
             progress('checkouting')
-            git_checkout = 'git checkout (git rev-list -n 1 --before="%s 18:00" master) --force --quiet' % (day)
+            rev_list = '(git rev-list -n 1 --before="%s 18:00" master)' % (day)
+            git_checkout = 'git checkout %s --force --quiet' % (rev_list)
             run(git_checkout.split())
 
         all_folders = [folder
@@ -125,7 +126,8 @@ def main():
             with open('./students.txt') as infile:
                 args['students'] = infile.read().splitlines()
         else:
-            print('Either provide a --student argument, a ./students.txt file, or a list of usernames to stdin, please.', file=sys.stderr)
+            print('Either provide a `--student` argument, a ./students.txt file,', file=sys.stderr)
+            print('or a list of usernames to stdin.', file=sys.stderr)
             sys.exit(1)
 
     elif '-' in args['students']:

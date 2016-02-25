@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 from functools import reduce
-import re
 import sys
+import re
 
 rex = re.compile(r'(\d+)$')
+success = '✓'
+missing = '-'
 
 
 def getNumber(string):
@@ -19,10 +21,6 @@ def sum(lst):
 def make_list(data):
     numbered = [getNumber(item) for item in data.split()]
     return [idx if idx in numbered else False for idx in range(1, max(numbered) + 1)]
-
-
-success = '✓'
-missing = '-'
 
 
 def pad(string, size):
@@ -74,7 +72,6 @@ def columnize(inputData, sort_by):
         find_columns(max_lab))
 
     border = ''.ljust(len(header), '-')
-
     lines = ''
 
     if sort_by == 'name':

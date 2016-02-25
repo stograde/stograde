@@ -3,9 +3,9 @@
 import os
 import sys
 from argparse import ArgumentParser
-from lib.columnize import columnize
-from lib.markdownify import markdownify
 from lib.progress import progress as progress_bar
+from lib.markdownify import markdownify
+from lib.columnize import columnize
 from lib.flatten import flatten
 from lib.run import run_command as run
 import lib.yaml as yaml

@@ -1,10 +1,10 @@
-import shutil
+#!/usr/bin/env python3
 from sys import stderr
-from .run_command import run
+from shutil import get_terminal_size
 
 
 def progress(size, current, message=''):
-    cols, rows = shutil.get_terminal_size()
+    cols, rows = get_terminal_size()
 
     if message:
         message = ' (' + message + ')'
@@ -21,7 +21,6 @@ def progress(size, current, message=''):
 if __name__ == '__main__':
     from time import sleep
 
-    # run('tput civis'.split())   # invisible
     size = 10
     for i in range(size + 1):
         progress(size, i, ('a' * size)[:-i] + ' ' + str(i) + ' ' + str(size))

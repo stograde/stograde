@@ -12,6 +12,9 @@ import lib.yaml as yaml
 import shutil
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
+labnames = {
+    'sound': 'lab2',
+}
 
 
 def size(path='.'):
@@ -85,6 +88,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         filtered = [f for f in all_folders if size(f) > 100]
         FOLDERS = sorted([f.lower() for f in filtered])
+        FOLDERS = [(labnames[f] if f in labnames else f) for f in FOLDERS]
         HWS = {f: f.startswith('hw') for f in FOLDERS}
         LABS = {f: f.startswith('lab') for f in FOLDERS}
 

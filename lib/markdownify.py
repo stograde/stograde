@@ -4,8 +4,7 @@ import sys
 import os
 from textwrap import indent
 from .flatten import flatten
-from .run_command import run
-from .run_file import run_file
+from .run import run_command, run_file
 
 
 def indent4(string):
@@ -34,7 +33,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         header = '### ' + file
 
         output.extend([header, '\n'])
-        file_status, file_contents = run(['cat', file])
+        file_status, file_contents = run_command(['cat', file])
 
         if file_status:
             output.append('**file %s does not exist**\n' % file)
@@ -51,7 +50,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         for step in steps:
             if step and not any_step_failed:
                 command = step.replace('$@', file)
-                status, compilation = run(command.split())
+                status, compilation = run_command(command.split())
 
                 if compilation:
                     warnings_header = '**warnings: `%s`**\n' % (command)
@@ -95,16 +94,10 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 
         results.append('\n'.join(output))
 
-    [run(['rm', '-f', file + '.exec']) for file, steps in files]
+    [run_command(['rm', '-f', file + '.exec']) for file, steps in files]
     [os.remove(cwd + '/' + input) for input in spec.get('inputs', {})]
 
     return '# %s — %s \n\n%s' % (
         hw_number,
         username,
         ''.join(results))
-
-
-if __name__ == '__main__':
-    hw = sys.argv[1]
-    user = sys.argv[2]
-    print(markdownify(hw, user))

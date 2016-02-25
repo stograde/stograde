@@ -4,10 +4,10 @@ import os
 import sys
 from argparse import ArgumentParser
 from lib.columnize import columnize
-from lib.run_command import run
 from lib.markdownify import markdownify
 from lib.progress import progress as progress_bar
 from lib.flatten import flatten
+from lib.run import run_command as run
 import lib.yaml as yaml
 import shutil
 

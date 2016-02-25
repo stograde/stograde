@@ -72,13 +72,13 @@ def columnize(inputData, sort_by):
     if sort_by == 'name':
         def sorter(user):
             return user['username']
-        reversed = False
+        shouldReverse = False
     elif sort_by == 'homework':
         def sorter(user):
             return sum([1 if hw else 0 for hw in user['homework']])
-        reversed = True
+        shouldReverse = True
 
-    for user in sorted(users, reverse=reversed, key=sorter):
+    for user in sorted(users, reverse=shouldReverse, key=sorter):
         name = '{0:<{1}}'.format(user['username'], len(longest_user))
 
         homework = concat(user['homework'], max_hwk)

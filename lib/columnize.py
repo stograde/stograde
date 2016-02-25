@@ -4,13 +4,12 @@ from functools import reduce
 import sys
 import re
 
-rex = re.compile(r'(\d+)$')
 success = '✓'
 missing = '-'
 
 
 def getNumber(string):
-    maybe_match = rex.search(string)
+    maybe_match = re.search(r'(\d+)$', string)
     return int(maybe_match.group(1)) if maybe_match else 0
 
 

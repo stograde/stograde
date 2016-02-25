@@ -13,10 +13,6 @@ def getNumber(string):
     return int(maybe_match.group(1)) if maybe_match else 0
 
 
-def sum(lst):
-    return reduce(lambda acc, item: acc + item, lst, 0)
-
-
 def make_list(data):
     numbered = [getNumber(item) for item in data.split()]
     return [idx if idx in numbered else False for idx in range(1, max(numbered) + 1)]

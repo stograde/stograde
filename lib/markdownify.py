@@ -81,6 +81,10 @@ def process_file(filename, steps, spec, cwd):
 
         input_for_test = None
         for cmd in test[:-1]:
+            # decode('unicode_escape') de-escapes the \-escaped strings.
+            # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
+            # like a shell would.
+            cmd = [bytes(part, 'utf-8').decode('unicode_escape') for part in cmd]
             status, input_for_test = run_command(cmd, input=input_for_test)
             input_for_test = input_for_test.encode('utf-8')
 

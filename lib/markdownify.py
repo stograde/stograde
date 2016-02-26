@@ -16,8 +16,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
     results = []
 
     for filename, contents in spec.get('inputs', {}).items():
-        path = cwd + '/' + filename
-        with open(path, 'w') as outfile:
+        with open(os.path.join(cwd, filename), 'w') as outfile:
             outfile.write(contents)
 
     files = [(filename, steps)
@@ -27,7 +26,6 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
     for file, steps in files:
         steps = steps if type(steps) is list else [steps]
 
-        file_loc = cwd + '/' + file
         output = []
 
         header = '### ' + file
@@ -42,8 +40,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
             results.append('\n'.join(output))
             continue
 
-        output.extend(['**contents of %s**\n' % (file),
-                       indent4(file_contents)])
+        output.extend(['**contents of %s**\n' % filename, indent4(file_contents)])
         output.append('\n')
 
         any_step_failed = False
@@ -73,7 +70,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 
         inputs = spec.get('inputs', {})
 
-        tests = spec['tests'].get(file, [])
+        tests = spec.get('tests', {}).get(filename, [])
         if type(tests) is not list:
             tests = [tests]
 
@@ -94,8 +91,8 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
 
         results.append('\n'.join(output))
 
-    [run_command(['rm', '-f', file + '.exec']) for file, steps in files]
-    [os.remove(cwd + '/' + input) for input in spec.get('inputs', {})]
+    [run_command(['rm', '-f', '%s.exec' % file]) for file, steps in files]
+    [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
     return '# %s — %s \n\n%s' % (
         hw_number,

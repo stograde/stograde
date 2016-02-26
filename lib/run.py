@@ -1,34 +1,41 @@
 #!/usr/bin/env python3
-import subprocess
 import sys
 import os
+from subprocess import PIPE, STDOUT, check_output, \
+                       CalledProcessError, TimeoutExpired
 
 
-def run_command(*args, status=True, **kwargs):
+def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, **kwargs):
+    if type(cmd) == str:
+        cmd = str.split(' ')
+
     try:
-        code = 0
-        result = subprocess.check_output(
+        status = 'success'
+        result = check_output(
+            cmd,
             *args,
-            stderr=subprocess.STDOUT,
+            stderr=STDOUT,
+            timeout=timeout,
+            input=input,
             **kwargs)
 
-    except subprocess.CalledProcessError as err:
-        code = 1
+    except CalledProcessError as err:
+        status = 'process error'
         result = err.output
 
-    except subprocess.TimeoutExpired as err:
-        code = 1
+    except TimeoutExpired as err:
+        status = 'timed out after %s seconds' % timeout
         result = err.output
 
     except FileNotFoundError as err:
-        code = 1
+        status = 'not found'
         result = repr(err)
 
     except ProcessLookupError as err:
         try:
-            code, result = run_command(*args, status=status, **kwargs)
+            status, result = run_command(*args, status=status, **kwargs)
         except:
-            code = 1
+            status = 'process error'
             result = repr(err)
 
     try:
@@ -36,7 +43,7 @@ def run_command(*args, status=True, **kwargs):
     except UnicodeDecodeError as err:
         result = str(result, 'cp437')
 
-    return (code, result) if status else result
+    return (status, result)
 
 
 if __name__ == '__main__':

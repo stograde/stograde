@@ -39,7 +39,8 @@ def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, 
             result = repr(err)
 
     try:
-        result = str(result, 'utf-8')
+        if type(result) is not str:
+            result = str(result, 'utf-8')
     except UnicodeDecodeError as err:
         result = str(result, 'cp437')
 

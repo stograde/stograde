@@ -4,7 +4,7 @@ import sys
 import os
 from textwrap import indent
 from .flatten import flatten
-from .run import run_command, run_file
+from .run import run_command
 
 
 def indent4(string):
@@ -43,7 +43,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         output.extend([header, '\n'])
         file_status, file_contents = run_command(['cat', filename])
 
-        if file_status:
+        if file_status != 'success':
             output.append('**file %s does not exist**\n' % filename)
             output.append('`ls .` says that these files exist:\n')
             output.append(indent4('\n'.join(os.listdir('.'))) + '\n\n')
@@ -66,7 +66,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
                     warnings_header = '**no warnings: `%s`**' % (command)
                     output.extend([warnings_header])
 
-                if status:
+                if status != 'success':
                     any_step_failed = True
 
                 output.append('\n')

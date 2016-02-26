@@ -107,9 +107,9 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                     finally:
                         os.chdir('..')
 
-        retval = "%s\t%s\t%s\n" % (student,
-                                   ' '.join([h for h, result in HWS.items() if result]),
-                                   ' '.join([l for l, result in LABS.items() if result]))
+        retval = "%s\t%s\t%s" % (student,
+                                 ' '.join([h for h, result in HWS.items() if result]),
+                                 ' '.join([l for l, result in LABS.items() if result]))
 
         if args['day']:
             run('git checkout master --quiet --force'.split())
@@ -146,7 +146,7 @@ def main():
         args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
         args['record'] = [to_record for to_record in args['record'] if to_record != '-']
 
-    table = ''
+    table = []
     root = os.getcwd()
 
     if args['day']:
@@ -172,9 +172,9 @@ def main():
 
     try:
         for i, student in enumerate(args['students']):
-            table += single_student(student, i + 1,
-                                    args=args, specs=specs,
-                                    recordings=recordings)
+            table.append(single_student(student, i + 1,
+                                        args=args, specs=specs,
+                                        recordings=recordings))
 
     finally:
         [recording.close() for name, recording in recordings.items()]
@@ -182,7 +182,7 @@ def main():
         os.chdir(root)
 
     if not args['quiet']:
-        print('\n' + columnize(table.splitlines(), sort_by=args['sort_by']))
+        print('\n' + columnize(table, sort_by=args['sort_by']))
 
 
 if __name__ == '__main__':

@@ -23,18 +23,18 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
              for file in spec['files']
              for filename, steps in file.items()]
 
-    for file, steps in files:
+    for filename, steps in files:
         steps = steps if type(steps) is list else [steps]
 
         output = []
+        header = '### ' + filename
 
-        header = '### ' + file
 
         output.extend([header, '\n'])
-        file_status, file_contents = run_command(['cat', file])
+        file_status, file_contents = run_command(['cat', filename])
 
         if file_status:
-            output.append('**file %s does not exist**\n' % file)
+            output.append('**file %s does not exist**\n' % filename)
             output.append('`ls .` says that these files exist:\n')
             output.append(indent4('\n'.join(os.listdir('.'))) + '\n\n')
             results.append('\n'.join(output))
@@ -46,7 +46,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         any_step_failed = False
         for step in steps:
             if step and not any_step_failed:
-                command = step.replace('$@', file)
+                command = step.replace('$@', filename)
                 status, compilation = run_command(command.split())
 
                 if compilation:
@@ -83,7 +83,7 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
                 status, result = run_file(test, shell=True)
                 output.extend(["`%s`\n" % test, indent4(result)])
             else:
-                output.append('%s could not be found.\n' % file)
+                output.append('%s could not be found.\n' % filename)
 
             output.append('\n')
 

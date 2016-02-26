@@ -12,10 +12,12 @@ files:
   - story.cpp: *cpp
 
 tests:
-  iotest.cpp: >
-    echo Hawken \
-      10 \
-      42 | $@.exec
+  iotest.cpp: echo Hawken 10 42 | $@.exec
   countdown.cpp: echo 0 | $@.exec
   countup.cpp: echo 10 | $@.exec
   story.cpp: $@.exec
+
+options:
+  countup.cpp:
+    timeout: 0.025
+    truncate_after: 1000  # bytes

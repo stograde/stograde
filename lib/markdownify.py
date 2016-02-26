@@ -11,6 +11,11 @@ def indent4(string):
     return indent(string, '    ')
 
 
+def unicode_truncate(s, length, encoding='utf-8'):
+    encoded = s.encode(encoding)[:length]
+    return encoded.decode(encoding, 'ignore')
+
+
 def markdownify(hw_number, username, spec, output_type=None, to=None):
     cwd = os.getcwd()
     results = []
@@ -29,6 +34,11 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         output = []
         header = '### ' + filename
 
+        options = {
+            'timeout': 4,
+            'truncate_after': 10000,  # 10K
+        }
+        options.update(spec.get('options', {}).get(filename, {}))
 
         output.extend([header, '\n'])
         file_status, file_contents = run_command(['cat', filename])
@@ -77,11 +87,33 @@ def markdownify(hw_number, username, spec, output_type=None, to=None):
         for test in tests:
             if not test:
                 continue
-            test = test.replace('$@', './%s' % file)
-            output.append('**results of %s**\n' % (file))
-            if os.path.exists(file_loc):
-                status, result = run_file(test, shell=True)
-                output.extend(["`%s`\n" % test, indent4(result)])
+
+            test = test.replace('$@', './%s' % filename)
+            test_string = test
+
+            test = [cmd.split(' ') for cmd in test.split(' | ')]
+
+            input_for_test = None
+            for cmd in test[:-1]:
+                status, input_for_test = run_command(cmd, input=input_for_test)
+                input_for_test = input_for_test.encode('utf-8')
+
+            test_cmd = test[-1]
+
+            output.append('**results of %s**\n' % filename)
+            if os.path.exists(os.path.join(cwd, filename)):
+                status, full_result = run_command(test_cmd,
+                                                  input=input_for_test,
+                                                  timeout=options['timeout'])
+
+                result = unicode_truncate(full_result, options['truncate_after'])
+                truncate_msg = 'output truncated after %d bytes' % (options['truncate_after']) \
+                               if full_result != result else ''
+
+                items = [item for item in [status, truncate_msg] if item]
+                output_header = "`%s` (status: %s)\n" % (test_string, '; '.join(items))
+                output.extend([output_header, indent4(result)])
+
             else:
                 output.append('%s could not be found.\n' % filename)
 

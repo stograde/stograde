@@ -2,19 +2,26 @@
 
 import os
 import sys
+import shutil
+import textwrap
+import lib.yaml as yaml
 from argparse import ArgumentParser
+from configparser import ConfigParser, MissingSectionHeaderError
 from lib.progress import progress as progress_bar
 from lib.markdownify import markdownify
 from lib.columnize import columnize
 from lib.flatten import flatten
+from lib.uniq import uniq
 from lib.run import run_command as run
-import lib.yaml as yaml
-import shutil
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
 labnames = {
     'sound': 'lab2',
 }
+
+
+def warn(*args, **kwargs):
+    print(*args, **kwargs, file=sys.stderr)
 
 
 def size(path='.'):
@@ -47,10 +54,25 @@ def get_args():
                         help="Record information on student submissions. Requires a spec file.")
     parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT',
                         help='Only iterate over these students.')
+    parser.add_argument('--section', action='append', nargs='+', metavar='SECTION',
+                        help='Only check these sections: my, all, a, b, etc.')
     parser.add_argument('--sort-by', action='store', default='name', type=str,
                         choices=['name', 'homework'],
                         help='Sort by either student name or homework count.')
     return vars(parser.parse_args())
+
+
+def get_config():
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists('./students.txt'):
+        with open('./students.txt', 'r') as infile:
+            try:
+                config.read_file(infile)
+            except MissingSectionHeaderError:
+                # handle plain text files, too
+                return {'my': [name.strip() for name in infile.readlines()]}
+
+    return config
 
 
 def single_student(student, index, args={}, specs={}, recordings={}):
@@ -109,7 +131,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                         try:
                             recordings[to_record].write(recording)
                         except Exception as err:
-                            print('error! could not write recording', file=sys.stderr)
+                            warn('error! could not write recording')
                         os.chdir('..')
                 else:
                     recording = '# %s — %s\n\nNo submission.\n\n\n\n\n' % (student, to_record)
@@ -132,30 +154,62 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
 
 def main():
+    students = get_config()
     args = get_args()
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
     # `--students amy max --students rives` => `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students'] or []))
+    args['section'] = list(flatten(args['section'] or []))
     args['record'] = list(flatten(args['record'] or []))
 
-    if not args['students']:
-        if os.path.exists('./students.txt'):
-            with open('./students.txt') as infile:
-                args['students'] = infile.read().splitlines()
-        else:
-            print('Either provide a `--student` argument, a ./students.txt file,', file=sys.stderr)
-            print('or a list of usernames to stdin.', file=sys.stderr)
-            sys.exit(1)
+    # fall back to the students.my section
+    if not args['students'] and not args['section']:
+        args['section'] = ['my']
 
-    elif '-' in args['students']:
+    # support 'my' students and 'all' students
+    if 'my' in args['section']:
+        if 'my' not in students:
+            warn('There is no [my] section in students.txt')
+            return
+        args['students'] = list(students['my'])
+
+    elif 'all' in args['section']:
+        sections = [list(students[section])
+                    for section in students]
+        args['students'] = list(flatten(sections))
+
+    # sections are identified by only being one char long
+    elif any([section for section in args['section']]):
+        sections = []
+        for section in args['section']:
+            try:
+                sections.append(list(students['section-%s' % section] or students[section]))
+            except KeyError:
+                warn('Section "%s" could not be found in ./students.txt' % section)
+        args['students'] = list(flatten(sections))
+
+    # we can only read one stdin
+    if '-' in args['students']:
         args['students'] = flatten(args['students'] + sys.stdin.read().splitlines())
         args['students'] = [student for student in args['students'] if student != '-']
 
     elif '-' in args['record']:
         args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
         args['record'] = [to_record for to_record in args['record'] if to_record != '-']
+
+    # stop if we still don't have any students
+    if not args['students']:
+        msg = ' '.join('''
+            Could not find a list of students.
+            You must provide the `--students` argument, the `--section` argument,
+            a ./students.txt file, or a list of usernames to stdin.
+        '''.split())
+        warn(textwrap.fill(msg))
+        return
+
+    args['students'] = uniq(args['students'])
 
     table = []
     root = os.getcwd()
@@ -189,7 +243,6 @@ def main():
 
     finally:
         [recording.close() for name, recording in recordings.items()]
-
         os.chdir(root)
 
     if not args['quiet']:

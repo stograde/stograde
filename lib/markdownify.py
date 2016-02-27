@@ -102,7 +102,8 @@ def process_file(filename, steps, spec, cwd):
                            if full_result != result else ''
 
             items = [item for item in [status, truncate_msg] if item]
-            output.append('**results of `%s`** (status: %s)\n' % (test_string, '; '.join(items)))
+            status = '; '.join(items)
+            output.append('**results of `%s`** (status: %s)\n' % (test_string, status))
             output.append(indent4(result))
 
         else:

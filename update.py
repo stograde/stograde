@@ -98,18 +98,18 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         if args['record']:
             for to_record in args['record']:
+                progress('recording %s' % to_record)
                 if os.path.exists(to_record):
-                    progress('recording %s' % to_record)
-                    os.chdir(to_record)
                     try:
+                        os.chdir(to_record)
                         recording = markdownify(to_record, student, specs[to_record])
-                    except err:
+                    except Exception as err:
                         recording = err
                     finally:
                         try:
                             recordings[to_record].write(recording)
-                        except err:
-                            print('error! could not write recording.', file=sys.stderr)
+                        except Exception as err:
+                            print('error! could not write recording', file=sys.stderr)
                         os.chdir('..')
 
         retval = "%s\t%s\t%s" % (student,
@@ -119,7 +119,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
         if args['day']:
             run('git checkout master --quiet --force'.split())
 
-    except err:
+    except Exception as err:
         retval = "%s: %s" % (student, err)
 
     finally:

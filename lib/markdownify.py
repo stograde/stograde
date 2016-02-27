@@ -72,7 +72,7 @@ def process_file(filename, steps, spec, cwd):
 
     for test in tests:
         if not test:
-            return
+            continue
 
         test = test.replace('$@', './%s' % filename)
         test_string = test
@@ -134,7 +134,4 @@ def markdownify(hw_id, username, spec):
     [run_command(['rm', '-f', '%s.exec' % file]) for file, steps in files]
     [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
-    return '# %s — %s \n\n%s' % (
-        hw_id,
-        username,
-        ''.join(results))
+    return '# %s — %s \n\n%s' % (hw_id, username, ''.join(results))

@@ -111,6 +111,9 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                         except Exception as err:
                             print('error! could not write recording', file=sys.stderr)
                         os.chdir('..')
+                else:
+                    recording = '# %s — %s\n\nNo submission.\n\n\n\n\n' % (student, to_record)
+                    recordings[to_record].write(recording)
 
         retval = "%s\t%s\t%s" % (student,
                                  ' '.join([h for h, result in HWS.items() if result]),

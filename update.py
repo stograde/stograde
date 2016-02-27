@@ -21,7 +21,7 @@ labnames = {
 
 
 def warn(*args, **kwargs):
-    print(*args, **kwargs, file=sys.stderr)
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def size(path='.'):

@@ -11,8 +11,8 @@ files:
   - address.cpp: *cpp
 
 tests:
-  avg2.cpp: $@.exec < firefox.txt
-  stddev2.cpp: $@.exec < firefox.txt
+  avg2.cpp: firefox.txt | $@.exec
+  stddev2.cpp: firefox.txt | $@.exec
   address.cpp: $@.exec
 
 inputs:

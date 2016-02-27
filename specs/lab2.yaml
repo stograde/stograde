@@ -46,11 +46,11 @@ tests:
   n5.cpp: $@.exec
   n6.cpp: $@.exec
 
-  quieter.cpp: $@.exec < ~/Code/jksadhad/music.bin
-  octavedown.cpp: $@.exec < ~/Code/jksadhad/music.bin
-  octaveup.cpp: $@.exec < ~/Code/jksadhad/music.bin
-  trunc.cpp: $@.exec < ~/Code/jksadhad/music.bin
-  addblank.cpp: $@.exec < ~/Code/jksadhad/music.bin
+  quieter.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  octavedown.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  octaveup.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  trunc.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  addblank.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
 
   n1.do.cpp: $@.exec
   n2.do.cpp: $@.exec
@@ -67,5 +67,5 @@ tests:
   n6.for.cpp: $@.exec
 
   # 5. Revise the first two sound filters to use a new loop structure.
-  quieter.for.cpp: $@.exec < ~/Code/jksadhad/music.bin
-  octavedown.for.cpp: $@.exec < ~/Code/jksadhad/music.bin
+  quieter.for.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  octavedown.for.cpp: cat ~/Code/jksadhad/music.bin | $@.exec

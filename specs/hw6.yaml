@@ -11,7 +11,7 @@ files:
 
 tests:
   ref.cpp: $@.exec
-  sums.cpp: $@.exec < firefox.txt
+  sums.cpp: cat firefox.txt | $@.exec
 
 inputs:
   firefox.txt: >

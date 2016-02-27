@@ -14,8 +14,8 @@ files:
   - a6.cpp: *cpp
 
 tests:
-  avg.cpp: $@.exec < firefox.txt
-  stddev.cpp: $@.exec < firefox.txt
+  avg.cpp: cat firefox.txt | $@.exec
+  stddev.cpp: cat firefox.txt | $@.exec
   a0.cpp: $@.exec
   a1.cpp: $@.exec
   a4.cpp: $@.exec

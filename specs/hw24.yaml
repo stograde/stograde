@@ -16,7 +16,7 @@ files:
 tests:
   Makefile:
     - make
-    - ./Menu_driver.exec < Menu_driver.in | diff - Menu_driver.out
+    - cat Menu_driver.in | ./Menu_driver.exec | diff - Menu_driver.out
 
 inputs:
   Menu_driver.in: |

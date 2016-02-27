@@ -10,11 +10,11 @@ files:
 
 tests:
   loadFile.cpp:
-    - $@.exec < tiny.txt
-    - $@.exec < firefox2.txt
+    - cat tiny.txt | $@.exec
+    - cat firefox2.txt | $@.exec
   avg3.cpp:
-    - $@.exec < tiny.txt
-    - $@.exec < firefox2.txt
+    - cat tiny.txt | $@.exec
+    - cat firefox2.txt | $@.exec
 
 inputs:
   tiny.txt: |

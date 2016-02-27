@@ -77,20 +77,21 @@ def process_file(filename, steps, spec, cwd):
         test = test.replace('$@', './%s' % filename)
         test_string = test
 
-        test = [cmd.split(' ') for cmd in test.split(' | ')]
+        test = test.split(' | ')
 
         input_for_test = None
         for cmd in test[:-1]:
-            # decode('unicode_escape') de-escapes the \-escaped strings.
+            # decode('unicode_escape') de-escapes the backslash-escaped strings.
             # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
             # like a shell would.
-            cmd = [bytes(part, 'utf-8').decode('unicode_escape') for part in cmd]
+            cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
+            cmd = cmd.split(' ')
+
             status, input_for_test = run_command(cmd, input=input_for_test)
             input_for_test = input_for_test.encode('utf-8')
 
-        test_cmd = test[-1]
+        test_cmd = test[-1].split(' ')
 
-        output.append('**results of %s**\n' % filename)
         if os.path.exists(os.path.join(cwd, filename)):
             status, full_result = run_command(test_cmd,
                                               input=input_for_test,
@@ -101,8 +102,8 @@ def process_file(filename, steps, spec, cwd):
                            if full_result != result else ''
 
             items = [item for item in [status, truncate_msg] if item]
-            output_header = "`%s` (status: %s)\n" % (test_string, '; '.join(items))
-            output.extend([output_header, indent4(result)])
+            output.append('**results of `%s`** (status: %s)\n' % (test_string, '; '.join(items)))
+            output.append(indent4(result))
 
         else:
             output.append('%s could not be found.\n' % filename)
@@ -114,7 +115,7 @@ def process_file(filename, steps, spec, cwd):
     return '\n'.join(output)
 
 
-def markdownify(hw_number, username, spec):
+def markdownify(hw_id, username, spec):
     cwd = os.getcwd()
     results = []
 
@@ -134,6 +135,6 @@ def markdownify(hw_number, username, spec):
     [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
     return '# %s — %s \n\n%s' % (
-        hw_number,
+        hw_id,
         username,
         ''.join(results))

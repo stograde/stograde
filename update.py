@@ -104,8 +104,8 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         if args['day']:
             progress('checkouting')
-            rev_list = '(git rev-list -n 1 --before="%s 18:00" master)' % (day)
-            git_checkout = 'git checkout %s --force --quiet' % (rev_list)
+            rev_list = '(git rev-list -n 1 --before="%s 18:00" master)' % args['day']
+            git_checkout = 'git checkout %s --force --quiet' % rev_list
             run(git_checkout.split())
 
         all_folders = [folder
@@ -216,11 +216,11 @@ def main():
     root = os.getcwd()
 
     if args['day']:
-        args['day'] = run(['date', '-v1w', '-v-' + day, '+%Y-%m-%d'])
-        print('Checking out %s at 5:00pm' % day)
+        args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])
+        print('Checking out %s at 5:00pm' % args['day'])
     elif args['date']:
         args['day'] = args['date']
-        print('Checking out %s at 5:00pm' % date)
+        print('Checking out %s at 5:00pm' % args['date'])
 
     recordings = {}
     filenames = {}

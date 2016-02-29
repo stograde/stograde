@@ -13,4 +13,5 @@ files:
 tests:
    reverse.cpp:
       - $@.exec
+   Doxyfile:
       - *doxygen

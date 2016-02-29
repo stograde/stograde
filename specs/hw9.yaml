@@ -4,14 +4,15 @@ assignment: hw9
 compilers:
    cpp: &cpp
       g++ --std=c++11 $@ -o $@.exec
-   doxygen: &doxygen
-      doxygen
 
 files:
    - reverse.cpp: *cpp
+   - Doxyfile: doxygen
 
 tests:
    reverse.cpp:
       - $@.exec
+
+options:
    Doxyfile:
-      - *doxygen
+      truncate_contents: 100  # bytes

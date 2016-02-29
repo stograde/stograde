@@ -25,11 +25,15 @@ def process_file(filename, steps, spec, cwd):
     options = {
         'timeout': 4,
         'truncate_after': 10000,  # 10K
+        'truncate_contents': False,
     }
     options.update(spec.get('options', {}).get(filename, {}))
 
     output.extend([header, '\n'])
     file_status, file_contents = run_command(['cat', filename])
+
+    if options['truncate_contents']:
+        file_contents = unicode_truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':
         output.append('**file %s does not exist**\n' % filename)

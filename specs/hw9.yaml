@@ -3,10 +3,14 @@ assignment: hw9
 
 compilers:
    cpp: &cpp
-      'g++ --std=c++11 $@ -o $@.exec'
+      g++ --std=c++11 $@ -o $@.exec
+   doxygen: &doxygen
+      doxygen
 
 files:
    - reverse.cpp: *cpp
 
 tests:
-   reverse.cpp: $@.exec
+   reverse.cpp:
+      - $@.exec
+      - *doxygen

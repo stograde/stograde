@@ -6,8 +6,8 @@ import shutil
 import textwrap
 import lib.yaml as yaml
 from argparse import ArgumentParser
-from configparser import ConfigParser, MissingSectionHeaderError
 from lib.progress import progress as progress_bar
+from lib.get_students import get_students
 from lib.markdownify import markdownify
 from lib.columnize import columnize
 from lib.flatten import flatten
@@ -60,19 +60,6 @@ def get_args():
                         choices=['name', 'homework'],
                         help='Sort by either student name or homework count.')
     return vars(parser.parse_args())
-
-
-def get_config():
-    config = ConfigParser(allow_no_value=True)
-    if os.path.exists('./students.txt'):
-        with open('./students.txt', 'r') as infile:
-            try:
-                config.read_file(infile)
-            except MissingSectionHeaderError:
-                # handle plain text files, too
-                return {'my': [name.strip() for name in infile.readlines()]}
-
-    return config
 
 
 def single_student(student, index, args={}, specs={}, recordings={}):
@@ -155,7 +142,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
 
 def main():
-    students = get_config()
+    students = get_students()
     args = get_args()
 
     # argparser puts it into a nested list because you could have two
@@ -174,19 +161,18 @@ def main():
         if 'my' not in students:
             warn('There is no [my] section in students.txt')
             return
-        args['students'] = list(students['my'])
+        args['students'] = students['my']
 
     elif 'all' in args['section']:
-        sections = [list(students[section])
-                    for section in students]
+        sections = [students[section] for section in students]
         args['students'] = list(flatten(sections))
 
     # sections are identified by only being one char long
-    elif any([section for section in args['section']]):
+    elif any(args['section']):
         sections = []
         for section in args['section']:
             try:
-                sections.append(list(students['section-%s' % section] or students[section]))
+                sections.append(students['section-{}'.format(section)] or students[section])
             except KeyError:
                 warn('Section "%s" could not be found in ./students.txt' % section)
         args['students'] = list(flatten(sections))

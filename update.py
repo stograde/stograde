@@ -91,9 +91,9 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         if args['day']:
             progress('checkouting')
-            rev_list = '(git rev-list -n 1 --before="%s 18:00" master)' % args['day']
-            git_checkout = 'git checkout %s --force --quiet' % rev_list
-            run(git_checkout.split())
+            rev_list = ['git', 'rev-list', '-n', '1', '--before="%s 18:00"' % args['day'], 'master']
+            rev = run(rev_list.split())[1]
+            run(['git', 'checkout', rev, '--force', '--quiet'])
 
         all_folders = [folder
                        for folder in os.listdir('.')

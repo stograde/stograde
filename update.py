@@ -16,7 +16,8 @@ from lib.run import run_command as run
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
 labnames = {
-    'sound': 'lab2',
+    'sound': ['lab2', 'lab3'],
+    'images': ['lab4', 'lab5', 'lab6'],
 }
 
 
@@ -101,7 +102,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         filtered = [f for f in all_folders if size(f) > 100]
         FOLDERS = sorted([f.lower() for f in filtered])
-        FOLDERS = [(labnames[f] if f in labnames else f) for f in FOLDERS]
+        FOLDERS = list(flatten([(labnames[f] if f in labnames else f) for f in FOLDERS]))
         HWS = {f: f.startswith('hw') for f in FOLDERS}
         LABS = {f: f.startswith('lab') for f in FOLDERS}
 

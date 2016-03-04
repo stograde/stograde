@@ -73,8 +73,8 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
     if not os.path.exists(student):
         progress('cloning')
-        git_clone = 'git clone --quiet %s/%s.git' % (stogit, student)
-        run(git_clone.split())
+        git_clone = ['git', 'clone', '--quiet', '{}/{}.git'.format(stogit, student)]
+        run(git_clone)
 
     os.chdir(student)
 

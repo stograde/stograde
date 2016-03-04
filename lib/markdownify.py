@@ -29,14 +29,17 @@ def process_file(filename, steps, spec, cwd):
     }
     options.update(spec.get('options', {}).get(filename, {}))
 
-    output.extend([header, '\n'])
     file_status, file_contents = run_command(['cat', filename])
+    if file_status == 'success':
+        _, last_edit = run_command(['git', 'log', '-n', '1', r'--pretty=format:%cd', '--', filename])
+        header += ' ({})'.format(last_edit)
+    output.extend([header, '\n'])
 
     if options['truncate_contents']:
         file_contents = unicode_truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':
-        output.append('**file %s does not exist**\n' % filename)
+        output.append('**the file %s does not exist**\n' % filename)
         output.append('`ls .` says that these files exist:\n')
         output.append(indent4('\n'.join(os.listdir('.'))) + '\n\n')
         return '\n'.join(output)

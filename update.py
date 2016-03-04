@@ -60,6 +60,8 @@ def get_args():
     parser.add_argument('--sort-by', action='store', default='name', type=str,
                         choices=['name', 'homework'],
                         help='Sort by either student name or homework count.')
+    parser.add_argument('--table', '-t', action='store_true',
+                        help='View last table generated and do not update folders.')
     return vars(parser.parse_args())
 
 
@@ -153,6 +155,15 @@ def main():
     args['section'] = list(flatten(args['section'] or []))
     args['record'] = list(flatten(args['record'] or []))
 
+    # print the last saved table, then exit the program.
+    if args['table']:
+        try:
+            with open(".table", "r") as txtable:
+                print(txtable.read())
+            return
+        except OSError:
+            pass
+
     # fall back to the students.my section
     if not args['students'] and not args['section']:
         args['section'] = ['my']
@@ -233,8 +244,13 @@ def main():
         [recording.close() for name, recording in recordings.items()]
         os.chdir(root)
 
+    text_table = columnize(table, sort_by=args['sort_by'])
     if not args['quiet']:
-        print('\n' + columnize(table, sort_by=args['sort_by']))
+        print('\n' + text_table)
+
+    # record the generated table in .table
+    with open(".table", "w") as txtable:
+        txtable.write(text_table)
 
 
 if __name__ == '__main__':

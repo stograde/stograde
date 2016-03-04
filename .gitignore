@@ -4,6 +4,7 @@ students/*
 
 # ignore any lists of people
 /*students*.txt
+.table
 
 # files
 .DS_Store

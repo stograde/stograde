@@ -84,7 +84,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
     try:
         progress('stashing')
-        if run('git status --porcelain'.split())[1]:
+        if not args['no_update'] and run('git status --porcelain'.split())[1]:
             run('git stash -u'.split())
             run('git stash clear'.split())
 

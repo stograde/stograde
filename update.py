@@ -138,8 +138,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
     except Exception as err:
         retval = "%s: %s" % (student, err)
 
-    finally:
-        os.chdir('..')
+    os.chdir('..')
 
     return retval
 

@@ -171,7 +171,7 @@ def main():
         args['students'] = list(flatten(sections))
 
     # sections are identified by only being one char long
-    elif any(args['section']):
+    elif args['section']:
         sections = []
         for section in args['section']:
             try:

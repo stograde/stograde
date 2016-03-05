@@ -6,6 +6,7 @@ import shutil
 import textwrap
 import lib.yaml as yaml
 from argparse import ArgumentParser
+from lib.find_unmerged_branches import find_unmerged_branches_in_cwd
 from lib.progress import progress as progress_bar
 from lib.get_students import get_students
 from lib.markdownify import markdownify
@@ -101,9 +102,9 @@ def single_student(student, index, args={}, specs={}, recordings={}):
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
         if args['no_check']:
-            unmerged_branches = ''
+            unmerged_branches = False
         else:
-            _, unmerged_branches = run(['git', 'branch', '-a', '--no-merged', 'master'])
+            unmerged_branches = find_unmerged_branches_in_cwd()
 
         all_folders = [folder
                        for folder in os.listdir('.')
@@ -133,7 +134,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                     recordings[to_record].write(recording)
 
         retval = "{}\t{}\t{}".format(
-            student if not unmerged_branches else student + ' !',
+            student + ' !' if unmerged_branches else student,
             ' '.join([hw for hw, result in HWS.items() if result]),
             ' '.join([lab for lab, result in LABS.items() if result]))
 

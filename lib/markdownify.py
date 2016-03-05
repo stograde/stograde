@@ -5,6 +5,7 @@ import os
 from textwrap import indent
 from .flatten import flatten
 from .run import run_command as run
+from .find_unmerged_branches import find_unmerged_branches_in_cwd
 
 
 def indent4(string):
@@ -126,6 +127,23 @@ def process_file(filename, steps, spec, cwd):
     return '\n'.join(output)
 
 
+def find_unmerged_branches():
+    # approach taken from https://stackoverflow.com/a/3602022/2347774
+    unmerged_branches = find_unmerged_branches_in_cwd()
+    if not unmerged_branches:
+        return ''
+
+    result = 'Unmerged branches:\n'
+
+    for b in unmerged_branches:
+        _, commits = run(['git', 'cherry', '-v', 'master', b])
+        commits = [c.strip() for c in commits.split('\n') if c.strip()]
+        branch_msg = '    {}\n{}'.format(b, '\n'.join(['      {}'.format(c) for c in commits]))
+        result += branch_msg
+
+    return result + '\n\n\n'
+
+
 def markdownify_throws(hw_id, username, spec):
     cwd = os.getcwd()
     results = []
@@ -145,7 +163,9 @@ def markdownify_throws(hw_id, username, spec):
     [run(['rm', '-f', '%s.exec' % file]) for file, steps in files]
     [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
-    return '# %s — %s \n\n%s' % (hw_id, username, ''.join(results))
+    unmerged = find_unmerged_branches()
+    result_string = ''.join(results)
+    return '# {} — {} \n\n{}{}'.format(hw_id, username, unmerged, result_string)
 
 
 def markdownify(*args, **kwargs):

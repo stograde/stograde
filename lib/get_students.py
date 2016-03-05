@@ -2,28 +2,28 @@ import re
 
 
 def clean_header(text):
-	return text.strip('[]')
+    return text.strip('[]')
 
 
 def get_students():
-	try:
-		with open('./students.txt', 'r') as infile:
-			lines = infile.readlines()
-	except FileNotFoundError as err:
-		lines = []
+    try:
+        with open('students.txt', 'r') as infile:
+            lines = infile.readlines()
+    except FileNotFoundError as err:
+        lines = []
 
-	lines = [l.strip() for l in lines if l.strip()]
-	group_regex = re.compile(r'\[.*\]')
-	group_list = [clean_header(l) for l in lines if group_regex.match(l)]
-	if not group_list:
-		group_list = ['my']
+    lines = [l.strip() for l in lines if l.strip()]
+    group_regex = re.compile(r'\[.*\]')
+    group_list = [clean_header(l) for l in lines if group_regex.match(l)]
+    if not group_list:
+        group_list = ['my']
 
-	groups = {group: [] for group in group_list}
-	current_group = group_list[0]
-	for line in lines:
-		if group_regex.match(line):
-			current_group = clean_header(line)
-		else:
-			groups[current_group].append(line)
+    groups = {group: [] for group in group_list}
+    current_group = group_list[0]
+    for line in lines:
+        if group_regex.match(line):
+            current_group = clean_header(line)
+        else:
+            groups[current_group].append(line)
 
-	return groups
+    return groups

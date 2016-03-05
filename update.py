@@ -117,8 +117,6 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                     try:
                         os.chdir(to_record)
                         recording = markdownify(to_record, student, specs[to_record])
-                    except Exception as err:
-                        recording = err
                     finally:
                         try:
                             recordings[to_record].write(recording)

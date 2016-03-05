@@ -126,7 +126,7 @@ def process_file(filename, steps, spec, cwd):
     return '\n'.join(output)
 
 
-def markdownify(hw_id, username, spec):
+def markdownify_throws(hw_id, username, spec):
     cwd = os.getcwd()
     results = []
 
@@ -146,3 +146,10 @@ def markdownify(hw_id, username, spec):
     [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
     return '# %s — %s \n\n%s' % (hw_id, username, ''.join(results))
+
+
+def markdownify(*args, **kwargs):
+    try:
+        return markdownify_throws(*args, **kwargs)
+    except Exception as err:
+        return str(err)

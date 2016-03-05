@@ -219,9 +219,9 @@ def main():
     specs = {}
     if args['record']:
         for to_record in args['record']:
-            filenames[to_record] = './logs/log-' + to_record
+            filenames[to_record] = os.path.join('logs', 'log-' + to_record)
             recordings[to_record] = open(filenames[to_record] + '.md', 'w')
-            specs[to_record] = open(root + '/specs/' + to_record + '.yaml', 'r').read()
+            specs[to_record] = open(os.path.join(root, 'specs', to_record + '.yaml'), 'r').read()
             if specs[to_record]:
                 specs[to_record] = yaml.load(specs[to_record])
 

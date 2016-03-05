@@ -119,8 +119,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                         try:
                             recordings[to_record].write(recording)
                         except Exception as err:
-                            warn('error! could not write recording')
-                            warn(err)
+                            warn('error! could not write recording:', err)
                         os.chdir('..')
                 else:
                     recording = '# %s — %s\n\nNo submission.\n\n\n\n\n' % (to_record, student)

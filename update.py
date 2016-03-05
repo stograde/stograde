@@ -7,6 +7,7 @@ import textwrap
 import lib.yaml as yaml
 from argparse import ArgumentParser
 from lib.find_unmerged_branches import find_unmerged_branches_in_cwd
+from lib.format_collected_data import format_collected_data
 from lib.progress import progress as progress_bar
 from lib.get_students import get_students
 from lib.markdownify import markdownify
@@ -40,10 +41,10 @@ def size(path='.'):
     return total_size
 
 
-def write_recording(recording, results):
-    str_results = yaml.dump(results, width=72)
+def write_recording(output_file, results):
+    str_results = format_collected_data(results)
     try:
-        recording.write(str_results)
+        output_file.write(str_results)
     except Exception as err:
         warn('error! could not write recording:', err)
 
@@ -137,10 +138,10 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                         'spec': to_record,
                         'student': student,
                         'warnings': {
-                            'No submission': True
+                            'no submission': True
                         },
                     }
-                    write_recording(recordings[to_record], recording)
+                    write_recording(recordings[to_record], results)
 
         retval = "{}\t{}\t{}".format(
             student + ' !' if unmerged_branches else student,

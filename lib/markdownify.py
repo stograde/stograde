@@ -2,15 +2,11 @@
 
 import sys
 import os
+from collections import OrderedDict
 from os.path import exists as path_exists, join as path_join
-from textwrap import indent
 from .flatten import flatten
 from .run import run_command as run
 from .find_unmerged_branches import find_unmerged_branches_in_cwd
-
-
-def indent4(string):
-    return indent(string, '    ')
 
 
 def unicode_truncate(s, length, encoding='utf-8'):
@@ -149,7 +145,7 @@ def markdownify_throws(spec_id, username, spec):
         'spec': spec_id,
         'student': username,
         'warnings': {},
-        'files': {},
+        'files': OrderedDict(),
     }
 
     inputs = spec.get('inputs', {})

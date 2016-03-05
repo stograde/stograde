@@ -4,8 +4,10 @@ import os
 import sys
 import shutil
 import textwrap
+import functools
 import lib.yaml as yaml
 from argparse import ArgumentParser
+from concurrent.futures import ProcessPoolExecutor
 from lib.find_unmerged_branches import find_unmerged_branches_in_cwd
 from lib.format_collected_data import format_collected_data
 from lib.progress import progress as progress_bar
@@ -74,38 +76,38 @@ def get_args():
                         help='Sort by either student name or homework count.')
     parser.add_argument('--all', action='store_true',
                         help='Shorthand for \'--section all\'')
+    parser.add_argument('--workers', '-w', type=int, default=4,
+                        help='Control the number of operations to perform in parallel')
     return vars(parser.parse_args())
 
 
-def single_student(student, index, args={}, specs={}, recordings={}):
-    def progress(message):
-        return progress_bar(len(args['students']), index, message='%s [%s]' % (student, message))
-
+def single_student(student, args={}, specs={}):
     if args['clean']:
-        progress('cleaning')
+        # progress('cleaning')
         shutil.rmtree(student)
 
     if not os.path.exists(student):
-        progress('cloning')
+        # progress('cloning')
         git_clone = ['git', 'clone', '--quiet', '{}/{}.git'.format(stogit, student)]
         run(git_clone)
 
     os.chdir(student)
 
     retval = ''
+    results = ''
 
     try:
-        progress('stashing')
+        # progress('stashing')
         if not args['no_update'] and run('git status --porcelain'.split())[1]:
             run('git stash -u'.split())
             run('git stash clear'.split())
 
         if not args['no_update']:
-            progress('updating')
+            # progress('updating')
             run('git pull --quiet origin master'.split())
 
         if args['day']:
-            progress('checkouting')
+            # progress('checkouting')
             rev_list = ['git', 'rev-list', '-n', '1', '--before="%s 18:00"' % args['day'], 'master']
             rev = run(rev_list.split())[1]
             run(['git', 'checkout', rev, '--force', '--quiet'])
@@ -127,11 +129,11 @@ def single_student(student, index, args={}, specs={}, recordings={}):
 
         if args['record']:
             for to_record in args['record']:
-                progress('recording %s' % to_record)
+                # progress('recording %s' % to_record)
                 if os.path.exists(to_record):
                     os.chdir(to_record)
                     recording = markdownify(to_record, student, specs[to_record])
-                    write_recording(recordings[to_record], recording)
+                    # write_recording(recordings[to_record], recording)
                     os.chdir('..')
                 else:
                     results = {
@@ -141,7 +143,7 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                             'no submission': True
                         },
                     }
-                    write_recording(recordings[to_record], results)
+                    # write_recording(recordings[to_record], results)
 
         retval = "{}\t{}\t{}".format(
             student + ' !' if unmerged_branches else student,
@@ -152,11 +154,11 @@ def single_student(student, index, args={}, specs={}, recordings={}):
             run('git checkout master --quiet --force'.split())
 
     except Exception as err:
-        retval = "%s: %s" % (student, err)
+        retval = "{}: {}".format(student, err)
 
     os.chdir('..')
 
-    return retval
+    return retval, results
 
 
 def main():
@@ -232,25 +234,29 @@ def main():
     recordings = {}
     filenames = {}
     specs = {}
-    if args['record']:
-        for to_record in args['record']:
-            filenames[to_record] = os.path.join('logs', 'log-' + to_record)
-            recordings[to_record] = open(filenames[to_record] + '.md', 'w')
-            specs[to_record] = open(os.path.join(root, 'specs', to_record + '.yaml'), 'r').read()
-            if specs[to_record]:
-                specs[to_record] = yaml.load(specs[to_record])
+    # if args['record']:
+    #     for to_record in args['record']:
+    #         filenames[to_record] = os.path.join('logs', 'log-' + to_record)
+    #         recordings[to_record] = open(filenames[to_record] + '.md', 'w')
+    #         specs[to_record] = open(os.path.join(root, 'specs', to_record + '.yaml'), 'r').read()
+    #         if specs[to_record]:
+    #             specs[to_record] = yaml.load(specs[to_record])
 
     os.makedirs('./students', exist_ok=True)
     os.chdir('./students')
 
     try:
-        for i, student in enumerate(args['students']):
-            table.append(single_student(student, i + 1,
-                                        args=args, specs=specs,
-                                        recordings=recordings))
+        single = functools.partial(single_student, args=args, specs=specs)
+        if args['workers'] > 1:
+            with ProcessPoolExecutor(max_workers=args['workers']) as pool:
+                results = list(pool.map(single, args['students']))
+        else:
+            results = list(map(single, args['students']))
+        table_rows, records = zip(*[(a, b) for a, b in results])
+        table = list(table_rows)
 
     finally:
-        [recording.close() for name, recording in recordings.items()]
+        # [recording.close() for name, recording in recordings.items()]
         os.chdir(root)
 
     if not args['quiet']:

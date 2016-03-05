@@ -2,6 +2,7 @@
 
 import sys
 import os
+from os.path import exists as path_exists, join as path_join
 from textwrap import indent
 from .flatten import flatten
 from .run import run_command as run
@@ -103,7 +104,7 @@ def process_file(filename, steps, spec, cwd):
 
         test_cmd = test[-1].split(' ')
 
-        if os.path.exists(os.path.join(cwd, filename)):
+        if path_exists(path_join(cwd, filename)):
             status, full_result = run(test_cmd,
                                       input=input_for_test,
                                       timeout=options['timeout'])
@@ -148,8 +149,9 @@ def markdownify_throws(hw_id, username, spec):
     cwd = os.getcwd()
     results = []
 
-    for filename, contents in spec.get('inputs', {}).items():
-        with open(os.path.join(cwd, filename), 'w') as outfile:
+    inputs = spec.get('inputs', {})
+    for filename, contents in inputs.items():
+        with open(path_join(cwd, filename), 'w') as outfile:
             outfile.write(contents)
 
     files = [(filename, steps)
@@ -161,7 +163,7 @@ def markdownify_throws(hw_id, username, spec):
         results.append(result)
 
     [run(['rm', '-f', '%s.exec' % file]) for file, steps in files]
-    [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
+    [os.remove(path_join(cwd, inputfile)) for inputfile in inputs]
 
     unmerged = find_unmerged_branches()
     result_string = ''.join(results)

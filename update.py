@@ -45,6 +45,8 @@ def get_args():
                         help='Be quieter')
     parser.add_argument('--no-update', '-n', action='store_true',
                         help='Do not update the student folders before checking.')
+    parser.add_argument('--no-check', '-c', action='store_true',
+                        help='Do not check for unmerged branches.')
     parser.add_argument('--day', action='store',
                         help='Check out the student folder as of 5pm on the last <day of week>.')
     parser.add_argument('--date', action='store',
@@ -98,7 +100,10 @@ def single_student(student, index, args={}, specs={}, recordings={}):
             rev = run(rev_list.split())[1]
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
-        _, unmerged_branches = run(['git', 'branch', '-a', '--no-merged', 'master'])
+        if args['no_check']:
+            unmerged_branches = ''
+        else:
+            _, unmerged_branches = run(['git', 'branch', '-a', '--no-merged', 'master'])
 
         all_folders = [folder
                        for folder in os.listdir('.')

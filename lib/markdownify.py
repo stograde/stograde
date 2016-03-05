@@ -4,7 +4,7 @@ import sys
 import os
 from textwrap import indent
 from .flatten import flatten
-from .run import run_command
+from .run import run_command as run
 
 
 def indent4(string):
@@ -29,9 +29,12 @@ def process_file(filename, steps, spec, cwd):
     }
     options.update(spec.get('options', {}).get(filename, {}))
 
-    file_status, file_contents = run_command(['cat', filename])
+    file_status, file_contents = run(['cat', filename])
     if file_status == 'success':
-        _, last_edit = run_command(['git', 'log', '-n', '1', r'--pretty=format:%cd', '--', filename])
+        _, last_edit = run(['git', 'log',
+                            '-n', '1',
+                            r'--pretty=format:%cd',
+                            '--', filename])
         header += ' ({})'.format(last_edit)
     output.extend([header, '\n'])
 
@@ -51,7 +54,7 @@ def process_file(filename, steps, spec, cwd):
     for step in steps:
         if step and not any_step_failed:
             command = step.replace('$@', filename)
-            status, compilation = run_command(command.split())
+            status, compilation = run(command.split())
 
             if compilation:
                 warnings_header = '**warnings: `%s`**\n' % (command)
@@ -94,15 +97,15 @@ def process_file(filename, steps, spec, cwd):
             cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
             cmd = cmd.split(' ')
 
-            status, input_for_test = run_command(cmd, input=input_for_test)
+            status, input_for_test = run(cmd, input=input_for_test)
             input_for_test = input_for_test.encode('utf-8')
 
         test_cmd = test[-1].split(' ')
 
         if os.path.exists(os.path.join(cwd, filename)):
-            status, full_result = run_command(test_cmd,
-                                              input=input_for_test,
-                                              timeout=options['timeout'])
+            status, full_result = run(test_cmd,
+                                      input=input_for_test,
+                                      timeout=options['timeout'])
 
             result = unicode_truncate(full_result, options['truncate_after'])
             truncate_msg = 'output truncated after %d bytes' % (options['truncate_after']) \
@@ -139,7 +142,7 @@ def markdownify(hw_id, username, spec):
         result = process_file(filename, steps, spec, cwd)
         results.append(result)
 
-    [run_command(['rm', '-f', '%s.exec' % file]) for file, steps in files]
+    [run(['rm', '-f', '%s.exec' % file]) for file, steps in files]
     [os.remove(os.path.join(cwd, inputfile)) for inputfile in spec.get('inputs', {})]
 
     return '# %s — %s \n\n%s' % (hw_id, username, ''.join(results))

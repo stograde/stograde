@@ -40,6 +40,14 @@ def size(path='.'):
     return total_size
 
 
+def write_recording(recording, results):
+    str_results = yaml.dump(results, width=72)
+    try:
+        recording.write(str_results)
+    except Exception as err:
+        warn('error! could not write recording:', err)
+
+
 def get_args():
     parser = ArgumentParser(description='The core of the CS251 toolkit.')
     parser.add_argument('--quiet', '-q', action='store_true',
@@ -120,18 +128,19 @@ def single_student(student, index, args={}, specs={}, recordings={}):
             for to_record in args['record']:
                 progress('recording %s' % to_record)
                 if os.path.exists(to_record):
-                    try:
-                        os.chdir(to_record)
-                        recording = markdownify(to_record, student, specs[to_record])
-                    finally:
-                        try:
-                            recordings[to_record].write(recording)
-                        except Exception as err:
-                            warn('error! could not write recording:', err)
-                        os.chdir('..')
+                    os.chdir(to_record)
+                    recording = markdownify(to_record, student, specs[to_record])
+                    write_recording(recordings[to_record], recording)
+                    os.chdir('..')
                 else:
-                    recording = '# %s — %s\n\nNo submission.\n\n\n\n\n' % (to_record, student)
-                    recordings[to_record].write(recording)
+                    results = {
+                        'spec': to_record,
+                        'student': student,
+                        'warnings': {
+                            'No submission': True
+                        },
+                    }
+                    write_recording(recordings[to_record], recording)
 
         retval = "{}\t{}\t{}".format(
             student + ' !' if unmerged_branches else student,

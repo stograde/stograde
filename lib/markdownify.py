@@ -21,9 +21,6 @@ def unicode_truncate(s, length, encoding='utf-8'):
 def process_file(filename, steps, spec, cwd):
     steps = steps if type(steps) is list else [steps]
 
-    output = []
-    header = '### ' + filename
-
     options = {
         'timeout': 4,
         'truncate_after': 10000,  # 10K
@@ -31,26 +28,29 @@ def process_file(filename, steps, spec, cwd):
     }
     options.update(spec.get('options', {}).get(filename, {}))
 
+    results = {
+        'missing': False,
+        'compilation': [],
+        'result': [],
+    }
+
     file_status, file_contents = run(['cat', filename])
     if file_status == 'success':
         _, last_edit = run(['git', 'log',
                             '-n', '1',
                             r'--pretty=format:%cd',
                             '--', filename])
-        header += ' ({})'.format(last_edit)
-    output.extend([header, '\n'])
+        results['last modified'] = last_edit
 
     if options['truncate_contents']:
         file_contents = unicode_truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':
-        output.append('**the file %s does not exist**\n' % filename)
-        output.append('`ls .` says that these files exist:\n')
-        output.append(indent4('\n'.join(os.listdir('.'))) + '\n\n')
-        return '\n'.join(output)
+        results['missing'] = True
+        results['other files'] = os.listdir('.')
+        return results
 
-    output.extend(['**contents of %s**\n' % filename, indent4(file_contents)])
-    output.append('\n')
+    results['contents'] = file_contents
 
     any_step_failed = False
     for step in steps:
@@ -58,23 +58,19 @@ def process_file(filename, steps, spec, cwd):
             command = step.replace('$@', filename)
             status, compilation = run(command.split())
 
-            if compilation:
-                warnings_header = '**warnings: `%s`**\n' % (command)
-                output.extend([warnings_header, indent4(compilation)])
-            else:
-                warnings_header = '**no warnings: `%s`**' % (command)
-                output.extend([warnings_header])
+            results['compilation'].append({
+                'command': command,
+                'output': compilation,
+            })
 
             if status != 'success':
                 any_step_failed = True
-
-            output.append('\n')
 
         elif any_step_failed:
             break
 
     if not steps or any_step_failed:
-        return '\n'.join(output)
+        return results
 
     inputs = spec.get('inputs', {})
 
@@ -110,41 +106,51 @@ def process_file(filename, steps, spec, cwd):
                                       timeout=options['timeout'])
 
             result = unicode_truncate(full_result, options['truncate_after'])
+            truncated = (full_result != result)
             truncate_msg = 'output truncated after %d bytes' % (options['truncate_after']) \
-                           if full_result != result else ''
+                           if truncated else ''
 
-            items = [item for item in [status, truncate_msg] if item]
-            status = '; '.join(items)
-            output.append('**results of `%s`** (status: %s)\n' % (test_string, status))
-            output.append(indent4(result))
+            results['result'].append({
+                'command': test_string,
+                'status': status,
+                'output': result,
+                'truncated': True if truncated else False,
+                'truncated after': options['truncate_after'],
+            })
 
         else:
-            output.append('%s could not be found.\n' % filename)
+            results['result'].append({
+                'command': test_cmd,
+                'error': True,
+                'output': '{} could not be found.'.format(filename),
+            })
 
-        output.append('\n')
-
-    output.extend(["\n\n"])
-
-    return '\n'.join(output)
+    return results
 
 
 def find_unmerged_branches():
     # approach taken from https://stackoverflow.com/a/3602022/2347774
     unmerged_branches = find_unmerged_branches_in_cwd()
     if not unmerged_branches:
-        return ''
+        return False
 
-    result = 'Unmerged branches:\n'
-
-    for b in unmerged_branches:
-        result += '    {}\n'.format(b)
-
-    return result + '\n\n\n'
+    return unmerged_branches
 
 
-def markdownify_throws(hw_id, username, spec):
+def find_warnings():
+    return {
+        'unmerged branches': find_unmerged_branches(),
+    }
+
+
+def markdownify_throws(spec_id, username, spec):
     cwd = os.getcwd()
-    results = []
+    results = {
+        'spec': spec_id,
+        'student': username,
+        'warnings': {},
+        'files': {},
+    }
 
     inputs = spec.get('inputs', {})
     for filename, contents in inputs.items():
@@ -157,18 +163,23 @@ def markdownify_throws(hw_id, username, spec):
 
     for filename, steps in files:
         result = process_file(filename, steps, spec, cwd)
-        results.append(result)
+        results['files'][filename] = result
 
     [run(['rm', '-f', '%s.exec' % file]) for file, steps in files]
     [os.remove(path_join(cwd, inputfile)) for inputfile in inputs]
 
-    unmerged = find_unmerged_branches()
-    result_string = ''.join(results)
-    return '# {} — {} \n\n{}{}'.format(hw_id, username, unmerged, result_string)
+    results['warnings'] = find_warnings()
+    return results
 
 
-def markdownify(*args, **kwargs):
+def markdownify(spec_id, username, spec):
     try:
-        return markdownify_throws(*args, **kwargs)
+        return markdownify_throws(spec_id, username, spec)
     except Exception as err:
-        return str(err)
+        return {
+            'spec': spec_id,
+            'student': username,
+            'warnings': {
+                'Recording error': str(err),
+            },
+        }

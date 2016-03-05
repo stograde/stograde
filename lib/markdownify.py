@@ -137,10 +137,7 @@ def find_unmerged_branches():
     result = 'Unmerged branches:\n'
 
     for b in unmerged_branches:
-        _, commits = run(['git', 'cherry', '-v', 'master', b])
-        commits = [c.strip() for c in commits.split('\n') if c.strip()]
-        branch_msg = '    {}\n{}'.format(b, '\n'.join(['      {}'.format(c) for c in commits]))
-        result += branch_msg
+        result += '    {}\n'.format(b)
 
     return result + '\n\n\n'
 

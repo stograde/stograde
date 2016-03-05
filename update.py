@@ -153,14 +153,8 @@ def main():
     args['section'] = list(flatten(args['section'] or []))
     args['record'] = list(flatten(args['record'] or []))
 
-    # print the last saved table, then exit the program.
-    if args['table']:
-        try:
-            with open(".table", "r") as txtable:
-                print(txtable.read())
-            return
-        except OSError:
-            pass
+    if args['all']:
+        args['section'] = ['all']
 
     # fall back to the students.my section
     if not args['students'] and not args['section']:

@@ -60,6 +60,8 @@ def get_args():
     parser.add_argument('--sort-by', action='store', default='name', type=str,
                         choices=['name', 'homework'],
                         help='Sort by either student name or homework count.')
+    parser.add_argument('--all', action='store_true',
+                        help='Shorthand for \'--section all\'')
     return vars(parser.parse_args())
 
 

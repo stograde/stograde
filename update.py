@@ -98,6 +98,8 @@ def single_student(student, index, args={}, specs={}, recordings={}):
             rev = run(rev_list.split())[1]
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
+        _, unmerged_branches = run(['git', 'branch', '-a', '--no-merged', 'master'])
+
         all_folders = [folder
                        for folder in os.listdir('.')
                        if not folder.startswith('.') and os.path.isdir(folder)]
@@ -127,9 +129,10 @@ def single_student(student, index, args={}, specs={}, recordings={}):
                     recording = '# %s — %s\n\nNo submission.\n\n\n\n\n' % (to_record, student)
                     recordings[to_record].write(recording)
 
-        retval = "%s\t%s\t%s" % (student,
-                                 ' '.join([h for h, result in HWS.items() if result]),
-                                 ' '.join([l for l, result in LABS.items() if result]))
+        retval = "{}\t{}\t{}".format(
+            student if not unmerged_branches else student + ' !',
+            ' '.join([hw for hw, result in HWS.items() if result]),
+            ' '.join([lab for lab, result in LABS.items() if result]))
 
         if args['day']:
             run('git checkout master --quiet --force'.split())

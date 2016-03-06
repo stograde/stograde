@@ -167,12 +167,12 @@ def single_student(student, args={}, specs={}):
     try:
         # progress('stashing')
         if not args['no_update'] and run('git status --porcelain'.split())[1]:
-            run('git stash -u'.split())
-            run('git stash clear'.split())
+            run(['git', 'stash', '-u'])
+            run(['git', 'stash', 'clear'])
 
         if not args['no_update']:
             # progress('updating')
-            run('git pull --quiet origin master'.split())
+            run(['git', 'pull', '--quiet', 'origin', 'master'])
 
         if args['day']:
             # progress('checkouting')
@@ -219,7 +219,7 @@ def single_student(student, args={}, specs={}):
             ' '.join([lab for lab, result in LABS.items() if result]))
 
         if args['day']:
-            run('git checkout master --quiet --force'.split())
+            run(['git', 'checkout', 'master', '--quiet', '--force'])
 
     except Exception as err:
         retval = "{}: {}".format(student, err)

@@ -13,11 +13,10 @@ from lib.format_collected_data import format_collected_data
 from lib.progress import progress as progress_bar
 from lib.get_students import get_students
 from lib.markdownify import markdownify
+from lib.run import run_command as run
 from lib.columnize import columnize
 from lib.flatten import flatten
-from lib.uniq import uniq
 from lib.size import size
-from lib.run import run_command as run
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
 labnames = {
@@ -132,7 +131,7 @@ def process_args():
         warn(textwrap.fill(msg))
         return
 
-    args['students'] = uniq(args['students'])
+    args['students'] = sorted(set(args['students']))
 
     if args['day']:
         _, args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])

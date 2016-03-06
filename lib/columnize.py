@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 
-from functools import reduce
-import sys
 import re
 
 success = '✓'
 missing = '-'
 
 
-def getNumber(string):
+def get_number(string):
     maybe_match = re.search(r'(\d+)$', string)
     return int(maybe_match.group(1)) if maybe_match else 0
 
 
 def make_list(data):
-    numbered = [getNumber(item) for item in data.split()]
+    numbered = [get_number(item) for item in data.split()]
     return [idx if idx in numbered else False for idx in range(1, max(numbered) + 1)]
 
 
@@ -30,12 +28,12 @@ def find_columns(max):
         return ' '.join([str(i) for i in range(1, max+1)])
 
 
-def columnize(inputData, sort_by):
+def columnize(input_data, sort_by):
     users = []
 
     max_hwk = 0
     max_lab = 0
-    for line in inputData:
+    for line in input_data:
         line = line.strip().split('\t')
         user = line[0].strip()
 
@@ -56,10 +54,9 @@ def columnize(inputData, sort_by):
             'labs': labs or []
         })
 
-    longest_user = reduce(
-        lambda longest, curr: curr if len(curr) > len(longest) else longest,
-        map(lambda u: u['username'], users),
-        'USER')
+    # be sure that the longest username will be at least 4 chars
+    usernames = [user['username'] for user in users] + ['USER']
+    longest_user = max(usernames + ['USER'], key=lambda name: len(name))
 
     header = '{0:<{1}}  | {2} | {3}'.format(
         'USER', len(longest_user),
@@ -95,4 +92,5 @@ def columnize(inputData, sort_by):
 
 
 if __name__ == '__main__':
+    import sys
     print(columnize(sys.stdin))

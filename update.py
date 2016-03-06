@@ -81,6 +81,74 @@ def get_args():
     return vars(parser.parse_args())
 
 
+def process_args():
+    students = get_students()
+    args = get_args()
+
+    # argparser puts it into a nested list because you could have two
+    # occurrences of the arg, each with a variable number of arguments.
+    # `--students amy max --students rives` => `[[amy, max], [rives]]`
+    args['students'] = list(flatten(args['students'] or []))
+    args['section'] = list(flatten(args['section'] or []))
+    args['record'] = list(flatten(args['record'] or []))
+
+    if args['all']:
+        args['section'] = ['all']
+
+    # fall back to the students.my section
+    if not args['students'] and not args['section']:
+        args['section'] = ['my']
+
+    # support 'my' students and 'all' students
+    if 'my' in args['section']:
+        if 'my' not in students:
+            warn('There is no [my] section in students.txt')
+            return
+        args['students'] = students['my']
+
+    elif 'all' in args['section']:
+        sections = [students[section] for section in students]
+        args['students'] = list(flatten(sections))
+
+    # sections are identified by only being one char long
+    elif args['section']:
+        sections = []
+        for section in args['section']:
+            try:
+                sections.append(students['section-' + section] or students[section])
+            except KeyError:
+                warn('Section "%s" could not be found in ./students.txt' % section)
+        args['students'] = list(flatten(sections))
+
+    # we can only read one stdin
+    if '-' in args['students']:
+        args['students'] = flatten(args['students'] + sys.stdin.read().splitlines())
+        args['students'] = [student for student in args['students'] if student != '-']
+
+    elif '-' in args['record']:
+        args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
+        args['record'] = [to_record for to_record in args['record'] if to_record != '-']
+
+    # stop if we still don't have any students
+    if not args['students']:
+        msg = ' '.join('''
+            Could not find a list of students.
+            You must provide the `--students` argument, the `--section` argument,
+            a ./students.txt file, or a list of usernames to stdin.
+        '''.split())
+        warn(textwrap.fill(msg))
+        return
+
+    args['students'] = uniq(args['students'])
+
+    if args['day']:
+        _, args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])
+    elif args['date']:
+        args['day'] = args['date']
+
+    return args
+
+
 def single_student(student, args={}, specs={}):
     if args['clean']:
         # progress('cleaning')
@@ -162,74 +230,13 @@ def single_student(student, args={}, specs={}):
 
 
 def main():
-    students = get_students()
-    args = get_args()
+    args = process_args()
 
-    # argparser puts it into a nested list because you could have two
-    # occurrences of the arg, each with a variable number of arguments.
-    # `--students amy max --students rives` => `[[amy, max], [rives]]`
-    args['students'] = list(flatten(args['students'] or []))
-    args['section'] = list(flatten(args['section'] or []))
-    args['record'] = list(flatten(args['record'] or []))
-
-    if args['all']:
-        args['section'] = ['all']
-
-    # fall back to the students.my section
-    if not args['students'] and not args['section']:
-        args['section'] = ['my']
-
-    # support 'my' students and 'all' students
-    if 'my' in args['section']:
-        if 'my' not in students:
-            warn('There is no [my] section in students.txt')
-            return
-        args['students'] = students['my']
-
-    elif 'all' in args['section']:
-        sections = [students[section] for section in students]
-        args['students'] = list(flatten(sections))
-
-    # sections are identified by only being one char long
-    elif args['section']:
-        sections = []
-        for section in args['section']:
-            try:
-                sections.append(students['section-{}'.format(section)] or students[section])
-            except KeyError:
-                warn('Section "%s" could not be found in ./students.txt' % section)
-        args['students'] = list(flatten(sections))
-
-    # we can only read one stdin
-    if '-' in args['students']:
-        args['students'] = flatten(args['students'] + sys.stdin.read().splitlines())
-        args['students'] = [student for student in args['students'] if student != '-']
-
-    elif '-' in args['record']:
-        args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
-        args['record'] = [to_record for to_record in args['record'] if to_record != '-']
-
-    # stop if we still don't have any students
-    if not args['students']:
-        msg = ' '.join('''
-            Could not find a list of students.
-            You must provide the `--students` argument, the `--section` argument,
-            a ./students.txt file, or a list of usernames to stdin.
-        '''.split())
-        warn(textwrap.fill(msg))
-        return
-
-    args['students'] = uniq(args['students'])
+    if args['day']:
+        print('Checking out %s at 5:00pm' % args['day'])
 
     table = []
     root = os.getcwd()
-
-    if args['day']:
-        args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])
-        print('Checking out %s at 5:00pm' % args['day'])
-    elif args['date']:
-        args['day'] = args['date']
-        print('Checking out %s at 5:00pm' % args['date'])
 
     recordings = {}
     filenames = {}

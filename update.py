@@ -7,7 +7,7 @@ import textwrap
 import functools
 import lib.yaml as yaml
 from argparse import ArgumentParser
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor
 from lib.find_unmerged_branches import find_unmerged_branches_in_cwd
 from lib.format_collected_data import format_collected_data
 from lib.progress import progress as progress_bar
@@ -30,12 +30,18 @@ def warn(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def write_recording(output_file, results):
+def record_single_recording(results, output_file):
     str_results = format_collected_data(results)
     try:
         output_file.write(str_results)
     except Exception as err:
         warn('error! could not write recording:', err)
+
+
+def record_recordings(records, files):
+    for name, recording in records.items():
+        if name in files:
+            record_single_recording(recording, files[name])
 
 
 def get_args():
@@ -149,7 +155,7 @@ def single_student(student, args={}, specs={}):
     os.chdir(student)
 
     retval = ''
-    results = ''
+    recording = ''
 
     try:
         # progress('stashing')
@@ -182,23 +188,24 @@ def single_student(student, args={}, specs={}):
         HWS = {f: f.startswith('hw') for f in FOLDERS}
         LABS = {f: f.startswith('lab') for f in FOLDERS}
 
+        recordings = {}
         if args['record']:
             for to_record in args['record']:
                 # progress('recording %s' % to_record)
                 if os.path.exists(to_record):
                     os.chdir(to_record)
                     recording = markdownify(to_record, student, specs[to_record])
-                    # write_recording(recordings[to_record], recording)
                     os.chdir('..')
                 else:
-                    results = {
+                    recording = {
                         'spec': to_record,
                         'student': student,
                         'warnings': {
                             'no submission': True
                         },
                     }
-                    # write_recording(recordings[to_record], results)
+
+                recordings[to_record] = recording
 
         retval = "{}\t{}\t{}".format(
             student + ' !' if unmerged_branches else student,
@@ -213,7 +220,7 @@ def single_student(student, args={}, specs={}):
 
     os.chdir('..')
 
-    return student, retval, results
+    return student, retval, recordings
 
 
 def main():
@@ -222,19 +229,19 @@ def main():
     if args['day']:
         print('Checking out %s at 5:00pm' % args['day'])
 
-    table = []
+    table_rows = []
     root = os.getcwd()
 
-    recordings = {}
-    filenames = {}
+    recording_files = {}
     specs = {}
-    # if args['record']:
-    #     for to_record in args['record']:
-    #         filenames[to_record] = os.path.join('logs', 'log-' + to_record)
-    #         recordings[to_record] = open(filenames[to_record] + '.md', 'w')
-    #         specs[to_record] = open(os.path.join(root, 'specs', to_record + '.yaml'), 'r').read()
-    #         if specs[to_record]:
-    #             specs[to_record] = yaml.load(specs[to_record])
+    if args['record']:
+        for to_record in args['record']:
+            filename = os.path.join('logs', 'log-' + to_record)
+            recording_files[to_record] = open(filename + '.md', 'w')
+            with open(os.path.join(root, 'specs', to_record + '.yaml'), 'r') as specfile:
+                spec = specfile.read()
+                if spec:
+                    specs[to_record] = yaml.load(spec)
 
     os.makedirs('./students', exist_ok=True)
     os.chdir('./students')
@@ -248,34 +255,27 @@ def main():
         # start the progress bar!
         progress(0, '')
 
-        results = []
         if args['workers'] > 1:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:
-                jobs = []
-                for student in args['students']:
-                    jobs.append(pool.submit(single, student))
-
-                for i, job in enumerate(as_completed(jobs)):
-                    student, row, record = job.result()
+                jobs = pool.map(single, args['students'])
+                for i, (student, row, records) in enumerate(jobs):
                     progress(i+1, student)
-                    results.append((row, record))
+                    table_rows.append(row)
+                    record_recordings(records, recording_files)
 
         else:
-            for i, student in enumerate(args['students']):
-                student, row, record = single(student)
+            jobs = map(single, args['students'])
+            for i, (student, row, records) in enumerate(jobs):
                 progress(i+1, student)
-                results.append((row, record))
-
-        table_rows, records = zip(*[(a, b) for a, b in results])
-        table = list(table_rows)
+                table_rows.append(row)
+                record_recordings(records, recording_files)
 
     finally:
-        # [recording.close() for name, recording in recordings.items()]
+        [recording.close() for recording in recording_files.values()]
         os.chdir(root)
 
     if not args['quiet']:
-        print('\n' + columnize(table, sort_by=args['sort_by']))
-        print(records)
+        print('\n' + columnize(table_rows, sort_by=args['sort_by']))
 
 
 if __name__ == '__main__':

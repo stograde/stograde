@@ -7,7 +7,7 @@ import textwrap
 import functools
 import lib.yaml as yaml
 from argparse import ArgumentParser
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from lib.find_unmerged_branches import find_unmerged_branches_in_cwd
 from lib.format_collected_data import format_collected_data
 from lib.progress import progress as progress_bar
@@ -131,11 +131,11 @@ def process_args():
 
     # stop if we still don't have any students
     if not args['students']:
-        msg = ' '.join('''
+        msg = textwrap.dedent('''
             Could not find a list of students.
             You must provide the `--students` argument, the `--section` argument,
             a ./students.txt file, or a list of usernames to stdin.
-        '''.split())
+        ''')
         warn(textwrap.fill(msg))
         return
 
@@ -226,7 +226,7 @@ def single_student(student, args={}, specs={}):
 
     os.chdir('..')
 
-    return retval, results
+    return student, retval, results
 
 
 def main():
@@ -253,12 +253,32 @@ def main():
     os.chdir('./students')
 
     try:
+        def progress(i, student):
+            progress_bar(len(args['students']), i, message='%s' % student)
+
         single = functools.partial(single_student, args=args, specs=specs)
+
+        # start the progress bar!
+        progress(0, '')
+
+        results = []
         if args['workers'] > 1:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:
-                results = list(pool.map(single, args['students']))
+                jobs = []
+                for student in args['students']:
+                    jobs.append(pool.submit(single, student))
+
+                for i, job in enumerate(as_completed(jobs)):
+                    student, row, record = job.result()
+                    progress(i+1, student)
+                    results.append((row, record))
+
         else:
-            results = list(map(single, args['students']))
+            for i, student in enumerate(args['students']):
+                student, row, record = single(student)
+                progress(i+1, student)
+                results.append((row, record))
+
         table_rows, records = zip(*[(a, b) for a, b in results])
         table = list(table_rows)
 
@@ -268,6 +288,7 @@ def main():
 
     if not args['quiet']:
         print('\n' + columnize(table, sort_by=args['sort_by']))
+        print(records)
 
 
 if __name__ == '__main__':

@@ -164,7 +164,7 @@ def single_student(student, args={}, specs={}):
         if args['day']:
             # progress('checkouting')
             rev_list = ['git', 'rev-list', '-n', '1', '--before="%s 18:00"' % args['day'], 'master']
-            rev = run(rev_list.split())[1]
+            _, rev = run(rev_list)
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
         if args['no_check']:

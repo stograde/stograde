@@ -16,6 +16,7 @@ from lib.markdownify import markdownify
 from lib.columnize import columnize
 from lib.flatten import flatten
 from lib.uniq import uniq
+from lib.size import size
 from lib.run import run_command as run
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
@@ -27,20 +28,6 @@ labnames = {
 
 def warn(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
-
-def size(path='.'):
-    total_size = 0
-    for dirpath, dirnames, filenames in os.walk(path):
-        for f in filenames:
-            if not f.startswith('.'):
-                fp = os.path.join(dirpath, f)
-                try:
-                    size = os.path.getsize(fp)
-                except OSError:
-                    size = 0
-                total_size += size
-    return total_size
 
 
 def write_recording(output_file, results):

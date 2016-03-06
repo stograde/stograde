@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from .termcolor import colored
 import re
 
 success = '✓'
@@ -77,6 +78,8 @@ def columnize(input_data, sort_by):
 
     for user in sorted(users, reverse=shouldReverse, key=sorter):
         name = '{0:<{1}}'.format(user['username'], len(longest_user))
+        if '!' in name:
+            name = colored(name, 'red')
 
         homework = concat(user['homework'], max_hwk)
         lab = concat(user['labs'], max_lab)

@@ -1,4 +1,5 @@
 from textwrap import dedent, indent
+import traceback
 
 
 def em(string):
@@ -12,6 +13,7 @@ def code(string):
 def format_file_contents(contents):
     if not contents:
         return ''
+    # return '```cpp\n' + contents + '\n```'
     return indent(contents, '    ')
 
 
@@ -19,12 +21,14 @@ def format_file_compilation(compilations):
     result = []
     for status in compilations:
         output = status['output']
+        status_msg = status['status']
         command = '`{}`'.format(status['command'])
+        # if status_msg == 'success':
         if not output:
             result.append('**no warnings: {}**\n'.format(command))
         else:
             result.append('**warnings: {}**\n'.format(command))
-            result.append(output)
+            result.append(indent(output, ' '*4))
     return '\n'.join(result)
 
 
@@ -44,10 +48,14 @@ def format_file(filename, file_info):
     compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
     test_results = format_file_results(file_info.get('result', [])) + '\n'
 
-    file_header = '## {} ({})'.format(filename, file_info['last modified']) + '\n'
+    last_modified = ' ({})'.format(file_info['last modified']) if file_info.get('last modified', None) else ''
+    file_header = '## {}{}\n'.format(filename, last_modified)
 
     if file_info['missing']:
-        return '\n'.join([file_header, directory_listing])
+        note = 'File not found. `ls .` says that these files exist:\n'
+        directory_listing = '\n'.join(file_info.get('other files', []))
+        return '\n'.join([file_header, note, directory_listing + '\n\n'])
+
     return '\n'.join([file_header, contents, compilation, test_results])
 
 
@@ -87,5 +95,5 @@ def format_collected_data(data):
     try:
         formatted_chunks = format_student(data)
     except Exception as e:
-        formatted_chunks = repr(e)
+        formatted_chunks = indent(traceback.format_exc(), ' '*4)
     return formatted_chunks + '\n\n'

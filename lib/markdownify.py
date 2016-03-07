@@ -14,6 +14,25 @@ def unicode_truncate(s, length, encoding='utf-8'):
     return encoded.decode(encoding, 'ignore')
 
 
+def kinda_pipe_commands(cmd_string):
+    cmds = cmd_string.split(' | ')
+
+    input_for_cmd = None
+    for cmd in cmds[:-1]:
+        # decode('unicode_escape') de-escapes the backslash-escaped strings.
+        # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
+        # like a shell would.
+        cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
+        cmd = cmd.split(' ')
+
+        status, input_for_cmd = run(cmd, input=input_for_cmd)
+        input_for_cmd = input_for_cmd.encode('utf-8')
+
+    final_cmd = cmds[-1].split(' ')
+
+    return (final_cmd, input_for_cmd)
+
+
 def process_file(filename, steps, spec, cwd):
     steps = steps if type(steps) is list else [steps]
 
@@ -52,11 +71,13 @@ def process_file(filename, steps, spec, cwd):
     for step in steps:
         if step and not any_step_failed:
             command = step.replace('$@', filename)
-            status, compilation = run(command.split())
+            cmd, input_for_cmd = kinda_pipe_commands(command)
+            status, compilation = run(cmd, input=input_for_cmd)
 
             results['compilation'].append({
                 'command': command,
                 'output': compilation,
+                'status': status,
             })
 
             if status != 'success':
@@ -79,22 +100,7 @@ def process_file(filename, steps, spec, cwd):
             continue
 
         test = test.replace('$@', './%s' % filename)
-        test_string = test
-
-        test = test.split(' | ')
-
-        input_for_test = None
-        for cmd in test[:-1]:
-            # decode('unicode_escape') de-escapes the backslash-escaped strings.
-            # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
-            # like a shell would.
-            cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
-            cmd = cmd.split(' ')
-
-            status, input_for_test = run(cmd, input=input_for_test)
-            input_for_test = input_for_test.encode('utf-8')
-
-        test_cmd = test[-1].split(' ')
+        test_cmd, input_for_test = kinda_pipe_commands(test)
 
         if path_exists(path_join(cwd, filename)):
             status, full_result = run(test_cmd,
@@ -107,7 +113,7 @@ def process_file(filename, steps, spec, cwd):
                            if truncated else ''
 
             results['result'].append({
-                'command': test_string,
+                'command': test,
                 'status': status,
                 'output': result,
                 'truncated': True if truncated else False,
@@ -116,7 +122,7 @@ def process_file(filename, steps, spec, cwd):
 
         else:
             results['result'].append({
-                'command': test_cmd,
+                'command': test,
                 'error': True,
                 'output': '{} could not be found.'.format(filename),
             })

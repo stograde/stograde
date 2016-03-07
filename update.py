@@ -31,6 +31,7 @@ def warn(*args, **kwargs):
 
 def record_single_recording(results, output_file):
     str_results = format_collected_data(results)
+    # str_results = '---\n' + yaml.dump(results)
     try:
         output_file.write(str_results)
     except Exception as err:
@@ -252,13 +253,15 @@ def main():
         single = functools.partial(single_student, args=args, specs=specs)
 
         # start the progress bar!
-        progress(0, '')
+        students_left = set(args['students'])
+        progress(0, ', '.join(students_left))
 
         if args['workers'] > 1:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:
                 jobs = pool.map(single, args['students'])
                 for i, (student, row, records) in enumerate(jobs):
-                    progress(i+1, student)
+                    students_left.remove(student)
+                    progress(i+1, ', '.join(students_left))
                     table_rows.append(row)
                     record_recordings(records, recording_files)
 

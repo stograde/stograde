@@ -7,7 +7,7 @@ compilers:
 
 files:
    - reverse.cpp: *cpp
-   - Doxyfile: doxygen
+   - Doxyfile: cat $@ ../../../Doxyfile | doxygen -
 
 tests:
    reverse.cpp:

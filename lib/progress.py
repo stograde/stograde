@@ -6,16 +6,16 @@ from shutil import get_terminal_size
 def progress(size, current, message=''):
     cols, rows = get_terminal_size()
 
-    if message:
-        message = ' (' + message + ')'
-
     FILLED = ['·' for i in range(current)]
     EMPTY = [' ' for i in range(size - current)]
     BAR = ''.join(FILLED + EMPTY)
 
-    line = '[%s] %s' % (BAR, message)
+    line = '[{}] {}'.format(BAR, message)
     spacers = ' ' * (cols - len(line))
-    print(line + spacers, end='\r', file=stderr)
+
+    result = line + spacers
+    result = result[:cols]
+    print(result, end='\r', file=stderr)
 
 
 if __name__ == '__main__':

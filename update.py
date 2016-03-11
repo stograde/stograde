@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import textwrap
+import datetime
 import functools
 import lib.yaml as yaml
 from argparse import ArgumentParser
@@ -23,6 +24,61 @@ labnames = {
     'sound': ['lab2', 'lab3'],
     'images': ['lab4', 'lab5', 'lab6'],
 }
+
+
+def check_for_tookit_updates():
+    with open('.cs251toolkitrc.yaml', 'r') as config_file:
+        try:
+            contents = config_file.read()
+        except OSError as err:
+            warn(err)
+            return
+
+        if not contents:
+            contents = '%YAML 1.2\n---\n'
+
+        config = yaml.safe_load(contents)
+
+        if not config:
+            config = {}
+
+    now = datetime.datetime.utcnow()
+    one_hour = datetime.timedelta(hours=1)
+
+    last_checked = config.get('last checked', now)
+    local_hash = config.get('local hash', None)
+    remote_hash = config.get('remote hash', None)
+    remote_is_local = config.get('remote hash exists locally', False)
+
+    # don't bother checking more than once an hour
+    if now and (now - last_checked) < one_hour:
+        return
+
+    if not local_hash:
+        _, local_hash = run(['git', 'rev-parse', 'master'])
+        local_hash = local_hash.strip()
+
+    if not remote_hash:
+        _, remote_hash = run(['git', 'ls-remote', 'origin', 'master'])
+        remote_hash = remote_hash.split()[0]
+
+    if not remote_is_local:
+        _, remote_is_local = run(['git', 'show', '--oneline', '--no-patch', remote_hash])
+        remote_is_local = 'fatal' in remote_is_local
+
+    if local_hash != remote_hash and not remote_is_local:
+        warn('there is a toolkit update!')
+        warn('a simple `git pull` should bring you up-to-date.')
+
+    config['last checked'] = last_checked
+    config['local hash'] = local_hash
+    config['remote hash'] = remote_hash
+    config['remote hash exists locally'] = remote_is_local
+
+    with open('.cs251toolkitrc.yaml', 'w') as config_file:
+        header = '%YAML 1.2\n---\n'
+        contents = yaml.safe_dump(config, default_flow_style=False)
+        config_file.write(header + contents)
 
 
 def warn(*args, **kwargs):
@@ -223,6 +279,7 @@ def single_student(student, args={}, specs={}):
 
 
 def main():
+    check_for_tookit_updates()
     args = process_args()
 
     if args['day']:

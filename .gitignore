@@ -7,6 +7,7 @@ students/*
 .table
 
 # files
+.cs251toolkitrc.yaml
 .DS_Store
 Thumbs.db
 

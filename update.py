@@ -155,7 +155,7 @@ def single_student(student, args={}, specs={}):
     os.chdir(student)
 
     retval = ''
-    recording = ''
+    recordings = {}
 
     try:
         # progress('stashing')
@@ -174,7 +174,7 @@ def single_student(student, args={}, specs={}):
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
         if args['no_check']:
-            unmerged_branches = False
+            unmerged_branches = None
         else:
             unmerged_branches = find_unmerged_branches_in_cwd()
 
@@ -188,7 +188,6 @@ def single_student(student, args={}, specs={}):
         HWS = {f: f.startswith('hw') for f in FOLDERS}
         LABS = {f: f.startswith('lab') for f in FOLDERS}
 
-        recordings = {}
         if args['record']:
             for to_record in args['record']:
                 # progress('recording %s' % to_record)
@@ -268,7 +267,8 @@ def main():
         else:
             jobs = map(single, args['students'])
             for i, (student, row, records) in enumerate(jobs):
-                progress(i+1, student)
+                students_left.remove(student)
+                progress(i+1, ', '.join(students_left))
                 table_rows.append(row)
                 record_recordings(records, recording_files)
 

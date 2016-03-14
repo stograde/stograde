@@ -104,6 +104,8 @@ def get_args():
     parser = ArgumentParser(description='The core of the CS251 toolkit.')
     parser.add_argument('--quiet', '-q', action='store_true',
                         help='Be quieter')
+    parser.add_argument('--no-progress', action='store_true',
+                        help='Hide the progress bar')
     parser.add_argument('--no-update', '-n', action='store_true',
                         help='Do not update the student folders before checking.')
     parser.add_argument('--no-check', '-c', action='store_true',
@@ -304,6 +306,8 @@ def main():
 
     try:
         def progress(i, student):
+            if args['no_progress']:
+                return
             progress_bar(len(args['students']), i, message='%s' % student)
 
         single = functools.partial(single_student, args=args, specs=specs)

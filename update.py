@@ -27,7 +27,7 @@ labnames = {
 
 
 def check_for_tookit_updates():
-    with open('.cs251toolkitrc.yaml', 'r') as config_file:
+    with open('.cs251toolkitrc.yaml', 'a+') as config_file:
         try:
             contents = config_file.read()
         except OSError as err:

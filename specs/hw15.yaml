@@ -16,4 +16,4 @@ tests:
   class5.cpp: $@.exec
   class6.cpp: $@.exec
   class7.cpp: $@.exec
-  rating.cpp: $@.exec
+  ratings.cpp: $@.exec

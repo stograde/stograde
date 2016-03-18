@@ -40,6 +40,7 @@ def process_file(filename, steps, spec, cwd):
         'timeout': 4,
         'truncate_after': 10000,  # 10K
         'truncate_contents': False,
+        'optional': False,
     }
     options.update(spec.get('options', {}).get(filename, {}))
 
@@ -63,6 +64,7 @@ def process_file(filename, steps, spec, cwd):
     if file_status != 'success':
         results['missing'] = True
         results['other files'] = os.listdir('.')
+        results['optional'] = options['optional']
         return results
 
     results['contents'] = file_contents

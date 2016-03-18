@@ -17,3 +17,9 @@ tests:
   class6.cpp: $@.exec
   class7.cpp: $@.exec
   ratings.cpp: $@.exec
+
+options:
+  class6.cpp:
+    optional: true
+  class7.cpp:
+    optional: true

@@ -48,12 +48,19 @@ def format_file(filename, file_info):
     compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
     test_results = format_file_results(file_info.get('result', [])) + '\n'
 
-    last_modified = ' ({})'.format(file_info['last modified']) if file_info.get('last modified', None) else ''
+    if file_info.get('last modified', None):
+        last_modified = ' ({})'.format(file_info['last modified'])
+    else:
+        last_modified = ''
+
     file_header = '## {}{}\n'.format(filename, last_modified)
 
     if file_info['missing']:
         note = 'File not found. `ls .` says that these files exist:\n'
         directory_listing = '\n'.join(file_info.get('other files', []))
+        if file_info['optional']:
+            file_header = file_header.strip()
+            file_header += ' (**optional submission**)\n'
         return '\n'.join([file_header, note, directory_listing + '\n\n'])
 
     return '\n'.join([file_header, contents, compilation, test_results])

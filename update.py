@@ -27,7 +27,9 @@ labnames = {
 
 
 def check_for_tookit_updates():
+    has_config = False
     with open('.cs251toolkitrc.yaml', 'a+') as config_file:
+        config_file.seek(0)
         try:
             contents = config_file.read()
         except OSError as err:
@@ -41,6 +43,8 @@ def check_for_tookit_updates():
 
         if not config:
             config = {}
+        else:
+            has_config = True
 
     now = datetime.datetime.utcnow()
     one_hour = datetime.timedelta(hours=1)
@@ -51,7 +55,7 @@ def check_for_tookit_updates():
     remote_is_local = config.get('remote hash exists locally', False)
 
     # don't bother checking more than once an hour
-    if now and (now - last_checked) < one_hour:
+    if has_config and (now - last_checked) < one_hour:
         return
 
     if not local_hash:

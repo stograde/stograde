@@ -6,16 +6,8 @@ compilers:
   - &o 'g++ --std=c++11 -c $@'
 
 files:
-  # Note that the students need either this set
   - disc.cpp: *cpp
   - stock.cpp: *cpp
-
-  # or this set.
-  - Image.cpp: null
-  - Image.h: *o
-  - ImageDriver.cpp:
-    - *o
-    - g++ --std=c++11 Image.o ImageDriver.o -o $@.exec
 
   - reader.cpp: *cpp
   - writer.cpp: *cpp
@@ -25,15 +17,12 @@ tests:
   disc.cpp: $@.exec
   stock.cpp: $@.exec
 
-  Image.cpp: null
-  Image.h: null
-  ImageDriver.cpp: $@.exec
-
   reader.cpp: $@.exec
   writer.cpp:
     - $@.exec
     - echo "\noutput.txt"
     - cat output.txt
+
   writeread.cpp: $@.exec
 
 inputs:

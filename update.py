@@ -28,7 +28,7 @@ labnames = {
 
 def check_for_tookit_updates():
     has_config = False
-    with open('.cs251toolkitrc.yaml', 'a+') as config_file:
+    with open('.cs251toolkitrc.yaml', 'a+', encoding='utf-8') as config_file:
         config_file.seek(0)
         try:
             contents = config_file.read()
@@ -79,7 +79,7 @@ def check_for_tookit_updates():
     config['remote hash'] = remote_hash
     config['remote hash exists locally'] = remote_is_local
 
-    with open('.cs251toolkitrc.yaml', 'w') as config_file:
+    with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as config_file:
         header = '%YAML 1.2\n---\n'
         contents = yaml.safe_dump(config, default_flow_style=False)
         config_file.write(header + contents)
@@ -299,8 +299,8 @@ def main():
     if args['record']:
         for to_record in args['record']:
             filename = os.path.join('logs', 'log-' + to_record)
-            recording_files[to_record] = open(filename + '.md', 'w')
-            with open(os.path.join(root, 'specs', to_record + '.yaml'), 'r') as specfile:
+            recording_files[to_record] = open(filename + '.md', 'w', encoding='utf-8')
+            with open(os.path.join(root, 'specs', to_record + '.yaml'), 'r', encoding='utf-8') as specfile:
                 spec = specfile.read()
                 if spec:
                     specs[to_record] = yaml.load(spec)

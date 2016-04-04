@@ -21,7 +21,6 @@ tests:
   reader.cpp: $@.exec
   writer.cpp:
     - $@.exec
-    - echo "\noutput.txt"
     - cat output.txt
 
   writeread.cpp: $@.exec

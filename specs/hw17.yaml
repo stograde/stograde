@@ -8,6 +8,7 @@ compilers:
 files:
   - disc.cpp: *cpp
   - stock.cpp: *cpp
+  - Stock.cpp: *cpp
 
   - reader.cpp: *cpp
   - writer.cpp: *cpp

@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
+import copy
 import sys
 import os
 from subprocess import PIPE, STDOUT, check_output, \
                        CalledProcessError, TimeoutExpired
 
+# This env stuff is to catch glibc errors, because
+# it apparently prints to /dev/tty instead of stderr.
+# (see http://stackoverflow.com/a/27797579)
+env = copy.copy(os.environ)
+env["LIBC_FATAL_STDERR_"] = "1"
 
 def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, **kwargs):
     if type(cmd) == str:
@@ -17,6 +23,7 @@ def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, 
             stderr=STDOUT,
             timeout=timeout,
             input=input,
+            env=env,
             **kwargs)
 
     except CalledProcessError as err:

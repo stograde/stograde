@@ -11,6 +11,7 @@ students/*
 .DS_Store
 Thumbs.db
 __pycache__/
+*.swp
 
 !logs/.gitkeep
 !specs/.gitkeep

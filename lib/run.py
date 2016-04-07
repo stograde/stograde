@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import shlex
 import copy
 import sys
 import os
@@ -11,9 +12,10 @@ from subprocess import PIPE, STDOUT, check_output, \
 env = copy.copy(os.environ)
 env["LIBC_FATAL_STDERR_"] = "1"
 
-def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, **kwargs):
+
+def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
     if type(cmd) == str:
-        cmd = str.split(' ')
+        cmd = shlex.split(str)
 
     try:
         status = 'success'
@@ -40,7 +42,7 @@ def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, 
 
     except ProcessLookupError as err:
         try:
-            status, result = run_command(*args, status=status, **kwargs)
+            status, result = run(*args, status=status, **kwargs)
         except:
             status = 'process lookup error'
             result = str(err)
@@ -56,4 +58,4 @@ def run_command(cmd, *args, status=True, stdout=PIPE, input=None, timeout=None, 
 
 if __name__ == '__main__':
     filePath = sys.argv[1]
-    print(run_command([filePath]))
+    print(run([filePath]))

@@ -3,10 +3,10 @@
 import sys
 import os
 from collections import OrderedDict
-from os.path import exists as path_exists, join as path_join
 from .flatten import flatten
 from .run import run_command as run
 from .find_unmerged_branches import find_unmerged_branches_in_cwd
+from os.path import exists, join as path_join
 
 
 def unicode_truncate(s, length, encoding='utf-8'):
@@ -104,7 +104,7 @@ def process_file(filename, steps, spec, cwd):
         test = test.replace('$@', './%s' % filename)
         test_cmd, input_for_test = kinda_pipe_commands(test)
 
-        if path_exists(path_join(cwd, filename)):
+        if exists(path_join(cwd, filename)):
             status, full_result = run(test_cmd,
                                       input=input_for_test,
                                       timeout=options['timeout'])
@@ -169,7 +169,7 @@ def markdownify_throws(spec_id, username, spec):
         result = process_file(filename, steps, spec, cwd)
         results['files'][filename] = result
 
-    [run(['rm', '-f', '%s.exec' % file]) for file, steps in files]
+    [run(['rm', '-f', file + '.exec']) for file, steps in files]
     [os.remove(path_join(cwd, inputfile)) for inputfile in inputs]
 
     results['warnings'] = find_warnings()

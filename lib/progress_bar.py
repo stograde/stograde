@@ -4,7 +4,8 @@ from shutil import get_terminal_size
 
 CHAR = '·' if stderr.encoding == 'UTF-8' else '='
 
-def progress(size, current, message=''):
+
+def progress_bar(size, current, message=''):
     cols, rows = get_terminal_size()
 
     FILLED = [CHAR for i in range(current)]

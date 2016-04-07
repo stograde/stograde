@@ -29,7 +29,7 @@ from __future__ import print_function
 import os
 
 
-__ALL__ = [ 'colored', 'cprint' ]
+__ALL__ = ['colored', 'cprint']
 
 VERSION = (1, 1, 0)
 
@@ -158,13 +158,12 @@ if __name__ == '__main__':
     cprint('Reversed blue color', 'blue', attrs=['reverse'])
     cprint('Concealed Magenta color', 'magenta', attrs=['concealed'])
     cprint('Bold underline reverse cyan color', 'cyan',
-            attrs=['bold', 'underline', 'reverse'])
+           attrs=['bold', 'underline', 'reverse'])
     cprint('Dark blink concealed white color', 'white',
-            attrs=['dark', 'blink', 'concealed'])
+           attrs=['dark', 'blink', 'concealed'])
     print(('-' * 78))
 
     print('Test mixing:')
     cprint('Underline red on grey color', 'red', 'on_grey',
-            ['underline'])
+           ['underline'])
     cprint('Reversed green on red color', 'green', 'on_red', ['reverse'])
-

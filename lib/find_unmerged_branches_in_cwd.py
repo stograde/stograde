@@ -1,4 +1,4 @@
-from .run import run_command as run
+from . import run
 
 
 def find_unmerged_branches_in_cwd():

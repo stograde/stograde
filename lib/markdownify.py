@@ -3,10 +3,8 @@
 import sys
 import os
 from collections import OrderedDict
-from .flatten import flatten
-from .run import run_command as run
-from .find_unmerged_branches import find_unmerged_branches_in_cwd
 from os.path import exists, join as path_join
+from . import flatten, run, find_unmerged_branches_in_cwd
 
 
 def unicode_truncate(s, length, encoding='utf-8'):

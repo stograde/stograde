@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from .termcolor import colored
 import re
 
@@ -22,7 +21,8 @@ def pad(string, size):
 
 
 def concat(lst, max):
-    return [pad(str(idx), idx) if idx in lst else pad(missing, idx) for idx in range(1, max+1)]
+    return [pad(str(idx), idx) if idx in lst else pad(missing, idx)
+            for idx in range(1, max+1)]
 
 
 def find_columns(max):
@@ -86,8 +86,8 @@ def columnize(input_data, sort_by):
 
         line = '{0}  | {1:<{2}}| {3:<{4}}'.format(
             name,
-            ''.join(homework), max_hwk * len('' + str(max_hwk)),
-            ''.join(lab), max_lab * len('' + str(max_lab)))
+            ''.join(homework), max_hwk * len(str(max_hwk)),
+            ''.join(lab), max_lab * len(str(max_lab)))
 
         lines += line + '\n'
 

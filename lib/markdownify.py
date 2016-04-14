@@ -4,7 +4,9 @@ import sys
 import os
 from collections import OrderedDict
 from os.path import exists, join as path_join
-from . import flatten, run, find_unmerged_branches_in_cwd
+from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
+from .flatten import flatten
+from .run import run
 
 
 def unicode_truncate(s, length, encoding='utf-8'):

@@ -2,7 +2,6 @@
 assignment: hw22
 
 compilers:
-  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
   - &cpp-to-obj 'g++ --std=c++11 -c $@'
 
 files:
@@ -11,8 +10,7 @@ files:
   - StarTrekDVD.h: null
   - StarTrekDVD.cpp: *cpp-to-obj
   - StarTrekDVDdriver.cpp:
-    - *cpp-to-obj
-    - g++ --std=c++11 StarTrekDVD.o StarTrekDVDdriver.o -o $@.exec
+    - g++ --std=c++11 StarTrekDVD.o DVD.o StarTrekDVDdriver.cpp -o $@.exec
 
 tests:
   StarTrekDVDdriver.cpp: $@.exec

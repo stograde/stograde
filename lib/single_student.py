@@ -58,7 +58,7 @@ def has_unmerged_branches(student, args):
             return find_unmerged_branches_in_cwd()
 
 
-def record(student, args):
+def record(student, specs, args):
     recordings = {}
     if not args['record']:
         return recordings
@@ -120,7 +120,7 @@ def single_student(student, args={}, specs={}):
 
         checkout_day(student, args)
 
-        recordings = record(student, args)
+        recordings = record(student, specs, args)
 
         unmerged_branches = has_unmerged_branches(student, args)
         retval = build_table_row(student, unmerged_branches)

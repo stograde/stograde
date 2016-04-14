@@ -3,6 +3,7 @@ from concurrent.futures import ProcessPoolExecutor
 from os import getcwd, makedirs
 import functools
 
+from os import path
 from lib import check_for_updates
 from lib import save_recordings
 from lib import single_student

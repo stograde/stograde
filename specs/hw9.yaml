@@ -2,17 +2,17 @@
 assignment: hw9
 
 compilers:
-   cpp: &cpp
-      g++ --std=c++11 $@ -o $@.exec
+  cpp: &cpp
+    g++ --std=c++11 $@ -o $@.exec
 
 files:
-   - reverse.cpp: *cpp
-   - Doxyfile: cat $@ ../../../Doxyfile | doxygen -
+  - reverse.cpp: *cpp
+  - Doxyfile: cat $@ ../../../Doxyfile | doxygen -
 
 tests:
-   reverse.cpp:
-      - $@.exec
+  reverse.cpp:
+    - $@.exec
 
 options:
-   Doxyfile:
-      truncate_contents: 100  # bytes
+  Doxyfile:
+    truncate_contents: 100  # bytes

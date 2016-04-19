@@ -13,6 +13,7 @@ files:
   - first.cpp: *cpp
   - second.cpp: *cpp
   - secondComment.cpp: *cpp
+  - Makefile: null
   - Dog.h: null
   - Dog.cpp: null
   - tryDog.cpp: *make
@@ -22,6 +23,4 @@ tests:
   first.cpp: $@.exec
   second.cpp: $@.exec
   secondComment.cpp: $@.exec
-  Dog.h: ''
-  Dog.cpp: ''
   tryDog.cpp: ./tryDog

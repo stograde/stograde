@@ -1,0 +1,14 @@
+---
+assignment: lab1
+folder: hw1
+
+compilers:
+  make: &make
+    - 'rm -f tryDog tryDog.o Dog.o'
+    - 'make'
+
+files:
+  - Dog.h: null
+  - Dog.cpp: null
+  - Makefile: null
+  - tryDog.cpp: *make

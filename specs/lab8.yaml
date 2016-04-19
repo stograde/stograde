@@ -1,0 +1,54 @@
+---
+assignment: lab8
+folder: graphics
+
+compilers:
+  cpp: &cpp
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - ColorPoint2.h: null
+  - ColorPoint2.cpp: *cpp
+
+  - Shape.h: null
+  - Shape.cpp: *cpp
+  - ShapeDriver.cpp:
+    - rm -f ShapeDriver *.o
+    - make ShapeDriver
+
+  - Rectangle.h: null
+  - Rectangle.cpp: *cpp
+  - RectangleDriver.cpp:
+    - rm -f RectangleDriver *.o
+    - make RectangleDriver
+
+  - Circle.h: null
+  - Circle.cpp: *cpp
+  - CircleDriver.cpp:
+    - rm -f CircleDriver *.o
+    - make CircleDriver
+
+  - shapes.txt: null
+  - ShapeDriver1.cpp:
+    - rm -f ShapeDriver1 *.o
+    - make ShapeDriver1
+  - ShapeDriver2.cpp:
+    - rm -f ShapeDriver2 *.o
+    - make ShapeDriver2
+
+  - proto-draw.cpp:
+    - rm -f proto-draw *.o
+    - make proto-draw
+
+
+tests:
+  ShapeDriver.cpp: ./ShapeDriver
+  RectangleDriver.cpp: ./RectangleDriver
+  CircleDriver.cpp: ./CircleDriver
+  ShapeDriver1.cpp: ./ShapeDriver1
+  ShapeDriver2.cpp: ./ShapeDriver2
+
+
+options:
+  ColorPoint2.cpp:
+    optional: true

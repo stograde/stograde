@@ -1,0 +1,41 @@
+---
+assignment: lab6
+folder: images/lab6
+
+compilers:
+  gcc: &gcc
+    'g++ --std=c++11 $@ -o $@.exec'
+  gcc-c: &compile-only
+    'g++ --std=c++11 -c $@'
+
+files:
+  - Image0.h: null
+  - Image0.cpp: *gcc
+
+  - Image1.h: null
+  - Image1.cpp: *gcc
+
+  - writer.cpp: *gcc
+  - reader.cpp: *gcc
+  - writeread.cpp: *gcc
+
+  - Image.h: null
+  - Image.cpp: *compile-only
+  - ImageDriver.cpp: g++ --std=c++11 $@ Image.o -o $@.exec
+
+
+tests:
+  - Image0.cpp: $@.exec
+  - Image1.cpp: $@.exec
+
+  - writer.cpp:
+    - $@.exec
+    - cat output.txt
+  - reader.cpp: $@.exec
+  - writeread.cpp: $@.exec
+
+  - ImageDriver.cpp: $@.exec
+
+inputs:
+  in.txt:
+    "1 5"

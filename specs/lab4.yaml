@@ -1,0 +1,27 @@
+---
+assignment: lab4
+folder: images
+
+compilers:
+  gcc: &gcc
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - Doxyfile: cat $@ ../../../Doxyfile | doxygen -
+
+  - bin2ascii.cpp: *gcc
+  - same.cpp: *gcc
+
+  - zeroRed.cpp: *gcc
+  - doubleGreen.cpp: *gcc
+  - greyScale.cpp: *gcc
+  - horizSqueeze.cpp: *gcc
+  - vertSqueeze.cpp: *gcc
+  - addBorder.cpp: *gcc
+  - redEye.cpp: *gcc
+
+options:
+  Doxyfile:
+    truncate_contents: 100  # bytes
+  redEye.cpp:
+    optional: true

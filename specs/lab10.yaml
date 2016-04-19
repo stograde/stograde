@@ -1,0 +1,20 @@
+---
+assignment: lab10
+folder: projtech
+
+compilers:
+  cpp: &cpp
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - proto-draw.cpp:
+    - rm -f *.o proto-draw
+    - make proto-draw
+  - colorButtons.txt: null
+
+  - toolButtons.txt: null
+
+
+options:
+  toolButtons.txt:
+    optional: true

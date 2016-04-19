@@ -1,5 +1,6 @@
 ---
 assignment: lab2
+folder: sound
 
 compilers:
   cpp: &cpp

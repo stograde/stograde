@@ -1,0 +1,16 @@
+---
+assignment: lab3
+folder: sound
+
+compilers:
+  gcc: &gcc
+    'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - quieter1.cpp: *gcc
+  - octavedown1.cpp: *gcc
+  - octaveup1.cpp: *gcc
+  - trunc1.cpp: *gcc
+  - addblank1.cpp: *gcc
+  - echoer1.cpp: *gcc
+  - reverb1.cpp: *gcc

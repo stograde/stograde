@@ -1,12 +1,15 @@
-from os import path, listdir
-import shutil
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .markdownify import markdownify
 from .flatten import flatten
+from .specs import get_files
 from .chdir import chdir
 from .size import size
 from .warn import warn
 from .run import run
+from os import path, listdir
+import shutil
+import re
+import os
 
 stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
 labnames = {
@@ -80,23 +83,57 @@ def record(student, specs, args):
     return recordings
 
 
-def build_table_row(student, unmerged_branches):
+def parse_assignment_name(name):
+    '''returns the kind and number from an assignment name'''
+    matches = re.match(r'([a-zA-Z]+)(\d+)', name).groups()
+    kind = matches[0]
+    if kind == 'hw':
+        kind = 'homework'
+    elif kind == 'lab':
+        kind = 'lab'
+    num = int(matches[1])
+    return kind, num
+
+
+def analyze(student, specs, args):
+    unmerged_branches = has_unmerged_branches(student, args)
+
+    results = {}
     with chdir(student):
-        all_folders = [folder
-                       for folder in listdir('.')
-                       if not folder.startswith('.') and path.isdir(folder)]
-        filtered = [f for f in all_folders if size(f) > 100]
+        for spec in specs.values():
+            assignment = spec['assignment']
+            folder = spec.get('folder', assignment)
+            kind, num = parse_assignment_name(assignment)
+            results[assignment] = {'number': num, 'kind': kind}
 
-    FOLDERS = sorted([f.lower() for f in filtered])
-    FOLDERS = list(flatten([(labnames[f] if f in labnames else f) for f in FOLDERS]))
-    HWS = [f for f in FOLDERS if f.startswith('hw')]
-    LABS = [f for f in FOLDERS if f.startswith('lab')]
+            if not path.exists(folder):
+                results[assignment]['status'] = 'missing'
+                continue
 
-    student_name = student + ' !' if unmerged_branches else student
-    homework_list = ' '.join(HWS)
-    lab_list = ' '.join(LABS)
+            with chdir(folder):
+                files_that_do_exist = set(os.listdir())
+                files_which_should_exist = set(get_files(spec))
+                intersection_of = files_that_do_exist.intersection(files_which_should_exist)
 
-    return "{}\t{}\t{}".format(student_name, homework_list, lab_list)
+                if intersection_of == files_which_should_exist:
+                    # if every file that should exist, does: we're good.
+                    results[assignment]['status'] = 'success'
+                elif intersection_of:
+                    # if some files that should exist, do: it's a partial assignment
+                    results[assignment]['status'] = 'partial'
+                else:
+                    # otherwise, none of the required files are there
+                    results[assignment]['status'] = 'missing'
+
+    homework_list = [result for result in results.values() if result['kind'] == 'homework']
+    lab_list = [result for result in results.values() if result['kind'] == 'lab']
+
+    return {
+        'username': student,
+        'unmerged_branches': unmerged_branches,
+        'homeworks': homework_list,
+        'labs': lab_list,
+    }
 
 
 def reset(student, args):
@@ -121,13 +158,11 @@ def single_student(student, args={}, specs={}):
         checkout_day(student, args)
 
         recordings = record(student, specs, args)
-
-        unmerged_branches = has_unmerged_branches(student, args)
-        retval = build_table_row(student, unmerged_branches)
+        retval = analyze(student, specs, args)
 
         reset(student, args)
 
     except Exception as err:
-        retval = "{}: {}".format(student, err)
+        retval = {'username': student, 'error': err}
 
-    return student, retval, recordings
+    return retval, recordings

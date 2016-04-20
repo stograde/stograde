@@ -1,11 +1,11 @@
-import itertools.zip_longest
+from os import remove as os_remove
+from os import utime as os_utime
+from os import stat as os_stat
+from itertools import zip_longest
 from glob import iglob
 from lib import warn
 from lib import size
 from lib import yaml
-import os.remove
-import os.utime
-import os.stat
 import json
 
 
@@ -23,6 +23,8 @@ def load_specs():
                 if name != assignment:
                     warn('the assignment "{}" does not match the filename {}'.format(assignment, s))
                 specs[assignment] = loaded
+            else:
+                warn('Blank spec "{}"'.format(s))
     return specs
 
 
@@ -49,7 +51,7 @@ def convert_spec(yaml_path, json_path):
 
 def get_modification_time_ns(path):
     try:
-        return os.stat(path).st_mtime_ns
+        return os_stat(path).st_mtime_ns
     except:
         return None
 
@@ -65,7 +67,7 @@ def cache_specs():
             # if yamlfile doesn't exist, then because we used zip_longest
             # there has to be a jsonfile. we don't want any jsonfiles
             # that don't match the yamlfiles.
-            os.remove(jsonfile)
+            os_remove(jsonfile)
             continue
 
         if not jsonfile:
@@ -76,13 +78,13 @@ def cache_specs():
         if y_modtime != j_modtime:
             if j_modtime is not None:
                 warn('diff. times!', 'yaml', y_modtime, 'json', j_modtime)
-                atime = os.stat(jsonfile).st_atime_ns
+                atime = os_stat(jsonfile).st_atime_ns
             else:
-                atime = os.stat(yamlfile).st_atime_ns
+                atime = os_stat(yamlfile).st_atime_ns
 
             convert_spec(yamlfile, jsonfile)
             mtime = y_modtime
-            os.utime(jsonfile, ns=(atime, mtime))
+            os_utime(jsonfile, ns=(atime, mtime))
 
 
 def get_files(spec):

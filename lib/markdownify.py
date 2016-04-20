@@ -5,6 +5,7 @@ import os
 from collections import OrderedDict
 from os.path import exists, join as path_join
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
+from .specs import get_files_and_steps
 from .flatten import flatten
 from .run import run
 
@@ -142,9 +143,7 @@ def find_unmerged_branches():
 
 
 def find_warnings():
-    return {
-        'unmerged branches': find_unmerged_branches(),
-    }
+    return {'unmerged branches': find_unmerged_branches()}
 
 
 def markdownify_throws(spec_id, username, spec):
@@ -161,9 +160,7 @@ def markdownify_throws(spec_id, username, spec):
         with open(path_join(cwd, filename), 'w') as outfile:
             outfile.write(contents)
 
-    files = [(filename, steps)
-             for file in spec['files']
-             for filename, steps in file.items()]
+    files = get_files_and_steps(spec)
 
     for filename, steps in files:
         result = process_file(filename, steps, spec, cwd)

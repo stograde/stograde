@@ -100,4 +100,4 @@ def columnize(students, sort_by):
 
         lines.append(line)
 
-    return '\n'.join([header, border, '\n'.join(lines)])
+    return '\n'.join([header, border, *lines])

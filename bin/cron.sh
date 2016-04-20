@@ -5,7 +5,6 @@ git stash
 git pull --rebase
 
 {
-	boundary='BLAH.BLAH/hawken.mackay.riv.es'
 	subject='Daily CS251 Homework Submission Update'
 	echo From: rives@stolaf.edu
 	echo To: rives@stolaf.edu
@@ -13,7 +12,6 @@ git pull --rebase
 	echo MIME-Version: 1.0
 	echo Content-Type: text/html
 	echo
-	echo "$boundary"
 
 	TABLE=$(./update.py -w8 --all --no-progress)
 
@@ -27,5 +25,4 @@ git pull --rebase
 	echo "</pre>"
 	echo "</body>"
 	echo "</html>"
-	echo "--all--$boundary"
 } | sendmail -t

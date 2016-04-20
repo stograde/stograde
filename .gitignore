@@ -2,9 +2,11 @@
 logs/*
 students/*
 
+# ignore the cached specs
+specs/*.json
+
 # ignore any lists of people
 /*students*.txt
-.table
 
 # files
 .cs251toolkitrc.yaml

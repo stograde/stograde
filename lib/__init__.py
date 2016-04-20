@@ -9,3 +9,4 @@ from .run import run
 from .save_recordings import save_recordings
 from .single_student import single_student
 from .warn import warn
+from .specs import load_specs

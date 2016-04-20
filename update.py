@@ -3,16 +3,14 @@ from concurrent.futures import ProcessPoolExecutor
 from os import getcwd, makedirs
 import functools
 
-from os import path
 from lib import check_for_updates
 from lib import save_recordings
 from lib import single_student
 from lib import progress_bar
 from lib import process_args
+from lib import load_specs
 from lib import columnize
 from lib import chdir
-from lib import size
-from lib import yaml
 from lib import run
 
 
@@ -23,20 +21,13 @@ def main():
     if args['day']:
         print('Checking out %s at 5:00pm' % args['day'])
 
-    table_rows = []
     recording_files = {}
-    specs = {}
     if args['record']:
-        for to_record in args['record']:
-            spec_filename = path.join('specs', to_record + '.yaml')
-            log_filename = path.join('logs', 'log-' + to_record + '.md')
+        recording_files = {to_record: open('logs/log-%s.md' % to_record, 'w', encoding='utf-8')
+                           for to_record in args['record']}
 
-            recording_files[to_record] = open(log_filename, 'w', encoding='utf-8')
-            with open(spec_filename, 'r', encoding='utf-8') as specfile:
-                spec = specfile.read()
-                if spec:
-                    specs[to_record] = yaml.safe_load(spec)
-
+    specs = load_specs()
+    results = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
         try:

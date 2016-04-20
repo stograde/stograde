@@ -7,7 +7,7 @@ git pull --rebase
 {
 	subject='Daily CS251 Homework Submission Update'
 	echo From: rives@stolaf.edu
-	echo To: rives@stolaf.edu
+	echo To: rives@stolaf.edu, allen@stolaf.edu
 	echo Subject: "$subject"
 	echo MIME-Version: 1.0
 	echo Content-Type: text/html

@@ -5,7 +5,7 @@ git stash
 git pull --rebase
 
 {
-	echo To: rives@stolaf.edu, allen@stolaf.edu
+	echo To: rives@stolaf.edu
 	echo Subject: Daily CS251 Homework Submission Update
 	echo From: rives@stolaf.edu
 

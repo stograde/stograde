@@ -11,10 +11,9 @@ git pull --rebase
 	echo To: rives@stolaf.edu
 	echo Subject: "$subject"
 	echo MIME-Version: 1.0
-	echo Content-Type: multipart/alternative;
+	echo Content-Type: text/html
 	echo
 	echo "$boundary"
-	echo Content-Type: text/html
 
 	TABLE=$(./update.py -w8 --all --no-progress)
 

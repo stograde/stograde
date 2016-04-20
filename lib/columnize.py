@@ -1,99 +1,103 @@
 #!/usr/bin/env python3
 from .termcolor import colored
-import re
+from sys import stdout
 
-success = '✓'
-missing = '-'
-
-
-def get_number(string):
-    maybe_match = re.search(r'(\d+)$', string)
-    return int(maybe_match.group(1)) if maybe_match else 0
-
-
-def make_list(data):
-    numbered = [get_number(item) for item in data.split()]
-    return [idx if idx in numbered else False for idx in range(1, max(numbered) + 1)]
+unicode = stdout.encoding == 'UTF-8'
+# unicode = False
+COL = '│' if unicode else '|'
+ROW = '─' if unicode else '-'
+JOIN = '┼' if unicode else '-'
+MISSING = '─' if unicode else '-'
 
 
-def pad(string, size):
-    return '{0:>{1}} '.format(string, len(str(size)))
+def pad(string, index):
+    padding_char = string if string == MISSING else ' '
+    return string.ljust(len(str(index)), padding_char)
 
 
-def concat(lst, max):
-    return [pad(str(idx), idx) if idx in lst else pad(missing, idx)
-            for idx in range(1, max+1)]
+def symbol(assignment):
+    if assignment['status'] == 'success':
+        return str(assignment['number'])
+    elif assignment['status'] == 'partial':
+        return str(assignment['number'])
+        # return colored(str(assignment['number']), 'red', attrs={'bold': True})
+    return MISSING
 
 
-def find_columns(max):
-        return ' '.join([str(i) for i in range(1, max+1)])
+def concat(lst, toNum):
+    nums = {item['number']: item for item in lst}
+    lst = [pad(symbol(nums[idx]), idx)
+           if idx in nums
+           else pad('-', idx)
+           for idx in range(1, toNum+1)]
+    return ' '.join(lst)
 
 
-def columnize(input_data, sort_by):
-    users = []
+def find_columns(num):
+    return ' '.join([str(i) for i in range(1, num+1)])
 
-    max_hwk = 0
-    max_lab = 0
-    for line in input_data:
-        line = line.strip().split('\t')
-        user = line[0].strip()
 
-        hwks = make_list(line[1].strip()) if len(line) > 1 else False
-        labs = make_list(line[2].strip() if len(line) >= 3 else '0') if len(line) > 2 else False
+def pluck(lst, attr):
+    return [it[attr] for it in lst]
 
-        if hwks:
-            max_hwk_local = max(hwks)
-            max_hwk = max_hwk_local if max_hwk_local > max_hwk else max_hwk
 
-        if labs:
-            max_lab_local = max(labs)
-            max_lab = max_lab_local if max_lab_local > max_lab else max_lab
-
-        users.append({
-            'username': user,
-            'homework': hwks or [],
-            'labs': labs or []
-        })
+def columnize(students, sort_by):
+    max_hwk_num = max([max(pluck(s['homeworks'], 'number')) for s in students])
+    max_lab_num = max([max(pluck(s['labs'], 'number')) for s in students])
 
     # be sure that the longest username will be at least 4 chars
-    usernames = [user['username'] for user in users] + ['USER']
-    longest_user = max(usernames + ['USER'], key=lambda name: len(name))
+    usernames = [user['username'] for user in students] + ['USER']
+    longest_user = max(usernames, key=len)
 
-    header = '{0:<{1}}  | {2} | {3}'.format(
-        'USER', len(longest_user),
-        find_columns(max_hwk),
-        find_columns(max_lab))
+    header_hw_nums = find_columns(max_hwk_num)
+    header_lab_nums = find_columns(max_lab_num)
+    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums}'.format(
+        name='USER',
+        namesize=len(longest_user),
+        hwnums=header_hw_nums,
+        labnums=header_lab_nums,
+        sep=COL)
 
-    border = ''.ljust(len(header), '-')
-    lines = ''
+    border = ''.join([
+        ''.ljust(len(longest_user) + 2, ROW),
+        JOIN,
+        ''.ljust(len(header_hw_nums) + 2, ROW),
+        JOIN,
+        ''.ljust(len(header_lab_nums) + 1, ROW),
+    ])
 
-    if sort_by == 'name':
+    if sort_by == 'homework':
+        def sorter(user):
+            return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
+        shouldReverse = True
+    else:
         def sorter(user):
             return user['username']
         shouldReverse = False
-    elif sort_by == 'homework':
-        def sorter(user):
-            return sum([1 if hw else 0 for hw in user['homework']])
-        shouldReverse = True
 
-    for user in sorted(users, reverse=shouldReverse, key=sorter):
+    lines = []
+    for user in sorted(students, reverse=shouldReverse, key=sorter):
         name = '{0:<{1}}'.format(user['username'], len(longest_user))
-        if '!' in name:
-            name = colored(name, 'red')
 
-        homework = concat(user['homework'], max_hwk)
-        lab = concat(user['labs'], max_lab)
+        if user.get('unmerged_branches', False):
+            name = colored(name, attrs={'bold': True})
 
-        line = '{0}  | {1:<{2}}| {3:<{4}}'.format(
-            name,
-            ''.join(homework), max_hwk * len(str(max_hwk)),
-            ''.join(lab), max_lab * len(str(max_lab)))
+        homework_row = concat(user['homeworks'], max_hwk_num)
+        lab_row = concat(user['labs'], max_lab_num)
 
-        lines += line + '\n'
+        if 'error' in user:
+            lines.append('{name}  {sep} {err}'.format(
+                name=name,
+                sep=sep,
+                err=user['error']))
+            continue
 
-    return '\n'.join([header, border, lines])
+        line = '{name}  {sep} {hws} {sep} {labs}'.format(
+            name=name,
+            hws=homework_row,
+            labs=lab_row,
+            sep=COL)
 
+        lines.append(line)
 
-if __name__ == '__main__':
-    import sys
-    print(columnize(sys.stdin))
+    return '\n'.join([header, border, '\n'.join(lines)])

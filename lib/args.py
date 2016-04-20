@@ -1,11 +1,17 @@
+'''Deal with argument parsing for the toolkit'''
+
 import argparse
 import textwrap
-from .warn import warn
-from .flatten import flatten
+from sys import stdin
+from os import cpu_count
+from .helpers import warn
+from .helpers import flatten
 from .get_students import get_students
+from .run import run
 
 
 def get_args():
+    '''Construct the argument list and parse the passed arguments'''
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit.')
     parser.add_argument('--quiet', '-q', action='store_true',
                         help='Be quieter')
@@ -32,12 +38,13 @@ def get_args():
                         help='Sort by either student name or homework count.')
     parser.add_argument('--all', action='store_true',
                         help='Shorthand for \'--section all\'')
-    parser.add_argument('--workers', '-w', type=int, default=4,
+    parser.add_argument('--workers', '-w', type=int, default=cpu_count(),
                         help='Control the number of operations to perform in parallel')
     return vars(parser.parse_args())
 
 
 def process_args():
+    '''Process the arguments and create usable data from them'''
     students = get_students()
     args = get_args()
 
@@ -78,11 +85,11 @@ def process_args():
 
     # we can only read one stdin
     if '-' in args['students']:
-        args['students'] = flatten(args['students'] + sys.stdin.read().splitlines())
+        args['students'] = flatten(args['students'] + stdin.read().splitlines())
         args['students'] = [student for student in args['students'] if student != '-']
 
     elif '-' in args['record']:
-        args['record'] = flatten(args['record'] + sys.stdin.read().splitlines())
+        args['record'] = flatten(args['record'] + stdin.read().splitlines())
         args['record'] = [to_record for to_record in args['record'] if to_record != '-']
 
     # stop if we still don't have any students

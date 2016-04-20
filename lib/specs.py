@@ -3,28 +3,27 @@ from os import utime as os_utime
 from os import stat as os_stat
 from itertools import zip_longest
 from glob import iglob
-from .warn import warn
-from . import size
-from . import yaml
 import json
+from .helpers import warn
+from . import yaml
 
 
 def load_specs():
     cache_specs()
     specs_idents = iglob('specs/*.json')
     specs = {}
-    for s in specs_idents:
-        with open(s, 'r', encoding='utf-8') as specfile:
+    for filename in specs_idents:
+        with open(filename, 'r', encoding='utf-8') as specfile:
             spec = specfile.read()
             if spec:
                 loaded = json.loads(spec)
-                name = s.split('/')[1].split('.')[0]
+                name = filename.split('/')[1].split('.')[0]
                 assignment = loaded['assignment']
                 if name != assignment:
-                    warn('the assignment "{}" does not match the filename {}'.format(assignment, s))
+                    warn('assignment "{}" does not match the filename {}'.format(assignment, filename))
                 specs[assignment] = loaded
             else:
-                warn('Blank spec "{}"'.format(s))
+                warn('Blank spec "{}"'.format(filename))
     return specs
 
 
@@ -95,7 +94,7 @@ def get_files(spec):
 
 
 def get_files_and_steps(spec):
-    '''returns the list of files from an assignment spec'''
+    '''returns the list of files and associated steps from an assignment spec'''
     return [(filename, steps)
             for file in spec['files']
             for filename, steps in file.items()]

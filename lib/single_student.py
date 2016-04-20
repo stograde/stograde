@@ -1,21 +1,13 @@
-from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .markdownify import markdownify
-from .flatten import flatten
-from .specs import get_files
-from .chdir import chdir
-from .size import size
-from .warn import warn
-from .run import run
 from os import path, listdir
 import shutil
 import re
-import os
+from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
+from .markdownify import markdownify
+from .specs import get_files
+from .helpers import chdir
+from .run import run
 
-stogit = 'git@stogit.cs.stolaf.edu:sd-s16'
-labnames = {
-    'sound': ['lab2', 'lab3'],
-    'images': ['lab4', 'lab5', 'lab6'],
-}
+STOGIT = 'git@stogit.cs.stolaf.edu:sd-s16'
 
 
 def remove(student):
@@ -24,7 +16,7 @@ def remove(student):
 
 def clone(student):
     if not path.exists(student):
-        run(['git', 'clone', '--quiet', '{}/{}.git'.format(stogit, student)])
+        run(['git', 'clone', '--quiet', '{}/{}.git'.format(STOGIT, student)])
 
 
 def has_changed_files():
@@ -111,7 +103,7 @@ def analyze(student, specs, args):
                 continue
 
             with chdir(folder):
-                files_that_do_exist = set(os.listdir())
+                files_that_do_exist = set(listdir())
                 files_which_should_exist = set(get_files(spec))
                 intersection_of = files_that_do_exist.intersection(files_which_should_exist)
 
@@ -144,7 +136,7 @@ def reset(student, args):
 
 def single_student(student, args={}, specs={}):
     recordings = {}
-    retval = ''
+    retval = {}
 
     if args['clean']:
         remove(student)

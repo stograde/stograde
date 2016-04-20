@@ -9,12 +9,12 @@ from subprocess import PIPE, STDOUT, check_output, \
 # This env stuff is to catch glibc errors, because
 # it apparently prints to /dev/tty instead of stderr.
 # (see http://stackoverflow.com/a/27797579)
-env = copy.copy(os.environ)
-env["LIBC_FATAL_STDERR_"] = "1"
+ENV = copy.copy(os.environ)
+ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
 def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
-    if type(cmd) == str:
+    if isinstance(cmd, str):
         cmd = shlex.split(str)
 
     try:
@@ -25,7 +25,7 @@ def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
             stderr=STDOUT,
             timeout=timeout,
             input=input,
-            env=env,
+            env=ENV,
             **kwargs)
 
     except CalledProcessError as err:
@@ -48,7 +48,7 @@ def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
             result = str(err)
 
     try:
-        if type(result) is not str:
+        if not isinstance(result, str):
             result = str(result, 'utf-8')
     except UnicodeDecodeError as err:
         result = str(result, 'cp437')
@@ -57,5 +57,4 @@ def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
 
 
 if __name__ == '__main__':
-    filePath = sys.argv[1]
-    print(run([filePath]))
+    print(run([sys.argv[1]]))

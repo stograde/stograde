@@ -1,17 +1,14 @@
-#!/usr/bin/env python3
-
 import sys
 import os
 from collections import OrderedDict
 from os.path import exists, join as path_join
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .specs import get_files_and_steps
-from .flatten import flatten
 from .run import run
 
 
-def unicode_truncate(s, length, encoding='utf-8'):
-    encoded = s.encode(encoding)[:length]
+def unicode_truncate(string, length, encoding='utf-8'):
+    encoded = string.encode(encoding)[:length]
     return encoded.decode(encoding, 'ignore')
 
 
@@ -26,7 +23,7 @@ def kinda_pipe_commands(cmd_string):
         cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
         cmd = cmd.split(' ')
 
-        status, input_for_cmd = run(cmd, input=input_for_cmd)
+        _, input_for_cmd = run(cmd, input=input_for_cmd)
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = cmds[-1].split(' ')
@@ -35,7 +32,7 @@ def kinda_pipe_commands(cmd_string):
 
 
 def process_file(filename, steps, spec, cwd):
-    steps = steps if type(steps) is list else [steps]
+    steps = steps if isinstance(steps, list) else [steps]
 
     options = {
         'timeout': 4,
@@ -92,10 +89,8 @@ def process_file(filename, steps, spec, cwd):
     if not steps or any_step_failed:
         return results
 
-    inputs = spec.get('inputs', {})
-
     tests = spec.get('tests', {}).get(filename, [])
-    if type(tests) is not list:
+    if not isinstance(tests, list):
         tests = [tests]
 
     for test in tests:
@@ -112,8 +107,6 @@ def process_file(filename, steps, spec, cwd):
 
             result = unicode_truncate(full_result, options['truncate_after'])
             truncated = (full_result != result)
-            truncate_msg = 'output truncated after %d bytes' % (options['truncate_after']) \
-                           if truncated else ''
 
             results['result'].append({
                 'command': test,

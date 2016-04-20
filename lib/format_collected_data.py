@@ -21,9 +21,7 @@ def format_file_compilation(compilations):
     result = []
     for status in compilations:
         output = status['output']
-        status_msg = status['status']
         command = '`{}`'.format(status['command'])
-        # if status_msg == 'success':
         if not output:
             result.append('**no warnings: {}**\n'.format(command))
         else:
@@ -101,6 +99,6 @@ def format_student(data):
 def format_collected_data(data):
     try:
         formatted_chunks = format_student(data)
-    except Exception as e:
+    except Exception:
         formatted_chunks = indent(traceback.format_exc(), ' '*4)
     return formatted_chunks + '\n\n'

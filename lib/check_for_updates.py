@@ -1,9 +1,13 @@
+'''Check for program updates'''
+import datetime
 from . import yaml
 from .run import run
-import datetime
+from .helpers import warn
+
 
 
 def check_for_updates():
+    '''Check for updates from git, at most once an hour'''
     has_config = False
     with open('.cs251toolkitrc.yaml', 'a+', encoding='utf-8') as config_file:
         config_file.seek(0)
@@ -14,7 +18,7 @@ def check_for_updates():
             return
 
         if not contents:
-            contents = '\%YAML 1.2\n---\n'
+            contents = r'%YAML 1.2\n---\n'
 
         config = yaml.safe_load(contents)
 

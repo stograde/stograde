@@ -6,13 +6,13 @@ CHAR = '·' if stderr.encoding == 'UTF-8' else '='
 
 
 def progress_bar(size, current, message=''):
-    cols, rows = get_terminal_size()
+    cols, _ = get_terminal_size()
 
-    FILLED = [CHAR for i in range(current)]
-    EMPTY = [' ' for i in range(size - current)]
-    BAR = ''.join(FILLED + EMPTY)
+    filled = [CHAR for i in range(current)]
+    empty = [' ' for i in range(size - current)]
+    bar = ''.join(filled + empty)
 
-    line = '[{}] {}'.format(BAR, message)
+    line = '[{}] {}'.format(bar, message)
     spacers = ' ' * (cols - len(line))
 
     result = line + spacers

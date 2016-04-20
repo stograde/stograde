@@ -9,7 +9,7 @@ def get_students():
     try:
         with open('students.txt', 'r', encoding='utf-8') as infile:
             lines = infile.readlines()
-    except FileNotFoundError as err:
+    except FileNotFoundError:
         lines = []
 
     lines = [l.strip() for l in lines if l.strip()]

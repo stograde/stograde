@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from concurrent.futures import ProcessPoolExecutor
-from os import getcwd, makedirs
+from os import makedirs
 import functools
 
 from lib import check_for_updates
@@ -9,9 +9,8 @@ from lib import single_student
 from lib import progress_bar
 from lib import process_args
 from lib import load_specs
-from lib import columnize
+from lib import tabulate
 from lib import chdir
-from lib import run
 
 
 def main():
@@ -63,7 +62,7 @@ def main():
             [recording.close() for recording in recording_files.values()]
 
     if not args['quiet']:
-        print('\n' + columnize(results, sort_by=args['sort_by']))
+        print('\n' + tabulate(results, sort_by=args['sort_by']))
 
 
 if __name__ == '__main__':

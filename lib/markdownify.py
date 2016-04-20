@@ -148,9 +148,16 @@ def markdownify_throws(spec_id, username, spec):
         'files': OrderedDict(),
     }
 
-    inputs = spec.get('inputs', {})
-    for filename, contents in inputs.items():
-        with open(path_join(cwd, filename), 'w') as outfile:
+    inputs = spec.get('inputs', [])
+    for filename in inputs:
+        # remember that we're currently in … a folder. frick.
+        # can't assume that this is a child of the student's folder.
+        # we'll start with that assumption, but it'll break on some of the labs.
+        in_path = path_join(cwd, '..', '..', '..', 'supporting', spec_id, filename)
+        out_path = path_join(cwd, filename)
+        with open(in_path, 'rb') as infile:
+            contents = infile.read()
+        with open(out_path, 'wb') as outfile:
             outfile.write(contents)
 
     files = get_files_and_steps(spec)

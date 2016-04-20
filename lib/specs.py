@@ -20,7 +20,9 @@ def load_specs():
                 name = filename.split('/')[1].split('.')[0]
                 assignment = loaded['assignment']
                 if name != assignment:
-                    warn('assignment "{}" does not match the filename {}'.format(assignment, filename))
+                    warn('assignment "{}" does not match the filename {}'.format(
+                        assignment,
+                        filename))
                 specs[assignment] = loaded
             else:
                 warn('Blank spec "{}"'.format(filename))

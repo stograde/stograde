@@ -26,5 +26,4 @@ tests:
   writeread.cpp: $@.exec
 
 inputs:
-  in.txt: |
-    1 2
+  - in.txt

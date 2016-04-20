@@ -1,0 +1,79 @@
+*** Driver program for MenuItem class ***
+
+*** Testing constructors, assignment operator, display() method ***
+
+
+Test of typical constructor:
+  MenuItem mi1(10, "First choice");
+  calling mi1.display(cout);
+    output is:
+[10] First choice
+
+Test of default constructor:
+  MenuItem mi2;
+  calling mi2.display(cout);
+    output is:
+[0] 
+
+Test of copy constructor:
+  MenuItem mi3(mi1);
+  calling mi3.display(cout);
+    output is:
+[10] First choice
+
+Test of assignment operator:
+  MenuItem mi4(20, "Second choice");
+	mi1:	[10] First choice
+	mi2:	[0] 
+	mi3:	[10] First choice
+	mi4:	[20] Second choice
+
+  calling (mi1 = mi4).display(cout);
+    output is:
+[20] Second choice
+  state change:
+	mi1:	[20] Second choice
+	mi2:	[0] 
+	mi3:	[10] First choice
+	mi4:	[20] Second choice
+
+  further test of return value from assignment:
+  (mi4 = mi3).set_val(111);
+  state change:
+	mi1:	[20] Second choice
+	mi2:	[0] 
+	mi3:	[10] First choice
+	mi4:	[111] First choice
+
+
+*** Testing remaining methods ***
+
+
+Test of get_ methods:
+  calling mi1.display(cout);
+    output is:
+[20] Second choice
+  mi1.get_label() returns Second choice.
+  mi1.get_val() returns 20.
+
+Test of set_ methods:
+  initial values of all variables:
+	mi1:	[20] Second choice
+	mi2:	[0] 
+	mi3:	[10] First choice
+	mi4:	[111] First choice
+
+  mi3.set_label("Another choice");
+  calling mi3.display(cout);
+    output is:
+[10] Another choice
+  mi1.set_val(15);
+  calling mi1.display(cout);
+    output is:
+[15] Second choice
+final values of all variables:
+	mi1:	[15] Second choice
+	mi2:	[0] 
+	mi3:	[10] Another choice
+	mi4:	[111] First choice
+

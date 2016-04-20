@@ -3,9 +3,9 @@ from os import utime as os_utime
 from os import stat as os_stat
 from itertools import zip_longest
 from glob import iglob
-from lib import warn
-from lib import size
-from lib import yaml
+from .warn import warn
+from . import size
+from . import yaml
 import json
 
 

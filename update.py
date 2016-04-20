@@ -45,25 +45,25 @@ def main():
             if args['workers'] > 1:
                 with ProcessPoolExecutor(max_workers=args['workers']) as pool:
                     jobs = pool.map(single, args['students'])
-                for i, (student, row, records) in enumerate(jobs):
-                    students_left.remove(student)
+                for i, (result, records) in enumerate(jobs):
+                    students_left.remove(result['username'])
                     progress(i+1, ', '.join(students_left))
-                    table_rows.append(row)
+                    results.append(result)
                     save_recordings(records, recording_files)
 
             else:
                 jobs = map(single, args['students'])
-                for i, (student, row, records) in enumerate(jobs):
-                    students_left.remove(student)
+                for i, (result, records) in enumerate(jobs):
+                    students_left.remove(result['username'])
                     progress(i+1, ', '.join(students_left))
-                    table_rows.append(row)
+                    results.append(result)
                     save_recordings(records, recording_files)
 
         finally:
             [recording.close() for recording in recording_files.values()]
 
     if not args['quiet']:
-        print('\n' + columnize(table_rows, sort_by=args['sort_by']))
+        print('\n' + columnize(results, sort_by=args['sort_by']))
 
 
 if __name__ == '__main__':

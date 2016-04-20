@@ -2,7 +2,7 @@
 from .termcolor import colored
 from sys import stdout
 
-unicode = stdout.encoding == 'UTF-8'
+unicode = stdout.encoding == 'UTF-8' and !stdout.isatty()
 # unicode = False
 COL = '│' if unicode else '|'
 ROW = '─' if unicode else '-'

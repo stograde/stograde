@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs
 import functools
 
@@ -13,6 +13,33 @@ from lib import tabulate
 from lib import chdir
 
 
+def make_progress_bar(students, no_progress=False):
+    if no_progress:
+        return lambda _: None
+
+    remaining = set(students)
+    invocation_count = 0
+
+    progress_bar(len(students), invocation_count, message=', '.join(remaining))
+
+    def increment(username):
+        nonlocal remaining
+        nonlocal invocation_count
+        remaining.remove(username)
+        invocation_count += 1
+        msg = ', '.join(remaining)
+        progress_bar(len(students), invocation_count, message=', '.join(remaining))
+
+    return increment
+
+
+def open_recording_files(to_record):
+    if to_record:
+        return {file: open('logs/log-{}.md'.format(file), 'w', encoding='utf-8')
+                for file in to_record}
+    return {}
+
+
 def main():
     check_for_updates()
     args = process_args()
@@ -20,41 +47,28 @@ def main():
     if args['day']:
         print('Checking out %s at 5:00pm' % args['day'])
 
-    recording_files = {}
-    if args['record']:
-        recording_files = {to_record: open('logs/log-%s.md' % to_record, 'w', encoding='utf-8')
-                           for to_record in args['record']}
-
+    print_progress = make_progress_bar(args['students'])
+    recording_files = open_recording_files(args['record'])
     specs = load_specs()
     results = []
+
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
         try:
-            def progress(i, student):
-                if args['no_progress']:
-                    return
-                progress_bar(len(args['students']), i, message='%s' % student)
-
             single = functools.partial(single_student, args=args, specs=specs)
-
-            # start the progress bar!
-            students_left = set(args['students'])
-            progress(0, ', '.join(students_left))
 
             if args['workers'] > 1:
                 with ProcessPoolExecutor(max_workers=args['workers']) as pool:
-                    jobs = pool.map(single, args['students'])
-                for i, (result, records) in enumerate(jobs):
-                    students_left.remove(result['username'])
-                    progress(i+1, ', '.join(students_left))
-                    results.append(result)
-                    save_recordings(records, recording_files)
+                    futures = [pool.submit(single, student) for student in args['students']]
+                    for future in as_completed(futures):
+                        result, records = future.result()
+                        print_progress(result['username'])
+                        results.append(result)
+                        save_recordings(records, recording_files)
 
             else:
-                jobs = map(single, args['students'])
-                for i, (result, records) in enumerate(jobs):
-                    students_left.remove(result['username'])
-                    progress(i+1, ', '.join(students_left))
+                for (result, records) in map(single, args['students']):
+                    print_progress(result['username'])
                     results.append(result)
                     save_recordings(records, recording_files)
 

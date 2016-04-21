@@ -12,34 +12,46 @@ from .run import run
 
 def get_args():
     '''Construct the argument list and parse the passed arguments'''
-    parser = argparse.ArgumentParser(description='The core of the CS251 toolkit.')
-    parser.add_argument('--quiet', '-q', action='store_true',
-                        help='Be quieter')
-    parser.add_argument('--no-progress', action='store_true',
-                        help='Hide the progress bar')
-    parser.add_argument('--no-update', '-n', action='store_true',
-                        help='Do not update the student folders before checking.')
-    parser.add_argument('--no-check', '-c', action='store_true',
-                        help='Do not check for unmerged branches.')
-    parser.add_argument('--day', action='store',
-                        help='Check out the student folder as of 5pm on the last <day of week>.')
-    parser.add_argument('--date', action='store',
-                        help='Check out the student folder as of 5pm on <date> (Y-M-D).')
-    parser.add_argument('--clean', action='store_true',
+    parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
+
+    selection = parser.add_argument_group('student-selection arguments')
+    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME',
+                           help='Only iterate over these students.')
+    selection.add_argument('--section', action='append', nargs='+', metavar='SECTION',
+                           help='Only check these sections: my, all, a, b, etc')
+    selection.add_argument('--all', action='store_true',
+                           help='Shorthand for \'--section all\'')
+
+    optional = parser.add_argument_group('optional arguments')
+    optional.add_argument('--quiet', '-q', action='store_true',
+                          help='Don\'t show the table')
+    optional.add_argument('--no-progress', action='store_true',
+                          help='Hide the progress bar')
+    optional.add_argument('--workers', '-w', type=int, default=cpu_count(), metavar='N',
+                          help='The number of operations to perform in parallel')
+    optional.add_argument('--sort', action='store', default='name', type=str,
+                          choices=['name', 'count'],
+                          help='Sort the students table')
+
+    folder = parser.add_argument_group('student-folder arguments')
+    folder.add_argument('--clean', action='store_true',
                         help='Remove student folders and re-clone them')
-    parser.add_argument('--record', action='append', nargs='+', metavar='HW',
-                        help="Record information on student submissions. Requires a spec file.")
-    parser.add_argument('--students', action='append', nargs='+', metavar='STUDENT',
-                        help='Only iterate over these students.')
-    parser.add_argument('--section', action='append', nargs='+', metavar='SECTION',
-                        help='Only check these sections: my, all, a, b, etc.')
-    parser.add_argument('--sort-by', action='store', default='name', type=str,
-                        choices=['name', 'homework'],
-                        help='Sort by either student name or homework count.')
-    parser.add_argument('--all', action='store_true',
-                        help='Shorthand for \'--section all\'')
-    parser.add_argument('--workers', '-w', type=int, default=cpu_count(),
-                        help='Control the number of operations to perform in parallel')
+    folder.add_argument('--no-update', '-n', action='store_true',
+                        help='Do not update the student folders when checking')
+
+    dates = parser.add_argument_group('time-based arguments')
+    dates.add_argument('--day', action='store',
+                       choices=['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'],
+                       help='Check out submissions as of 5pm on WEEKDAY')
+    dates.add_argument('--date', action='store', metavar='YYYY-MM-DD',
+                       help='Check out submissions as of 5pm on DATE')
+
+    grading = parser.add_argument_group('grading arguments')
+    grading.add_argument('--no-check', '-c', action='store_true',
+                         help='Do not check for unmerged branches')
+    grading.add_argument('--record', action='append', nargs='+', metavar='HW',
+                         help='Record information on student submissions. Requires a spec file')
+
     return vars(parser.parse_args())
 
 

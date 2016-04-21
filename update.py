@@ -62,7 +62,7 @@ def main():
             [recording.close() for recording in recording_files.values()]
 
     if not args['quiet']:
-        print('\n' + tabulate(results, sort_by=args['sort_by']))
+        print('\n' + tabulate(results, sort_by=args['sort']))
 
 
 if __name__ == '__main__':

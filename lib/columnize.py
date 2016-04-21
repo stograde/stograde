@@ -91,7 +91,7 @@ def tabulate(students, sort_by):
         ''.ljust(len(header_lab_nums) + 1, ROW),
     ])
 
-    if sort_by == 'homework':
+    if sort_by == 'count':
         def sorter(user):
             return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
         should_reverse = True

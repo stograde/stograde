@@ -97,7 +97,7 @@ def process_file(filename, steps, spec, cwd):
         if not test:
             continue
 
-        test = test.replace('$@', './%s' % filename)
+        test = test.replace('$@', './' + filename)
         test_cmd, input_for_test = kinda_pipe_commands(test)
 
         if exists(path_join(cwd, filename)):

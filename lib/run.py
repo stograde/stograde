@@ -33,7 +33,7 @@ def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
         result = err.output if err.output else str(err)
 
     except TimeoutExpired as err:
-        status = 'timed out after %s seconds' % timeout
+        status = 'timed out after {} seconds'.format(timeout)
         result = err.output if err.output else str(err)
 
     except FileNotFoundError as err:

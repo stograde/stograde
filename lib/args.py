@@ -92,7 +92,7 @@ def process_args():
             try:
                 sections.append(students['section-' + section] or students[section])
             except KeyError:
-                warn('Section "%s" could not be found in ./students.txt' % section)
+                warn('Section "{}" could not be found in ./students.txt'.format(section))
         args['students'] = list(flatten(sections))
 
     # we can only read one stdin

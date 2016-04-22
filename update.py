@@ -45,7 +45,7 @@ def main():
     args = process_args()
 
     if args['day']:
-        print('Checking out %s at 5:00pm' % args['day'])
+        print('Checking out {} at 5:00pm'.format(args['day']))
 
     print_progress = make_progress_bar(args['students'])
     recording_files = open_recording_files(args['record'])

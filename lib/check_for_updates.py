@@ -61,6 +61,6 @@ def check_for_updates():
     config['remote hash exists locally'] = remote_is_local
 
     with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as config_file:
-        header = '%YAML 1.2\n---\n'
+        header = r'%YAML 1.2\n---\n'
         contents = yaml.safe_dump(config, default_flow_style=False)
         config_file.write(header + contents)

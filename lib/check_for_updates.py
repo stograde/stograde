@@ -5,7 +5,6 @@ from .run import run
 from .helpers import warn
 
 
-
 def check_for_updates():
     '''Check for updates from git, at most once an hour'''
     has_config = False
@@ -18,9 +17,12 @@ def check_for_updates():
             return
 
         if not contents:
-            contents = r'%YAML 1.2\n---\n'
+            contents = '%YAML 1.2\n---\n'
 
-        config = yaml.safe_load(contents)
+        try:
+            config = yaml.safe_load(contents)
+        except:
+            config = {}
 
         if not config:
             config = {}
@@ -61,6 +63,6 @@ def check_for_updates():
     config['remote hash exists locally'] = remote_is_local
 
     with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as config_file:
-        header = r'%YAML 1.2\n---\n'
+        header = '%YAML 1.2\n---\n'
         contents = yaml.safe_dump(config, default_flow_style=False)
         config_file.write(header + contents)

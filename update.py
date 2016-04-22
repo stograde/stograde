@@ -17,10 +17,9 @@ def make_progress_bar(students, no_progress=False):
     if no_progress:
         return lambda _: None
 
+    size = len(students)
     remaining = set(students)
     invocation_count = 0
-
-    progress_bar(len(students), invocation_count, message=', '.join(remaining))
 
     def increment(username):
         nonlocal remaining
@@ -28,8 +27,9 @@ def make_progress_bar(students, no_progress=False):
         remaining.remove(username)
         invocation_count += 1
         msg = ', '.join(remaining)
-        progress_bar(len(students), invocation_count, message=', '.join(remaining))
+        progress_bar(size, invocation_count, message=', '.join(remaining))
 
+    progress_bar(size, invocation_count, message=', '.join(remaining))
     return increment
 
 

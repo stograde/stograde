@@ -16,18 +16,18 @@ def check_for_updates():
             warn(err)
             return
 
-        if not contents:
-            contents = '%YAML 1.2\n---\n'
+    if not contents:
+        contents = '%YAML 1.2\n---\n'
 
-        try:
-            config = yaml.safe_load(contents)
-        except:
-            config = {}
+    try:
+        config = yaml.safe_load(contents)
+    except:
+        config = {}
 
-        if not config:
-            config = {}
-        else:
-            has_config = True
+    if not config:
+        config = {}
+    else:
+        has_config = True
 
     now = datetime.datetime.utcnow()
     one_hour = datetime.timedelta(hours=1)

@@ -27,25 +27,40 @@ The script also takes a `--record` parameter. Record does several things:
 
 `update.py --help`:
 
-	usage: update.py [-h] [--quiet] [--no-update] [--day DAY] [--date DATE]
-	                 [--clean] [--record HW [HW ...]]
-	                 [--students STUDENT [STUDENT ...]]
-	                 [--sort-by {name,homework}]
+	usage: update.py [-h] [--students USERNAME [USERNAME ...]]
+	                 [--section SECTION [SECTION ...]] [--all] [--quiet]
+	                 [--no-progress] [--workers N] [--sort {name,count}] [--clean]
+	                 [--no-update] [--day {sun,mon,tues,wed,thurs,fri,sat}]
+	                 [--date YYYY-MM-DD] [--no-check] [--record HW [HW ...]]
 
-	The core of the CS251 toolkit.
+	The core of the CS251 toolkit
 
 	optional arguments:
 	  -h, --help            show this help message and exit
-	  --quiet, -q           Be quieter
-	  --no-update, -n       Do not update the student folders before checking.
-	  --day DAY             Check out the state of the student folder as of 5pm on
-	                        the last <day> (mon, wed, fri, etc).
-	  --date DATE           Check out the state of the student folder as of 5pm on
-	                        <date> (Y-M-D).
-	  --clean               Remove student folders and re-clone them
-	  --record HW [HW ...]  Record information on the student's submissions. Must
-	                        be folder name to record.
-	  --students STUDENT [STUDENT ...]
+
+	student-selection arguments:
+	  --students USERNAME [USERNAME ...]
 	                        Only iterate over these students.
-	  --sort-by {name,homework}
-	                        Sort by either student name or homework count.
+	  --section SECTION [SECTION ...]
+	                        Only check these sections: my, all, a, b, etc
+	  --all                 Shorthand for '--section all'
+
+	optional arguments:
+	  --quiet, -q           Don't show the table
+	  --no-progress         Hide the progress bar
+	  --workers N, -w N     The number of operations to perform in parallel
+	  --sort {name,count}   Sort the students table
+
+	student-folder arguments:
+	  --clean               Remove student folders and re-clone them
+	  --no-update, -n       Do not update the student folders when checking
+
+	time-based arguments:
+	  --day {sun,mon,tues,wed,thurs,fri,sat}
+	                        Check out submissions as of 5pm on WEEKDAY
+	  --date YYYY-MM-DD     Check out submissions as of 5pm on DATE
+
+	grading arguments:
+	  --no-check, -c        Do not check for unmerged branches
+	  --record HW [HW ...]  Record information on student submissions. Requires a
+	                        spec file

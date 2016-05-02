@@ -78,7 +78,7 @@ def cache_specs():
         j_modtime = get_modification_time_ns(jsonfile)
         if y_modtime != j_modtime:
             if j_modtime is not None:
-                warn('diff. times!', 'yaml', y_modtime, 'json', j_modtime)
+                warn('caching', yamlfile, 'to', jsonfile)
                 atime = os_stat(jsonfile).st_atime_ns
             else:
                 atime = os_stat(yamlfile).st_atime_ns

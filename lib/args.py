@@ -97,15 +97,6 @@ def process_args():
                 warn('Section "{}" could not be found in ./students.txt'.format(section))
         args['students'] = list(flatten(sections))
 
-    # we can only read one stdin
-    if '-' in args['students']:
-        args['students'] = flatten(args['students'] + stdin.read().splitlines())
-        args['students'] = [student for student in args['students'] if student != '-']
-
-    elif '-' in args['record']:
-        args['record'] = flatten(args['record'] + stdin.read().splitlines())
-        args['record'] = [to_record for to_record in args['record'] if to_record != '-']
-
     # stop if we still don't have any students
     if not args['students']:
         msg = textwrap.dedent('''

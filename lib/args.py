@@ -19,7 +19,7 @@ def get_args():
                            help='Only iterate over these students.')
     selection.add_argument('--section', action='append', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
-    selection.add_argument('--all', action='store_true',
+    selection.add_argument('--all', '-a', action='store_true',
                            help='Shorthand for \'--section all\'')
 
     optional = parser.add_argument_group('optional arguments')

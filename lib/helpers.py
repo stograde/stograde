@@ -2,20 +2,19 @@
 
 from sys import stderr
 from contextlib import contextmanager
-import os
 from os.path import join, getsize
-from os import walk
+from os import walk, chdir as cd, getcwd
 
 
 @contextmanager
 def chdir(path):
     '''Create a `with` block for changing into a directory'''
-    current_dir = os.getcwd()
+    current_dir = getcwd()
     try:
-        os.chdir(path)
+        cd(path)
         yield
     finally:
-        os.chdir(current_dir)
+        cd(current_dir)
 
 
 def warn(*args, **kwargs):

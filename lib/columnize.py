@@ -1,4 +1,5 @@
 '''Make a nice table from the student results'''
+import re
 from sys import stdout
 from .termcolor import colored
 from .helpers import pluck
@@ -10,6 +11,16 @@ ROW = '─' if UNICODE else '-'
 JOIN = '┼' if UNICODE else '-'
 MISSING = '─' if UNICODE else '-'
 highlight_partials = False
+ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
+
+
+def asciiify(table):
+    table = table.replace('│', '|')
+    table = table.replace('─', '-')
+    table = table.replace('┼', '-')
+    table = table.replace('─', '-')
+    table = ANSI_ESCAPE.sub('', table)
+    return table
 
 
 def pad(string, index):

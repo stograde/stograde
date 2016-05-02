@@ -7,6 +7,7 @@ from .format_collected_data import format_collected_data
 from .helpers import chdir
 from .helpers import flatten
 from .helpers import warn
+from .gist import post_gist
 from .progress_bar import progress_bar
 from .run import run
 from .save_recordings import save_recordings

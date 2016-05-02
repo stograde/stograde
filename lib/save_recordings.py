@@ -1,5 +1,7 @@
 from .format_collected_data import format_collected_data
 from .helpers import warn, flatten, group_by
+from . import yaml
+from .columnize import asciiify
 
 
 def record_recording_to_disk(results, file_identifier):
@@ -11,7 +13,22 @@ def record_recording_to_disk(results, file_identifier):
         warn('error! could not write recording:', err)
 
 
-def save_recordings(records, table, debug=False):
+def send_recording_to_gist(table, results, assignment):
+    # the - at the front is so that github sees it first and names the gist
+    # after the homework
+    table_filename = '-cs251 report %s table.txt' % assignment
+    files = {
+        table_filename: {'content': table},
+    }
+    for file in results:
+        filename = file['student'] + '.' + file['type']
+        files[filename] = {
+            'content': file['content'].strip()
+        }
+    return post_gist('log for ' + assignment, files)
+
+
+def save_recordings(records, table, destination='file', debug=False):
     # clean up the table and make it plain ascii
     table = asciiify(table)
 
@@ -22,7 +39,7 @@ def save_recordings(records, table, debug=False):
     for assignment, recordings in grouped_records:
         for content in recordings:
             if debug:
-                formatted = '---\n' + yaml.dump(content)
+                formatted = '---\n' + yaml.safe_dump(content, default_flow_style=False)
             else:
                 formatted = format_collected_data(content, destination == 'gist')
 
@@ -35,4 +52,8 @@ def save_recordings(records, table, debug=False):
             })
 
     for assignment, content in results.items():
-        record_recording_to_disk(content, assignment)
+        if destination == 'file':
+            record_recording_to_disk(content, assignment)
+        elif destination == 'gist':
+            url = send_recording_to_gist(table, content, assignment)
+            print(assignment, 'results are available at', url)

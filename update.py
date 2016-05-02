@@ -69,7 +69,7 @@ def main():
     if not args['quiet']:
         print('\n' + table)
 
-    save_recordings(records, table)
+    save_recordings(records, table, destination='gist' if args['gist'] else 'file')
 
 
 if __name__ == '__main__':

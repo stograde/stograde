@@ -59,6 +59,8 @@ def get_args():
                          help='Do not check for unmerged branches')
     grading.add_argument('--record', action='append', nargs='+', metavar='HW', default=[],
                          help='Record information on student submissions. Requires a spec file')
+    grading.add_argument('--gist', action='store_true',
+                         help='Post overview table and student recordings as a private gist')
 
     return vars(parser.parse_args())
 

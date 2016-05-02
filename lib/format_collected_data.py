@@ -1,5 +1,6 @@
 from textwrap import dedent, indent
 import traceback
+for_github = False
 
 
 def em(string):
@@ -10,10 +11,26 @@ def code(string):
     return '`' + string + '`'
 
 
-def format_file_contents(contents):
+def identify_type(filename):
+    ext = filename.split('.')[-1]
+    if ext == filename:
+        return 'text'
+    elif ext in ['C', 'H', 'cpp', 'hpp', 'h']:
+        return 'cpp'
+    elif ext in ['c']:
+        return 'c'
+    elif ext == 'txt':
+        return 'text'
+    return ext
+
+
+def format_file_contents(contents, info):
     if not contents:
         return ''
-    # return '```cpp\n' + contents + '\n```'
+    if for_github:
+        return '```{}\n{}\n```'.format(
+            identify_type(info['filename']),
+            contents)
     return indent(contents, '    ')
 
 
@@ -42,7 +59,7 @@ def format_file_results(test_results):
 
 
 def format_file(filename, file_info):
-    contents = format_file_contents(file_info.get('contents', '')) + '\n'
+    contents = format_file_contents(file_info.get('contents', ''), file_info) + '\n'
     compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
     test_results = format_file_results(file_info.get('result', [])) + '\n'
 
@@ -96,7 +113,10 @@ def format_student(data):
     return dedent(header + files)
 
 
-def format_collected_data(data):
+def format_collected_data(data, gist=False):
+    global for_github
+    for_github = gist
+
     try:
         formatted_chunks = format_student(data)
     except Exception:

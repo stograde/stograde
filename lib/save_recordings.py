@@ -6,7 +6,9 @@ from .gist import post_gist
 
 
 def record_recording_to_disk(results, file_identifier):
-    output = '\n'.join([r['content'] for r in results])
+    results = sorted(results, key=lambda file: file['student'])
+    results = [file['content'] for file in results]
+    output = '\n'.join(results)
     try:
         with open('logs/log-{}.md'.format(file_identifier), 'w', encoding='utf-8') as outfile:
             outfile.write(output)

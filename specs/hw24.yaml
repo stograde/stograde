@@ -15,9 +15,10 @@ files:
 
 tests:
   Makefile:
-    - make
-    - cat Menu_driver.in | ./Menu_driver.exec
-    - cat Menu_driver.in | ./Menu_driver.exec | diff - Menu_driver.out
+    - rm -f Menu_driver *.o
+    - make Menu_driver
+    - cat Menu_driver.in | ./Menu_driver
+    - cat Menu_driver.in | ./Menu_driver | diff - Menu_driver.out
 
 inputs:
   - Menu_driver.in

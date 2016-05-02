@@ -65,8 +65,9 @@ def main():
                 results.append(result)
                 records.append(recording)
 
+    table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
     if not args['quiet']:
-        print('\n' + tabulate(results, sort_by=args['sort'], partials=args['partials']))
+        print('\n' + table)
 
     save_recordings(records, table)
 

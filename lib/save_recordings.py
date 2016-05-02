@@ -2,6 +2,7 @@ from .format_collected_data import format_collected_data
 from .helpers import warn, flatten, group_by
 from . import yaml
 from .columnize import asciiify
+from .gist import post_gist
 
 
 def record_recording_to_disk(results, file_identifier):

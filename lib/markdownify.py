@@ -43,6 +43,7 @@ def process_file(filename, steps, spec, cwd):
     options.update(spec.get('options', {}).get(filename, {}))
 
     results = {
+        'filename': filename,
         'missing': False,
         'compilation': [],
         'result': [],

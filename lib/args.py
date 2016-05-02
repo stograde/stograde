@@ -2,6 +2,8 @@
 
 import argparse
 import textwrap
+import re
+from itertools import filterfalse
 from sys import stdin
 from os import cpu_count
 from .helpers import warn
@@ -9,10 +11,14 @@ from .helpers import flatten
 from .get_students import get_students
 from .run import run
 
+ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
+
 
 def get_args():
     '''Construct the argument list and parse the passed arguments'''
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
+    parser.add_argument('input', nargs='*',
+                        help='A mixed list of students and assignments')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -62,12 +68,15 @@ def process_args():
     students = get_students()
     args = get_args()
 
+    assignments = [l for l in args['input'] if re.match(ASSIGNMENT_REGEX, l)]
+    people = [l for l in args['input'] if not re.match(ASSIGNMENT_REGEX, l)]
+
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
     # `--students amy max --students rives` becomes `[[amy, max], [rives]]`
-    args['students'] = list(flatten(args['students']))
+    args['students'] = list(flatten(args['students'])) + people
     args['section'] = list(flatten(args['section']))
-    args['record'] = list(flatten(args['record']))
+    args['record'] = list(flatten(args['record'])) + assignments
 
     if args['all']:
         args['section'] = ['all']

@@ -35,7 +35,7 @@ def get_args():
     optional.add_argument('--partials', '-p', action='store_true',
                           help='Highlight partial submissions')
 
-    folder = parser.add_argument_group('student-folder arguments')
+    folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',
                         help='Remove student folders and re-clone them')
     folder.add_argument('--no-update', '-n', action='store_true',
@@ -64,7 +64,7 @@ def process_args():
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
-    # `--students amy max --students rives` => `[[amy, max], [rives]]`
+    # `--students amy max --students rives` becomes `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students']))
     args['section'] = list(flatten(args['section']))
     args['record'] = list(flatten(args['record']))

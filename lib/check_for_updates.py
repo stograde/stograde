@@ -17,7 +17,7 @@ def check_for_updates():
             return
 
     if not contents:
-        contents = '%YAML 1.2\n---\n'
+        contents = ''
 
     try:
         config = yaml.safe_load(contents)
@@ -37,8 +37,10 @@ def check_for_updates():
     remote_hash = config.get('remote hash', None)
     remote_is_local = config.get('remote hash exists locally', False)
 
+    last_check_passed = local_hash == remote_hash
     # don't bother checking more than once an hour
-    if has_config and (now - last_checked) < one_hour:
+    should_check = (now - last_checked) < one_hour
+    if has_config and last_check_passed and should_check:
         return
 
     if not local_hash:
@@ -63,6 +65,5 @@ def check_for_updates():
     config['remote hash exists locally'] = remote_is_local
 
     with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as config_file:
-        header = '%YAML 1.2\n---\n'
         contents = yaml.safe_dump(config, default_flow_style=False)
-        config_file.write(header + contents)
+        config_file.write(contents)

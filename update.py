@@ -33,13 +33,6 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def open_recording_files(to_record):
-    if to_record:
-        return {file: open('logs/log-{}.md'.format(file), 'w', encoding='utf-8')
-                for file in to_record}
-    return {}
-
-
 def main():
     check_for_updates()
     args = process_args()
@@ -47,37 +40,35 @@ def main():
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))
 
-    recording_files = open_recording_files(args['record'])
     specs = load_specs()
 
     print_progress = make_progress_bar(args['students'])
 
     results = []
+    records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        try:
-            single = functools.partial(single_student, args=args, specs=specs)
+        single = functools.partial(single_student, args=args, specs=specs)
 
-            if args['workers'] > 1:
-                with ProcessPoolExecutor(max_workers=args['workers']) as pool:
-                    futures = [pool.submit(single, student) for student in args['students']]
-                    for future in as_completed(futures):
-                        result, records = future.result()
-                        print_progress(result['username'])
-                        results.append(result)
-                        save_recordings(records, recording_files)
-
-            else:
-                for (result, records) in map(single, args['students']):
+        if args['workers'] > 1:
+            with ProcessPoolExecutor(max_workers=args['workers']) as pool:
+                futures = [pool.submit(single, student) for student in args['students']]
+                for future in as_completed(futures):
+                    result, recording = future.result()
                     print_progress(result['username'])
                     results.append(result)
-                    save_recordings(records, recording_files)
+                    records.append(recording)
 
-        finally:
-            [recording.close() for recording in recording_files.values()]
+        else:
+            for (result, recording) in map(single, args['students']):
+                print_progress(result['username'])
+                results.append(result)
+                records.append(recording)
 
     if not args['quiet']:
         print('\n' + tabulate(results, sort_by=args['sort'], partials=args['partials']))
+
+    save_recordings(records, table)
 
 
 if __name__ == '__main__':

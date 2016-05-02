@@ -54,7 +54,7 @@ def has_unmerged_branches(student, args):
 
 
 def record(student, specs, args):
-    recordings = {}
+    recordings = []
     if not args['record']:
         return recordings
 
@@ -70,7 +70,7 @@ def record(student, specs, args):
                     'warnings': {'no submission': True},
                 }
 
-            recordings[to_record] = recording
+            recordings.append(recording)
 
     return recordings
 
@@ -135,7 +135,7 @@ def reset(student, args):
 
 
 def single_student(student, args={}, specs={}):
-    recordings = {}
+    recordings = []
     retval = {}
 
     if args['clean']:

@@ -4,6 +4,7 @@ from sys import stderr
 from contextlib import contextmanager
 from os.path import join, getsize
 from os import walk, chdir as cd, getcwd
+from itertools import groupby
 
 
 @contextmanager
@@ -61,3 +62,10 @@ def add_newline_before(seq, lines):
 def pluck(lst, attr):
     '''Build a list of the values of the given attribute from the source list'''
     return [it[attr] for it in lst]
+
+
+def group_by(iterable, predicate):
+    sorted_iterable = sorted(iterable, key=predicate)
+    grouped = groupby(sorted_iterable, key=predicate)
+    for k, v in grouped:
+        yield k, list(v)

@@ -109,9 +109,9 @@ def process_args():
     # stop if we still don't have any students
     if not args['students']:
         msg = textwrap.dedent('''
-            Could not find a list of students.
-            You must provide the `--students` argument, the `--section` argument,
-            a ./students.txt file, or a list of usernames to stdin.
+            Could not find a list of students. You must provide the
+            `--students` argument, the `--section` argument, or a
+            ./students.txt file.
         ''')
         warn(textwrap.fill(msg))
         return

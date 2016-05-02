@@ -1,10 +1,13 @@
 import sys
 import os
+import shlex
+from glob import glob
 from collections import OrderedDict
 from os.path import exists, join as path_join
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .specs import get_files_and_steps
 from .run import run
+from .helpers import flatten
 
 
 def unicode_truncate(string, length, encoding='utf-8'):
@@ -12,22 +15,41 @@ def unicode_truncate(string, length, encoding='utf-8'):
     return encoded.decode(encoding, 'ignore')
 
 
+def expand_chunk(command_chunk):
+    '''Take a chunk of a command and expand it, like a shell'''
+    # TODO: Support escaped globs
+    if '*' in command_chunk:
+        return glob(command_chunk)
+    return command_chunk
+
+
+def process_chunk(command):
+    '''Takes one piece of a pipeline and formats it for run_command'''
+    # decode('unicode_escape') de-escapes the backslash-escaped strings.
+    # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
+    # like a shell would.
+    cmd = bytes(command, 'utf-8').decode('unicode_escape')
+
+    # shlex splits commands up like a shell does.
+    # I'm not entirely sure how it differs from just split(' '),
+    # but figured it wasn't a bad thing to use.
+    cmd = shlex.split(cmd)
+
+    cmd = list(flatten([expand_chunk(c) for c in cmd]))
+
+    return cmd
+
+
 def kinda_pipe_commands(cmd_string):
     cmds = cmd_string.split(' | ')
 
     input_for_cmd = None
     for cmd in cmds[:-1]:
-        # decode('unicode_escape') de-escapes the backslash-escaped strings.
-        # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
-        # like a shell would.
-        cmd = bytes(cmd, 'utf-8').decode('unicode_escape')
-        cmd = cmd.split(' ')
-
+        cmd = process_chunk(cmd)
         _, input_for_cmd = run(cmd, input=input_for_cmd)
         input_for_cmd = input_for_cmd.encode('utf-8')
 
-    final_cmd = cmds[-1].split(' ')
-
+    final_cmd = process_chunk(cmds[-1])
     return (final_cmd, input_for_cmd)
 
 
@@ -53,7 +75,7 @@ def process_file(filename, steps, spec, cwd):
     if file_status == 'success':
         _, last_edit = run(['git', 'log',
                             '-n', '1',
-                            r'--pretty=format:%cd',
+                            '--pretty=format:%cd',
                             '--', filename])
         results['last modified'] = last_edit
 

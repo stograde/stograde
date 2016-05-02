@@ -10,6 +10,7 @@ files:
   - proto-draw.cpp:
     - rm -f *.o proto-draw
     - make proto-draw
+
   - colorButtons.txt: null
 
   - toolButtons.txt: null

@@ -7,14 +7,16 @@ compilers:
     'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - proto-draw.cpp:
-    - rm -f *.o proto-draw
-    - make proto-draw
-  - colorButtons.txt: null
+  - Makefile.test: null
 
-  - toolButtons.txt: null
+  - Makefile: null
 
+  - proto-texture.cpp: null
+  - proto-draw.cpp: null
+  - proto-ui.cpp: null
+  - proto-ui2.cpp: null
+  - proto-counting.cpp: null
+  - proto-sound.cpp: null
 
-options:
-  toolButtons.txt:
-    optional: true
+  - Doxyfile: null
+  - MyDog.h: null

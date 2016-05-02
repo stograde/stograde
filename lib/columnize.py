@@ -9,6 +9,7 @@ COL = '│' if UNICODE else '|'
 ROW = '─' if UNICODE else '-'
 JOIN = '┼' if UNICODE else '-'
 MISSING = '─' if UNICODE else '-'
+highlight_partials = False
 
 
 def pad(string, index):
@@ -22,8 +23,10 @@ def symbol(assignment):
     if assignment['status'] == 'success':
         return str(assignment['number'])
     elif assignment['status'] == 'partial':
-        return str(assignment['number'])
-        # return colored(str(assignment['number']), 'red', attrs={'bold': True})
+        retval = str(assignment['number'])
+        if highlight_partials:
+            return colored(retval, 'red', attrs={'bold': True})
+        return retval
     return MISSING
 
 
@@ -65,8 +68,11 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
         sep=COL)
 
 
-def tabulate(students, sort_by):
+def tabulate(students, sort_by, partials):
     '''Actually build the table'''
+    global highlight_partials
+    highlight_partials = partials
+
     max_hwk_num = max([max(pluck(s['homeworks'], 'number')) for s in students])
     max_lab_num = max([max(pluck(s['labs'], 'number')) for s in students])
 

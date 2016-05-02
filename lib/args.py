@@ -32,6 +32,8 @@ def get_args():
     optional.add_argument('--sort', action='store', default='name', type=str,
                           choices=['name', 'count'],
                           help='Sort the students table')
+    optional.add_argument('--partials', '-p', action='store_true',
+                          help='Highlight partial submissions')
 
     folder = parser.add_argument_group('student-folder arguments')
     folder.add_argument('--clean', action='store_true',

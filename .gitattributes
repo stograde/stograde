@@ -1,2 +1,3 @@
 lib/yaml/* linguist-vendored
+lib/requests/* linguist-vendored
 supporting/* linguist-vendored

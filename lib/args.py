@@ -107,8 +107,10 @@ def process_args():
         warn(textwrap.fill(msg))
         return
 
+    # sort students and remove any duplicates
     args['students'] = sorted(set(args['students']))
 
+    # Set the day of checkout
     if args['day']:
         _, args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])
     elif args['date']:

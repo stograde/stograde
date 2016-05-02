@@ -15,9 +15,9 @@ def get_args():
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
 
     selection = parser.add_argument_group('student-selection arguments')
-    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME',
+    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
                            help='Only iterate over these students.')
-    selection.add_argument('--section', action='append', nargs='+', metavar='SECTION',
+    selection.add_argument('--section', action='append', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
     selection.add_argument('--all', action='store_true',
                            help='Shorthand for \'--section all\'')
@@ -51,7 +51,7 @@ def get_args():
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',
                          help='Do not check for unmerged branches')
-    grading.add_argument('--record', action='append', nargs='+', metavar='HW',
+    grading.add_argument('--record', action='append', nargs='+', metavar='HW', default=[],
                          help='Record information on student submissions. Requires a spec file')
 
     return vars(parser.parse_args())
@@ -65,9 +65,9 @@ def process_args():
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
     # `--students amy max --students rives` => `[[amy, max], [rives]]`
-    args['students'] = list(flatten(args['students'] or []))
-    args['section'] = list(flatten(args['section'] or []))
-    args['record'] = list(flatten(args['record'] or []))
+    args['students'] = list(flatten(args['students']))
+    args['section'] = list(flatten(args['section']))
+    args['record'] = list(flatten(args['record']))
 
     if args['all']:
         args['section'] = ['all']

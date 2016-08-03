@@ -3,20 +3,19 @@ assignment: lab10
 folder: projtech
 
 compilers:
-  cpp: &cpp
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - Makefile.test: null
+  - [ Makefile.test, null ]
 
-  - Makefile: null
+  - [ Makefile, null ]
 
-  - proto-texture.cpp: null
-  - proto-draw.cpp: null
-  - proto-ui.cpp: null
-  - proto-ui2.cpp: null
-  - proto-counting.cpp: null
-  - proto-sound.cpp: null
+  - [ proto-texture.cpp, null ]
+  - [ proto-draw.cpp, null ]
+  - [ proto-ui.cpp, null ]
+  - [ proto-ui2.cpp, null ]
+  - [ proto-counting.cpp, null ]
+  - [ proto-sound.cpp, null ]
 
-  - Doxyfile: null
-  - MyDog.h: null
+  - [ Doxyfile, null ]
+  - [ MyDog.h, null ]

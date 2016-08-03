@@ -5,11 +5,11 @@ compilers:
   - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - steps.cpp: *cpp
-  - ptrptr.cpp: *cpp
-  - sizeof.cpp: *cpp
+  - [ steps.cpp, *cpp ]
+  - [ ptrptr.cpp, *cpp ]
+  - [ sizeof.cpp, *cpp ]
 
 tests:
-  steps.cpp: $@.exec
-  ptrptr.cpp: $@.exec
-  sizeof.cpp: $@.exec
+  - [ steps.cpp, $@.exec ]
+  - [ ptrptr.cpp, $@.exec ]
+  - [ sizeof.cpp, $@.exec ]

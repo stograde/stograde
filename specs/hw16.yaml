@@ -5,11 +5,11 @@ compilers:
   - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - operator1.cpp: *cpp
-  - this.cpp: *cpp
-  - static.cpp: *cpp
+  - [ operator1.cpp, *cpp ]
+  - [ this.cpp, *cpp ]
+  - [ static.cpp, *cpp ]
 
 tests:
-  operator1.cpp: $@.exec
-  this.cpp: $@.exec
-  static.cpp: $@.exec
+  - [ operator1.cpp, $@.exec ]
+  - [ this.cpp, $@.exec ]
+  - [ static.cpp, $@.exec ]

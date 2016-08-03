@@ -6,24 +6,23 @@ compilers:
   - &o 'g++ --std=c++11 -c $@'
 
 files:
-  - disc.cpp: *cpp
-  - stock.cpp: *cpp
-  - Stock.cpp: *cpp
+  - [ disc.cpp, *cpp ]
+  - [ stock.cpp, *cpp ]
 
-  - reader.cpp: *cpp
-  - writer.cpp: *cpp
-  - writeread.cpp: *cpp
+  - [ reader.cpp, *cpp ]
+  - [ writer.cpp, *cpp ]
+  - [ writeread.cpp, *cpp ]
 
 tests:
-  disc.cpp: $@.exec
-  stock.cpp: $@.exec
+  - [ disc.cpp, $@.exec ]
+  - [ stock.cpp, $@.exec ]
 
-  reader.cpp: $@.exec
-  writer.cpp:
+  - [ reader.cpp, $@.exec ]
+  - - writer.cpp
     - $@.exec
     - cat output.txt
 
-  writeread.cpp: $@.exec
+  - [ writeread.cpp, $@.exec ]
 
 inputs:
   - in.txt

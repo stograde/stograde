@@ -3,25 +3,20 @@ assignment: lab4
 folder: images
 
 compilers:
-  gcc: &gcc
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - Doxyfile: cat $@ ../../../Doxyfile | doxygen -
+  - - Doxyfile
+    - cat $@ ../../../Doxyfile | doxygen -
+    - hide_contents: true
 
-  - bin2ascii.cpp: *gcc
-  - same.cpp: *gcc
+  - [ bin2ascii.cpp, *cpp ]
+  - [ same.cpp, *cpp ]
 
-  - zeroRed.cpp: *gcc
-  - doubleGreen.cpp: *gcc
-  - greyScale.cpp: *gcc
-  - horizSqueeze.cpp: *gcc
-  - vertSqueeze.cpp: *gcc
-  - addBorder.cpp: *gcc
-  - redEye.cpp: *gcc
-
-options:
-  Doxyfile:
-    truncate_contents: 100  # bytes
-  redEye.cpp:
-    optional: true
+  - [ zeroRed.cpp, *cpp ]
+  - [ doubleGreen.cpp, *cpp ]
+  - [ greyScale.cpp, *cpp ]
+  - [ horizSqueeze.cpp, *cpp ]
+  - [ vertSqueeze.cpp, *cpp ]
+  - [ addBorder.cpp, *cpp ]
+  - [ redEye.cpp, *cpp, optional: true ]

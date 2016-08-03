@@ -6,11 +6,11 @@ compilers:
   - &cpp-to-obj 'g++ --std=c++11 -c $@'
 
 files:
-  - IntArray.h: null
-  - IntArray.cpp: *cpp-to-obj
-  - IntArrayDriver.cpp:
+  - [ IntArray.h, null ]
+  - [ IntArray.cpp, *cpp-to-obj ]
+  - - IntArrayDriver.cpp
     - *cpp-to-obj
     - g++ --std=c++11 IntArray.o IntArrayDriver.o -o $@.exec
 
 tests:
-  IntArrayDriver.cpp: $@.exec
+  - [ IntArrayDriver.cpp, $@.exec ]

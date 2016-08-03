@@ -3,70 +3,69 @@ assignment: lab2
 folder: sound
 
 compilers:
-  cpp: &cpp
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - n1.cpp: *cpp
-  - n2.cpp: *cpp
-  - n3.cpp: *cpp
-  - n4.cpp: *cpp
-  - n5.cpp: *cpp
-  - n6.cpp: *cpp
+  - [ n1.cpp, *cpp ]
+  - [ n2.cpp, *cpp ]
+  - [ n3.cpp, *cpp ]
+  - [ n4.cpp, *cpp ]
+  - [ n5.cpp, *cpp ]
+  - [ n6.cpp, *cpp ]
 
-  - quieter.cpp: *cpp
-  - octavedown.cpp: *cpp
-  - octaveup.cpp: *cpp
-  - trunc.cpp: *cpp
-  - addblank.cpp: *cpp
+  - [ quieter.cpp, *cpp ]
+  - [ octavedown.cpp, *cpp ]
+  - [ octaveup.cpp, *cpp ]
+  - [ trunc.cpp, *cpp ]
+  - [ addblank.cpp, *cpp ]
 
-  - n1.do.cpp: *cpp
-  - n2.do.cpp: *cpp
-  - n3.do.cpp: *cpp
-  - n4.do.cpp: *cpp
-  - n5.do.cpp: *cpp
-  - n6.do.cpp: *cpp
+  - [ n1.do.cpp, *cpp ]
+  - [ n2.do.cpp, *cpp ]
+  - [ n3.do.cpp, *cpp ]
+  - [ n4.do.cpp, *cpp ]
+  - [ n5.do.cpp, *cpp ]
+  - [ n6.do.cpp, *cpp ]
 
-  - n1.for.cpp: *cpp
-  - n2.for.cpp: *cpp
-  - n3.for.cpp: *cpp
-  - n4.for.cpp: *cpp
-  - n5.for.cpp: *cpp
-  - n6.for.cpp: *cpp
+  - [ n1.for.cpp, *cpp ]
+  - [ n2.for.cpp, *cpp ]
+  - [ n3.for.cpp, *cpp ]
+  - [ n4.for.cpp, *cpp ]
+  - [ n5.for.cpp, *cpp ]
+  - [ n6.for.cpp, *cpp ]
 
   # 5. Revise the first two sound filters to use a new loop structure.
-  - quieter.for.cpp: *cpp
-  - octavedown.for.cpp: *cpp
+  - [ quieter.for.cpp, *cpp ]
+  - [ octavedown.for.cpp, *cpp ]
 
 
 tests:
-  n1.cpp: $@.exec
-  n2.cpp: $@.exec
-  n3.cpp: $@.exec
-  n4.cpp: $@.exec
-  n5.cpp: $@.exec
-  n6.cpp: $@.exec
+  - [ n1.cpp, $@.exec ]
+  - [ n2.cpp, $@.exec ]
+  - [ n3.cpp, $@.exec ]
+  - [ n4.cpp, $@.exec ]
+  - [ n5.cpp, $@.exec ]
+  - [ n6.cpp, $@.exec ]
 
-  quieter.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
-  octavedown.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
-  octaveup.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
-  trunc.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
-  addblank.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  - [ quieter.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
+  - [ octavedown.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
+  - [ octaveup.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
+  - [ trunc.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
+  - [ addblank.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
 
-  n1.do.cpp: $@.exec
-  n2.do.cpp: $@.exec
-  n3.do.cpp: $@.exec
-  n4.do.cpp: $@.exec
-  n5.do.cpp: $@.exec
-  n6.do.cpp: $@.exec
+  - [ n1.do.cpp, $@.exec ]
+  - [ n2.do.cpp, $@.exec ]
+  - [ n3.do.cpp, $@.exec ]
+  - [ n4.do.cpp, $@.exec ]
+  - [ n5.do.cpp, $@.exec ]
+  - [ n6.do.cpp, $@.exec ]
 
-  n1.for.cpp: $@.exec
-  n2.for.cpp: $@.exec
-  n3.for.cpp: $@.exec
-  n4.for.cpp: $@.exec
-  n5.for.cpp: $@.exec
-  n6.for.cpp: $@.exec
+  - [ n1.for.cpp, $@.exec ]
+  - [ n2.for.cpp, $@.exec ]
+  - [ n3.for.cpp, $@.exec ]
+  - [ n4.for.cpp, $@.exec ]
+  - [ n5.for.cpp, $@.exec ]
+  - [ n6.for.cpp, $@.exec ]
 
   # 5. Revise the first two sound filters to use a new loop structure.
-  quieter.for.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
-  octavedown.for.cpp: cat ~/Code/jksadhad/music.bin | $@.exec
+  - [ quieter.for.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]
+  - [ octavedown.for.cpp, cat ~/Code/jksadhad/music.bin | $@.exec ]

@@ -5,6 +5,7 @@ from os import makedirs as makedirs
 from itertools import zip_longest
 from glob import iglob
 import json
+import copy
 from .helpers import warn
 from . import yaml
 
@@ -40,13 +41,36 @@ def json_date_handler(obj):
                 repr(obj)))
 
 
+def process_file_into_dict(file_list):
+    filename = file_list[0]
+    commands = [f for f in file_list[1:] if type(f) is str]
+    option_list = [opt for opt in file_list[1:] if type(opt) is dict]
+    options = { k: v for opt in option_list for k, v in opt.items() }
+    return {
+        'filename': filename,
+        'commands': commands,
+        'options': options,
+    }
+
+
+def clarify_yaml(data):
+    copied = copy.deepcopy(data)
+    copied['files'] = [process_file_into_dict(f) for f in copied['files']]
+    if 'tests' in copied:
+        copied['tests'] = [process_file_into_dict(f) for f in copied['tests']]
+    return copied
+
+
 def convert_spec(yaml_path, json_path):
     with open(yaml_path, 'r', encoding='utf-8') as yamlfile:
-        with open(json_path, 'w', encoding='utf-8') as jsonfile:
-            data = yamlfile.read()
-            loaded = yaml.safe_load(data)
-            stringified = json.dumps(loaded, default=json_date_handler)
-            jsonfile.write(stringified)
+        data = yamlfile.read()
+
+    loaded = yaml.safe_load(data)
+    edited = clarify_yaml(loaded)
+    stringified = json.dumps(edited, default=json_date_handler)
+
+    with open(json_path, 'w', encoding='utf-8') as jsonfile:
+        jsonfile.write(stringified)
 
 
 def get_modification_time_ns(path):
@@ -88,15 +112,6 @@ def cache_specs():
             os_utime(jsonfile, ns=(atime, mtime))
 
 
-def get_files(spec):
+def get_filenames(spec):
     '''returns the list of files from an assignment spec'''
-    return [filename
-            for file in spec['files']
-            for filename in file]
-
-
-def get_files_and_steps(spec):
-    '''returns the list of files and associated steps from an assignment spec'''
-    return [(filename, steps)
-            for file in spec['files']
-            for filename, steps in file.items()]
+    return [file['filename'] for file in spec['files']]

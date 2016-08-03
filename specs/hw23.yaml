@@ -6,14 +6,14 @@ compilers:
   - &cpp-to-obj 'g++ --std=c++11 -c $@'
 
 files:
-  - MenuItem.h: null
-  - MenuItem.cpp: *cpp-to-obj
-  - MenuItem_driver.cpp:
+  - [ MenuItem.h, null ]
+  - [ MenuItem.cpp, *cpp-to-obj ]
+  - - MenuItem_driver.cpp
     - *cpp-to-obj
     - g++ --std=c++11 MenuItem.o MenuItem_driver.o -o $@.exec
 
 tests:
-  MenuItem_driver.cpp:
+  - - MenuItem_driver.cpp
     - $@.exec
     - $@.exec | diff - MenuItem_driver.out
 

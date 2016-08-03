@@ -6,11 +6,11 @@ compilers:
   - &cpp-to-obj 'g++ --std=c++11 -c $@'
 
 files:
-  - DVD.h: null
-  - DVD.cpp: *cpp-to-obj
-  - DVDdriver.cpp:
+  - [ DVD.h, null ]
+  - [ DVD.cpp, *cpp-to-obj ]
+  - - DVDdriver.cpp
     - *cpp-to-obj
     - g++ --std=c++11 DVD.o DVDdriver.o -o $@.exec
 
 tests:
-  DVDdriver.cpp: $@.exec
+  - [ DVDdriver.cpp, $@.exec ]

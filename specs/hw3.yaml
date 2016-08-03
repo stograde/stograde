@@ -2,17 +2,16 @@
 assignment: hw3
 
 compilers:
-  cpp: &cpp
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - arithmetic.cpp: *cpp
-  - guard.cpp: *cpp
-  - miscOperators.cpp: *cpp
-  - precedence.cpp: *cpp
+  - [ arithmetic.cpp, *cpp ]
+  - [ guard.cpp, *cpp ]
+  - [ miscOperators.cpp, *cpp ]
+  - [ precedence.cpp, *cpp ]
 
 tests:
-  arithmetic.cpp: $@.exec
-  guard.cpp: $@.exec
-  miscOperators.cpp: $@.exec
-  precedence.cpp: $@.exec
+  - [ arithmetic.cpp, $@.exec ]
+  - [ guard.cpp, $@.exec ]
+  - [ miscOperators.cpp, $@.exec ]
+  - [ precedence.cpp, $@.exec ]

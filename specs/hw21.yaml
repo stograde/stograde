@@ -6,15 +6,15 @@ compilers:
   - &cpp-to-obj 'g++ --std=c++11 -c $@ -Wno-write-strings'
 
 files:
-  - DVD.h: null
-  - DVD.cpp: *cpp-to-obj
-  - DVDArrayP.h: null
-  - DVDArrayP.cpp: *cpp-to-obj
-  - DVDArrayPDriver.cpp:
+  - [ DVD.h, null ]
+  - [ DVD.cpp, *cpp-to-obj ]
+  - [ DVDArrayP.h, null ]
+  - [ DVDArrayP.cpp, *cpp-to-obj ]
+  - - DVDArrayPDriver.cpp
     - *cpp-to-obj
     - g++ --std=c++11 DVDArrayP.o DVDArrayPDriver.o DVD.o -o $@.exec
-  - inherit.cpp: *cpp
+  - [ inherit.cpp, *cpp ]
 
 tests:
-  DVDArrayPDriver.cpp: $@.exec
-  inherit.cpp: $@.exec
+  - [ DVDArrayPDriver.cpp, $@.exec ]
+  - [ inherit.cpp, $@.exec ]

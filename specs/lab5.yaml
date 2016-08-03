@@ -3,16 +3,15 @@ assignment: lab5
 folder: images/lab5
 
 compilers:
-  gcc: &gcc
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - b2a.cpp: *gcc
-  - same2.cpp: *gcc
+  - [ oneb2a.cpp, *cpp ]
+  - [ onesame2.cpp, *cpp ]
 
-  - zeroRed2.cpp: *gcc
-  - doubleGreen2.cpp: *gcc
-  - greyScale2.cpp: *gcc
-  - horizSqueeze2.cpp: *gcc
-  - vertSqueeze2.cpp: *gcc
-  - addBorder2.cpp: *gcc
+  - [ onezeroRed2.cpp, *cpp ]
+  - [ onedoubleGreen2.cpp, *cpp ]
+  - [ onegreyScale2.cpp, *cpp ]
+  - [ onehorizSqueeze2.cpp, *cpp ]
+  - [ onevertSqueeze2.cpp, *cpp ]
+  - [ oneaddBorder2.cpp, *cpp ]

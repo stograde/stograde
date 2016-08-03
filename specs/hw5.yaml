@@ -2,13 +2,12 @@
 assignment: hw5
 
 compilers:
-  cpp: &cpp
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - f1.cpp: *cpp
-  - story2.cpp: *cpp
+  - [ f1.cpp, *cpp ]
+  - [ story2.cpp, *cpp ]
 
 tests:
-  f1.cpp: $@.exec
-  story2.cpp: $@.exec
+  - [ f1.cpp, $@.exec ]
+  - [ story2.cpp, $@.exec ]

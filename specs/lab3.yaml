@@ -3,14 +3,13 @@ assignment: lab3
 folder: sound
 
 compilers:
-  gcc: &gcc
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - quieter1.cpp: *gcc
-  - octavedown1.cpp: *gcc
-  - octaveup1.cpp: *gcc
-  - trunc1.cpp: *gcc
-  - addblank1.cpp: *gcc
-  - echoer1.cpp: *gcc
-  - reverb1.cpp: *gcc
+  - [ quieter1.cpp, *cpp ]
+  - [ octavedown1.cpp, *cpp ]
+  - [ octaveup1.cpp, *cpp ]
+  - [ trunc1.cpp, *cpp ]
+  - [ addblank1.cpp, *cpp ]
+  - [ echoer1.cpp, *cpp ]
+  - [ reverb1.cpp, *cpp ]

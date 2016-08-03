@@ -5,14 +5,14 @@ compilers:
   - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - loadFile.cpp: *cpp
-  - avg3.cpp: *cpp
+  - [ loadFile.cpp, *cpp ]
+  - [ avg3.cpp, *cpp ]
 
 tests:
-  loadFile.cpp:
+  - - loadFile.cpp
     - cat tiny.txt | $@.exec
     - cat firefox2.txt | $@.exec
-  avg3.cpp:
+  - - avg3.cpp
     - cat tiny.txt | $@.exec
     - cat firefox2.txt | $@.exec
 

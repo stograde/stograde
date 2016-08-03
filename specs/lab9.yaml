@@ -3,19 +3,13 @@ assignment: lab9
 folder: graphics
 
 compilers:
-  cpp: &cpp
-    'g++ --std=c++11 $@ -o $@.exec'
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - proto-draw.cpp:
+  - - proto-draw.cpp
     - rm -f *.o proto-draw
     - make proto-draw
 
-  - colorButtons.txt: null
+  - [ colorButtons.txt, null ]
 
-  - toolButtons.txt: null
-
-
-options:
-  toolButtons.txt:
-    optional: true
+  - [ toolButtons.txt, null, optional: true ]

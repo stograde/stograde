@@ -6,15 +6,15 @@ compilers:
   - &cpp-to-obj 'g++ --std=c++11 -c $@'
 
 files:
-  - Menu.h: null
-  - Menu.cpp: null
-  - MenuItem.h: null
-  - MenuItem.cpp: null
-  - Menu_driver.cpp: null
-  - Makefile: null
+  - [ Menu.h, null ]
+  - [ Menu.cpp, null ]
+  - [ MenuItem.h, null ]
+  - [ MenuItem.cpp, null ]
+  - [ Menu_driver.cpp, null ]
+  - [ Makefile, null ]
 
 tests:
-  Makefile:
+  - - Makefile
     - rm -f Menu_driver *.o
     - make Menu_driver
     - cat Menu_driver.in | ./Menu_driver

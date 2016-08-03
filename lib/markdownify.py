@@ -5,7 +5,6 @@ from glob import glob
 from collections import OrderedDict
 from os.path import exists, join as path_join
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .specs import get_files_and_steps
 from .run import run
 from .helpers import flatten
 
@@ -53,16 +52,16 @@ def kinda_pipe_commands(cmd_string):
     return (final_cmd, input_for_cmd)
 
 
-def process_file(filename, steps, spec, cwd):
+def process_file(filename, steps, options, spec, cwd):
     steps = steps if isinstance(steps, list) else [steps]
 
     options = {
         'timeout': 4,
-        'truncate_after': 10000,  # 10K
+        'truncate_output': 10000,  # 10K
         'truncate_contents': False,
         'optional': False,
     }
-    options.update(spec.get('options', {}).get(filename, {}))
+    options.update(options)
 
     results = {
         'filename': filename,
@@ -183,10 +182,11 @@ def markdownify_throws(spec_id, username, spec):
         with open(out_path, 'wb') as outfile:
             outfile.write(contents)
 
-    files = get_files_and_steps(spec)
-
-    for filename, steps in files:
-        result = process_file(filename, steps, spec, cwd)
+    for file in spec['files']:
+        filename = file['filename']
+        steps = file['commands']
+        options = file['options']
+        result = process_file(filename, steps, options, spec, cwd)
         results['files'][filename] = result
 
     [run(['rm', '-f', file + '.exec']) for file, steps in files]

@@ -3,7 +3,7 @@ import shutil
 import re
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .markdownify import markdownify
-from .specs import get_files
+from .specs import get_filenames
 from .helpers import chdir
 from .run import run
 
@@ -104,7 +104,7 @@ def analyze(student, specs, args):
 
             with chdir(folder):
                 files_that_do_exist = set(listdir())
-                files_which_should_exist = set(get_files(spec))
+                files_which_should_exist = set(get_filenames(spec))
                 intersection_of = files_that_do_exist.intersection(files_which_should_exist)
 
                 if intersection_of == files_which_should_exist:

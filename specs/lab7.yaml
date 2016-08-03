@@ -3,31 +3,29 @@ assignment: lab7
 folder: graphics
 
 compilers:
-  gcc: &gcc
-    'g++ --std=c++11 $@ -o $@.exec'
-  gcc-c: &compile-only
-    'g++ --std=c++11 -c $@'
+  - &gcc 'g++ --std=c++11 $@ -o $@.exec'
+  - &compile-only 'g++ --std=c++11 -c $@'
 
 files:
-  - DVD.h: null
-  - DVD.cpp: *compile-only
-  - DVDdriver.cpp: *gcc
+  - [ DVD.h, null ]
+  - [ DVD.cpp, *compile-only ]
+  - [ DVDdriver.cpp, *gcc ]
 
-  - proto-game.cpp:
+  - - proto-game.cpp
     - rm -f proto-game *.o
     - make proto-game
 
-  - DVDArray.h: null
-  - DVDArray.cpp: null
-  - DVDArrayDriver.cpp:
+  - [ DVDArray.h, null ]
+  - [ DVDArray.cpp, null ]
+  - - DVDArrayDriver.cpp
     - rm -f proto-game *.o
     - make -f Makefile.DVD DVDArrayDriver
 
-  - Makefile: null
-  - Makefile.DVD: null
+  - [ Makefile, null ]
+  - [ Makefile.DVD, null ]
 
 
 tests:
-  - DVDdriver.cpp: $@.exec
-  - proto-game.cpp: ./proto-game
-  - DVDArrayDriver.cpp: ./DVDArrayDriver
+  - [ DVDdriver.cpp, $@.exec ]
+  - [ proto-game.cpp, ./proto-game ]
+  - [ DVDArrayDriver.cpp, ./DVDArrayDriver ]

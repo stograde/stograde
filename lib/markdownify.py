@@ -60,6 +60,7 @@ def process_file(filename, steps, options, spec, cwd):
         'truncate_output': 10000,  # 10K
         'truncate_contents': False,
         'optional': False,
+        'hide_contents': False,
     }
     options.update(options)
 
@@ -78,7 +79,9 @@ def process_file(filename, steps, options, spec, cwd):
                             '--', filename])
         results['last modified'] = last_edit
 
-    if options['truncate_contents']:
+    if options['hide_contents']:
+        file_contents = ''
+    elif options['truncate_contents']:
         file_contents = unicode_truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':

@@ -33,8 +33,6 @@ def load_specs():
 def json_date_handler(obj):
     if hasattr(obj, 'isoformat'):
         return obj.isoformat()
-    elif isinstance(obj, ...):
-        return ...
     else:
         raise TypeError(
             'Object of type {} with value of {} is not JSON serializable'.format(

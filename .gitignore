@@ -3,7 +3,7 @@ logs/*
 students/*
 
 # ignore the cached specs
-specs/*.json
+specs/_cache
 
 # ignore any lists of people
 /*students*.txt

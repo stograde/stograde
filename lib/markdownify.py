@@ -178,6 +178,7 @@ def markdownify_throws(spec_id, username, spec):
         # remember that we're currently in … a folder. frick.
         # can't assume that this is a child of the student's folder.
         # we'll start with that assumption, but it'll break on some of the labs.
+        # TODO: Fix this assumption.
         in_path = path_join(cwd, '..', '..', '..', 'supporting', spec_id, filename)
         out_path = path_join(cwd, filename)
         with open(in_path, 'rb') as infile:

@@ -10,7 +10,7 @@ COL = '│' if UNICODE else '|'
 ROW = '─' if UNICODE else '-'
 JOIN = '┼' if UNICODE else '-'
 MISSING = '─' if UNICODE else '-'
-highlight_partials = False
+HIGHLIGHT_PARTIALS = False
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
@@ -35,7 +35,7 @@ def symbol(assignment):
         return str(assignment['number'])
     elif assignment['status'] == 'partial':
         retval = str(assignment['number'])
-        if highlight_partials:
+        if HIGHLIGHT_PARTIALS:
             return colored(retval, 'red', attrs={'bold': True})
         return retval
     return MISSING
@@ -81,8 +81,8 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
 
 def tabulate(students, sort_by, partials):
     '''Actually build the table'''
-    global highlight_partials
-    highlight_partials = partials
+    global HIGHLIGHT_PARTIALS
+    HIGHLIGHT_PARTIALS = partials
 
     max_hwk_num = max([max(pluck(s['homeworks'], 'number')) for s in students])
     max_lab_num = max([max(pluck(s['labs'], 'number')) for s in students])

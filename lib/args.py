@@ -3,8 +3,6 @@
 import argparse
 import textwrap
 import re
-from itertools import filterfalse
-from sys import stdin
 from os import cpu_count
 from .helpers import warn
 from .helpers import flatten

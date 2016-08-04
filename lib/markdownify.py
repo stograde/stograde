@@ -1,4 +1,3 @@
-import sys
 import os
 import shlex
 from glob import glob

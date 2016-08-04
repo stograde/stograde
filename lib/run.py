@@ -13,7 +13,7 @@ ENV = copy.copy(os.environ)
 ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
-def run(cmd, *args, stdout=PIPE, input=None, timeout=None, **kwargs):
+def run(cmd, *args, input=None, timeout=None, **kwargs):
     if isinstance(cmd, str):
         cmd = shlex.split(str)
 

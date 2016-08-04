@@ -43,8 +43,8 @@ def json_date_handler(obj):
 
 def process_file_into_dict(file_list):
     filename = file_list[0]
-    commands = [f for f in file_list[1:] if type(f) is str]
-    option_list = [opt for opt in file_list[1:] if type(opt) is dict]
+    commands = [f for f in file_list[1:] if isinstance(f, str)]
+    option_list = [opt for opt in file_list[1:] if isinstance(opt, dict)]
     options = { k: v for opt in option_list for k, v in opt.items() }
     return {
         'filename': filename,

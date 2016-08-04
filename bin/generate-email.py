@@ -30,7 +30,6 @@ def make_email(user):
     # our list of homeworks are the top-level headings, minus the heading octothorpe
     hws = ' '.join([line[2:] for line in feedback.splitlines(keepends=False) if line.startswith('# ')])
 
-    email_file = '%s.eml' % (user)
     email_addr = '%s@stolaf.edu' % (user)
 
     plain_text_body = add_newline_before('#', feedback)

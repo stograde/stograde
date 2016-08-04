@@ -134,7 +134,10 @@ def reset(student, args):
             run(['git', 'checkout', 'master', '--quiet', '--force'])
 
 
-def single_student(student, args={}, specs={}):
+def single_student(student, args=None, specs=None):
+    args = {} if args is None else args
+    specs = {} if specs is None else specs
+
     recordings = []
     retval = {}
 

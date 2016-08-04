@@ -31,11 +31,11 @@ def process_chunk(command):
     # shlex splits commands up like a shell does.
     # I'm not entirely sure how it differs from just split(' '),
     # but figured it wasn't a bad thing to use.
-    cmd = shlex.split(cmd)
+    cmds = shlex.split(cmd)
 
-    cmd = list(flatten([expand_chunk(c) for c in cmd]))
+    cmds = list(flatten([expand_chunk(c) for c in cmds]))
 
-    return cmd
+    return cmds
 
 
 def kinda_pipe_commands(cmd_string):

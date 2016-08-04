@@ -192,8 +192,10 @@ def markdownify_throws(spec_id, username, spec):
         result = process_file(filename, steps, options, spec, cwd)
         results['files'][filename] = result
 
-    [run(['rm', '-f', file + '.exec']) for file, steps in files]
-    [os.remove(path_join(cwd, inputfile)) for inputfile in inputs]
+    for file in spec['files']:
+        os.remove('{}.exec'.format(file['filename']))
+    for inputfile in inputs:
+        os.remove(inputfile)
 
     results['warnings'] = find_warnings()
     return results

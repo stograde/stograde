@@ -12,14 +12,14 @@ import yaml
 
 def load_specs():
     cache_specs()
-    specs_idents = iglob('specs/_cache/*.json')
+    specs_idents = iglob('./data/specs/_cache/*.json')
     specs = {}
     for filename in specs_idents:
         with open(filename, 'r', encoding='utf-8') as specfile:
             spec = specfile.read()
             if spec:
                 loaded = json.loads(spec)
-                name = filename.split('/')[2].split('.')[0]
+                name = filename.split('/')[-1].split('.')[0]
                 assignment = loaded['assignment']
                 if name != assignment:
                     warn('assignment "{}" does not match the filename {}'.format(
@@ -84,9 +84,9 @@ def cache_specs():
     # Convert YAML files to JSON to cache for future runs
     # YAML parsing is incredibly slow, and JSON is quite fast,
     # so we check modification times and convert any that have changed.
-    makedirs('specs/_cache', exist_ok=True)
-    yaml_specs = iglob('specs/*.yaml')
-    json_specs = iglob('specs/_cache/*.json')
+    makedirs('./data/specs/_cache', exist_ok=True)
+    yaml_specs = iglob('./data/specs/*.yaml')
+    json_specs = iglob('./data/specs/_cache/*.json')
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
         if not yamlfile:
             # if yamlfile doesn't exist, then because we used zip_longest

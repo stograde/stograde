@@ -23,9 +23,11 @@ source ./venv/bin/activate  # or activate.csh
 # deactivate  # will exit the venv
 ```
 
-This will set up a "virtual envorinment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
+This will set up a "virtual environment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
 
 The _only_ tricky thing is that you have to remember to run `source ./venv/bin/activate` whenever you get into this folder, or else you won't be able to run the toolkit. (why virtualenvs? read [virtualenvs](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [pip-virtualenv](http://docs.python-guide.org/en/latest/dev/pip-virtualenv).)
+
+> If you really don't want to use the virtualenv, you can substitute the `pip install` for `pip3 install --user` in the next step. You'll also need to add `$HOME/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
 
 
 ##### Install the toolkit

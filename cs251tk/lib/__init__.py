@@ -13,3 +13,5 @@ from .run import run
 from .save_recordings import save_recordings
 from .single_student import single_student
 from .specs import load_specs
+
+__version__='v2.0.3'

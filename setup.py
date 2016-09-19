@@ -35,7 +35,6 @@ setup(
         'PyYAML == 3.*',
         'requests == 2.*',
         'termcolor == 1.*',
-        'update_checker == 0.12',
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

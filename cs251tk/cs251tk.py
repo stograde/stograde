@@ -3,7 +3,7 @@ from os import makedirs, getcwd
 import sys
 import functools
 
-from .lib import check_for_updates
+# from .lib import check_for_updates
 from .lib import save_recordings
 from .lib import single_student
 from .lib import progress_bar
@@ -36,7 +36,7 @@ def make_progress_bar(students, no_progress=False):
 def main():
     args = process_args()
     basedir = getcwd()
-    check_for_updates()
+    # check_for_updates()
 
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))

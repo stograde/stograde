@@ -7,7 +7,7 @@ def clean_header(text):
 
 def get_students():
     try:
-        with open('students.txt', 'r', encoding='utf-8') as infile:
+        with open('./students.txt', 'r', encoding='utf-8') as infile:
             lines = infile.readlines()
     except FileNotFoundError:
         lines = []

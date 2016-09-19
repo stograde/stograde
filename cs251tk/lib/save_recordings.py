@@ -10,7 +10,7 @@ def record_recording_to_disk(results, file_identifier):
     results = [file['content'] for file in results]
     output = '\n'.join(results)
     try:
-        with open('logs/log-{}.md'.format(file_identifier), 'w', encoding='utf-8') as outfile:
+        with open('./data/logs/log-{}.md'.format(file_identifier), 'w', encoding='utf-8') as outfile:
             outfile.write(output)
     except Exception as err:
         warn('error! could not write recording:', err)

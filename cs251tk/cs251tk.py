@@ -71,7 +71,3 @@ def main():
         print('\n' + table)
 
     save_recordings(records, table, destination='gist' if args['gist'] else 'file')
-
-
-if __name__ == '__main__':
-    main()

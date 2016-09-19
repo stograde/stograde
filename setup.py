@@ -45,7 +45,7 @@ setup(
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={
         'console_scripts': [
-            'cs251tk=cs251tk:main',
+            'cs251tk=cs251tk.cs251tk:main',
         ],
     },
 )

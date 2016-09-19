@@ -113,9 +113,11 @@ def process_file(filename, steps, options, spec, cwd):
     if not steps or any_step_failed:
         return results
 
-    tests = spec.get('tests', {}).get(filename, [])
-    if not isinstance(tests, list):
-        tests = [tests]
+    tests = flatten([
+        test_spec['commands']
+        for test_spec in spec.get('tests', {})
+        if test_spec['filename'] == filename
+    ])
 
     for test in tests:
         if not test:

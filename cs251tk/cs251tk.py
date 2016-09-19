@@ -34,9 +34,9 @@ def make_progress_bar(students, no_progress=False):
 
 
 def main():
-    check_for_updates()
     args = process_args()
     basedir = getcwd()
+    check_for_updates()
 
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))

@@ -1,6 +1,6 @@
 '''Check for program updates'''
 import datetime
-from . import yaml
+import yaml
 from .run import run
 from .helpers import warn
 

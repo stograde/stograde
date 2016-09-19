@@ -7,7 +7,7 @@ from glob import iglob
 import json
 import copy
 from .helpers import warn
-from . import yaml
+import yaml
 
 
 def load_specs():

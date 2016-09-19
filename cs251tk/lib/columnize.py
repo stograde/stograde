@@ -1,7 +1,7 @@
 '''Make a nice table from the student results'''
 import re
 from sys import stdout
-from .termcolor import colored
+from termcolor import colored
 from .helpers import pluck
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()

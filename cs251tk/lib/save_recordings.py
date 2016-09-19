@@ -1,6 +1,6 @@
 from .format_collected_data import format_collected_data
 from .helpers import warn, flatten, group_by
-from . import yaml
+import yaml
 from .columnize import asciiify
 from .gist import post_gist
 

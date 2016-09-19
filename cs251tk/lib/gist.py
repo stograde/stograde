@@ -1,7 +1,7 @@
-from . import requests
+import requests
 import json
 import getpass
-from . import yaml
+import yaml
 
 
 def make_token():

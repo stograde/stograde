@@ -1,6 +1,6 @@
 '''Check for unmerged branches in the current repository'''
 
-from . import run
+from .run import run
 
 
 def find_unmerged_branches_in_cwd():

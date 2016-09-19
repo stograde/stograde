@@ -20,6 +20,7 @@ mkdir cs251/
 cd cs251
 pyvenv ./venv
 source ./venv/bin/activate  # or activate.csh
+# deactivate  # will exit the venv
 ```
 
 This will set up a "virtual envorinment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.

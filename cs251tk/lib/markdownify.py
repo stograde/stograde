@@ -51,7 +51,7 @@ def kinda_pipe_commands(cmd_string):
     return (final_cmd, input_for_cmd)
 
 
-def process_file(filename, steps, options, spec, cwd):
+def process_file(filename, steps, options, spec, cwd, supporting_dir):
     steps = steps if isinstance(steps, list) else [steps]
 
     options = {
@@ -93,7 +93,8 @@ def process_file(filename, steps, options, spec, cwd):
 
     any_step_failed = False
     for step in steps:
-        command = step.replace('$@', filename)
+        command = step.replace('$@', './' + filename)
+        command = command.replace('$SUPPORT', supporting_dir)
         cmd, input_for_cmd = kinda_pipe_commands(command)
         status, compilation = run(cmd, input=input_for_cmd)
 
@@ -121,6 +122,7 @@ def process_file(filename, steps, options, spec, cwd):
             continue
 
         test = test.replace('$@', './' + filename)
+        test = test.replace('$SUPPORT', supporting_dir)
         test_cmd, input_for_test = kinda_pipe_commands(test)
 
         if exists(path_join(cwd, filename)):
@@ -172,8 +174,9 @@ def markdownify_throws(spec_id, username, spec, basedir):
     }
 
     inputs = spec.get('inputs', [])
+    supporting = path_join(basedir, 'data', 'supporting')
     for filename in inputs:
-        in_path = path_join(basedir, 'data', 'supporting', spec_id, filename)
+        in_path = path_join(supporting, spec_id, filename)
         out_path = path_join(cwd, filename)
         with open(in_path, 'rb') as infile:
             contents = infile.read()
@@ -184,7 +187,7 @@ def markdownify_throws(spec_id, username, spec, basedir):
         filename = file['filename']
         steps = file['commands']
         options = file['options']
-        result = process_file(filename, steps, options, spec, cwd)
+        result = process_file(filename, steps, options, spec, cwd, supporting)
         results['files'][filename] = result
 
     try:

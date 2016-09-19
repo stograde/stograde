@@ -77,3 +77,8 @@ The script also takes a `--record` parameter. Record does several things:
 - go to your cs251 folder that contains the data/ and students/ folders
 - run `cs251tk`; it'll be the development version.
 - run `deactivate` to leave the venv.
+
+
+## Maintainers
+- You need a PyPI account: [pypi.org](https://pypi.org)
+- `python3 setup.py sdist upload` shoudl generate a new release and upload it to PyPI

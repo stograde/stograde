@@ -93,24 +93,21 @@ def process_file(filename, steps, options, spec, cwd):
 
     any_step_failed = False
     for step in steps:
-        if step and not any_step_failed:
-            command = step.replace('$@', filename)
-            cmd, input_for_cmd = kinda_pipe_commands(command)
-            status, compilation = run(cmd, input=input_for_cmd)
+        command = step.replace('$@', filename)
+        cmd, input_for_cmd = kinda_pipe_commands(command)
+        status, compilation = run(cmd, input=input_for_cmd)
 
-            results['compilation'].append({
-                'command': command,
-                'output': compilation,
-                'status': status,
-            })
+        results['compilation'].append({
+            'command': command,
+            'output': compilation,
+            'status': status,
+        })
 
-            if status != 'success':
-                any_step_failed = True
-
-        elif any_step_failed:
+        if status != 'success':
+            any_step_failed = True
             break
 
-    if not steps or any_step_failed:
+    if any_step_failed or (not steps):
         return results
 
     tests = flatten([

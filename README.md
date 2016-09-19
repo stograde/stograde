@@ -22,6 +22,10 @@ pip3 install --user cs251tk
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the `--user` flag, which installs things into `~/.local`.
 
+Because of that, though, you'll need to add `$HOME/.local/bin` to your `$PATH`. If you're using bash, `echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc`; csh, `echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.cshrc`; fish, `set fish_user_paths $HOME/.local/bin $fish_user_paths`. If you're using something else, you probably know how to change the PATH.
+
+If your prompt starts with a `%` on the lab machines, you're using csh; otherwise, it's probably bash. If it's colorful, it's probably fish.
+
 ##### Grab the course data
 
 ```console

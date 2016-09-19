@@ -1,10 +1,11 @@
 '''Check for program updates'''
 import datetime
 import yaml
-from . import __version__
 from .run import run
 from .helpers import warn
 from update_checker import update_check
+
+version='2.0.5'
 
 
 def check_for_updates():
@@ -41,7 +42,7 @@ def check_for_updates():
     if has_config and should_check:
         return
 
-    update_check('cs251tk', __version__)
+    update_check('cs251tk', version)
 
     config['last checked'] = last_checked
 

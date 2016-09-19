@@ -1,4 +1,4 @@
-from os import path, listdir
+from os import path, listdir, getcwd
 import shutil
 import re
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
@@ -53,7 +53,7 @@ def has_unmerged_branches(student, args):
             return find_unmerged_branches_in_cwd()
 
 
-def record(student, specs, args):
+def record(student, specs, args, basedir):
     recordings = []
     if not args['record']:
         return recordings
@@ -62,7 +62,7 @@ def record(student, specs, args):
         for to_record in args['record']:
             if path.exists(to_record):
                 with chdir(to_record):
-                    recording = markdownify(to_record, student, specs[to_record])
+                    recording = markdownify(to_record, student, specs[to_record], basedir)
             else:
                 recording = {
                     'spec': to_record,
@@ -134,9 +134,11 @@ def reset(student, args):
             run(['git', 'checkout', 'master', '--quiet', '--force'])
 
 
-def single_student(student, args=None, specs=None):
+def single_student(student, args=None, specs=None, basedir=None):
     args = {} if args is None else args
     specs = {} if specs is None else specs
+    if not basedir:
+        raise Exception('basedir should not be none')
 
     recordings = []
     retval = {}
@@ -152,7 +154,7 @@ def single_student(student, args=None, specs=None):
 
         checkout_day(student, args)
 
-        recordings = record(student, specs, args)
+        recordings = record(student, specs, args, basedir)
         retval = analyze(student, specs, args)
 
         reset(student, args)

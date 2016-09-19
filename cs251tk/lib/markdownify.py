@@ -162,7 +162,7 @@ def find_warnings():
     return {'unmerged branches': find_unmerged_branches()}
 
 
-def markdownify_throws(spec_id, username, spec):
+def markdownify_throws(spec_id, username, spec, basedir):
     cwd = os.getcwd()
     results = {
         'spec': spec_id,
@@ -173,11 +173,7 @@ def markdownify_throws(spec_id, username, spec):
 
     inputs = spec.get('inputs', [])
     for filename in inputs:
-        # remember that we're currently in … a folder. frick.
-        # can't assume that this is a child of the student's folder.
-        # we'll start with that assumption, but it'll break on some of the labs.
-        # TODO: Fix this assumption.
-        in_path = path_join(cwd, '..', '..', '..', 'supporting', spec_id, filename)
+        in_path = path_join(basedir, 'data', 'supporting', spec_id, filename)
         out_path = path_join(cwd, filename)
         with open(in_path, 'rb') as infile:
             contents = infile.read()
@@ -191,18 +187,21 @@ def markdownify_throws(spec_id, username, spec):
         result = process_file(filename, steps, options, spec, cwd)
         results['files'][filename] = result
 
-    for file in spec['files']:
-        os.remove('{}.exec'.format(file['filename']))
-    for inputfile in inputs:
-        os.remove(inputfile)
+    try:
+        for file in spec['files']:
+            os.remove('{}.exec'.format(file['filename']))
+        for inputfile in inputs:
+            os.remove(inputfile)
+    except FileNotFoundError as e:
+        pass
 
     results['warnings'] = find_warnings()
     return results
 
 
-def markdownify(spec_id, username, spec):
+def markdownify(spec_id, username, spec, basedir):
     try:
-        return markdownify_throws(spec_id, username, spec)
+        return markdownify_throws(spec_id, username, spec, basedir)
     except Exception as err:
         return {
             'spec': spec_id,

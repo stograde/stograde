@@ -1,5 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from os import makedirs
+from os import makedirs, getcwd
 import sys
 import functools
 
@@ -36,6 +36,7 @@ def make_progress_bar(students, no_progress=False):
 def main():
     check_for_updates()
     args = process_args()
+    basedir = getcwd()
 
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))
@@ -51,7 +52,7 @@ def main():
     records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        single = functools.partial(single_student, args=args, specs=specs)
+        single = functools.partial(single_student, args=args, specs=specs, basedir=basedir)
 
         if args['workers'] > 1:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:

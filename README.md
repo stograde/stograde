@@ -39,7 +39,7 @@ pip install cs251tk
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
 
 
-##### Grab the course data
+##### Grab the course specs
 
 ```console
 git clone https://github.com/StoDevX/cs251-specs data

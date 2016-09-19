@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='cs251tk',
-    version='2.0.3',
+    version='2.0.4',
     description='The CS251 (Software Design) Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',

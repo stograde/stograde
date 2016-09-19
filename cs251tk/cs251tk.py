@@ -1,5 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs
+import sys
 import functools
 
 from .lib import check_for_updates
@@ -40,6 +41,9 @@ def main():
         print('Checking out {} at 5:00pm'.format(args['day']))
 
     specs = load_specs()
+    if not specs:
+        print('no specs loaded!')
+        sys.exit(1)
 
     print_progress = make_progress_bar(args['students'])
 

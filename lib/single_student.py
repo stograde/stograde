@@ -7,7 +7,7 @@ from .specs import get_filenames
 from .helpers import chdir
 from .run import run
 
-STOGIT = 'git@stogit.cs.stolaf.edu:sd-f16'
+STOGIT = 'git@stogit.cs.stolaf.edu:sd-s16'
 
 
 def remove(student):

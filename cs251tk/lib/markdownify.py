@@ -51,6 +51,14 @@ def kinda_pipe_commands(cmd_string):
     return (final_cmd, input_for_cmd)
 
 
+def cat(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as infile:
+            return ('success', infile.read())
+    except Exception:
+        return ('failure', None)
+
+
 def process_file(filename, steps, options, spec, cwd, supporting_dir):
     steps = steps if isinstance(steps, list) else [steps]
 
@@ -70,7 +78,8 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
         'result': [],
     }
 
-    file_status, file_contents = run(['cat', filename])
+    file_status, file_contents = cat(filename)  # this one takes ~148 time units per call
+    # file_status, file_contents = run(['cat', filename])  # and this one needs ~4688
     if file_status == 'success':
         _, last_edit = run(['git', 'log',
                             '-n', '1',

@@ -14,29 +14,41 @@ See the ["Run the thing"](#run-the-thing) section for details.
 
 Prerequisites: macOS/Linux, Python 3.4+, git.
 
+##### Make the folder
+```console
+mkdir cs251/
+cd cs251
+pyvenv ./venv
+source ./venv/bin/activate  # or activate.csh
+```
+
+This will set up a "virtual envorinment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
+
+The _only_ tricky thing is that you have to remember to run `source ./venv/bin/activate` whenever you get into this folder, or else you won't be able to run the toolkit. (why virutalenvs? read [virtualenvs](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [pip-virtualenv](http://docs.python-guide.org/en/latest/dev/pip-virtualenv).)
+
+
 ##### Install the toolkit
 
 ```console
-pip3 install --user cs251tk
+pip install cs251tk
 ```
 
-The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the `--user` flag, which installs things into `~/.local`.
+The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
 
-Because of that, though, you'll need to add `$HOME/.local/bin` to your `$PATH`. If you're using bash, `echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc`; csh, `echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.cshrc`; fish, `set fish_user_paths $HOME/.local/bin $fish_user_paths`. If you're using something else, you probably know how to change the PATH.
-
-If your prompt starts with a `%` on the lab machines, you're using csh; otherwise, it's probably bash. If it's colorful, it's probably fish.
 
 ##### Grab the course data
 
 ```console
-mkdir cs251/ && cd cs251
-touch students.txt
 git clone https://github.com/StoDevX/cs251-specs data
 ```
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample input, they should go under a `supporting/hw#` folder that matches the assignment name.
 
 ##### List your students
+
+```console
+touch students.txt
+```
 
 Put a newline-separated list of your students in `./students.txt`.
 

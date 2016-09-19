@@ -129,7 +129,7 @@ def process_file(filename, steps, options, spec, cwd):
                                       input=input_for_test,
                                       timeout=options['timeout'])
 
-            result = unicode_truncate(full_result, options['truncate_after'])
+            result = unicode_truncate(full_result, options['truncate_output'])
             truncated = (full_result != result)
 
             results['result'].append({
@@ -137,7 +137,7 @@ def process_file(filename, steps, options, spec, cwd):
                 'status': status,
                 'output': result,
                 'truncated': True if truncated else False,
-                'truncated after': options['truncate_after'],
+                'truncated after': options['truncate_output'],
             })
 
         else:

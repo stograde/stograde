@@ -1,5 +1,5 @@
 # cs251-toolkit
-![pypi version](https://img.shields.io/pypi/v/cs251tk.svg)
+![pypi version](https://img.shields.io/pypi/v/cs251tk.svg) ![git tag](https://img.shields.io/github/tag/stodevx/cs251-toolkit.svg)
 
 Welcome to the CS251 toolkit, designed to help TAs and graders for St. Olaf's Software Design course.
 

@@ -12,7 +12,7 @@ from . import yaml
 
 def load_specs():
     cache_specs()
-    specs_idents = iglob('./specs/_cache/*.json')
+    specs_idents = iglob('specs/_cache/*.json')
     specs = {}
     for filename in specs_idents:
         with open(filename, 'r', encoding='utf-8') as specfile:

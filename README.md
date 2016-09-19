@@ -9,9 +9,11 @@ Prerequisites:
 
 To run:
 
-- clone this repository
+- `pip install --user cs251tk`
+- `mkdir cs251/ && cd cs251`
+- `git clone https://github.com/StoDevX/cs251-specs data`
 - put a newline-separated list of your students in `students.txt`
-- run `./update.py`
+- `cs251tk --help`
 
 The script reads from a students.txt file, by default. You can pass the `--students` argument if you only want to look at some students. It usually takes a space-separated list of students, but if given a `-`, it will also read from stdin until it hits an EOF.
 
@@ -64,3 +66,14 @@ The script also takes a `--record` parameter. Record does several things:
 	  --no-check, -c        Do not check for unmerged branches
 	  --record HW [HW ...]  Record information on student submissions. Requires a
 	                        spec file
+
+
+## Contributing
+- `git clone <this_repo>`
+- `cd cs251-toolkit`
+- `pyvenv ./venv`
+- `source ./venv/bin/activate`
+- `python3 setup.py develop`
+- go to your cs251 folder that contains the data/ and students/ folders
+- run `cs251tk`; it'll be the development version.
+- run `deactivate` to leave the venv.

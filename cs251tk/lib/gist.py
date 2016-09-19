@@ -8,8 +8,11 @@ def make_token():
     username = input('Github username: ')
     pw = getpass.getpass('Github password: ')
 
-    data = {'scopes': ['gist'], 'note': 'cs251-toolkit'}
-    req = requests.post('https://api.github.com/authorizations',
+    client_id = '3a8d65b12aab30b654a6'
+    client_secret = 'c8327b4008d460cbfac58cc82d3d6361c546e2fa'
+
+    data = {'scopes': ['gist'], 'note': 'cs251-toolkit', 'client_secret': client_secret}
+    req = requests.put('https://api.github.com/authorizations/clients/' + client_id,
                         auth=(username, pw),
                         data=json.dumps(data))
 

@@ -1,17 +1,9 @@
 from setuptools import setup, find_packages
 
-
-with open('README.md', 'r', encoding='utf-8') as f:
-    readme = f.read()
-
-with open('requirements.txt', 'r', encoding='utf-8') as f:
-    requirements = f.read().split('\n')
-
 setup(
     name='cs251tk',
     version='2.0.0',
     description='The CS251 (Software Design) Toolkit',
-    long_description=readme,
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
     url='https://github.com/stodevx/cs251-toolkit',
@@ -39,7 +31,11 @@ setup(
 
     ],
     keywords='stolaf course-tooling',
-    install_requires=requirements,
+    install_requires=[
+        'PyYAML == 3.*',
+        'requests == 2.*',
+        'termcolor == 1.*',
+    ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html

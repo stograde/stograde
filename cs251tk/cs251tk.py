@@ -1,17 +1,15 @@
-#!/usr/bin/env python3
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs
 import functools
 
-from lib import check_for_updates
-from lib import save_recordings
-from lib import single_student
-from lib import progress_bar
-from lib import process_args
-from lib import load_specs
-from lib import tabulate
-from lib import chdir
-
+from .lib import check_for_updates
+from .lib import save_recordings
+from .lib import single_student
+from .lib import progress_bar
+from .lib import process_args
+from .lib import load_specs
+from .lib import tabulate
+from .lib import chdir
 
 def make_progress_bar(students, no_progress=False):
     if no_progress:

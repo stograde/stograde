@@ -7,16 +7,15 @@ from .specs import get_filenames
 from .helpers import chdir
 from .run import run
 
-STOGIT = 'git@stogit.cs.stolaf.edu:sd-s16'
 
 
 def remove(student):
     shutil.rmtree(student)
 
 
-def clone(student):
+def clone(student, baseurl):
     if not path.exists(student):
-        run(['git', 'clone', '--quiet', '{}/{}.git'.format(STOGIT, student)])
+        run(['git', 'clone', '--quiet', '{}/{}.git'.format(baseurl, student)])
 
 
 def has_changed_files():
@@ -135,10 +134,12 @@ def reset(student, args):
 
 
 def single_student(student, args=None, specs=None, basedir=None):
-    args = {} if args is None else args
-    specs = {} if specs is None else specs
+    if not args:
+        raise Exception('`args` should not be none')
+    if not specs:
+        raise Exception('`specs` should not be none')
     if not basedir:
-        raise Exception('basedir should not be none')
+        raise Exception('`basedir` should not be none')
 
     recordings = []
     retval = {}
@@ -146,7 +147,7 @@ def single_student(student, args=None, specs=None, basedir=None):
     if args['clean']:
         remove(student)
 
-    clone(student)
+    clone(student, args['stogit'])
 
     try:
         stash(student, args)

@@ -141,7 +141,7 @@ If you're running this on something other than a lab machine, you'll want to hav
 
 
 ###### In a bit more detail
-`--record`'s actions are controlled by the [homework specs](https:/github.com/stodevx/cs251-specs) in the `data/specs` folder.
+`--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` folder.
 
 ```yaml
 ---

@@ -19,3 +19,7 @@ __pycache__/
 !specs/.gitkeep
 !students/.gitkeep
 !projects/.gitkeep
+
+build/
+*.egg*/
+venv/

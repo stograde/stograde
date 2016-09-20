@@ -64,7 +64,8 @@ def main():
                     records.append(recording)
 
         else:
-            for (result, recording) in map(single, args['students']):
+            for student in args['students']:
+                result, recording = single(student)
                 print_progress(result['username'])
                 results.append(result)
                 records.append(recording)

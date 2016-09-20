@@ -2,6 +2,7 @@ import requests
 import json
 import getpass
 import yaml
+from .config import load_config, save_config
 
 
 def make_token():
@@ -13,22 +14,22 @@ def make_token():
 
     data = {'scopes': ['gist'], 'note': 'cs251-toolkit', 'client_secret': client_secret}
     req = requests.put('https://api.github.com/authorizations/clients/' + client_id,
-                        auth=(username, pw),
-                        data=json.dumps(data))
+                       auth=(username, pw),
+                       data=json.dumps(data))
 
     result = req.json()
     return result['token']
 
 
 def get_token():
-    with open('.cs251toolkitrc.yaml', 'r', encoding='utf-8') as infile:
-        data = yaml.safe_load(infile.read())
-        token = data.get('github token', None)
+    has_config, config = load_config()
+    token = config.get('github token', None)
+
     if not token:
         token = make_token()
-        data['github token'] = token
-        with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as file:
-            file.write(yaml.safe_dump(data, default_flow_style=False))
+        config['github token'] = token
+        save_config(config)
+
     return token
 
 

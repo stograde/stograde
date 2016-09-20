@@ -3,6 +3,7 @@ import datetime
 import yaml
 from .run import run
 from .helpers import warn
+from .config import load_config, save_config
 from update_checker import update_check
 
 version = '2.0.5'
@@ -10,27 +11,7 @@ version = '2.0.5'
 
 def check_for_updates():
     '''Check for updates from git, at most once an hour'''
-    has_config = False
-    with open('.cs251toolkitrc.yaml', 'a+', encoding='utf-8') as config_file:
-        config_file.seek(0)
-        try:
-            contents = config_file.read()
-        except OSError as err:
-            warn(err)
-            return
-
-    if not contents:
-        contents = ''
-
-    try:
-        config = yaml.safe_load(contents)
-    except:
-        config = {}
-
-    if not config:
-        config = {}
-    else:
-        has_config = True
+    has_config, config = load_config()
 
     now = datetime.datetime.utcnow()
     one_hour = datetime.timedelta(hours=1)
@@ -46,6 +27,4 @@ def check_for_updates():
 
     config['last checked'] = last_checked
 
-    with open('.cs251toolkitrc.yaml', 'w', encoding='utf-8') as config_file:
-        contents = yaml.safe_dump(config, default_flow_style=False)
-        config_file.write(contents)
+    save_config(config)

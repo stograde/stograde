@@ -92,10 +92,12 @@ def tabulate(students, sort_by, partials):
         warn('no homework assignments were given to tabulate')
         warn('from these students:')
         warn(students)
+        return
     if not lab_nums:
         warn('no labs were given to tabulate')
         warn('from these students:')
         warn(students)
+        return
 
     max_hwk_num = max(flatten(homework_nums))
     max_lab_num = max(flatten(lab_nums))

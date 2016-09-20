@@ -123,7 +123,7 @@ You can use the `--section`, `--my`, `--all`, and `--students` arguments to filt
 - `--all` is a superset of all sections
 - `--students` overrides all of the other options. For example, `--students rives piersonv` would only look at those two students.
 
-You can use the `--sort-by` argument to sort the table, as well. `name` is the default, sorting by username, and `count` sorts by the number of submissions.
+You can use the `--sort-by` argument to sort the table, as well. `name` is the default, sorting by username, and `count` sorts by the number of completed submissions.
 
 If you want the table as quickly as possible, pass `-n`/`--no-check` to bypass the remote repository check.
 

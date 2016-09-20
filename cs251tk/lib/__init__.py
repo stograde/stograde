@@ -1,7 +1,7 @@
 '''Library of functions that create the toolkit'''
 
 from .args import process_args
-from .check_for_updates import check_for_updates
+# from .check_for_updates import check_for_updates
 from .columnize import tabulate
 from .format_collected_data import format_collected_data
 from .helpers import chdir

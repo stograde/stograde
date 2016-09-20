@@ -72,7 +72,7 @@ def format_file(filename, file_info):
 
     if file_info['missing']:
         note = 'File not found. `ls .` says that these files exist:\n'
-        directory_listing = '\n'.join(file_info.get('other files', []))
+        directory_listing = indent('\n'.join(file_info.get('other files', [])), ' '*4)
         if file_info['optional']:
             file_header = file_header.strip()
             file_header += ' (**optional submission**)\n'

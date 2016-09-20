@@ -1,4 +1,8 @@
+import sys
 from setuptools import setup, find_packages
+
+if sys.version_info < (3, 4):
+    sys.exit("The toolkit requires Python 3.4 or greater.\nYou have {}".format(sys.version_info))
 
 setup(
     name='cs251tk',
@@ -28,7 +32,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-
     ],
     keywords='stolaf course-tooling',
     install_requires=[

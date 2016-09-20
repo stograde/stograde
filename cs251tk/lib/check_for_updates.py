@@ -5,7 +5,7 @@ from .run import run
 from .helpers import warn
 from update_checker import update_check
 
-version='2.0.5'
+version = '2.0.5'
 
 
 def check_for_updates():

@@ -12,6 +12,7 @@ from .lib import load_specs
 from .lib import tabulate
 from .lib import chdir
 
+
 def make_progress_bar(students, no_progress=False):
     if no_progress:
         return lambda _: None

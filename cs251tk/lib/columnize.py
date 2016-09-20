@@ -85,8 +85,8 @@ def tabulate(students, sort_by, partials):
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials
 
-    homework_nums = [pluck(s['homeworks'], 'number') for s in students]
-    lab_nums = [pluck(s['labs'], 'number') for s in students]
+    homework_nums = [pluck(s.get('homeworks', []), 'number') for s in students]
+    lab_nums = [pluck(s.get('labs', []), 'number') for s in students]
 
     if not homework_nums:
         warn('no homework assignments were given to tabulate')

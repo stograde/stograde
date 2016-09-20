@@ -35,9 +35,13 @@ The _only_ tricky thing is that you have to remember to run `source ./venv/bin/a
 
 ```console
 pip install cs251tk
+# or, if you didn't do the virtualenv, run
+# pip3 install --user cs251tk
 ```
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
+
+> When you need to update the toolkit, use `pip install --no-cache --update cs251tk` (or `pip3 install --user --no-cache --update cs251tk` if you didn't use the virtualenv.)
 
 
 ##### Grab the course specs

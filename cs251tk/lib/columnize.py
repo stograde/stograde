@@ -3,6 +3,7 @@ import re
 from sys import stdout
 from termcolor import colored
 from .helpers import pluck
+from .helpers import flatten
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -84,8 +85,20 @@ def tabulate(students, sort_by, partials):
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials
 
-    max_hwk_num = max([max(pluck(s['homeworks'], 'number')) for s in students])
-    max_lab_num = max([max(pluck(s['labs'], 'number')) for s in students])
+    homework_nums = [pluck(s['homeworks'], 'number') for s in students]
+    lab_nums = [pluck(s['labs'], 'number') for s in students]
+
+    if not homework_nums:
+        warn('no homework assignments were given to tabulate')
+        warn('from these students:')
+        warn(students)
+    if not lab_nums:
+        warn('no labs were given to tabulate')
+        warn('from these students:')
+        warn(students)
+
+    max_hwk_num = max(flatten(homework_nums))
+    max_lab_num = max(flatten(lab_nums))
 
     # be sure that the longest username will be at least 4 chars
     usernames = [user['username'] for user in students] + ['USER']

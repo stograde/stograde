@@ -1,52 +1,19 @@
 from textwrap import indent
 import traceback
-from collections import defaultdict
-from cs251tk.common import group_by as group
 
 
-def format_collected_data(records, group_by: str, debug):
-    """Turn the list of recordings into a list of nicely-formatted results.
-
-    `grouped_records` will be a list of pairs: (assignment, recordings), where
-    `assignment` is the assignment name and `recordings` is a list of recordings
-    (one per student).
-    """
-
-    if group_by == 'assignment':
-        grouped_records = group(records, lambda rec: rec.get('spec', None))
-    elif group_by == 'student':
-        grouped_records = group(records, lambda rec: rec.get('student', None))
-    else:
-        # not entirely sure what this'll do
-        grouped_records = records
-
-    results = defaultdict(list)
-    for key, recordings in grouped_records:
-        for content in recordings:
-            results[key].append(format_assignment(content, debug=debug))
-
-    return results
-
-
-def format_assignment(recording, debug=False):
+def format_assignment_markdown(recording, debug=False):
     """Given a single recording, format it into a markdown file.
 
     Each recording will only have one student.
+
+    Returns a {content: str, student: str, type: str} dict.
     """
 
     try:
         files = format_files_list(recording.get('files', {}))
-        warnings = [format_warning(warning, value) for warning, value in recording['warnings'].items()]
-        warnings = [w for w in warnings if w]
-
-        header = '# {spec} – {student}\n'.format_map(recording)
-
-        if warnings:
-            header += '\n' + '\n'.join(warnings) + '\n'
-
-        if files:
-            files = '\n\n' + files
-
+        warnings = format_warnings(recording.get('warnings', {}).items())
+        header = format_header(recording, warnings)
         output = (header + files) + '\n\n'
 
     except Exception as err:
@@ -62,7 +29,21 @@ def format_assignment(recording, debug=False):
 
 
 def format_files_list(files):
-    return '\n\n'.join([format_file(*f) for f in files.items()])
+    return '\n\n' + '\n\n'.join([format_file(name, info) for name, info in files.items()])
+
+
+def format_warnings(warnings):
+    formatted = [format_warning(warning, value) for warning, value in warnings]
+    return [w for w in formatted if w]
+
+
+def format_header(recording, warnings):
+    header = '# {spec} – {student}\n'.format_map(recording)
+
+    if warnings:
+        header += '\n' + '\n'.join(warnings) + '\n'
+
+    return header
 
 
 def format_warning(w, value):
@@ -137,11 +118,3 @@ def format_file_results(test_results):
             result += '\n' + '(truncated after {truncated after})'.format_map(test)
 
     return result
-
-
-def em(string):
-    return '**' + string + '**'
-
-
-def code(string):
-    return '`' + string + '`'

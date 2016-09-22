@@ -2,9 +2,7 @@ import os
 from logging import warning
 from typing import List, Dict
 
-from cs251tk.common import flatten
-from cs251tk.common import group_by
-from cs251tk.formatters import markdown, gist
+from cs251tk.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
 
@@ -43,9 +41,11 @@ def send_recording_to_gist(table: str, results: List[Dict], assignment: str) -> 
 
 def save_recordings(records: List[Dict], debug=False):
     """Take the list of recordings, group by assignment, then save to disk"""
-    grouped_records = group_by(records, lambda rec: rec.get('spec', None))
 
-    results = markdown(grouped_records, 'assignment', debug)
+    results = format_collected_data(records,
+                                    group_by='assignment',
+                                    formatter=markdown,
+                                    debug=debug)
 
     for assignment, content in results.items():
         record_recording_to_disk(content, assignment)
@@ -53,9 +53,11 @@ def save_recordings(records: List[Dict], debug=False):
 
 def gist_recordings(records: List[Dict], table: str, debug=False):
     """Take the list of recordings, group by assignment, then post to a private gist"""
-    grouped_records = group_by(records, lambda rec: rec.get('spec', None))
 
-    results = gist(grouped_records, debug)
+    results = format_collected_data(records,
+                                    group_by='assignment',
+                                    formatter=gist,
+                                    debug=debug)
 
     for assignment, content in results.items():
         # clean up the table and make it plain ascii

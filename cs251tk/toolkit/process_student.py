@@ -1,5 +1,5 @@
 from cs251tk.student import remove
-from cs251tk.student import clone
+from cs251tk.student import clone_student
 from cs251tk.student import stash
 from cs251tk.student import pull
 from cs251tk.student import checkout_day
@@ -19,7 +19,7 @@ def process_student(student, args=None, specs=None, basedir=None):
     if args['clean']:
         remove(student)
 
-    clone(student, baseurl=args['stogit'])
+    clone_student(student, baseurl=args['stogit'])
 
     try:
         stash(student, no_update=args['no_update'])

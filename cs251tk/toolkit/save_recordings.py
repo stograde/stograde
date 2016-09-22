@@ -4,8 +4,8 @@ from logging import warning
 from cs251tk.common import format_collected_data
 from cs251tk.common import flatten
 from cs251tk.common import group_by
-from cs251tk.toolkit import post_gist
-from cs251tk.toolkit import asciiify
+from .gist import post_gist
+from .tabulate import asciiify
 
 
 def record_recording_to_disk(results, file_identifier):

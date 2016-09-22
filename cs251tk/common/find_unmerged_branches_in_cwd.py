@@ -1,4 +1,4 @@
-from cs251tk.common import run
+from .run import run
 
 
 # TODO: This is a bit slow. Look for a faster way to check.

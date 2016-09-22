@@ -8,7 +8,7 @@ from logging import warning
 
 from cs251tk.common import run
 from cs251tk.common import flatten
-from cs251tk.toolkit import get_students
+from .get_students import get_students
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 

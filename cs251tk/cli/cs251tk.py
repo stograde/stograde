@@ -7,7 +7,7 @@ from cs251tk.common import chdir
 from cs251tk.toolkit import process_student
 from cs251tk.toolkit import process_args
 from cs251tk.toolkit import progress_bar
-from cs251tk.toolkit import save_recordings
+from cs251tk.toolkit import save_recordings, gist_recordings
 from cs251tk.toolkit import tabulate
 from cs251tk.specs import load_all_specs
 
@@ -74,4 +74,7 @@ def main():
     if not args['quiet']:
         print('\n' + table)
 
-    save_recordings(records, table, destination='gist' if args['gist'] else 'file')
+    if args['gist']:
+        gist_recordings(records, table, debug=args['debug'])
+    else:
+        save_recordings(records, debug=args['debug'])

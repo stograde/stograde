@@ -49,15 +49,15 @@ def kinda_pipe_commands(cmd_string):
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = process_chunk(cmds[-1])
-    return (final_cmd, input_for_cmd)
+    return final_cmd, input_for_cmd
 
 
 def cat(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as infile:
-            return ('success', infile.read())
+            return 'success', infile.read()
     except Exception:
-        return ('failure', None)
+        return 'failure', None
 
 
 def process_file(filename, steps, options, spec, cwd, supporting_dir):
@@ -122,10 +122,10 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
         return results
 
     tests = flatten([
-        test_spec['commands']
-        for test_spec in spec.get('tests', {})
-        if test_spec['filename'] == filename
-    ])
+                        test_spec['commands']
+                        for test_spec in spec.get('tests', {})
+                        if test_spec['filename'] == filename
+                        ])
 
     for test in tests:
         if not test:

@@ -39,7 +39,9 @@ def parse_commits_for_assignments(commits):
 
 
 def send_recordings(*args):
-    print(*args)
+    for arg in args:
+        print()
+        print(arg)
 
 
 def main():

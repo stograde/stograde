@@ -11,6 +11,7 @@ def get_args():
     parser.add_argument('data', help='data', nargs='?')
     parser.add_argument('--stdin', action='store_true', help='read from stdin')
     parser.add_argument('--debug', action='store_true', help='enable debugging mode (throw errors, etc)')
+    parser.add_argument('--send', action='store_true', help='actually send emails')
 
     # parser.add_argument('STOGIT_URL', help='The stogit base URL')
     # parser.add_argument('USERNAME', help='Which student to process')

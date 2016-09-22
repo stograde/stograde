@@ -1,14 +1,17 @@
 import os
-import yaml
 from logging import warning
-from cs251tk.common import format_collected_data
+from typing import List, Dict
+
 from cs251tk.common import flatten
 from cs251tk.common import group_by
+from cs251tk.formatters import markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
 
+Url = str
 
-def record_recording_to_disk(results, file_identifier):
+
+def record_recording_to_disk(results: List[Dict], file_identifier: str) -> None:
     results = sorted(results, key=lambda file: file['student'])
     results = [file['content'] for file in results]
     output = '\n'.join(results)
@@ -20,47 +23,42 @@ def record_recording_to_disk(results, file_identifier):
         warning('error! could not write recording:', err)
 
 
-def send_recording_to_gist(table, results, assignment):
+def send_recording_to_gist(table: str, results: List[Dict], assignment: str) -> Url:
+    """Publish a table/result pair to a private gist"""
     # the - at the front is so that github sees it first and names the gist
     # after the homework
     table_filename = '-cs251 report %s table.txt' % assignment
     files = {
         table_filename: {'content': table},
     }
+
     for file in results:
         filename = file['student'] + '.' + file['type']
         files[filename] = {
             'content': file['content'].strip()
         }
+
     return post_gist('log for ' + assignment, files)
 
 
-def save_recordings(records, table, destination='file', debug=False):
-    # clean up the table and make it plain ascii
-    table = asciiify(table)
-
-    results = {}
-    records = list(flatten(records))
+def save_recordings(records: List[Dict], debug=False):
+    """Take the list of recordings, group by assignment, then save to disk"""
     grouped_records = group_by(records, lambda rec: rec.get('spec', None))
 
-    for assignment, recordings in grouped_records:
-        for content in recordings:
-            if debug:
-                formatted = '---\n' + yaml.safe_dump(content, default_flow_style=False)
-            else:
-                formatted = format_collected_data(content, destination == 'gist')
-
-            if assignment not in results:
-                results[assignment] = []
-            results[assignment].append({
-                'content': formatted,
-                'student': content['student'],
-                'type': 'yaml' if debug else 'md',
-            })
+    results = markdown(grouped_records, 'assignment', debug)
 
     for assignment, content in results.items():
-        if destination == 'file':
-            record_recording_to_disk(content, assignment)
-        elif destination == 'gist':
-            url = send_recording_to_gist(table, content, assignment)
-            print(assignment, 'results are available at', url)
+        record_recording_to_disk(content, assignment)
+
+
+def gist_recordings(records: List[Dict], table: str, debug=False):
+    """Take the list of recordings, group by assignment, then post to a private gist"""
+    grouped_records = group_by(records, lambda rec: rec.get('spec', None))
+
+    results = gist(grouped_records, debug)
+
+    for assignment, content in results.items():
+        # clean up the table and make it plain ascii
+        table = asciiify(table)
+        url = send_recording_to_gist(table, content, assignment)
+        print(assignment, 'results are available at', url)

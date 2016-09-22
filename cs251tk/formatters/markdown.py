@@ -1,34 +1,64 @@
-from textwrap import dedent, indent
+from textwrap import indent
 import traceback
+from collections import defaultdict
+from cs251tk.common import group_by as group
 
-GITHUB_MARKDOWN = False
+
+def format_collected_data(records, group_by: str, debug):
+    """Turn the list of recordings into a list of nicely-formatted results.
+
+    `grouped_records` will be a list of pairs: (assignment, recordings), where
+    `assignment` is the assignment name and `recordings` is a list of recordings
+    (one per student).
+    """
+
+    if group_by == 'assignment':
+        grouped_records = group(records, lambda rec: rec.get('spec', None))
+    elif group_by == 'student':
+        grouped_records = group(records, lambda rec: rec.get('student', None))
+    else:
+        # not entirely sure what this'll do
+        grouped_records = records
+
+    results = defaultdict(list)
+    for key, recordings in grouped_records:
+        for content in recordings:
+            results[key].append(format_assignment(content, debug=debug))
+
+    return results
 
 
-def format_collected_data(data, gist=False):
-    global GITHUB_MARKDOWN
-    GITHUB_MARKDOWN = gist
+def format_assignment(recording, debug=False):
+    """Given a single recording, format it into a markdown file.
+
+    Each recording will only have one student.
+    """
 
     try:
-        formatted_chunks = format_student(data)
-    except Exception:
-        formatted_chunks = indent(traceback.format_exc(), ' '*4)
-    return formatted_chunks + '\n\n'
+        files = format_files_list(recording.get('files', {}))
+        warnings = [format_warning(warning, value) for warning, value in recording['warnings'].items()]
+        warnings = [w for w in warnings if w]
 
+        header = '# {spec} – {student}\n'.format_map(recording)
 
-def format_student(data):
-    files = format_files_list(data.get('files', {}))
-    warnings = [format_warning(warning, value) for warning, value in data['warnings'].items()]
-    warnings = [w for w in warnings if w]
+        if warnings:
+            header += '\n' + '\n'.join(warnings) + '\n'
 
-    header = '# {spec} – {student}\n'.format_map(data)
+        if files:
+            files = '\n\n' + files
 
-    if warnings:
-        header += '\n' + '\n'.join(warnings) + '\n'
+        output = (header + files) + '\n\n'
 
-    if files:
-        files = '\n\n' + files
+    except Exception as err:
+        if debug:
+            raise err
+        output = indent(traceback.format_exc(), ' '*4) + '\n\n'
 
-    return dedent(header + files)
+    return {
+        'content': output,
+        'student': recording['student'],
+        'type': 'md',
+    }
 
 
 def format_files_list(files):
@@ -38,11 +68,14 @@ def format_files_list(files):
 def format_warning(w, value):
     if w == 'no submission':
         return 'No submission found.\n'
+
     elif w == 'unmerged branches' and value:
         branches = ['  - ' + b for b in value]
         return 'Repository has unmerged branches:\n{}'.format('\n'.join(branches))
+
     elif value:
         return 'Warning: ' + value
+
     else:
         return ''
 
@@ -62,9 +95,11 @@ def format_file(filename, file_info):
     if file_info['missing']:
         note = 'File not found. `ls .` says that these files exist:\n'
         directory_listing = indent('\n'.join(file_info.get('other files', [])), ' '*4)
+
         if file_info['optional']:
             file_header = file_header.strip()
             file_header += ' (**optional submission**)\n'
+
         return '\n'.join([file_header, note, directory_listing + '\n\n'])
 
     return '\n'.join([file_header, contents, compilation, test_results])
@@ -73,10 +108,6 @@ def format_file(filename, file_info):
 def format_file_contents(contents, info):
     if not contents:
         return ''
-    if GITHUB_MARKDOWN:
-        return '```{}\n{}\n```'.format(
-            identify_type(info['filename']),
-            contents)
     return indent(contents, '    ')
 
 
@@ -85,34 +116,27 @@ def format_file_compilation(compilations):
     for status in compilations:
         output = status['output']
         command = '`{command}`'.format_map(status)
+
         if not output:
             result.append('**no warnings: {}**\n'.format(command))
         else:
             result.append('**warnings: {}**\n'.format(command))
             result.append(indent(output, ' '*4))
+
     return '\n'.join(result)
 
 
 def format_file_results(test_results):
     result = ''
+
     for test in test_results:
         header = '**results of `{command}`** (status: {status})\n'.format_map(test)
         output = indent(test['output'], '    ')
         result += header + '\n' + output
         if test['truncated']:
             result += '\n' + '(truncated after {truncated after})'.format_map(test)
+
     return result
-
-
-def identify_type(filename):
-    ext = filename.split('.')[-1]
-    if ext == filename or ext == 'txt':
-        return 'text'
-    elif ext in ['C', 'H', 'cpp', 'hpp', 'h']:
-        return 'cpp'
-    elif ext in ['c']:
-        return 'c'
-    return ext
 
 
 def em(string):

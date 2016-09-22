@@ -13,4 +13,3 @@ def checkout_day(student, day=None):
 def checkout_ref(student, ref):
     with chdir(student):
         run(['git', 'checkout', ref, '--force', '--quiet'])
-

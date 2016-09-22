@@ -1,10 +1,11 @@
 import copy
 import json
+import os
 from glob import iglob
 from itertools import zip_longest
-import os
-import yaml
 from logging import warning
+
+import yaml
 
 
 def load_all_specs():
@@ -66,7 +67,7 @@ def process_file_into_dict(file_list):
     filename = file_list[0]
     commands = [f for f in file_list[1:] if isinstance(f, str)]
     option_list = [opt for opt in file_list[1:] if isinstance(opt, dict)]
-    options = { k: v for opt in option_list for k, v in opt.items() }
+    options = {k: v for opt in option_list for k, v in opt.items()}
     return {
         'filename': filename,
         'commands': commands,
@@ -119,7 +120,8 @@ def cache_specs():
             continue
 
         if not jsonfile:
-            jsonfile = yamlfile.replace('specs/', 'specs/_cache/').replace('.yaml', '.json')
+            cached_file = yamlfile.replace('specs/', 'specs/_cache/')
+            jsonfile = cached_file.replace('.yaml', '.json')
 
         y_modtime = get_modification_time_ns(yamlfile)
         j_modtime = get_modification_time_ns(jsonfile)

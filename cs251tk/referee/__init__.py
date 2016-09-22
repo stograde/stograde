@@ -3,4 +3,3 @@ from .process_student import process_student
 from .parse_commits import parse_commits_for_assignments
 from .emailify import emailify
 from .send_email import send_email
-from .send_recordings import send_recordings

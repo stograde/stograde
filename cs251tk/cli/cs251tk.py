@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 
 from cs251tk.common import chdir
-from cs251tk.student import single_student
+from cs251tk.toolkit import process_student
 from cs251tk.toolkit import process_args
 from cs251tk.toolkit import progress_bar
 from cs251tk.toolkit import save_recordings
@@ -52,7 +52,7 @@ def main():
     records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        single = functools.partial(single_student, args=args, specs=specs, basedir=basedir)
+        single = functools.partial(process_student, args=args, specs=specs, basedir=basedir)
 
         if args['workers'] > 1:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:

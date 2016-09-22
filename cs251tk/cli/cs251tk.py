@@ -52,9 +52,9 @@ def main():
     records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        single = functools.partial(process_student, args=args, specs=specs, basedir=basedir)
+        single = functools.partial(process_student, args=args, specs=specs, basedir=basedir, debug=args['debug'])
 
-        if args['workers'] > 1:
+        if args['workers'] > 1 and not args['debug']:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:
                 futures = [pool.submit(single, student) for student in args['students']]
                 for future in as_completed(futures):

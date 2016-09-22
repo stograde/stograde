@@ -18,6 +18,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
     parser.add_argument('input', nargs='*',
                         help='A mixed list of students and assignments')
+    parser.add_argument('--debug', action='store_true', help='enable debugging mode (throw errors, implies -w1)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],

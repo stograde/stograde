@@ -8,7 +8,7 @@ from cs251tk.student import reset
 from cs251tk.student import analyze
 
 
-def process_student(student, args=None, specs=None, basedir=None):
+def process_student(student, args=None, specs=None, basedir=None, debug=False):
     if not args:
         raise Exception('`args` should not be none')
     if not specs:
@@ -27,7 +27,7 @@ def process_student(student, args=None, specs=None, basedir=None):
 
         checkout_day(student, day=args['day'])
 
-        recordings = record(student, specs, record=args['record'], basedir=basedir)
+        recordings = record(student, specs, record=args['record'], basedir=basedir, debug=debug)
         analysis = analyze(student, specs, check_for_branches=not args['no_check'])
 
         if args['day']:

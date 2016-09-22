@@ -75,6 +75,7 @@ def main():
                                               assignments=stringified_assignments,
                                               folder=repo_folder,
                                               specs=specs,
-                                              basedir=basedir)
+                                              basedir=basedir,
+                                              debug=args['debug'])
 
         send_recordings(name, email, results, recordings)

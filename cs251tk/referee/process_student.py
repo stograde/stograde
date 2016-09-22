@@ -5,14 +5,14 @@ from cs251tk.student import record
 from cs251tk.student import analyze
 
 
-def process_student(repo, branch, assignments, folder, specs, basedir):
+def process_student(repo, branch, assignments, folder, specs, basedir, debug=False):
     clone_url(repo)
 
     try:
         # this is usually going to be a no-op (for any commits on master)
         checkout_ref(folder, ref=branch)
 
-        recordings = record(folder, specs, record=assignments, basedir=basedir)
+        recordings = record(folder, specs, record=assignments, basedir=basedir, debug=debug)
         analysis = analyze(folder, specs, check_for_branches=False)
 
         remove(folder)
@@ -20,4 +20,6 @@ def process_student(repo, branch, assignments, folder, specs, basedir):
         return analysis, recordings
 
     except Exception as err:
+        if debug:
+            raise err
         return {'username': folder, 'error': err}, []

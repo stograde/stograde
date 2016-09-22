@@ -212,10 +212,12 @@ def markdownify_throws(spec_id, username, spec, basedir):
     return results
 
 
-def markdownify(spec_id, username, spec, basedir):
+def markdownify(spec_id, username, spec, basedir, debug):
     try:
         return markdownify_throws(spec_id, username, spec, basedir)
     except Exception as err:
+        if debug:
+            raise err
         return {
             'spec': spec_id,
             'student': username,

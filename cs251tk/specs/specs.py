@@ -8,10 +8,10 @@ from logging import warning
 import yaml
 
 
-def load_all_specs():
-    cache_specs()
+def load_all_specs(basedir='.'):
+    cache_specs(basedir)
 
-    spec_files = iglob('./data/specs/_cache/*.json')
+    spec_files = iglob(basedir + '/data/specs/_cache/*.json')
 
     specs = {}
     for filename in spec_files:
@@ -21,11 +21,11 @@ def load_all_specs():
     return specs
 
 
-def load_some_specs(idents):
-    cache_specs()
+def load_some_specs(idents, basedir='.'):
+    cache_specs(basedir)
 
-    wanted_spec_files = ['./data/specs/_cache/{}.json'.format(ident) for ident in idents]
-    all_spec_files = iglob('./data/specs/_cache/*.json')
+    wanted_spec_files = [basedir + '/data/specs/_cache/{}.json'.format(ident) for ident in idents]
+    all_spec_files = iglob(basedir + '/data/specs/_cache/*.json')
     spec_files = set(all_spec_files).intersection(wanted_spec_files)
 
     specs = {}
@@ -102,15 +102,15 @@ def get_modification_time_ns(path):
         return None
 
 
-def cache_specs():
+def cache_specs(basedir):
     """Convert YAML files to JSON to cache for future runs
 
     YAML parsing is incredibly slow, and JSON is quite fast,
     so we check modification times and convert any that have changed.
     """
-    os.makedirs('./data/specs/_cache', exist_ok=True)
-    yaml_specs = iglob('./data/specs/*.yaml')
-    json_specs = iglob('./data/specs/_cache/*.json')
+    os.makedirs(basedir + '/data/specs/_cache', exist_ok=True)
+    yaml_specs = iglob(basedir + '/data/specs/*.yaml')
+    json_specs = iglob(basedir + '/data/specs/_cache/*.json')
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
         if not yamlfile:
             # if yamlfile doesn't exist, then because we used zip_longest

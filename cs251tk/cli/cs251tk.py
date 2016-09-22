@@ -41,7 +41,7 @@ def main():
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))
 
-    specs = load_all_specs()
+    specs = load_all_specs(basedir)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

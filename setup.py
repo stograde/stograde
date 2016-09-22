@@ -44,8 +44,8 @@ setup(
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={
         'console_scripts': [
-            'cs251tk=cs251tk.cs251tk:main',
-            'referee=cs251tk.referee:main',
+            'cs251tk=cs251tk.cli.cs251tk:main',
+            'referee=cs251tk.cli.referee:main',
         ],
     },
 )

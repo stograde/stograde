@@ -1,30 +1,23 @@
 from cs251tk.student import remove
-from cs251tk.student import clone
+from cs251tk.student import clone_url
 from cs251tk.student import checkout_ref
 from cs251tk.student import record
 from cs251tk.student import analyze
 
 
-def process_student(student, ref, stogit, specs, basedir):
-    if not specs:
-        raise Exception('`specs` should not be none')
-    if not basedir:
-        raise Exception('`basedir` should not be none')
-
-    clone(student, baseurl=stogit)
+def process_student(repo, branch, assignments, folder, specs, basedir):
+    clone_url(repo)
 
     try:
-        checkout_ref(student, ref=ref)
+        # this is usually going to be a no-op (for any commits on master)
+        checkout_ref(folder, ref=branch)
 
-        record = discover_assignments(ref)
+        recordings = record(folder, specs, record=assignments, basedir=basedir)
+        analysis = analyze(folder, specs, check_for_branches=False)
 
-        recordings = record(student, specs, record=args['record'], basedir=basedir)
-        analysis = analyze(student, specs, no_check=False)
-
-        remove(student)
+        remove(folder)
 
         return analysis, recordings
 
     except Exception as err:
-        return {'username': student, 'error': err}, []
-
+        return {'username': folder, 'error': err}, []

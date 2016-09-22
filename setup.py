@@ -38,6 +38,7 @@ setup(
         'PyYAML == 3.*',
         'requests == 2.*',
         'termcolor == 1.*',
+        'natsort == 5.0.*'
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

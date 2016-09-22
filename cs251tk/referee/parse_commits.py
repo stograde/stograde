@@ -1,5 +1,6 @@
 from cs251tk.common import parse_commit_msg_for_assignments
 from cs251tk.common import flatten
+from natsort import natsorted
 
 
 def parse_commits_for_assignments(commits):
@@ -27,4 +28,5 @@ def parse_commits_for_assignments(commits):
         - 'hw13 complete; part of hw14'
         - [more messages in test/assignment_parsing_test]
     """
-    return sorted(set(flatten([parse_commit_msg_for_assignments(c['message']) for c in commits])))
+    assignments = [parse_commit_msg_for_assignments(c['message']) for c in commits]
+    return natsorted(set(flatten(assignments)))

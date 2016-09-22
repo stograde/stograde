@@ -45,6 +45,7 @@ setup(
     entry_points={
         'console_scripts': [
             'cs251tk=cs251tk.cs251tk:main',
+            'referee=cs251tk.referee:main',
         ],
     },
 )

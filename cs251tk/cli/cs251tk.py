@@ -9,7 +9,7 @@ from cs251tk.toolkit import process_args
 from cs251tk.toolkit import progress_bar
 from cs251tk.toolkit import save_recordings
 from cs251tk.toolkit import tabulate
-from cs251tk.specs import load_specs
+from cs251tk.specs import load_all_specs
 
 
 def make_progress_bar(students, no_progress=False):
@@ -41,7 +41,7 @@ def main():
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))
 
-    specs = load_specs()
+    specs = load_all_specs()
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

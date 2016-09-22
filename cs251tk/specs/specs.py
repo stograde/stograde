@@ -7,25 +7,49 @@ import yaml
 from logging import warning
 
 
-def load_specs():
+def load_all_specs():
     cache_specs()
-    specs_idents = iglob('./data/specs/_cache/*.json')
+
+    spec_files = iglob('./data/specs/_cache/*.json')
+
     specs = {}
-    for filename in specs_idents:
-        with open(filename, 'r', encoding='utf-8') as specfile:
-            spec = specfile.read()
-            if spec:
-                loaded = json.loads(spec)
-                name = filename.split('/')[-1].split('.')[0]
-                assignment = loaded['assignment']
-                if name != assignment:
-                    warning('assignment "{}" does not match the filename {}'.format(
-                        assignment,
-                        filename))
-                specs[assignment] = loaded
-            else:
-                warning('Blank spec "{}"'.format(filename))
+    for filename in spec_files:
+        assignement, spec = load_spec(filename)
+        specs[assignement] = spec
+
     return specs
+
+
+def load_some_specs(idents):
+    cache_specs()
+
+    wanted_spec_files = ['./data/specs/_cache/{}.json'.format(ident) for ident in idents]
+    all_spec_files = iglob('./data/specs/_cache/*.json')
+    spec_files = set(all_spec_files).intersection(wanted_spec_files)
+
+    specs = {}
+    for filename in spec_files:
+        assignement, spec = load_spec(filename)
+        specs[assignement] = spec
+
+    return specs
+
+
+def load_spec(filename):
+    with open(filename, 'r', encoding='utf-8') as specfile:
+        spec = specfile.read()
+        if spec:
+            loaded_spec = json.loads(spec)
+            name = filename.split('/')[-1].split('.')[0]
+            assignment = loaded_spec['assignment']
+            if name != assignment:
+                warning('assignment "{}" does not match the filename {}'.format(
+                    assignment,
+                    filename))
+            return assignment, loaded_spec
+        else:
+            warning('Blank spec "{}"'.format(filename))
+            return '', ''
 
 
 def json_date_handler(obj):

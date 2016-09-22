@@ -5,6 +5,7 @@ import re
 import textwrap
 from os import cpu_count
 from logging import warning
+from natsort import natsorted
 
 from cs251tk.common import run
 from cs251tk.common import flatten
@@ -77,7 +78,7 @@ def massage_args(args, students):
     # `--students amy max --students rives` becomes `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students'])) + people
     args['section'] = list(flatten(args['section']))
-    args['record'] = list(flatten(args['record'])) + assignments
+    args['record'] = natsorted(set(list(flatten(args['record'])) + assignments))
 
     if args['all']:
         args['section'] = ['all']

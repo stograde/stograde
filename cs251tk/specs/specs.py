@@ -1,13 +1,10 @@
-from os import remove as os_remove
-from os import utime as os_utime
-from os import stat as os_stat
-from os import makedirs as makedirs
-from itertools import zip_longest
-from glob import iglob
-import json
 import copy
-from .helpers import warn
+import json
+from glob import iglob
+from itertools import zip_longest
+import os
 import yaml
+from logging import warning
 
 
 def load_specs():
@@ -22,12 +19,12 @@ def load_specs():
                 name = filename.split('/')[-1].split('.')[0]
                 assignment = loaded['assignment']
                 if name != assignment:
-                    warn('assignment "{}" does not match the filename {}'.format(
+                    warning('assignment "{}" does not match the filename {}'.format(
                         assignment,
                         filename))
                 specs[assignment] = loaded
             else:
-                warn('Blank spec "{}"'.format(filename))
+                warning('Blank spec "{}"'.format(filename))
     return specs
 
 
@@ -75,16 +72,18 @@ def convert_spec(yaml_path, json_path):
 
 def get_modification_time_ns(path):
     try:
-        return os_stat(path).st_mtime_ns
+        return os.stat(path).st_mtime_ns
     except:
         return None
 
 
 def cache_specs():
-    # Convert YAML files to JSON to cache for future runs
-    # YAML parsing is incredibly slow, and JSON is quite fast,
-    # so we check modification times and convert any that have changed.
-    makedirs('./data/specs/_cache', exist_ok=True)
+    """Convert YAML files to JSON to cache for future runs
+
+    YAML parsing is incredibly slow, and JSON is quite fast,
+    so we check modification times and convert any that have changed.
+    """
+    os.makedirs('./data/specs/_cache', exist_ok=True)
     yaml_specs = iglob('./data/specs/*.yaml')
     json_specs = iglob('./data/specs/_cache/*.json')
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
@@ -92,7 +91,7 @@ def cache_specs():
             # if yamlfile doesn't exist, then because we used zip_longest
             # there has to be a jsonfile. we don't want any jsonfiles
             # that don't match the yamlfiles.
-            os_remove(jsonfile)
+            os.remove(jsonfile)
             continue
 
         if not jsonfile:
@@ -102,16 +101,16 @@ def cache_specs():
         j_modtime = get_modification_time_ns(jsonfile)
         if y_modtime != j_modtime:
             if j_modtime is not None:
-                warn('caching', yamlfile, 'to', jsonfile)
-                atime = os_stat(jsonfile).st_atime_ns
+                warning('caching', yamlfile, 'to', jsonfile)
+                atime = os.stat(jsonfile).st_atime_ns
             else:
-                atime = os_stat(yamlfile).st_atime_ns
+                atime = os.stat(yamlfile).st_atime_ns
 
             convert_spec(yamlfile, jsonfile)
             mtime = y_modtime
-            os_utime(jsonfile, ns=(atime, mtime))
+            os.utime(jsonfile, ns=(atime, mtime))
 
 
 def get_filenames(spec):
-    '''returns the list of files from an assignment spec'''
+    """returns the list of files from an assignment spec"""
     return [file['filename'] for file in spec['files']]

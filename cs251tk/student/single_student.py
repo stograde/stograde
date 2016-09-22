@@ -1,12 +1,12 @@
-from os import path, listdir, getcwd
-import shutil
 import re
-from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .markdownify import markdownify
-from .specs import get_filenames
-from .helpers import chdir
-from .run import run
+import shutil
+from os import path, listdir
 
+from cs251tk.common import chdir
+from cs251tk.common import find_unmerged_branches_in_cwd
+from cs251tk.common import run
+from cs251tk.specs import get_filenames
+from cs251tk.student.markdownify import markdownify
 
 
 def remove(student):
@@ -39,7 +39,7 @@ def pull(student, args):
 def checkout_day(student, args):
     with chdir(student):
         if args['day']:
-            rev_list = ['git', 'rev-list', '-n', '1', '--before="{} 18:00"'.format(day), 'master']
+            rev_list = ['git', 'rev-list', '-n', '1', '--before="{} 18:00"'.format(args['day']), 'master']
             _, rev = run(rev_list)
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
@@ -75,7 +75,7 @@ def record(student, specs, args, basedir):
 
 
 def parse_assignment_name(name):
-    '''returns the kind and number from an assignment name'''
+    """returns the kind and number from an assignment name"""
     matches = re.match(r'([a-zA-Z]+)(\d+)', name).groups()
     kind = matches[0]
     if kind == 'hw':
@@ -102,7 +102,7 @@ def analyze(student, specs, args):
                 continue
 
             with chdir(folder):
-                files_that_do_exist = set(listdir())
+                files_that_do_exist = set(listdir('.'))
                 files_which_should_exist = set(get_filenames(spec))
                 intersection_of = files_that_do_exist.intersection(files_which_should_exist)
 
@@ -142,7 +142,7 @@ def single_student(student, args=None, specs=None, basedir=None):
         raise Exception('`basedir` should not be none')
 
     recordings = []
-    retval = {}
+    # retval = {}
 
     if args['clean']:
         remove(student)

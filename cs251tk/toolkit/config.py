@@ -1,4 +1,5 @@
 import yaml
+from logging import warning
 
 
 def load_config():
@@ -8,7 +9,7 @@ def load_config():
         try:
             contents = config_file.read()
         except OSError as err:
-            warn(err)
+            warning(err)
             return
 
     if not contents:

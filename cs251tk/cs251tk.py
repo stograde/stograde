@@ -1,16 +1,15 @@
+import functools
+import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
-import sys
-import functools
 
-# from .lib import check_for_updates
-from .lib import save_recordings
-from .lib import single_student
-from .lib import progress_bar
-from .lib import process_args
-from .lib import load_specs
-from .lib import tabulate
-from .lib import chdir
+from cs251tk.common import chdir
+from cs251tk.student import single_student
+from cs251tk.toolkit import process_args
+from cs251tk.toolkit import progress_bar
+from cs251tk.toolkit import save_recordings
+from cs251tk.toolkit import tabulate
+from cs251tk.specs import load_specs
 
 
 def make_progress_bar(students, no_progress=False):

@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
-from sys import stderr
+import sys
 from shutil import get_terminal_size
 
-CHAR = '·' if stderr.encoding == 'UTF-8' else '='
+CHAR = '·' if sys.stderr.encoding == 'UTF-8' else '='
 
 
 def progress_bar(size, current, message=''):
@@ -17,13 +16,4 @@ def progress_bar(size, current, message=''):
 
     result = line + spacers
     result = result[:cols]
-    print(result, end='\r', file=stderr)
-
-
-if __name__ == '__main__':
-    from time import sleep
-
-    size = 10
-    for i in range(size + 1):
-        progress(size, i, ('a' * size)[:-i] + ' ' + str(i) + ' ' + str(size))
-        sleep(1)
+    print(result, end='\r', file=sys.stderr)

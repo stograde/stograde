@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
 import shlex
 import copy
-import sys
 import os
 from subprocess import STDOUT, check_output, \
                        CalledProcessError, TimeoutExpired
+
 
 # This env stuff is to catch glibc errors, because
 # it apparently prints to /dev/tty instead of stderr.
@@ -54,7 +53,3 @@ def run(cmd, *args, input=None, timeout=None, **kwargs):
         result = str(result, 'cp437')
 
     return (status, result)
-
-
-if __name__ == '__main__':
-    print(run([sys.argv[1]]))

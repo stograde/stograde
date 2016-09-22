@@ -1,11 +1,9 @@
-'''Check for unmerged branches in the current repository'''
-
-from .run import run
+from cs251tk.common import run
 
 
 # TODO: This is a bit slow. Look for a faster way to check.
 def find_unmerged_branches_in_cwd():
-    '''Check for unmerged branches in the current repository'''
+    """Check for unmerged branches in the current repository"""
     _, unmerged_branches = run(['git', 'branch', '-a', '--no-merged', 'master'])
     unmerged_branches = [s.strip()
                          for s in unmerged_branches.split('\n')

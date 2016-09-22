@@ -19,18 +19,19 @@ def process_student(student, args=None, specs=None, basedir=None):
     if args['clean']:
         remove(student)
 
-    clone(student, args['stogit'])
+    clone(student, baseurl=args['stogit'])
 
     try:
-        stash(student, args)
-        pull(student, args)
+        stash(student, no_update=args['no_update'])
+        pull(student, no_update=args['no_update'])
 
-        checkout_day(student, args)
+        checkout_day(student, day=args['day'])
 
-        recordings = record(student, specs, args, basedir)
-        analysis = analyze(student, specs, args)
+        recordings = record(student, specs, record=args['record'], basedir=basedir)
+        analysis = analyze(student, specs, no_check=args['no_check'])
 
-        reset(student, args)
+        if args['day']:
+            reset(student)
 
         return analysis, recordings
 

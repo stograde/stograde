@@ -1,5 +1,7 @@
+from cs251tk.common import chdir
+from cs251tk.common import run
 
-def reset(student, args):
+
+def reset(student):
     with chdir(student):
-        if args['day']:
-            run(['git', 'checkout', 'master', '--quiet', '--force'])
+        run(['git', 'checkout', 'master', '--quiet', '--force'])

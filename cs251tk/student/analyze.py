@@ -6,8 +6,8 @@ from cs251tk.common import find_unmerged_branches_in_cwd
 from cs251tk.specs import get_filenames
 
 
-def analyze(student, specs, args):
-    unmerged_branches = has_unmerged_branches(student, args)
+def analyze(student, specs, no_check):
+    unmerged_branches = has_unmerged_branches(student, no_check)
 
     results = {}
     with chdir(student):
@@ -65,9 +65,9 @@ def parse_assignment_name(name):
     return kind, num
 
 
-def has_unmerged_branches(student, args):
+def has_unmerged_branches(student, no_check):
     with chdir(student):
-        if args['no_check']:
+        if no_check:
             return None
         else:
             return find_unmerged_branches_in_cwd()

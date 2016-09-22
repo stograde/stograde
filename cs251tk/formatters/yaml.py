@@ -1,5 +1,5 @@
 import yaml
 
 
-def format_collected_data(content, debug):
+def format_assignment_yaml(content):
     return '---\n' + yaml.safe_dump(content, default_flow_style=False)

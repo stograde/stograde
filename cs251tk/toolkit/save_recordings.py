@@ -23,7 +23,8 @@ def record_recording_to_disk(results: List[Dict], file_identifier: str) -> None:
 
 def send_recording_to_gist(table: str, results: List[Dict], assignment: str) -> Url:
     """Publish a table/result pair to a private gist"""
-    # the - at the front is so that github sees it first and names the gist
+
+    # the "-" at the front is so that github sees it first and names the gist
     # after the homework
     table_filename = '-cs251 report %s table.txt' % assignment
     files = {

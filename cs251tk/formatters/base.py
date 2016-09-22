@@ -10,7 +10,8 @@ def format_collected_data(records, group_by: str, formatter, debug):
     (one per student).
 
     `formatter` is a formatter. It receives each recording, one at a time, and should
-    return a {content: str, student: str, type: str} dict for each recording.
+    return a {content: str, student: str, type: str, assignment: str} dict for each
+    recording.
     """
 
     if group_by == 'assignment':

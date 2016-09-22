@@ -7,7 +7,7 @@ def format_assignment_markdown(recording, debug=False):
 
     Each recording will only have one student.
 
-    Returns a {content: str, student: str, type: str} dict.
+    Returns a {content: str, student: str, type: str, assignment: str} dict.
     """
 
     try:
@@ -22,6 +22,7 @@ def format_assignment_markdown(recording, debug=False):
         output = indent(traceback.format_exc(), ' '*4) + '\n\n'
 
     return {
+        'assignment': recording['spec'],
         'content': output,
         'student': recording['student'],
         'type': 'md',

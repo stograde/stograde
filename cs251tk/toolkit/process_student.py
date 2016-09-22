@@ -27,7 +27,7 @@ def process_student(student, args=None, specs=None, basedir=None, debug=False):
 
         checkout_day(student, day=args['day'])
 
-        recordings = record(student, specs, record=args['record'], basedir=basedir, debug=debug)
+        recordings = record(student, specs, to_record=args['record'], basedir=basedir, debug=debug)
         analysis = analyze(student, specs, check_for_branches=not args['no_check'])
 
         if args['day']:

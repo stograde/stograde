@@ -49,11 +49,8 @@ def get_args():
                         help='Use an alternate stogit base URL')
 
     dates = parser.add_argument_group('time-based arguments')
-    dates.add_argument('--day', action='store',
-                       choices=['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'],
-                       help='Check out submissions as of 5pm on WEEKDAY')
-    dates.add_argument('--date', action='store', metavar='YYYY-MM-DD',
-                       help='Check out submissions as of 5pm on DATE')
+    dates.add_argument('--date', action='store', metavar='GIT_DATE',
+                       help='Check out last submissions on DATE')
 
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',
@@ -121,11 +118,5 @@ def process_args():
 
     # sort students and remove any duplicates
     args['students'] = sorted(set(args['students']))
-
-    # Set the day of checkout
-    if args['day']:
-        _, args['day'] = run(['date', '-v1w', '-v-' + args['day'], '+%Y-%m-%d'])
-    elif args['date']:
-        args['day'] = args['date']
 
     return args

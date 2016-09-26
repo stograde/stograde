@@ -38,10 +38,8 @@ def pull(student, args):
 
 def checkout_day(student, args):
     with chdir(student):
-        if args['day']:
-            rev_list = ['git', 'rev-list', '-n', '1', '--before="{} 18:00"'.format(day), 'master']
-            _, rev = run(rev_list)
-            run(['git', 'checkout', rev, '--force', '--quiet'])
+        if args['date']:
+            run(['git', 'checkout', 'master@{{{}}}'.format(args['date']), '--force', '--quiet'])
 
 
 def has_unmerged_branches(student, args):
@@ -129,7 +127,7 @@ def analyze(student, specs, args):
 
 def reset(student, args):
     with chdir(student):
-        if args['day']:
+        if args['date']:
             run(['git', 'checkout', 'master', '--quiet', '--force'])
 
 

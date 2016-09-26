@@ -50,7 +50,7 @@ def get_args():
 
     dates = parser.add_argument_group('time-based arguments')
     dates.add_argument('--date', action='store', metavar='GIT_DATE',
-                       help='Check out last submissions on DATE')
+                       help='Check out last submission on DATE (eg, "last week", "tea time", "2 hrs ago") (see `man git-rev-list`)')
 
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',

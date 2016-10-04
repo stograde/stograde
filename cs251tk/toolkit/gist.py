@@ -1,7 +1,7 @@
 import requests
 import json
 import getpass
-import yaml
+__all__ = ['post_gist']
 
 
 def get_auth():

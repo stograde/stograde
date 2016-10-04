@@ -1,9 +1,10 @@
-'''Make a nice table from the student results'''
+"""Make a nice table from the student results"""
 import re
 from sys import stdout
 from termcolor import colored
-from .helpers import pluck
-from .helpers import flatten
+from logging import warning
+from cs251tk.common import flatten
+from cs251tk.common import pluck
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -25,13 +26,13 @@ def asciiify(table):
 
 
 def pad(string, index):
-    '''Pad a string to the width of the stringified number'''
+    """Pad a string to the width of the stringified number"""
     padding_char = string if string == MISSING else ' '
     return string.ljust(len(str(index)), padding_char)
 
 
 def symbol(assignment):
-    '''Turn an assignment status into the symbol for the table'''
+    """Turn an assignment status into the symbol for the table"""
     if assignment['status'] == 'success':
         return str(assignment['number'])
     elif assignment['status'] == 'partial':
@@ -43,7 +44,7 @@ def symbol(assignment):
 
 
 def concat(lst, to_num):
-    '''Create the informative row of data for a list of assignment statuses'''
+    """Create the informative row of data for a list of assignment statuses"""
     nums = {item['number']: item for item in lst}
     lst = [pad(symbol(nums[idx]), idx)
            if idx in nums
@@ -53,12 +54,12 @@ def concat(lst, to_num):
 
 
 def find_columns(num):
-    '''Build the table headings for the assignment sections'''
+    """Build the table headings for the assignment sections"""
     return ' '.join([str(i) for i in range(1, num+1)])
 
 
 def columnize(student, longest_user, max_hwk_num, max_lab_num):
-    '''Build the data for each row of the information table'''
+    """Build the data for each row of the information table"""
     name = '{0:<{1}}'.format(student['username'], len(longest_user))
 
     if student.get('unmerged_branches', False):
@@ -81,7 +82,7 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
 
 
 def tabulate(students, sort_by, partials):
-    '''Actually build the table'''
+    """Actually build the table"""
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials
 
@@ -89,14 +90,14 @@ def tabulate(students, sort_by, partials):
     lab_nums = [pluck(s.get('labs', []), 'number') for s in students]
 
     if not homework_nums:
-        warn('no homework assignments were given to tabulate')
-        warn('from these students:')
-        warn(students)
+        warning('no homework assignments were given to tabulate')
+        warning('from these students:')
+        warning(students)
         return
     if not lab_nums:
-        warn('no labs were given to tabulate')
-        warn('from these students:')
-        warn(students)
+        warning('no labs were given to tabulate')
+        warning('from these students:')
+        warning(students)
         return
 
     max_hwk_num = max(flatten(homework_nums))

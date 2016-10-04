@@ -38,13 +38,15 @@ setup(
         'PyYAML == 3.*',
         'requests == 2.*',
         'termcolor == 1.*',
+        'natsort == 5.0.*'
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={
         'console_scripts': [
-            'cs251tk=cs251tk.cs251tk:main',
+            'cs251tk=cs251tk.cli.cs251tk:main',
+            'referee=cs251tk.cli.referee:main',
         ],
     },
 )

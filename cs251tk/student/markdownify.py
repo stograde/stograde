@@ -1,11 +1,12 @@
 import os
 import shlex
-from glob import glob
 from collections import OrderedDict
+from glob import glob
 from os.path import exists, join as path_join
-from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .run import run
-from .helpers import flatten
+
+from cs251tk.common import find_unmerged_branches_in_cwd
+from cs251tk.common import flatten
+from cs251tk.common import run
 
 
 def unicode_truncate(string, length, encoding='utf-8'):
@@ -14,7 +15,7 @@ def unicode_truncate(string, length, encoding='utf-8'):
 
 
 def expand_chunk(command_chunk):
-    '''Take a chunk of a command and expand it, like a shell'''
+    """Take a chunk of a command and expand it, like a shell"""
     # TODO: Support escaped globs
     if '*' in command_chunk:
         return glob(command_chunk)
@@ -22,7 +23,7 @@ def expand_chunk(command_chunk):
 
 
 def process_chunk(command):
-    '''Takes one piece of a pipeline and formats it for run_command'''
+    """Takes one piece of a pipeline and formats it for run_command"""
     # decode('unicode_escape') de-escapes the backslash-escaped strings.
     # like, it turns the \n from "echo Hawken \n 26" into an actual newline,
     # like a shell would.
@@ -48,15 +49,15 @@ def kinda_pipe_commands(cmd_string):
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = process_chunk(cmds[-1])
-    return (final_cmd, input_for_cmd)
+    return final_cmd, input_for_cmd
 
 
 def cat(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as infile:
-            return ('success', infile.read())
+            return 'success', infile.read()
     except Exception:
-        return ('failure', None)
+        return 'failure', None
 
 
 def process_file(filename, steps, options, spec, cwd, supporting_dir):
@@ -121,10 +122,10 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
         return results
 
     tests = flatten([
-        test_spec['commands']
-        for test_spec in spec.get('tests', {})
-        if test_spec['filename'] == filename
-    ])
+                        test_spec['commands']
+                        for test_spec in spec.get('tests', {})
+                        if test_spec['filename'] == filename
+                        ])
 
     for test in tests:
         if not test:
@@ -211,10 +212,12 @@ def markdownify_throws(spec_id, username, spec, basedir):
     return results
 
 
-def markdownify(spec_id, username, spec, basedir):
+def markdownify(spec_id, username, spec, basedir, debug):
     try:
         return markdownify_throws(spec_id, username, spec, basedir)
     except Exception as err:
+        if debug:
+            raise err
         return {
             'spec': spec_id,
             'student': username,

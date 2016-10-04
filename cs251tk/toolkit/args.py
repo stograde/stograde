@@ -1,22 +1,25 @@
-'''Deal with argument parsing for the toolkit'''
+"""Deal with argument parsing for the toolkit"""
 
 import argparse
-import textwrap
 import re
+import textwrap
 from os import cpu_count
-from .helpers import warn
-from .helpers import flatten
+from logging import warning
+from natsort import natsorted
+
+from cs251tk.common import run
+from cs251tk.common import flatten
 from .get_students import get_students
-from .run import run
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 
 
 def get_args():
-    '''Construct the argument list and parse the passed arguments'''
+    """Construct the argument list and parse the passed arguments"""
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
     parser.add_argument('input', nargs='*',
                         help='A mixed list of students and assignments')
+    parser.add_argument('--debug', action='store_true', help='enable debugging mode (throw errors, implies -w1)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -60,14 +63,10 @@ def get_args():
     grading.add_argument('--gist', action='store_true',
                          help='Post overview table and student recordings as a private gist')
 
-    return vars(parser.parse_args())
+    return parser
 
 
-def process_args():
-    '''Process the arguments and create usable data from them'''
-    students = get_students()
-    args = get_args()
-
+def massage_args(args, students):
     assignments = [l for l in args['input'] if re.match(ASSIGNMENT_REGEX, l)]
     people = [l for l in args['input'] if not re.match(ASSIGNMENT_REGEX, l)]
 
@@ -76,7 +75,7 @@ def process_args():
     # `--students amy max --students rives` becomes `[[amy, max], [rives]]`
     args['students'] = list(flatten(args['students'])) + people
     args['section'] = list(flatten(args['section']))
-    args['record'] = list(flatten(args['record'])) + assignments
+    args['record'] = natsorted(set(list(flatten(args['record'])) + assignments))
 
     if args['all']:
         args['section'] = ['all']
@@ -88,7 +87,7 @@ def process_args():
     # support 'my' students and 'all' students
     if 'my' in args['section']:
         if 'my' not in students:
-            warn('There is no [my] section in students.txt')
+            warning('There is no [my] section in students.txt')
             return
         args['students'] = students['my']
 
@@ -103,20 +102,28 @@ def process_args():
             try:
                 sections.append(students['section-' + section] or students[section])
             except KeyError:
-                warn('Section "{}" could not be found in ./students.txt'.format(section))
+                warning('Section "{}" could not be found in ./students.txt'.format(section))
         args['students'] = list(flatten(sections))
 
     # stop if we still don't have any students
     if not args['students']:
-        msg = textwrap.dedent('''
+        msg = textwrap.dedent("""
             Could not find a list of students. You must provide the
             `--students` argument, the `--section` argument, or a
             ./students.txt file.
-        ''')
-        warn(textwrap.fill(msg))
+        """)
+        warning(textwrap.fill(msg))
         return
 
     # sort students and remove any duplicates
     args['students'] = sorted(set(args['students']))
 
     return args
+
+
+def process_args():
+    """Process the arguments and create usable data from them"""
+    parser = get_args()
+    args = vars(parser.parse_args())
+    students = get_students()
+    return massage_args(args, students)

@@ -1,16 +1,15 @@
+import functools
+import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
-import sys
-import functools
 
-# from .lib import check_for_updates
-from .lib import save_recordings
-from .lib import single_student
-from .lib import progress_bar
-from .lib import process_args
-from .lib import load_specs
-from .lib import tabulate
-from .lib import chdir
+from cs251tk.common import chdir
+from cs251tk.toolkit import process_student
+from cs251tk.toolkit import process_args
+from cs251tk.toolkit import progress_bar
+from cs251tk.toolkit import save_recordings, gist_recordings
+from cs251tk.toolkit import tabulate
+from cs251tk.specs import load_all_specs
 
 
 def make_progress_bar(students, no_progress=False):
@@ -42,7 +41,7 @@ def main():
     if args['day']:
         print('Checking out {} at 5:00pm'.format(args['day']))
 
-    specs = load_specs()
+    specs = load_all_specs(basedir)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)
@@ -53,9 +52,9 @@ def main():
     records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        single = functools.partial(single_student, args=args, specs=specs, basedir=basedir)
+        single = functools.partial(process_student, args=args, specs=specs, basedir=basedir, debug=args['debug'])
 
-        if args['workers'] > 1:
+        if args['workers'] > 1 and not args['debug']:
             with ProcessPoolExecutor(max_workers=args['workers']) as pool:
                 futures = [pool.submit(single, student) for student in args['students']]
                 for future in as_completed(futures):
@@ -75,4 +74,7 @@ def main():
     if not args['quiet']:
         print('\n' + table)
 
-    save_recordings(records, table, destination='gist' if args['gist'] else 'file')
+    if args['gist']:
+        gist_recordings(records, table, debug=args['debug'])
+    else:
+        save_recordings(records, debug=args['debug'])

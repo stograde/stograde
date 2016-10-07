@@ -10,7 +10,8 @@ def record(student, specs, to_record, basedir, debug):
 
     with chdir(student):
         for one_to_record in to_record:
-            print('recording', one_to_record)
+            if debug:
+                print('recording', one_to_record)
             if path.exists(one_to_record):
                 with chdir(one_to_record):
                     recording = markdownify(one_to_record, student, specs[one_to_record], basedir, debug)

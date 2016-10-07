@@ -38,8 +38,8 @@ def main():
     basedir = getcwd()
     # check_for_updates()
 
-    if args['day']:
-        print('Checking out {} at 5:00pm'.format(args['day']))
+    if args['date']:
+        print('Checking out {}'.format(args['date']))
 
     specs = load_all_specs(basedir)
     if not specs:

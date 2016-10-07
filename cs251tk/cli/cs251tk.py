@@ -61,14 +61,14 @@ def main():
                     result, recording = future.result()
                     print_progress(result['username'])
                     results.append(result)
-                    records.append(recording)
+                    records.extend(recording)
 
         else:
             for student in args['students']:
                 result, recording = single(student)
                 print_progress(result['username'])
                 results.append(result)
-                records.append(recording)
+                records.extend(recording)
 
     table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
     if not args['quiet']:

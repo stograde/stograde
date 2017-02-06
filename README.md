@@ -17,11 +17,11 @@ Prerequisites: macOS/Linux, Python 3.4+, git.
 
 ##### Make the folder
 ```console
-mkdir cs251/
-cd cs251
-pyvenv ./venv
-source ./venv/bin/activate  # or activate.csh, or activate.fish
-# deactivate  # will exit the venv
+$ mkdir cs251/
+$ cd cs251
+$ pyvenv ./venv
+$ source ./venv/bin/activate  # or activate.csh, or activate.fish
+$ # deactivate  # will exit the venv
 ```
 
 This will set up a "virtual environment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
@@ -34,9 +34,9 @@ The _only_ tricky thing is that you have to remember to run `source ./venv/bin/a
 ##### Install the toolkit
 
 ```console
-pip install cs251tk
-# or, if you didn't do the virtualenv, run
-# pip3 install --user cs251tk
+$ pip install cs251tk
+$ # or, if you didn't do the virtualenv, run
+$ # pip3 install --user cs251tk
 ```
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
@@ -47,7 +47,7 @@ The toolkit is distributed via `pip`, which is (more or less) Python's packaging
 ##### Grab the course specs
 
 ```console
-git clone https://github.com/StoDevX/cs251-specs data
+$ git clone https://github.com/StoDevX/cs251-specs data
 ```
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample input, they should go under a `supporting/hw#` folder that matches the assignment name.
@@ -55,7 +55,7 @@ The toolkit expects to be run in a folder that contains both a `data` folder and
 ##### List your students
 
 ```console
-touch students.txt
+$ touch students.txt
 ```
 
 Put a newline-separated list of your students in `./students.txt`.
@@ -88,7 +88,7 @@ magnusow
 > Please only run this in your `cs251` folder. I know it makes at least one folder in whatever directory it's run from, so unless you like cluttering up your filesystem with `.cs251toolkitrc.yaml` files, pick a folder and run it in there :wink:.
 
 ```console
-cs251tk --help
+$ cs251tk --help
 ```
 
 As mentioned in the introduction, this toolkit can do a bunch of things, including

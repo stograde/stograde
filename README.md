@@ -20,7 +20,7 @@ Prerequisites: macOS/Linux, Python 3.4+, git.
 mkdir cs251/
 cd cs251
 pyvenv ./venv
-source ./venv/bin/activate  # or activate.csh
+source ./venv/bin/activate  # or activate.csh, or activate.fish
 # deactivate  # will exit the venv
 ```
 

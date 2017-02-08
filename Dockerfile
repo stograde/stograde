@@ -34,6 +34,7 @@ RUN apt-get clean
 RUN gcc --version \
     && g++ --version \
     && make --version \
+    && git --version \
     && python --version
 
 # Finally, set our default command to just "cs251tk".

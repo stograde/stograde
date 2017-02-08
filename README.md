@@ -303,6 +303,8 @@ $ # e.g.:
 $ docker build -t stodevx/cs251-toolkit:v0.0.0 .
 ```
 
+Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use `stodevx/cs251-toolkit`, since that's the basis of our GitHub repository, but you can do whatever for your machine.
+
 To run,
 
 ```console
@@ -311,6 +313,8 @@ $ docker run -it <tag name>:<version> <command, args>
 $ # e.g.:
 $ docker run -it stodevx/cs251-toolkit:v0.0.0 .
 ```
+
+Again, tag name and version should match what you built.  If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest version as long as you followed semantic versioning.
 
 ## Contributing
 - `git clone https://github.com/StoDevX/cs251-toolkit`

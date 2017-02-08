@@ -285,6 +285,32 @@ grading arguments:
 
 `--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will disable the process pool entirely, which is helpful for debugging.
 
+## Docker Info (in progress)
+
+With [#9](/StoDevX/cs251-toolkit/issues/9), we've started converting this project into a Docker image.
+This will make setting it up quite a bit easier.
+Right now, we don't have a place for you to pull the built image from, so you still have to clone this repository and build it yourself.
+
+To do this, first make sure you have [Docker](https://www.docker.com/products/overview#/install_the_platform) installed.
+Follow your particular operating system's instructions to set it up if you haven't already.
+
+To build,
+
+```console
+$ # within this repository, run:
+$ docker build -t <tag name>:<version> .
+$ # e.g.:
+$ docker build -t stodevx/cs251-toolkit:v0.0.0 .
+```
+
+To run,
+
+```console
+$ # anywhere, run:
+$ docker run -it <tag name>:<version> <command, args>
+$ # e.g.:
+$ docker run -it stodevx/cs251-toolkit:v0.0.0 .
+```
 
 ## Contributing
 - `git clone https://github.com/StoDevX/cs251-toolkit`

@@ -48,7 +48,7 @@ def get_args():
     folder.add_argument('--no-update', '-n', action='store_true',
                         help='Do not update the student folders when checking')
     folder.add_argument('--stogit', metavar='URL',
-                        default='git@stogit.cs.stolaf.edu:sd-f16',
+                        default='git@stogit.cs.stolaf.edu:sd-s17',
                         help='Use an alternate stogit base URL')
 
     dates = parser.add_argument_group('time-based arguments')

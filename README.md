@@ -287,7 +287,7 @@ grading arguments:
 
 ## Docker Info (in progress)
 
-With [#9](/StoDevX/cs251-toolkit/issues/9), we've started converting this project into a Docker image.
+With [#9](https://github.com/StoDevX/cs251-toolkit/issues/9), we've started converting this project into a Docker image.
 This will make setting it up quite a bit easier.
 Right now, we don't have a place for you to pull the built image from, so you still have to clone this repository and build it yourself.
 

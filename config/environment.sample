@@ -1,0 +1,7 @@
+#!/bin/sh
+
+CS251TK_IMAGE=stodevx/cs251-toolkit:latest
+CS251TK_DATA_DIRECTORY=$(dirname $0)/../data/
+CS251TK_STUDENTS_DIRECTORY=$(dirname $0)/../students/
+CS251TK_LOGS_DIRECTORY=$(dirname $0)/../logs/
+CS251TK_STUDENTS_FILE=$(dirname $0)/../students.txt

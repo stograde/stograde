@@ -20,3 +20,6 @@ build/
 *.egg-info/
 dist/
 venv/
+
+# Configuration files
+/config/environment

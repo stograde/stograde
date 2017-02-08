@@ -1,0 +1,75 @@
+#!/bin/sh
+
+. $(dirname $0)/../config/environment
+
+env
+
+docker=$(which docker)
+
+command="$docker run -it"
+
+if [ -d "$CS251TK_DATA_DIRECTORY" ];
+then
+    echo "===> data/ ~> $CS251TK_DATA_DIRECTORY"
+    command="$command -v $(readlink -f $CS251TK_DATA_DIRECTORY):/cs251tk/data/"
+else
+    echo "fail: CS251TK_DATA_DIRECTORY not set or not a directory (or a symlink to a directory)"
+    exit -1
+fi
+
+if [ -d "$CS251TK_STUDENTS_DIRECTORY" ];
+then
+    echo "===> students/ ~> $CS251TK_STUDENTS_DIRECTORY"
+    command="$command -v $(readlink -f $CS251TK_STUDENTS_DIRECTORY):/cs251tk/students/"
+else
+    echo "fail: CS251TK_STUDENTS_DIRECTORY not set or not a directory (or a symlink to a directory)"
+    exit -1
+fi
+
+if [ -d "$CS251TK_LOGS_DIRECTORY" ];
+then
+    echo "===> logs/ ~> $CS251TK_LOGS_DIRECTORY"
+    command="$command -v $(readlink -f $CS251TK_LOGS_DIRECTORY):/cs251tk/logs/"
+else
+    echo "fail: CS251TK_LOGS_DIRECTORY not set or not a directory (or a symlink to a directory)"
+    exit -1
+fi
+
+if [ -e "$CS251TK_STUDENTS_FILE" ];
+then
+    echo "===> students.txt ~> $CS251TK_STUDENTS_FILE"
+    command="$command -v $(readlink -f $CS251TK_STUDENTS_FILE):/cs251tk/students.txt"
+else
+    echo "fail: CS251TK_STUDENTS_FILE not set or not an extant file (or a symlink to an extant file)"
+    exit -1
+fi
+
+
+if [ -e "$HOME/.ssh/id_rsa" ];
+then
+    echo "===> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
+    command="$command -v $(readlink -f "$HOME/.ssh/id_rsa"):/root/.ssh/id_rsa"
+else
+    echo "fail: no SSH key on your user account.  make sure you have ssh set up with stogit"
+    exit -1
+fi
+
+if [ -e "$HOME/.ssh/id_rsa.pub" ];
+then
+    echo "===> /root/.ssh/id_rsa.pub ~> ~/.ssh/id_rsa.pub"
+    command="$command -v $(readlink -f "$HOME/.ssh/id_rsa.pub"):/root/.ssh/id_rsa.pub"
+else
+    echo "fail: no SSH public key on your user account.  make sure you have ssh set up with stogit"
+    exit -1
+fi
+
+command="$command $CS251TK_DOCKER_IMAGE $@"
+
+if [[ "$@" == "" ]];
+then
+    echo "fail: must provide at least one argument (this is the shell command, try 'cs251tk --help')"
+fi
+
+echo "Running $command..."
+
+$command

@@ -15,6 +15,15 @@ MAINTAINER Kristofer Rye <kristofer.rye@gmail.com>
 # image.
 ADD . /cs251tk/
 
+# Create the SSH config directory on the root user account home directory.
+RUN mkdir -p /root/.ssh/
+
+# Build a smart SSH config (and prepare to use our id_rsa from the host)
+RUN echo "Host *.stolaf.edu\n\tUserKnownHostsFile /dev/null\n\tStrictHostKeyChecking no\n\tIdentityFile /root/.ssh/id_rsa" >> /root/.ssh/config
+
+# Lock down our SSH config
+RUN chmod 600 /root/.ssh/config
+
 # Change into our project directory.
 WORKDIR /cs251tk
 

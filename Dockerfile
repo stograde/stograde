@@ -1,8 +1,14 @@
 # Use the base Python 3.6 image.  It is sufficient for accomplishing
 # most of the stuff, and includes some handy build tools like gcc.
+#
+# NOTE This could be changed to something like `python:latest` if we
+# find that there is no dependency on 3.6 itself.
 FROM python:3.6
 
 # Set the MAINTAINER flag of the docker image.
+#
+# NOTE Consider changing this or removing it; it is not necessary
+# unless pushing to Docker Hub.
 MAINTAINER Kristofer Rye <kristofer.rye@gmail.com>
 
 # Add the entire project directory to the /cs251tk/ directory in the
@@ -18,6 +24,7 @@ RUN pip3 install .
 # Update the package cache.
 RUN apt-get update
 
+# TODO Install any additional requirements.  Do we have any?
 # RUN apt-get install -y cool-package
 
 # Clean up to reduce our overall image size.

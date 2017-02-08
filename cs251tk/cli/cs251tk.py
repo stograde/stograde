@@ -70,11 +70,12 @@ def main():
                 results.append(result)
                 records.extend(recording)
 
-    table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
     if not args['quiet']:
+        table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
         print('\n' + table)
 
     if args['gist']:
+        table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
         gist_recordings(records, table, debug=args['debug'])
     else:
         save_recordings(records, debug=args['debug'])

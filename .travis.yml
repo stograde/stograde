@@ -21,3 +21,9 @@ deploy:
   on:
     # only deploy tags
     tags: true
+
+# this stops travis from building both pushes and PRs for pr-destined branches
+branches:
+  only:
+    - master
+    - /^travis/

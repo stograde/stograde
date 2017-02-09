@@ -1,20 +1,9 @@
-# ignore the cached specs
-specs/_cache
-
-# ignore any lists of people
-/*students*.txt
-
 # files
 .cs251toolkitrc.yaml
 .DS_Store
 Thumbs.db
 __pycache__/
 *.swp
-
-!logs/.gitkeep
-!specs/.gitkeep
-!students/.gitkeep
-!projects/.gitkeep
 
 build/
 *.egg-info/

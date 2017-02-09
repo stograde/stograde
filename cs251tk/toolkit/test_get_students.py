@@ -1,4 +1,5 @@
 from textwrap import dedent
+from pyfakefs import fake_filesystem
 from collections import Mapping
 from .get_students import get_students
 
@@ -70,3 +71,9 @@ def test_get_students_multiple_sections(fs):
     assert get_students()['my'] == ['rives', 'piersonv', 'magnusow']
     assert get_students()['section-a'] == ['piersonv']
     assert get_students()['section-b'] == ['magnusow']
+
+
+def test_get_students_missing_file(fs):
+    os_module = fake_filesystem.FakeOsModule(fs)
+    assert os_module.path.exists('./students.txt') == False
+    assert get_students() == {'my': []}

@@ -9,25 +9,6 @@ def test_get_args():
         return vars(parser.parse_args(arglist))
 
     assert type(parser.parse_args([])) == Namespace
-    assert args([]) == {
-        'all': False,
-        'clean': False,
-        'date': None,
-        'debug': False,
-        'gist': False,
-        'input': [],
-        'no_check': False,
-        'no_progress': False,
-        'no_update': False,
-        'partials': False,
-        'quiet': False,
-        'record': [],
-        'section': [],
-        'sort': 'name',
-        'stogit': 'git@stogit.cs.stolaf.edu:sd-s17',
-        'students': [],
-        'workers': 8,
-    }
 
     assert args(['--all'])['all'] is True
     assert args(['-w4'])['workers'] == 4
@@ -46,24 +27,8 @@ def test_massage_args():
         'my': ['rives'],
     }
 
-    assert massage_args(args([]), students) == {
-        'all': False,
-        'clean': False,
-        'date': None,
-        'debug': False,
-        'gist': False,
-        'input': [],
-        'no_check': False,
-        'no_progress': False,
-        'no_update': False,
-        'partials': False,
-        'quiet': False,
-        'record': [],
-        'section': ['my'],
-        'sort': 'name',
-        'stogit': 'git@stogit.cs.stolaf.edu:sd-s17',
-        'students': ['rives'],
-        'workers': 8,
-    }
+    assert massage_args(args([]), students)['all'] == False
+    assert massage_args(args([]), students)['section'] == ['my']
+    assert massage_args(args([]), students)['students'] == ['rives']
 
     assert massage_args(args(['--record', 'hw4']), students)['record'] == ['hw4']

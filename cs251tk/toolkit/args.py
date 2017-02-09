@@ -7,7 +7,6 @@ from os import cpu_count
 from logging import warning
 from natsort import natsorted
 
-from cs251tk.common import run
 from cs251tk.common import flatten
 from .get_students import get_students
 

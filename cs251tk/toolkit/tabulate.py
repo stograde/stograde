@@ -4,7 +4,6 @@ from sys import stdout
 from termcolor import colored
 from logging import warning
 from cs251tk.common import flatten
-from cs251tk.common import pluck
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -81,32 +80,38 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
         sep=COL)
 
 
-def tabulate(students, sort_by, partials):
-    """Actually build the table"""
-    global HIGHLIGHT_PARTIALS
-    HIGHLIGHT_PARTIALS = partials
-
-    homework_nums = [pluck(s.get('homeworks', []), 'number') for s in students]
-    lab_nums = [pluck(s.get('labs', []), 'number') for s in students]
+def get_nums(students):
+    homework_nums = flatten([[hw['number'] for hw in s.get('homeworks', [])] for s in students])
+    lab_nums = flatten([[lab['number'] for lab in s.get('labs', [])] for s in students])
 
     if not homework_nums:
         warning('no homework assignments were given to tabulate')
         warning('from these students:')
         warning(students)
-        return
+        return 0, 0
     if not lab_nums:
         warning('no labs were given to tabulate')
         warning('from these students:')
         warning(students)
-        return
+        return 0, 0
 
-    max_hwk_num = max(flatten(homework_nums))
-    max_lab_num = max(flatten(lab_nums))
+    max_hwk_num = max(homework_nums)
+    max_lab_num = max(lab_nums)
+
+    return max_hwk_num, max_lab_num
+
+
+def tabulate(students, sort_by, partials):
+    """Actually build the table"""
+    global HIGHLIGHT_PARTIALS
+    HIGHLIGHT_PARTIALS = partials
 
     # be sure that the longest username will be at least 4 chars
     usernames = [user['username'] for user in students] + ['USER']
     longest_user = max(usernames, key=len)
 
+    # build the header row of the table
+    max_hwk_num, max_lab_num = get_nums(students)
     header_hw_nums = find_columns(max_hwk_num)
     header_lab_nums = find_columns(max_lab_num)
     header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums}'.format(
@@ -116,6 +121,7 @@ def tabulate(students, sort_by, partials):
         labnums=header_lab_nums,
         sep=COL)
 
+    # build the header's bottom border
     border = ''.join([
         ''.ljust(len(longest_user) + 2, ROW),
         JOIN,
@@ -124,6 +130,7 @@ def tabulate(students, sort_by, partials):
         ''.ljust(len(header_lab_nums) + 1, ROW),
     ])
 
+    # build the table body
     if sort_by == 'count':
         def sorter(user):
             return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
@@ -136,5 +143,6 @@ def tabulate(students, sort_by, partials):
     lines = [columnize(student, longest_user, max_hwk_num, max_lab_num)
              for student in sorted(students, reverse=should_reverse, key=sorter)]
 
+    # and make the table to return
     table = [header, border] + lines
     return '\n'.join(table)

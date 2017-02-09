@@ -1,67 +1,100 @@
 #!/bin/sh
 
+# Source the `config/environment` script.
+#
+# TODO This should be removed?  Ideally, if the two environment
+# variables are set, we should be all good to go.
 . $(dirname $0)/../config/environment
 
+# Locate our docker binary.
 docker=$(which docker)
 
+# Start writing out the command.
 command="$docker run -it"
 
-if [ -d "$CS251TK_DATA_DIRECTORY" ];
+if [ -z "${CS251TK_IMAGE}" ];
 then
-    echo "===> data/ ~> $CS251TK_DATA_DIRECTORY"
-    command="$command -v $(readlink -f $CS251TK_DATA_DIRECTORY):/cs251tk/data/"
-else
-    echo "fail: CS251TK_DATA_DIRECTORY not set or not a directory (or a symlink to a directory)"
-    exit -1
+    echo "===> CS251TK_IMAGE is not set."
+    exit 1
 fi
 
-if [ -d "$CS251TK_STUDENTS_DIRECTORY" ];
+if [ -z "$(docker images -q $CS251TK_IMAGE 2>/dev/null)" ];
 then
-    echo "===> students/ ~> $CS251TK_STUDENTS_DIRECTORY"
-    command="$command -v $(readlink -f $CS251TK_STUDENTS_DIRECTORY):/cs251tk/students/"
+    echo "===> CS251TK_IMAGE not installed in Docker... make sure you've built the image!"
+    echo "      (\$CS251TK_IMAGE = \"$CS251TK_IMAGE\")"
+    exit 1
 else
-    echo "fail: CS251TK_STUDENTS_DIRECTORY not set or not a directory (or a symlink to a directory)"
-    exit -1
+    echo "===> CS251TK_IMAGE is valid."
 fi
 
-if [ -d "$CS251TK_LOGS_DIRECTORY" ];
+if [ -z "${CS251TK_SHARE}" ];
 then
-    echo "===> logs/ ~> $CS251TK_LOGS_DIRECTORY"
-    command="$command -v $(readlink -f $CS251TK_LOGS_DIRECTORY):/cs251tk/logs/"
-else
-    echo "fail: CS251TK_LOGS_DIRECTORY not set or not a directory (or a symlink to a directory)"
-    exit -1
+    echo "===> CS251TK_SHARE is not set.  Defaulting to ${default_CS251TK_SHARE}."
+    exit 1
 fi
 
-if [ -e "$CS251TK_STUDENTS_FILE" ];
+if [ -d "$CS251TK_SHARE" ];
 then
-    echo "===> students.txt ~> $CS251TK_STUDENTS_FILE"
-    command="$command -v $(readlink -f $CS251TK_STUDENTS_FILE):/cs251tk/students.txt"
+    echo "===> CS251TK_SHARE found."
 else
-    echo "fail: CS251TK_STUDENTS_FILE not set or not an extant file (or a symlink to an extant file)"
-    exit -1
+    echo "===> CS251TK_SHARE not found! Make sure it exists and is either a directory or a symlink to a directory."
+    echo "      (\$CS251TK_SHARE = \"$CS251TK_SHARE\")"
+    exit 1
 fi
 
-
-if [ -e "$HOME/.ssh/id_rsa" ];
+if [ -d "$CS251TK_SHARE/data" ];
 then
-    echo "===> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
-    command="$command -v $(readlink -f "$HOME/.ssh/id_rsa"):/root/.ssh/id_rsa"
+    echo "      -> \$CS251TK_SHARE/data found."
 else
-    echo "fail: no SSH key on your user account.  make sure you have ssh set up with stogit"
-    exit -1
+    echo "===> $CS251TK_SHARE/data does not exist or is not a directory."
+    exit 1
 fi
 
-if [ -e "$HOME/.ssh/id_rsa.pub" ];
+if [ -d "$CS251TK_SHARE/students" ];
+then
+    echo "      -> \$CS251TK_SHARE/students found."
+else
+    echo "===> $CS251TK_SHARE/students does not exist or is not a directory."
+    exit 1
+fi
+
+if [ -d "$CS251TK_SHARE/logs" ];
+then
+    echo "      -> \$CS251TK_SHARE/logs found."
+else
+    echo "===> $CS251TK_SHARE/logs does not exist or is not a directory."
+    exit 1
+fi
+
+if [ -f "$CS251TK_SHARE/students.txt" ];
+then
+    echo "      -> \$CS251TK_SHARE/students.txt found."
+else
+    echo "===> $CS251TK_SHARE/students.txt does not exist or is not a regular file."
+    exit 1
+fi
+
+if [ -f "$HOME/.ssh/id_rsa" ];
+then
+    echo "      -> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
+else
+    echo "===> No SSH key on your user account.  Make sure you have ssh set up."
+    exit 1
+fi
+
+if [ -f "$HOME/.ssh/id_rsa.pub" ];
 then
     echo "===> /root/.ssh/id_rsa.pub ~> ~/.ssh/id_rsa.pub"
-    command="$command -v $(readlink -f "$HOME/.ssh/id_rsa.pub"):/root/.ssh/id_rsa.pub"
 else
-    echo "fail: no SSH public key on your user account.  make sure you have ssh set up with stogit"
-    exit -1
+    echo "===> No SSH key on your user account.  Make sure you have ssh set up."
+    exit 1
 fi
 
-command="$command $CS251TK_DOCKER_IMAGE $@"
+
+command="$command -v $(readlink -f $CS251TK_SHARE):/cs251tk_share/"
+command="$command -v $(readlink -f $HOME/.ssh/):/cs251tk_share/.ssh/"
+
+command="$command $CS251TK_IMAGE $@"
 
 if [[ "$@" == "" ]];
 then

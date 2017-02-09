@@ -11,5 +11,6 @@ dist/
 venv/
 
 # tox
-.cache
-.tox
+.cache/
+.tox/
+.coverage

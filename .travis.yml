@@ -9,6 +9,7 @@ python:
 install:
   - pip install tox
   - pip install tox-travis
+  - pip install coveralls
 
 script:
   - tox
@@ -27,3 +28,9 @@ branches:
   only:
     - master
     - /^travis/
+
+after_success:
+  # only submit code coverage for the newest python version
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
+      coveralls;
+    fi

@@ -30,6 +30,16 @@ VOLUME /cs251tk_share/
 # Change into our project directory.
 WORKDIR /cs251tk
 
+# Make a symlink between /cs251tk_share/blah and /cs251tk/blah
+RUN ln -sv /cs251tk_share/data /cs251tk/data
+RUN ln -sv /cs251tk_share/students /cs251tk/students
+RUN ln -sv /cs251tk_share/logs /cs251tk/logs
+RUN ln -sv /cs251tk_share/students.txt /cs251tk/students.txt
+
+# Make symlinks for our SSH keys.
+RUN ln -sv /cs251tk_share/.ssh/id_rsa /root/.ssh/id_rsa
+RUN ln -sv /cs251tk_share/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+
 # Install the toolkit from the source directory.
 RUN pip3 install .
 

@@ -4,7 +4,6 @@ from sys import stdout
 from termcolor import colored
 from logging import warning
 from cs251tk.common import flatten
-from cs251tk.common import pluck
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -86,8 +85,8 @@ def tabulate(students, sort_by, partials):
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials
 
-    homework_nums = [pluck(s.get('homeworks', []), 'number') for s in students]
-    lab_nums = [pluck(s.get('labs', []), 'number') for s in students]
+    homework_nums = flatten([[hw['number'] for hw in s.get('homeworks', [])] for s in students])
+    lab_nums = flatten([[lab['number'] for lab in s.get('labs', [])] for s in students])
 
     if not homework_nums:
         warning('no homework assignments were given to tabulate')

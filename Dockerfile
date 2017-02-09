@@ -24,6 +24,9 @@ RUN echo "Host *.stolaf.edu\n\tUserKnownHostsFile /dev/null\n\tStrictHostKeyChec
 # Lock down our SSH config
 RUN chmod 600 /root/.ssh/config
 
+# Add a marked dependency volume folder.
+VOLUME /cs251tk_share/
+
 # Change into our project directory.
 WORKDIR /cs251tk
 

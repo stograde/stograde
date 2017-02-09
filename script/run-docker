@@ -76,7 +76,7 @@ fi
 
 if [ -f "$HOME/.ssh/id_rsa" ];
 then
-    echo "      -> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
+    echo "===> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
 else
     echo "===> No SSH key on your user account.  Make sure you have ssh set up."
     exit 1

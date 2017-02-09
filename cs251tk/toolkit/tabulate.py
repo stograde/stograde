@@ -48,13 +48,13 @@ def concat(lst, to_num):
     lst = [pad(symbol(nums[idx]), idx)
            if idx in nums
            else pad('-', idx)
-           for idx in range(1, to_num+1)]
+           for idx in range(1, to_num + 1)]
     return ' '.join(lst)
 
 
 def find_columns(num):
     """Build the table headings for the assignment sections"""
-    return ' '.join([str(i) for i in range(1, num+1)])
+    return ' '.join([str(i) for i in range(1, num + 1)])
 
 
 def columnize(student, longest_user, max_hwk_num, max_lab_num):

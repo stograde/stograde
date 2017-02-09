@@ -87,7 +87,7 @@ def massage_args(args, students):
     if 'my' in args['section']:
         if 'my' not in students:
             warning('There is no [my] section in students.txt')
-            return
+            return args
         args['students'] = students['my']
 
     elif 'all' in args['section']:
@@ -112,7 +112,7 @@ def massage_args(args, students):
             ./students.txt file.
         """)
         warning(textwrap.fill(msg))
-        return
+        return args
 
     # sort students and remove any duplicates
     args['students'] = sorted(set(args['students']))

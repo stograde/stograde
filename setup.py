@@ -1,8 +1,8 @@
 import sys
 from setuptools import setup, find_packages
 
-if sys.version_info < (3, 4):
-    sys.exit("The toolkit requires Python 3.4 or greater.\nYou have {}".format(sys.version_info))
+if sys.version_info < (3, 5):
+    sys.exit("The toolkit requires Python 3.5 or greater.\nYou have {}".format(sys.version_info))
 
 setup(
     name='cs251tk',
@@ -30,7 +30,6 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],

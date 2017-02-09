@@ -1,8 +1,9 @@
+from inspect import isgenerator
 from .flatten import flatten
 
 
 def test_flatten():
-    assert hasattr(flatten([]), '__iter__')
+    assert isgenerator(flatten([]))
     assert list(flatten([1])) != [[1]]
 
     assert list(flatten([[]])) == []

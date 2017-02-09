@@ -29,6 +29,9 @@ branches:
     - master
     - /^travis/
 
+cache:
+  pip: true
+
 after_success:
   # only submit code coverage for the newest python version
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then

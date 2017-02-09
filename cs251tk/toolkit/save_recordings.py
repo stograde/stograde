@@ -1,15 +1,12 @@
 import os
 from logging import warning
-from typing import List, Dict
 
 from cs251tk.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
 
-Url = str
 
-
-def record_recording_to_disk(results: List[Dict], file_identifier: str) -> None:
+def record_recording_to_disk(results, file_identifier):
     results = sorted(results, key=lambda file: file['student'])
     results = [file['content'] for file in results]
     output = '\n'.join(results)
@@ -21,7 +18,7 @@ def record_recording_to_disk(results: List[Dict], file_identifier: str) -> None:
         warning('error! could not write recording:', err)
 
 
-def send_recording_to_gist(table: str, results: List[Dict], assignment: str) -> Url:
+def send_recording_to_gist(table, results, assignment):
     """Publish a table/result pair to a private gist"""
 
     # the "-" at the front is so that github sees it first and names the gist
@@ -40,7 +37,7 @@ def send_recording_to_gist(table: str, results: List[Dict], assignment: str) -> 
     return post_gist('log for ' + assignment, files)
 
 
-def save_recordings(records: List[Dict], debug=False):
+def save_recordings(records, debug=False):
     """Take the list of recordings, group by assignment, then save to disk"""
 
     results = format_collected_data(records,
@@ -52,7 +49,7 @@ def save_recordings(records: List[Dict], debug=False):
         record_recording_to_disk(content, assignment)
 
 
-def gist_recordings(records: List[Dict], table: str, debug=False):
+def gist_recordings(records, table, debug=False):
     """Take the list of recordings, group by assignment, then post to a private gist"""
 
     results = format_collected_data(records,

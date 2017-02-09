@@ -2,8 +2,6 @@
 
 . $(dirname $0)/../config/environment
 
-env
-
 docker=$(which docker)
 
 command="$docker run -it"

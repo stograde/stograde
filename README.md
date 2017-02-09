@@ -1,5 +1,5 @@
 # cs251-toolkit
-[![PyPI](https://img.shields.io/pypi/v/cs251tk.svg)](https://pypi.python.org/pypi/cs251tk)
+[![PyPI](https://img.shields.io/pypi/v/cs251tk.svg)](https://pypi.python.org/pypi/cs251tk) [![TraviCI](https://travis-ci.org/StoDevX/cs251-toolkit.svg?branch=master)](https://travis-ci.org/StoDevX/cs251-toolkit) [![Coverage Status](https://coveralls.io/repos/github/StoDevX/cs251-toolkit/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/cs251-toolkit?branch=master)
 
 Welcome to the CS251 toolkit, designed to help TAs and graders for St. Olaf's Software Design course.
 

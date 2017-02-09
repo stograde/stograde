@@ -1,8 +1,7 @@
 import shlex
 import copy
 import os
-from subprocess import STDOUT, check_output, \
-                       CalledProcessError, TimeoutExpired
+from subprocess import STDOUT, check_output, CalledProcessError, TimeoutExpired
 
 
 # This env stuff is to catch glibc errors, because

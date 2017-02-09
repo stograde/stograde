@@ -121,11 +121,9 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
     if any_step_failed or (not steps):
         return results
 
-    tests = flatten([
-                        test_spec['commands']
-                        for test_spec in spec.get('tests', {})
-                        if test_spec['filename'] == filename
-                        ])
+    tests = flatten([test_spec['commands']
+                     for test_spec in spec.get('tests', {})
+                     if test_spec['filename'] == filename])
 
     for test in tests:
         if not test:

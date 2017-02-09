@@ -9,6 +9,31 @@ python:
 install:
   - pip install tox
   - pip install tox-travis
+  - pip install coveralls
 
 script:
   - tox
+
+deploy:
+  provider: pypi
+  user: "hawkrives"
+  password:
+    secure: kxjTndHBVztrPi1k74zsL2cjbFrBXe5af0HDn/t4w6CUj0yCf0VPwzR0KnOU6CrvRpMxid7MINsgdh3MsOsgnLiLiQ4TSRqEfB9lsmCopDXArNiC5jq0QmZ1P2KHKguJpkWx8TnwjiJycm1UFJU3l4YRfj5Zo4LvpI/64EUoNhICbf2gAQav8Sb2a9/Ov5hpySBYhmwr/tkODOfZS5+00SAs/OP7bU0xQFhUUwnEY4uAiaTIo+tIOIXx/nwj7XundCEwFXiFDYSEKbk+maHWgUIqbZivL94RigVwTds0KJmpurU1Nc670ggGwT96WcCtNZoMTxB47fXoNqzhTAgp2O2C4lsv1xNIrwSdHzyP20wsDQn3zdMz4aJEfSZMwhvN/GJyQFTKbeD++ysRsfUuI5uQho7BOsGMLDfnDOpncNNXI2zKnea9OStsj/u/aJGNmWFcGa70/CHBeSI9Zmv6Og3KY6fGM28bqQUvO6iFDho98xOTHk+vTIcGyut5DDMuKvQh3ISPYZkz7lSqHqDayXr/RxombkpEPszqlUkn2OO38PLujYJzL8nLUN1g/2m2M4y9h6pXV27sU6hDo0E9WTtRhAA04JqpsJ2S8smw2C+yo446klaMNxUkYbxm4j9PI7pYpLWsqlOMbnCz79PSGuzB17ezk6nr8T22TR0Ci2w=
+  on:
+    # only deploy tags
+    tags: true
+
+# this stops travis from building both pushes and PRs for pr-destined branches
+branches:
+  only:
+    - master
+    - /^travis/
+
+cache:
+  pip: true
+
+after_success:
+  # only submit code coverage for the newest python version
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
+      coveralls;
+    fi

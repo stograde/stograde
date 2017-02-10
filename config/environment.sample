@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# The image tag for the docker image.
-CS251TK_IMAGE=stodevx/cs251-toolkit:latest
-
-# The directory to the shared folder, which should contain data/,
-# students/, logs/, and students.txt
-CS251TK_SHARE=$(dirname $0)/../

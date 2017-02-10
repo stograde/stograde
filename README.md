@@ -13,7 +13,7 @@ See the ["Run the thing"](#run-the-thing) section for details.
 
 ## Getting Started
 
-Prerequisites: macOS/Linux, Python 3.4+, git.
+Prerequisites: macOS/Linux, Python 3.5+, git.
 
 ##### Make the folder
 ```console

@@ -22,4 +22,4 @@ def test_run_timeout():
 def test_run_not_found():
     status, result = run(['notfound'])
     assert status == 'not found'
-    assert result == ''
+    assert result == "[Errno 2] No such file or directory: 'notfound'"

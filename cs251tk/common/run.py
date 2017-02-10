@@ -1,7 +1,7 @@
 import shlex
 import copy
 import os
-from subprocess import STDOUT, check_output, CalledProcessError, TimeoutExpired
+from subprocess import STDOUT, run as _run, CalledProcessError, TimeoutExpired
 
 
 # This env stuff is to catch glibc errors, because
@@ -11,20 +11,21 @@ ENV = copy.copy(os.environ)
 ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
-def run(cmd, *args, input=None, timeout=None, **kwargs):
+def run(cmd, input_data=None, timeout=None):
+    # Stringified commands are passed in from the spec files.
+    # Otherwise, it needs to be an array.
     if isinstance(cmd, str):
-        cmd = shlex.split(str)
+        cmd = shlex.split(cmd)
 
+    status = 'success'
     try:
-        status = 'success'
-        result = check_output(
+        result = _run(
             cmd,
-            *args,
             stderr=STDOUT,
             timeout=timeout,
-            input=input,
+            input=input_data,
             env=ENV,
-            **kwargs)
+            check=True)
 
     except CalledProcessError as err:
         status = 'called process error'
@@ -40,7 +41,7 @@ def run(cmd, *args, input=None, timeout=None, **kwargs):
 
     except ProcessLookupError as err:
         try:
-            status, result = run(*args, status=status, **kwargs)
+            status, result = run(cmd, input_data=input_data, timeout=timeout)
         except:
             status = 'process lookup error'
             result = str(err)

@@ -1,6 +1,6 @@
 ---
-sudo: 'required'
-dist: trusty
+sudo: false
+distro: trusty
 
 language: python
 python:

@@ -45,7 +45,7 @@ def kinda_pipe_commands(cmd_string):
     input_for_cmd = None
     for cmd in cmds[:-1]:
         cmd = process_chunk(cmd)
-        _, input_for_cmd = run(cmd, input=input_for_cmd)
+        _, input_for_cmd = run(cmd, input_data=input_for_cmd)
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = process_chunk(cmds[-1])
@@ -106,7 +106,7 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
         command = step.replace('$@', './' + filename)
         command = command.replace('$SUPPORT', supporting_dir)
         cmd, input_for_cmd = kinda_pipe_commands(command)
-        status, compilation = run(cmd, input=input_for_cmd)
+        status, compilation = run(cmd, input_data=input_for_cmd)
 
         results['compilation'].append({
             'command': command,
@@ -135,7 +135,7 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
 
         if exists(path_join(cwd, filename)):
             status, full_result = run(test_cmd,
-                                      input=input_for_test,
+                                      input_data=input_for_test,
                                       timeout=options['timeout'])
 
             result = unicode_truncate(full_result, options['truncate_output'])

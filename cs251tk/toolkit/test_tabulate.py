@@ -56,3 +56,17 @@ def test_columnize():
     assert columnize(student, 'long_username', 2, 1) == "rives          | 1 2 | 1"
     assert columnize(student, 'rives', 5, 1) == "rives  | 1 2 - - - | 1"
     assert columnize(student, 'rives', 2, 5) == "rives  | 1 2 | 1 - - - -"
+
+    student2 = {
+        'username': 'rives',
+        'unmerged_branches': True,
+        'homeworks': [
+            {'number': 1, 'status': 'success'},
+            {'number': 2, 'status': 'success'},
+        ],
+        'labs': [
+            {'number': 1, 'status': 'success'},
+        ]
+    }
+
+    assert columnize(student2, 'rives', 2, 1) == "\033[1mrives\033[0m  | 1 2 | 1"

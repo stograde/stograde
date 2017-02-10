@@ -7,7 +7,9 @@ from cs251tk.common import run
 
 def expand_chunk(command_chunk):
     """Take a chunk of a command and expand it, like a shell"""
-    return glob(command_chunk)
+    if '*' in command_chunk:
+        return glob(command_chunk)
+    return [command_chunk]
 
 
 def process_chunk(command):

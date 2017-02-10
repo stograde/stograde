@@ -70,3 +70,12 @@ def test_columnize():
     }
 
     assert columnize(student2, 'rives', 2, 1) == "\033[1mrives\033[0m  | 1 2 | 1"
+
+    student3 = {
+        'username': 'rives',
+        'error': 'an error occurred',
+        'homeworks': [],
+        'labs': [],
+    }
+
+    assert columnize(student3, 'rives', 2, 1) == "{username}  | {error}".format(**student3)

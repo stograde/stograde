@@ -1,3 +1,4 @@
+import shlex
 import copy
 import os
 from subprocess import STDOUT, run as _run, CalledProcessError, TimeoutExpired
@@ -11,6 +12,11 @@ ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
 def run(cmd, input_data=None, timeout=None):
+    # Stringified commands are passed in from the spec files.
+    # Otherwise, it needs to be an array.
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+
     status = 'success'
     try:
         result = _run(

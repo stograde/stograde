@@ -10,6 +10,9 @@ build/
 dist/
 venv/
 
+# Configuration files
+/config/environment
+
 # tox
 .cache/
 .tox/

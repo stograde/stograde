@@ -1,6 +1,6 @@
 import copy
 import os
-from subprocess import STDOUT, run as _run, CalledProcessError, TimeoutExpired
+from subprocess import STDOUT, PIPE, run as _run, CalledProcessError, TimeoutExpired
 
 
 # This env stuff is to catch glibc errors, because
@@ -15,6 +15,7 @@ def run(cmd, input_data=None, timeout=None):
     try:
         result = _run(
             cmd,
+            stdout=PIPE,
             stderr=STDOUT,
             timeout=timeout,
             input=input_data,
@@ -39,6 +40,9 @@ def run(cmd, input_data=None, timeout=None):
         except:
             status = 'process lookup error'
             result = str(err)
+
+    if hasattr(result, 'stdout'):
+        result = result.stdout
 
     try:
         if not isinstance(result, str):

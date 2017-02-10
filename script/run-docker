@@ -1,21 +1,18 @@
 #!/bin/sh
 
-# Source the `config/environment` script.
-#
-# TODO This should be removed?  Ideally, if the two environment
-# variables are set, we should be all good to go.
-. $(dirname $0)/../config/environment
-
 # Locate our docker binary.
 docker=$(which docker)
 
 # Start writing out the command.
 command="$docker run -it"
 
+default_CS251TK_IMAGE=stodevx/cs251-toolkit:latest
+default_CS251TK_SHARE=$HOME/.cs251tk_share
+
 if [ -z "${CS251TK_IMAGE}" ];
 then
-    echo "===> CS251TK_IMAGE is not set."
-    exit 1
+    echo "===> \$CS251TK_IMAGE is not set. Using $default_CS251TK_IMAGE."
+    CS251TK_IMAGE=$default_CS251TK_IMAGE
 fi
 
 if [ -z "$(docker images -q $CS251TK_IMAGE 2>/dev/null)" ];
@@ -24,13 +21,13 @@ then
     echo "      (\$CS251TK_IMAGE = \"$CS251TK_IMAGE\")"
     exit 1
 else
-    echo "===> CS251TK_IMAGE is valid."
+    echo "===> CS251TK_IMAGE is installed."
 fi
 
 if [ -z "${CS251TK_SHARE}" ];
 then
     echo "===> CS251TK_SHARE is not set.  Defaulting to ${default_CS251TK_SHARE}."
-    exit 1
+    CS251TK_SHARE=$default_CS251TK_SHARE
 fi
 
 if [ -d "$CS251TK_SHARE" ];

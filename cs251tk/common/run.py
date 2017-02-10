@@ -49,7 +49,7 @@ def run(cmd, input_data=None, timeout=None):
     try:
         if not isinstance(result, str):
             result = str(result, 'utf-8')
-    except UnicodeDecodeError as err:
+    except UnicodeDecodeError:
         result = str(result, 'cp437')
 
     return (status, result)

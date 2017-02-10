@@ -1,6 +1,6 @@
 import os
 import shlex
-from collections import OrderedDict
+from collections import OrderedDict, Iterable
 from glob import glob
 from os.path import exists, join as path_join
 
@@ -16,10 +16,7 @@ def unicode_truncate(string, length, encoding='utf-8'):
 
 def expand_chunk(command_chunk):
     """Take a chunk of a command and expand it, like a shell"""
-    # TODO: Support escaped globs
-    if '*' in command_chunk:
-        return glob(command_chunk)
-    return command_chunk
+    return glob(command_chunk)
 
 
 def process_chunk(command):
@@ -34,9 +31,8 @@ def process_chunk(command):
     # but figured it wasn't a bad thing to use.
     cmds = shlex.split(cmd)
 
-    cmds = list(flatten([expand_chunk(c) for c in cmds]))
+    return list(flatten([expand_chunk(c) for c in cmds]))
 
-    return cmds
 
 
 def kinda_pipe_commands(cmd_string):
@@ -44,8 +40,7 @@ def kinda_pipe_commands(cmd_string):
 
     input_for_cmd = None
     for cmd in cmds[:-1]:
-        cmd = process_chunk(cmd)
-        _, input_for_cmd = run(cmd, input_data=input_for_cmd)
+        _, input_for_cmd = run(process_chunk(cmd), input_data=input_for_cmd)
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = process_chunk(cmds[-1])
@@ -53,6 +48,11 @@ def kinda_pipe_commands(cmd_string):
 
 
 def cat(filename):
+    """Return the contents of a file. Replaces the `cat` command.
+
+    This function took about ~148 time units per call, while
+    run(['cat']) needed ~4688 time units.
+    """
     try:
         with open(filename, 'r', encoding='utf-8') as infile:
             return 'success', infile.read()
@@ -61,16 +61,16 @@ def cat(filename):
 
 
 def process_file(filename, steps, options, spec, cwd, supporting_dir):
-    steps = steps if isinstance(steps, list) else [steps]
+    steps = steps if isinstance(steps, Iterable) else [steps]
 
-    options = {
+    base_opts = {
         'timeout': 4,
         'truncate_output': 10000,  # 10K
         'truncate_contents': False,
         'optional': False,
         'hide_contents': False,
     }
-    options.update(options)
+    options.update(base_opts)
 
     results = {
         'filename': filename,
@@ -79,8 +79,7 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
         'result': [],
     }
 
-    file_status, file_contents = cat(filename)  # this one takes ~148 time units per call
-    # file_status, file_contents = run(['cat', filename])  # and this one needs ~4688
+    file_status, file_contents = cat(filename)
     if file_status == 'success':
         _, last_edit = run(['git', 'log',
                             '-n', '1',

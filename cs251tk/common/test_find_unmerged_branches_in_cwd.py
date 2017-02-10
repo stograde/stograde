@@ -26,6 +26,8 @@ def test_find_unmerged_branches_in_cwd_1(tmpdir):
 
         git('checkout', 'master')
 
+        print(git('--version'))
+
         assert find_unmerged_branches_in_cwd() == ['branch']
 
 

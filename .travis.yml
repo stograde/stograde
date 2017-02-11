@@ -2,6 +2,9 @@
 sudo: false
 dist: trusty
 
+services:
+  - docker
+
 language: python
 python:
   - "3.5"
@@ -37,4 +40,8 @@ after_success:
   # only submit code coverage for the newest python version
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
       coveralls;
+    fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push stodevx/cs251-toolkit:latest;
     fi

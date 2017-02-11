@@ -17,6 +17,7 @@ install:
 
 script:
   - tox
+  - docker build -t stodevx/cs251-toolkit:latest .
 
 deploy:
   provider: pypi

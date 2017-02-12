@@ -42,7 +42,6 @@ after_success:
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
       coveralls;
     fi
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push stodevx/cs251-toolkit:latest;
-    fi
+
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null`;

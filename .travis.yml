@@ -17,7 +17,7 @@ install:
 
 script:
   - tox
-  - docker build -t stodevx/cs251-toolkit:latest .
+  - docker build -t stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null` .
 
 deploy:
   provider: pypi

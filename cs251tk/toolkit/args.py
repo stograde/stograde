@@ -123,7 +123,7 @@ def massage_args(args, students, now=datetime.date.today()):
     args['students'] = sorted(set(args['students']))
 
     # calculate the default stogit URL
-    if not 'stogit' in args:
+    if 'stogit' not in args:
         course = args['course']
         semester = 's' if now.month < 7 else 'f'
         year = str(now.year)[2:]

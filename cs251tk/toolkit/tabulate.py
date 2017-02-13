@@ -24,6 +24,7 @@ def sort_by_username(user):
 
 
 def asciiify(table):
+    """Take a flashy unicode table and render it with ASCII-only chars"""
     table = table.replace('│', '|')
     table = table.replace('─', '-')
     table = table.replace('┼', '-')

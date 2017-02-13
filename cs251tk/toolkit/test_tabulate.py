@@ -165,25 +165,25 @@ def test_sort_by_hw_count():
         {
             'username': 'rives1',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
-                {'number': 3, 'status': 'complete'},
-                {'number': 4, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+                {'number': 4, 'status': 'success'},
             ],
         },
         {
             'username': 'rives2',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
-                {'number': 3, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
             ],
         },
         {
             'username': 'rives3',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
             ],
         },
     ]
@@ -196,25 +196,25 @@ def test_sort_by_username():
         {
             'username': 'rives1',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
-                {'number': 3, 'status': 'complete'},
-                {'number': 4, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+                {'number': 4, 'status': 'success'},
             ],
         },
         {
             'username': 'rives2',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
-                {'number': 3, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
             ],
         },
         {
             'username': 'rives3',
             'homeworks': [
-                {'number': 1, 'status': 'complete'},
-                {'number': 2, 'status': 'complete'},
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
             ],
         },
     ]

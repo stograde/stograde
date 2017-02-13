@@ -2,8 +2,6 @@
 import re
 from sys import stdout
 from termcolor import colored
-from logging import warning
-from cs251tk.common import flatten
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -91,22 +89,12 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
 
 
 def get_nums(students):
-    homework_nums = flatten([[hw['number'] for hw in s.get('homeworks', [])] for s in students])
-    lab_nums = flatten([[lab['number'] for lab in s.get('labs', [])] for s in students])
+    """Given a list of students, return the higest hw and lab number among them"""
+    homework_nums = [hw['number'] for s in students for hw in s.get('homeworks', [])]
+    lab_nums = [lab['number'] for s in students for lab in s.get('labs', [])]
 
-    if not homework_nums:
-        warning('no homework assignments were given to tabulate')
-        warning('from these students:')
-        warning(students)
-        return 0, 0
-    if not lab_nums:
-        warning('no labs were given to tabulate')
-        warning('from these students:')
-        warning(students)
-        return 0, 0
-
-    max_hwk_num = max(homework_nums)
-    max_lab_num = max(lab_nums)
+    max_hwk_num = max(homework_nums, default=0)
+    max_lab_num = max(lab_nums, default=0)
 
     return max_hwk_num, max_lab_num
 

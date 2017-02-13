@@ -1,4 +1,4 @@
-from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize
+from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums
 
 
 def test_pad():
@@ -79,3 +79,75 @@ def test_columnize():
     }
 
     assert columnize(student3, 'rives', 2, 1) == "{username}  | {error}".format(**student3)
+
+
+def test_get_nums():
+    assert get_nums([
+        {
+            'username': 'rives',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ]
+        }
+    ]) == (2, 1)
+
+    assert get_nums([
+        {
+            'username': 'rives1',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ]
+        },
+        {
+            'username': 'rives2',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 8, 'status': 'success'},
+                {'number': 9, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 10, 'status': 'success'},
+            ]
+        }
+    ]) == (9, 10)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [],
+            'labs': [],
+        }
+    ]) == (0, 0)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+            ],
+            'labs': [],
+        }
+    ]) == (1, 0)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ],
+        }
+    ]) == (0, 1)

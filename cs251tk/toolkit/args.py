@@ -1,5 +1,6 @@
 """Deal with argument parsing for the toolkit"""
 
+import datetime
 import argparse
 import textwrap
 import re
@@ -20,6 +21,10 @@ def get_args():
                         help='A mixed list of students and assignments')
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
+
+    specs = argparse.ArgumentParser(description='control the homework specs')
+    specs.add_argument('--course', default='sd', choices=['sd', 'hd'],
+                       help='Which course to evaulate (this sets a default stogit url)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -48,8 +53,7 @@ def get_args():
     folder.add_argument('--no-update', '-n', action='store_true',
                         help='Do not update the student folders when checking')
     folder.add_argument('--stogit', metavar='URL',
-                        default='git@stogit.cs.stolaf.edu:sd-s17',
-                        help='Use an alternate stogit base URL')
+                        help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd-s17)')
 
     dates = parser.add_argument_group('time-based arguments')
     dates.add_argument('--date', action='store', metavar='GIT_DATE',
@@ -66,7 +70,7 @@ def get_args():
     return parser
 
 
-def massage_args(args, students):
+def massage_args(args, students, now=datetime.date.today()):
     assignments = [l for l in args['input'] if re.match(ASSIGNMENT_REGEX, l)]
     people = [l for l in args['input'] if not re.match(ASSIGNMENT_REGEX, l)]
 
@@ -117,6 +121,13 @@ def massage_args(args, students):
 
     # sort students and remove any duplicates
     args['students'] = sorted(set(args['students']))
+
+    # calculate the default stogit URL
+    if not 'stogit' in args:
+        course = args['course']
+        semester = 's' if now.month < 7 else 'f'
+        year = str(now.year)[2:]
+        args['stogit'] = 'git@stogit.cs.stolaf.edu:{}-{}{}'.format(course, semester, year)
 
     return args
 

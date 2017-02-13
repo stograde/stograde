@@ -100,7 +100,7 @@ def get_nums(students):
     return max_hwk_num, max_lab_num
 
 
-def tabulate(students, sort_by, partials):
+def tabulate(students, sort_by='name', partials=False):
     """Actually build the table"""
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials

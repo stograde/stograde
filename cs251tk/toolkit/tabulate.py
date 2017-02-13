@@ -15,6 +15,16 @@ HIGHLIGHT_PARTIALS = False
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
+def sort_by_hw_count(user):
+    """Sort students by the number of completed homeworks"""
+    return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
+
+
+def sort_by_username(user):
+    """Sort students by their username"""
+    return user['username']
+
+
 def asciiify(table):
     table = table.replace('│', '|')
     table = table.replace('─', '-')
@@ -132,12 +142,10 @@ def tabulate(students, sort_by, partials):
 
     # build the table body
     if sort_by == 'count':
-        def sorter(user):
-            return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
+        sorter = sort_by_hw_count
         should_reverse = True
     else:
-        def sorter(user):
-            return user['username']
+        sorter = sort_by_username
         should_reverse = False
 
     lines = [columnize(student, longest_user, max_hwk_num, max_lab_num)

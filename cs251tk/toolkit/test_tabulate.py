@@ -1,4 +1,4 @@
-from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums
+from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, sort_by_username
 
 
 def test_pad():
@@ -151,3 +151,65 @@ def test_get_nums():
             ],
         }
     ]) == (0, 1)
+
+
+def test_sort_by_hw_count():
+    students = [
+        {
+            'username': 'rives1',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+                {'number': 3, 'status': 'complete'},
+                {'number': 4, 'status': 'complete'},
+            ],
+        },
+        {
+            'username': 'rives2',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+                {'number': 3, 'status': 'complete'},
+            ],
+        },
+        {
+            'username': 'rives3',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+            ],
+        },
+    ]
+
+    assert sorted(students, key=sort_by_hw_count) == list(reversed(students))
+
+
+def test_sort_by_username():
+    students = [
+        {
+            'username': 'rives1',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+                {'number': 3, 'status': 'complete'},
+                {'number': 4, 'status': 'complete'},
+            ],
+        },
+        {
+            'username': 'rives2',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+                {'number': 3, 'status': 'complete'},
+            ],
+        },
+        {
+            'username': 'rives3',
+            'homeworks': [
+                {'number': 1, 'status': 'complete'},
+                {'number': 2, 'status': 'complete'},
+            ],
+        },
+    ]
+
+    assert sorted(students, key=sort_by_username) == students

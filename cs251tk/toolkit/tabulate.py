@@ -15,7 +15,7 @@ ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 def sort_by_hw_count(user):
     """Sort students by the number of completed homeworks"""
-    return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
+    return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homeworks']])
 
 
 def sort_by_username(user):

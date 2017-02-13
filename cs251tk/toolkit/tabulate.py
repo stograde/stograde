@@ -73,8 +73,8 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
     if student.get('unmerged_branches', False):
         name = colored(name, attrs={'bold': True})
 
-    homework_row = concat(student['homeworks'], max_hwk_num)
-    lab_row = concat(student['labs'], max_lab_num)
+    homework_row = concat(student.get('homeworks', []), max_hwk_num)
+    lab_row = concat(student.get('labs', []), max_lab_num)
 
     if 'error' in student:
         return '{name}  {sep} {err}'.format(

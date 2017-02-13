@@ -80,6 +80,13 @@ def test_columnize():
 
     assert columnize(student3, 'rives', 2, 1) == "{username}  | {error}".format(**student3)
 
+    student4 = {
+        'username': 'rives',
+        'error': 'an error occurred',
+    }
+
+    assert columnize(student4, 'rives', 0, 0) == "{username}  | {error}".format(**student4)
+
 
 def test_get_nums():
     assert get_nums([

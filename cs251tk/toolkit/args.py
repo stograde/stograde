@@ -1,8 +1,8 @@
 """Deal with argument parsing for the toolkit"""
 
 import argparse
-import re
 import textwrap
+import re
 from os import cpu_count
 from logging import warning
 from natsort import natsorted
@@ -18,7 +18,8 @@ def get_args():
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
     parser.add_argument('input', nargs='*',
                         help='A mixed list of students and assignments')
-    parser.add_argument('--debug', action='store_true', help='enable debugging mode (throw errors, implies -w1)')
+    parser.add_argument('--debug', action='store_true',
+                        help='enable debugging mode (throw errors, implies -w1)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -52,7 +53,7 @@ def get_args():
 
     dates = parser.add_argument_group('time-based arguments')
     dates.add_argument('--date', action='store', metavar='GIT_DATE',
-                       help='Check out last submission on DATE (eg, "last week", "tea time", "2 hrs ago") (see `man git-rev-list`)')
+                       help='Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago") (see `man git-rev-list`)')
 
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',

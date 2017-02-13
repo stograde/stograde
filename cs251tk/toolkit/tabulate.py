@@ -2,8 +2,6 @@
 import re
 from sys import stdout
 from termcolor import colored
-from logging import warning
-from cs251tk.common import flatten
 
 UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
 # unicode = False
@@ -15,7 +13,18 @@ HIGHLIGHT_PARTIALS = False
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
+def sort_by_hw_count(user):
+    """Sort students by the number of completed homeworks"""
+    return sum([1 if hw['status'] == 'success' else 0 for hw in user['homeworks']])
+
+
+def sort_by_username(user):
+    """Sort students by their username"""
+    return user['username']
+
+
 def asciiify(table):
+    """Take a flashy unicode table and render it with ASCII-only chars"""
     table = table.replace('│', '|')
     table = table.replace('─', '-')
     table = table.replace('┼', '-')
@@ -64,8 +73,8 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
     if student.get('unmerged_branches', False):
         name = colored(name, attrs={'bold': True})
 
-    homework_row = concat(student['homeworks'], max_hwk_num)
-    lab_row = concat(student['labs'], max_lab_num)
+    homework_row = concat(student.get('homeworks', []), max_hwk_num)
+    lab_row = concat(student.get('labs', []), max_lab_num)
 
     if 'error' in student:
         return '{name}  {sep} {err}'.format(
@@ -81,27 +90,17 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num):
 
 
 def get_nums(students):
-    homework_nums = flatten([[hw['number'] for hw in s.get('homeworks', [])] for s in students])
-    lab_nums = flatten([[lab['number'] for lab in s.get('labs', [])] for s in students])
+    """Given a list of students, return the higest hw and lab number among them"""
+    homework_nums = [hw['number'] for s in students for hw in s.get('homeworks', [])]
+    lab_nums = [lab['number'] for s in students for lab in s.get('labs', [])]
 
-    if not homework_nums:
-        warning('no homework assignments were given to tabulate')
-        warning('from these students:')
-        warning(students)
-        return 0, 0
-    if not lab_nums:
-        warning('no labs were given to tabulate')
-        warning('from these students:')
-        warning(students)
-        return 0, 0
-
-    max_hwk_num = max(homework_nums)
-    max_lab_num = max(lab_nums)
+    max_hwk_num = max(homework_nums, default=0)
+    max_lab_num = max(lab_nums, default=0)
 
     return max_hwk_num, max_lab_num
 
 
-def tabulate(students, sort_by, partials):
+def tabulate(students, sort_by='name', partials=False):
     """Actually build the table"""
     global HIGHLIGHT_PARTIALS
     HIGHLIGHT_PARTIALS = partials
@@ -132,12 +131,10 @@ def tabulate(students, sort_by, partials):
 
     # build the table body
     if sort_by == 'count':
-        def sorter(user):
-            return sum([1 if hw['status'] == 'complete' else 0 for hw in user['homework']])
+        sorter = sort_by_hw_count
         should_reverse = True
     else:
-        def sorter(user):
-            return user['username']
+        sorter = sort_by_username
         should_reverse = False
 
     lines = [columnize(student, longest_user, max_hwk_num, max_lab_num)

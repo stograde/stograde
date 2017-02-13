@@ -1,4 +1,5 @@
-from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize
+from textwrap import dedent
+from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, sort_by_username, tabulate
 
 
 def test_pad():
@@ -79,3 +80,192 @@ def test_columnize():
     }
 
     assert columnize(student3, 'rives', 2, 1) == "{username}  | {error}".format(**student3)
+
+    student4 = {
+        'username': 'rives',
+        'error': 'an error occurred',
+    }
+
+    assert columnize(student4, 'rives', 0, 0) == "{username}  | {error}".format(**student4)
+
+
+def test_get_nums():
+    assert get_nums([
+        {
+            'username': 'rives',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ]
+        }
+    ]) == (2, 1)
+
+    assert get_nums([
+        {
+            'username': 'rives1',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ]
+        },
+        {
+            'username': 'rives2',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 8, 'status': 'success'},
+                {'number': 9, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 10, 'status': 'success'},
+            ]
+        }
+    ]) == (9, 10)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [],
+            'labs': [],
+        }
+    ]) == (0, 0)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+            ],
+            'labs': [],
+        }
+    ]) == (1, 0)
+
+    assert get_nums([
+        {
+            'username': 'student',
+            'unmerged_branches': True,
+            'homeworks': [],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ],
+        }
+    ]) == (0, 1)
+
+
+def test_sort_by_hw_count():
+    students = [
+        {
+            'username': 'rives1',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+                {'number': 4, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives2',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives3',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+        },
+    ]
+
+    assert sorted(students, key=sort_by_hw_count) == list(reversed(students))
+
+
+def test_sort_by_username():
+    students = [
+        {
+            'username': 'rives1',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+                {'number': 4, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives2',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives3',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+        },
+    ]
+
+    assert sorted(students, key=sort_by_username) == students
+
+
+def test_tabulate():
+    students = [
+        {
+            'username': 'rives3',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+                {'number': 4, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives2',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+                {'number': 3, 'status': 'success'},
+            ],
+        },
+        {
+            'username': 'rives1',
+            'homeworks': [
+                {'number': 1, 'status': 'success'},
+                {'number': 2, 'status': 'success'},
+            ],
+            'labs': [
+                {'number': 1, 'status': 'success'},
+            ]
+        },
+    ]
+
+    assert tabulate(students) == dedent("""
+    USER    | 1 2 3 4 | 1
+    ---------------------
+    rives1  | 1 2 - - | 1
+    rives2  | 1 2 3 - | -
+    rives3  | 1 2 3 4 | -
+    """).strip()
+
+    assert tabulate(students, sort_by='count') == dedent("""
+    USER    | 1 2 3 4 | 1
+    ---------------------
+    rives3  | 1 2 3 4 | -
+    rives2  | 1 2 3 - | -
+    rives1  | 1 2 - - | 1
+    """).strip()

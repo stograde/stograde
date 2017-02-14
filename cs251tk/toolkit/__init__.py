@@ -1,4 +1,5 @@
 from .args import process_args
+from .config import conf
 from .get_students import get_students
 from .gist import post_gist
 from .progress_bar import progress_bar

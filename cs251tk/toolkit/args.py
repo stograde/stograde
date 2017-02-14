@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
 
-    specs = argparse.ArgumentParser(description='control the homework specs')
+    specs = parser.add_argument_group('control the homework specs')
     specs.add_argument('--course', default='sd', choices=['sd', 'hd'],
                        help='Which course to evaulate (this sets a default stogit url)')
 

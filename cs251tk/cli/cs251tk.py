@@ -4,6 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 
 from cs251tk.common import chdir
+from cs251tk.toolkit import update_available
 from cs251tk.toolkit import process_student
 from cs251tk.toolkit import process_args
 from cs251tk.toolkit import progress_bar
@@ -37,7 +38,7 @@ def main():
     args = process_args()
     basedir = getcwd()
     if update_available():
-        print(dedent('v{} is available (you have v{}) - try "pip3 install --no-cache --user cs251tk"'))
+        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user cs251tk" to update.')
 
     if args['date']:
         print('Checking out {}'.format(args['date']))

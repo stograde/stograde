@@ -19,34 +19,26 @@ Prerequisites: macOS/Linux, Python 3.5+, git.
 ```console
 $ mkdir cs251/
 $ cd cs251
-$ pyvenv ./venv
-$ source ./venv/bin/activate  # or activate.csh, or activate.fish
-$ # deactivate  # will exit the venv
 ```
 
-This will set up a "virtual environment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
-
-The _only_ tricky thing is that you have to remember to run `source ./venv/bin/activate` whenever you get into this folder, or else you won't be able to run the toolkit. (why virtualenvs? read [virtualenvs](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [pip-virtualenv](http://docs.python-guide.org/en/latest/dev/pip-virtualenv).)
-
-> If you really don't want to use the virtualenv, you can substitute the `pip install` for `pip3 install --user` in the next step. You'll also need to add `$HOME/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
+You'll need to add `~/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
 
 
 ##### Install the toolkit
 
 ```console
-$ pip install cs251tk
-$ # or, if you didn't do the virtualenv, run
-$ # pip3 install --user cs251tk
+$ pip3 install --user cs251tk
 ```
 
-The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
+The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder, instead.
 
-> When you need to update the toolkit, use `pip install --no-cache --update cs251tk` (or `pip3 install --user --no-cache --update cs251tk` if you didn't use the virtualenv.)
+> When you need to update the toolkit, use `pip3 install --user --no-cache --update cs251tk`.
 
 
 ##### Grab the course specs
 
 ```console
+$ # make sure you're still in the cs251 folder
 $ git clone https://github.com/StoDevX/cs251-specs data
 ```
 
@@ -83,9 +75,8 @@ piersonv
 magnusow
 ```
 
-## Run the thing
 
-> Please only run this in your `cs251` folder. I know it makes at least one folder in whatever directory it's run from, so unless you like cluttering up your filesystem with `.cs251toolkitrc.yaml` files, pick a folder and run it in there :wink:.
+## Run the thing
 
 ```console
 $ cs251tk --help
@@ -319,12 +310,9 @@ Again, tag name and version should match what you built.  If you supplied a vers
 ## Contributing
 - `git clone https://github.com/StoDevX/cs251-toolkit`
 - `cd cs251-toolkit`
-- `pyvenv ./venv`
-- `source ./venv/bin/activate`
 - `python3 setup.py develop`
 - go to your cs251 folder that contains the data/ and students/ folders
-- run `cs251tk`; it'll be the development version.
-- run `deactivate` to leave the venv.
+- run `cs251tk`, which will be the development version.
 
 
 ## Maintainers

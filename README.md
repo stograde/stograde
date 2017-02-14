@@ -216,12 +216,11 @@ Then, you can just scroll through the file, seeing what people submitted, and sa
 ## `cs251tk --help`
 
 ```text
-usage: cs251tk [-h] [--students USERNAME [USERNAME ...]]
+usage: cs251tk [-h] [--debug] [--students USERNAME [USERNAME ...]]
                [--section SECTION [SECTION ...]] [--all] [--quiet]
                [--no-progress] [--workers N] [--sort {name,count}]
                [--partials] [--clean] [--no-update] [--stogit URL]
-               [--day {sun,mon,tues,wed,thurs,fri,sat}] [--date YYYY-MM-DD]
-               [--no-check] [--record HW [HW ...]] [--gist]
+               [--date GIT_DATE] [--no-check] [--record HW [HW ...]] [--gist]
                [input [input ...]]
 
 The core of the CS251 toolkit
@@ -231,6 +230,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --debug               enable debugging mode (throw errors, implies -w1)
 
 student-selection arguments:
   --students USERNAME [USERNAME ...]
@@ -252,9 +252,8 @@ student management arguments:
   --stogit URL          Use an alternate stogit base URL
 
 time-based arguments:
-  --day {sun,mon,tues,wed,thurs,fri,sat}
-                        Check out submissions as of 5pm on WEEKDAY
-  --date YYYY-MM-DD     Check out submissions as of 5pm on DATE
+  --date GIT_DATE       Check out last submission on DATE (eg, "last week",
+                        "tea time", "2 hrs ago") (see `man git-rev-list`)
 
 grading arguments:
   --no-check, -c        Do not check for unmerged branches

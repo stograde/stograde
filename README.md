@@ -317,5 +317,14 @@ Again, tag name and version should match what you built.  If you supplied a vers
 
 
 ## Maintainers
-- You need a PyPI account: [pypi.org](https://pypi.org)
-- `python3 setup.py sdist upload` should generate a new release and upload it to PyPI
+There are two ways to upload a new release:
+
+1. Automatically, through TravisCI
+    - Tag a commit: `git tag v2.1.3`
+    - Push the tag: `git push --tags`
+    - Wait
+    - Enjoy the new release
+2. Manually, via PyPI:
+    - Get a PyPI account: [pypi.org](https://pypi.org)
+    - Ping @hawkrives or @rye to add you to the PyPI package
+    - Run `python3 setup.py sdist upload` to generate a new release and upload it to PyPI

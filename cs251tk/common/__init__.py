@@ -1,4 +1,5 @@
 from .chdir import chdir
+from .config import conf
 from .dirsize import dirsize
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .flatten import flatten

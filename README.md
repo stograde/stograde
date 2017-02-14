@@ -265,13 +265,15 @@ grading arguments:
 
 
 ## Advanced Usage
-`--stogit URL` lets you change the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
+`--course {sd|hd}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design as well.
+
+`--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
 
 `--gist` creates a private gist so you can see the nice syntax highlighting. If you don't use this argument, no data ever leaves your system.
 
 `--clean` removes the student folders and re-clones them, the same as `rm -rf ./students` would.
 
-`--day` and `--date` have a tendency to break, but _in short_, they check out the repositories as of 5pm on $DATE and run everything based on that state. Powerful, but not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over with this, but that's a bad idea.)
+`--date GIT_DATE` checks out the repositories as of GIT\_DATE, and runs everything based on that state. Powerful, but not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over with this, but that's a bad idea.) See `man git-rev-parse` for more information on what a GIT\_DATE is.
 
 `--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will disable the process pool entirely, which is helpful for debugging.
 

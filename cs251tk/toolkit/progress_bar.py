@@ -16,4 +16,4 @@ def progress_bar(size, current, message=''):
 
     result = line + spacers
     result = result[:cols]
-    print(result, end='\r', file=sys.stderr)
+    print('\r' + result, end='', file=sys.stderr)

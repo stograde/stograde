@@ -9,7 +9,6 @@ COL = '│' if UNICODE else '|'
 ROW = '─' if UNICODE else '-'
 JOIN = '┼' if UNICODE else '-'
 MISSING = '─' if UNICODE else '-'
-HIGHLIGHT_PARTIALS = False
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
@@ -39,22 +38,22 @@ def pad(string, index):
     return string.ljust(len(str(index)), padding_char)
 
 
-def symbol(assignment):
+def symbol(assignment, highlight_partials=False):
     """Turn an assignment status into the symbol for the table"""
     if assignment['status'] == 'success':
         return str(assignment['number'])
     elif assignment['status'] == 'partial':
         retval = str(assignment['number'])
-        if HIGHLIGHT_PARTIALS:
+        if highlight_partials:
             return colored(retval, 'red', attrs={'bold': True})
         return retval
     return MISSING
 
 
-def concat(lst, to_num):
+def concat(lst, to_num, highlight_partials=False):
     """Create the informative row of data for a list of assignment statuses"""
     nums = {item['number']: item for item in lst}
-    lst = [pad(symbol(nums[idx]), idx)
+    lst = [pad(symbol(nums[idx], highlight_partials), idx)
            if idx in nums
            else pad('-', idx)
            for idx in range(1, to_num + 1)]
@@ -66,15 +65,15 @@ def find_columns(num):
     return ' '.join([str(i) for i in range(1, num + 1)])
 
 
-def columnize(student, longest_user, max_hwk_num, max_lab_num):
+def columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=False):
     """Build the data for each row of the information table"""
     name = '{0:<{1}}'.format(student['username'], len(longest_user))
 
     if student.get('unmerged_branches', False):
         name = colored(name, attrs={'bold': True})
 
-    homework_row = concat(student.get('homeworks', []), max_hwk_num)
-    lab_row = concat(student.get('labs', []), max_lab_num)
+    homework_row = concat(student.get('homeworks', []), max_hwk_num, highlight_partials)
+    lab_row = concat(student.get('labs', []), max_lab_num, highlight_partials)
 
     if 'error' in student:
         return '{name}  {sep} {err}'.format(
@@ -102,8 +101,6 @@ def get_nums(students):
 
 def tabulate(students, sort_by='name', partials=False):
     """Actually build the table"""
-    global HIGHLIGHT_PARTIALS
-    HIGHLIGHT_PARTIALS = partials
 
     # be sure that the longest username will be at least 4 chars
     usernames = [user['username'] for user in students] + ['USER']
@@ -137,7 +134,7 @@ def tabulate(students, sort_by='name', partials=False):
         sorter = sort_by_username
         should_reverse = False
 
-    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num)
+    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=partials)
              for student in sorted(students, reverse=should_reverse, key=sorter)]
 
     # and make the table to return

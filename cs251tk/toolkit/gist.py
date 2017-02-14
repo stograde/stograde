@@ -1,19 +1,22 @@
-import requests
+"""Post a private gist of the analysis to github's gist service"""
 import json
 import getpass
+import requests
 __all__ = ['post_gist']
 
 
 def get_auth():
+    """Get the user's credentials"""
     username = input('Github username: ')
-    pw = getpass.getpass('Github password: ')
-    return username, pw
+    password = getpass.getpass('Github password: ')
+    return username, password
 
 
 def post_gist(description, files):
+    """Post a gist of the analysis"""
     username, password = get_auth()
-    s = requests.Session()
-    s.auth = (username, password)
+    sess = requests.Session()
+    sess.auth = (username, password)
 
     params = {
         'description': description,
@@ -27,9 +30,9 @@ def post_gist(description, files):
         'User-Agent': 'stolaf-cs-toolkit/v1',
     }
 
-    req = s.post('https://api.github.com/gists',
-                 headers=headers,
-                 data=json.dumps(params))
+    req = sess.post('https://api.github.com/gists',
+                    headers=headers,
+                    data=json.dumps(params))
 
     result = req.json()
 

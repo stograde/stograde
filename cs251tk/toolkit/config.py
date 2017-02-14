@@ -1,5 +1,5 @@
-import yaml
 from logging import warning
+import yaml
 
 
 def load_config():

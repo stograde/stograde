@@ -40,8 +40,8 @@ def update_available(pkg='cs251tk'):
     all_versions = get_all_versions(pkg)
 
     if current_version not in all_versions:
-        return None
+        return current_version, None
     if all_versions.index(current_version) != len(all_versions) - 1:
-        return all_versions[-1]
+        return current_version, all_versions[-1]
 
-    return None
+    return current_version, None

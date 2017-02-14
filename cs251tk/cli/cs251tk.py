@@ -4,6 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 
 from cs251tk.common import chdir
+from cs251tk.toolkit import update_available
 from cs251tk.toolkit import process_student
 from cs251tk.toolkit import process_args
 from cs251tk.toolkit import progress_bar
@@ -36,7 +37,9 @@ def make_progress_bar(students, no_progress=False):
 def main():
     args = process_args()
     basedir = getcwd()
-    # check_for_updates()
+    current_version, new_version = update_available()
+    if new_version:
+        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user cs251tk" to update.'.format(current_version, new_version))
 
     if args['date']:
         print('Checking out {}'.format(args['date']))

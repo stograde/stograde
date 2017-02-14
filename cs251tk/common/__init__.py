@@ -1,7 +1,6 @@
 from .chdir import chdir
 from .dirsize import dirsize
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .find_update import update_available
 from .flatten import flatten
 from .group_by import group_by
 from .parse_commit_msg_for_assignments import parse_commit_msg_for_assignments

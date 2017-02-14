@@ -36,7 +36,8 @@ def make_progress_bar(students, no_progress=False):
 def main():
     args = process_args()
     basedir = getcwd()
-    # check_for_updates()
+    if update_available():
+        print(dedent('v{} is available (you have v{}) - try "pip3 install --no-cache --user cs251tk"'))
 
     if args['date']:
         print('Checking out {}'.format(args['date']))

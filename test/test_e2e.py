@@ -30,20 +30,6 @@ def setup():
     os.chdir("..")
 
 
-def test_cs251tk_version(setup):
-    stdout, stderr = setup
-    sys.argv = [sys.argv[0]] + ['-v', '--skip-update-check']
-
-    try:
-        main()
-    except SystemExit:
-        pass
-
-    out = stdout.getvalue()
-
-    assert out.startswith("version ")
-
-
 def test_cs251tk_table(setup):
     stdout, stderr = setup
     sys.argv = [sys.argv[0]] + ['--no-update', '--no-check', '--skip-update-check']

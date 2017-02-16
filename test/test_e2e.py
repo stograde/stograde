@@ -40,10 +40,8 @@ def test_cs251tk_version(setup):
         pass
 
     out = stdout.getvalue()
-    out = out.strip()
-    regex = re.compile(r"version \d+[.]\d+[.]\d+")
 
-    assert regex.fullmatch(out)
+    assert out.startswith("version ")
 
 
 def test_cs251tk_table(setup):

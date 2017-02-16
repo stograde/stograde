@@ -28,16 +28,15 @@ def get_all_versions(pkg='cs251tk'):
 
 def update_available():
     if not conf.needs_update_check():
-        return current_version, None
+        return version, None
 
     conf.set_last_update_check()
 
-    current_version = version
     all_versions = get_all_versions()
 
-    if current_version not in all_versions:
-        return current_version, None
-    if all_versions.index(current_version) != len(all_versions) - 1:
-        return current_version, all_versions[-1]
+    if version not in all_versions:
+        return version, None
+    if all_versions.index(version) != len(all_versions) - 1:
+        return version, all_versions[-1]
 
-    return current_version, None
+    return version, None

@@ -33,6 +33,7 @@ branches:
   only:
     - master
     - /^travis/
+    - /v*/
 
 cache:
   pip: true

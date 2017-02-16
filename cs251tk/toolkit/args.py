@@ -10,12 +10,12 @@ from logging import warning
 from natsort import natsorted
 
 from cs251tk.common import flatten, version
-from .get_students import get_students
+from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 
 
-def get_args():
+def build_argparser():
     """Construct the argument list and parse the passed arguments"""
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
     parser.add_argument('input', nargs='*',
@@ -34,22 +34,22 @@ def get_args():
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
                            help='Only iterate over these students.')
-    selection.add_argument('--section', action='append', nargs='+', metavar='SECTION', default=[],
+    selection.add_argument('--section', action='append', dest='sections', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
-    selection.add_argument('--all', '-a', action='store_true',
+    selection.add_argument('--all', '-a', dest='all_sections', action='store_true',
                            help='Shorthand for \'--section all\'')
 
     optional = parser.add_argument_group('optional arguments')
     optional.add_argument('--quiet', '-q', action='store_true',
-                          help='Don\'t show the table')
+                          help="Don't show the table")
     optional.add_argument('--no-progress', action='store_true',
                           help='Hide the progress bar')
     optional.add_argument('--workers', '-w', type=int, default=cpu_count(), metavar='N',
                           help='The number of operations to perform in parallel')
-    optional.add_argument('--sort', action='store', default='name', type=str,
+    optional.add_argument('--sort', dest='sort_by', action='store', default='name', type=str,
                           choices=['name', 'count'],
                           help='Sort the students table')
-    optional.add_argument('--partials', '-p', action='store_true',
+    optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
 
     folder = parser.add_argument_group('student management arguments')
@@ -67,7 +67,7 @@ def get_args():
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',
                          help='Do not check for unmerged branches')
-    grading.add_argument('--record', action='append', nargs='+', metavar='HW', default=[],
+    grading.add_argument('--record', dest='to_record', action='append', nargs='+', metavar='HW', default=[],
                          help='Record information on student submissions. Requires a spec file')
     grading.add_argument('--gist', action='store_true',
                          help='Post overview table and student recordings as a private gist')
@@ -75,74 +75,80 @@ def get_args():
     return parser
 
 
-def massage_args(args, students, now=datetime.date.today()):
-    assignments = [l for l in args['input'] if re.match(ASSIGNMENT_REGEX, l)]
-    people = [l for l in args['input'] if not re.match(ASSIGNMENT_REGEX, l)]
+def get_students_from_args(*, input, all_sections, sections, students, _all_students, **kwargs):
+    people = [l for l in input if not re.match(ASSIGNMENT_REGEX, l)]
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
     # `--students amy max --students rives` becomes `[[amy, max], [rives]]`
-    args['students'] = list(flatten(args['students'])) + people
-    args['section'] = list(flatten(args['section']))
-    args['record'] = natsorted(set(list(flatten(args['record'])) + assignments))
+    people = [student for group in students for student in group] + people
+    sections = [sect for group in sections for sect in group]
 
-    if args['all']:
-        args['section'] = ['all']
+    if all_sections:
+        sections = ['all']
 
     # fall back to the students.my section
-    if not args['students'] and not args['section']:
-        args['section'] = ['my']
+    if not students and not sections:
+        sections = ['my']
 
     # support 'my' students and 'all' students
-    if 'my' in args['section']:
-        if 'my' not in students:
+    if 'my' in sections:
+        if 'my' not in _all_students:
             warning('There is no [my] section in students.txt')
             return args
-        args['students'] = students['my']
+        people = _all_students['my']
 
-    elif 'all' in args['section']:
-        sections = [students[section] for section in students]
-        args['students'] = list(flatten(sections))
+    elif 'all' in sections:
+        people = list(flatten([_all_students[section] for section in _all_students]))
 
     # sections are identified by only being one char long
-    elif args['section']:
+    elif sections:
         sections = []
-        for section in args['section']:
+        for section in sections:
             try:
-                sections.append(students['section-' + section] or students[section])
+                sections.append(_all_students['section-' + section] or _all_students[section])
             except KeyError:
                 warning('Section "{}" could not be found in ./students.txt'.format(section))
-        args['students'] = list(flatten(sections))
-
-    # stop if we still don't have any students
-    if not args['students']:
-        msg = textwrap.dedent("""
-            Could not find a list of students. You must provide the
-            `--students` argument, the `--section` argument, or a
-            ./students.txt file.
-        """)
-        warning(textwrap.fill(msg))
-        return args
+        people = [student for group in sections for student in group]
 
     # sort students and remove any duplicates
-    args['students'] = sorted(set(args['students']))
+    return sorted(set(people))
 
-    # calculate the default stogit URL
-    if not args['stogit']:
-        course = args['course']
-        semester = 's' if now.month < 7 else 'f'
-        year = str(now.year)[2:]
-        args['stogit'] = 'git@stogit.cs.stolaf.edu:{}-{}{}'.format(course, semester, year)
 
-    return args
+def get_assignments_from_args(*, input, to_record, **kwargs):
+    # grab the assignments given on the plain args list
+    assignments = [l for l in input if re.match(ASSIGNMENT_REGEX, l)]
+
+    # argparser puts --record into a nested list because you could have two
+    # occurrences of the arg, each with a variable number of arguments.
+    # `--record hw4 lab1 --record hw5` becomes `[[hw4, lab1], [hw5]]`
+    assignments = [assignment for group in to_record for assignment in group] + assignments
+
+    # sort the assignemnts and remove duplicates
+    return natsorted(set(assignments))
+
+
+def compute_stogit_url(*, stogit, course, _now, **kwargs):
+    """calculate a default stogit URL, or use the specified one"""
+    if stogit:
+        return stogit
+
+    semester = 's' if _now.month < 7 else 'f'
+    year = str(_now.year)[2:]
+    return 'git@stogit.cs.stolaf.edu:{}-{}{}'.format(course, semester, year)
 
 
 def process_args():
     """Process the arguments and create usable data from them"""
-    parser = get_args()
+    parser = build_argparser()
     args = vars(parser.parse_args())
+
     if args['version']:
         print('version', version)
         sys.exit(0)
-    students = get_students()
-    return massage_args(args, students)
+
+    students = get_students_from_args(**args, _all_students=load_students_from_file())
+    assignments = get_assignments_from_args(**args)
+    stogit = compute_stogit_url(**args, _now=datetime.date.today())
+
+    return args, students, assignments, stogit

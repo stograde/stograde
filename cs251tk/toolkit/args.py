@@ -24,6 +24,8 @@ def get_args():
                         help='print the version of the toolkit')
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
+    parser.add_argument('--skip-update-check', action='store_true',
+                        help='skips the pypi update check')
 
     specs = parser.add_argument_group('control the homework specs')
     specs.add_argument('--course', default='sd', choices=['sd', 'hd'],

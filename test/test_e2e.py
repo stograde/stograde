@@ -24,7 +24,7 @@ def test_cs251tk_version(capsys):
     os.chdir("..")
 
 
-def test_cs251tk(capsys):
+def test_cs251tk_table(capsys):
     sys.argv = [sys.argv[0]] + ['-n']
     os.chdir("test")
 

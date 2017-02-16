@@ -42,7 +42,7 @@ def test_cs251tk_table(setup, datafiles):
 
     assert out == textwrap.dedent("""
     USER      | 1 | 1
-    -----------------
+    ----------+---+--
     rives     | - | -
     student2  | 1 | 1
     """)

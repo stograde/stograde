@@ -26,8 +26,8 @@ def get_all_versions(pkg='cs251tk'):
     return natsort.natsorted(set(versions))
 
 
-def update_available():
-    if not conf.needs_update_check():
+def update_available(skip_update_check=False):
+    if skip_update_check or not conf.needs_update_check():
         return version, None
 
     conf.set_last_update_check()

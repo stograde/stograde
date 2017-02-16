@@ -38,7 +38,7 @@ def make_progress_bar(students, no_progress=False):
 def main():
     args = process_args()
     basedir = getcwd()
-    current_version, new_version = update_available()
+    current_version, new_version = update_available(skip_update_check=args['skip_update_check'])
     if new_version:
         print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
 

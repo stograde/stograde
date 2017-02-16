@@ -8,8 +8,10 @@ from .config import conf
 def get_all_versions(pkg='cs251tk'):
     # PyPI has these "simple" html pages. They're how pip does stuff.
     try:
-        req = requests.get('https://pypi.python.org/simple/{}'.format(pkg))
+        req = requests.get('https://pypi.python.org/simple/{}'.format(pkg), timeout=0.01)
     except requests.exceptions.ConnectionError:
+        return []
+    except requests.exceptions.Timeout:
         return []
 
     # Remove the first and last bits
@@ -26,8 +28,8 @@ def get_all_versions(pkg='cs251tk'):
     return natsort.natsorted(set(versions))
 
 
-def update_available():
-    if not conf.needs_update_check():
+def update_available(skip_update_check=False):
+    if skip_update_check or not conf.needs_update_check():
         return version, None
 
     conf.set_last_update_check()

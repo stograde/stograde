@@ -2,4 +2,4 @@
 set -ev
 
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-docker push "stodevx/cs251-toolkit:$(script/pick-docker-tag 2>/dev/null)"
+docker push "stodevx/cs251-toolkit:$(./pick-docker-tag 2>/dev/null)"

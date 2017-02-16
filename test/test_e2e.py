@@ -32,7 +32,7 @@ def setup():
 
 def test_cs251tk_version(setup):
     stdout, stderr = setup
-    sys.argv = [sys.argv[0]] + ['-v']
+    sys.argv = [sys.argv[0]] + ['-v', '--skip-update-check']
 
     try:
         main()
@@ -48,7 +48,7 @@ def test_cs251tk_version(setup):
 
 def test_cs251tk_table(setup):
     stdout, stderr = setup
-    sys.argv = [sys.argv[0]] + ['-n']
+    sys.argv = [sys.argv[0]] + ['--no-update', '--no-check', '--skip-update-check']
 
     try:
         main()
@@ -56,15 +56,10 @@ def test_cs251tk_table(setup):
         pass
 
     out = stdout.getvalue()
-    err = stderr.getvalue()
 
     assert out == textwrap.dedent("""
     USER      │ 1 │ 1
     ──────────┼───┼──
-    [1mrives   [0m  │ ─ │ ─
-    [1mstudent2[0m  │ 1 │ 1
+    rives     │ ─ │ ─
+    student2  │ 1 │ 1
     """)
-
-    assert "[  ] rives, student2" in err
-    assert "[· ] student2" in err
-    assert "[··]" in err

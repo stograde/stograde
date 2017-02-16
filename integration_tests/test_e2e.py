@@ -1,6 +1,6 @@
 import textwrap
 import pytest
-import locale
+import shutil
 import sys
 import os
 import re
@@ -8,12 +8,11 @@ from io import StringIO
 from contextlib import redirect_stdout, redirect_stderr
 from cs251tk.cli.cs251tk import main
 
+_dir = os.path.dirname(os.path.realpath(__file__))
 
-@pytest.fixture(scope='function', autouse=True)
-def setup():
-    # move the process into the test/ dir
-    os.chdir("./test")
 
+@pytest.fixture(scope='function')
+def setup(datafiles):
     # back up stdout/stderr and replace with testable version
     stdout = StringIO()
     stderr = StringIO()
@@ -26,11 +25,11 @@ def setup():
             except Exception:
                 pass
 
-    # return to the previous directory
-    os.chdir("..")
 
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
+def test_cs251tk_table(setup, datafiles):
+    os.chdir(str(datafiles))
 
-def test_cs251tk_table(setup):
     stdout, stderr = setup
     sys.argv = [sys.argv[0]] + ['--no-update', '--no-check', '--skip-update-check']
 

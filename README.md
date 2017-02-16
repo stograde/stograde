@@ -19,34 +19,26 @@ Prerequisites: macOS/Linux, Python 3.5+, git.
 ```console
 $ mkdir cs251/
 $ cd cs251
-$ pyvenv ./venv
-$ source ./venv/bin/activate  # or activate.csh, or activate.fish
-$ # deactivate  # will exit the venv
 ```
 
-This will set up a "virtual environment" for python, just for this folder, so that any dependencies we use here don't overwrite the system.  Also we don't get system-level access to install things, so this just makes it all easier.
-
-The _only_ tricky thing is that you have to remember to run `source ./venv/bin/activate` whenever you get into this folder, or else you won't be able to run the toolkit. (why virtualenvs? read [virtualenvs](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [pip-virtualenv](http://docs.python-guide.org/en/latest/dev/pip-virtualenv).)
-
-> If you really don't want to use the virtualenv, you can substitute the `pip install` for `pip3 install --user` in the next step. You'll also need to add `$HOME/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
+You'll need to add `~/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
 
 
 ##### Install the toolkit
 
 ```console
-$ pip install cs251tk
-$ # or, if you didn't do the virtualenv, run
-$ # pip3 install --user cs251tk
+$ pip3 install --user cs251tk
 ```
 
-The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip install` will install something globally, but on the lab machines we don't have global access, so we use the handy virtual environment we created in the last step, instead.
+The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder, instead.
 
-> When you need to update the toolkit, use `pip install --no-cache --update cs251tk` (or `pip3 install --user --no-cache --update cs251tk` if you didn't use the virtualenv.)
+> When you need to update the toolkit, use `pip3 install --user --no-cache --update cs251tk`.
 
 
 ##### Grab the course specs
 
 ```console
+$ # make sure you're still in the cs251 folder
 $ git clone https://github.com/StoDevX/cs251-specs data
 ```
 
@@ -83,9 +75,8 @@ piersonv
 magnusow
 ```
 
-## Run the thing
 
-> Please only run this in your `cs251` folder. I know it makes at least one folder in whatever directory it's run from, so unless you like cluttering up your filesystem with `.cs251toolkitrc.yaml` files, pick a folder and run it in there :wink:.
+## Run the thing
 
 ```console
 $ cs251tk --help
@@ -98,7 +89,7 @@ As mentioned in the introduction, this toolkit can do a bunch of things, includi
 - run tests against those assignments and produce a log file
 - checking out the contents of a student's submission at a given date/time
 
-If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and run `cs251tk --quiet`. It will clone the repositories into `./students/$USERNAME` and exit. (`--quiet` just disables the printing of the summary table.)
+If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and run `cs251tk --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the printing of the summary table.)
 
 ## Summaries
 
@@ -108,7 +99,7 @@ If you want to see the summary table of what people've turned in, you can just r
 USER       | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 5 6 7 8 9 10 11
 –––––––––––+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––+––––––––––––––––––––––––
 rives      | 1 2 3 4 5 6 7 8 9 10 11 12 13 –– 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 – 6 7 8 9 10 11
-student    | 1 2 3 4 5 6 7 8 9 10 11 12 13 –– –– –– 17 18 19 –– –– –– –– –– –– | 1 2 – 4 – 6 7 – – –– ––
+student1   | 1 2 3 4 5 6 7 8 9 10 11 12 13 –– –– –– 17 18 19 –– –– –– –– –– –– | 1 2 – 4 – 6 7 – – –– ––
 magnusow   | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 – – 7 8 9 10 11
 volz       | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 – 6 7 8 9 10 11
 piersonv   | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 – 6 7 8 9 10 11
@@ -225,12 +216,11 @@ Then, you can just scroll through the file, seeing what people submitted, and sa
 ## `cs251tk --help`
 
 ```text
-usage: cs251tk [-h] [--students USERNAME [USERNAME ...]]
+usage: cs251tk [-h] [--debug] [--students USERNAME [USERNAME ...]]
                [--section SECTION [SECTION ...]] [--all] [--quiet]
                [--no-progress] [--workers N] [--sort {name,count}]
                [--partials] [--clean] [--no-update] [--stogit URL]
-               [--day {sun,mon,tues,wed,thurs,fri,sat}] [--date YYYY-MM-DD]
-               [--no-check] [--record HW [HW ...]] [--gist]
+               [--date GIT_DATE] [--no-check] [--record HW [HW ...]] [--gist]
                [input [input ...]]
 
 The core of the CS251 toolkit
@@ -240,6 +230,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --debug               enable debugging mode (throw errors, implies -w1)
 
 student-selection arguments:
   --students USERNAME [USERNAME ...]
@@ -261,9 +252,8 @@ student management arguments:
   --stogit URL          Use an alternate stogit base URL
 
 time-based arguments:
-  --day {sun,mon,tues,wed,thurs,fri,sat}
-                        Check out submissions as of 5pm on WEEKDAY
-  --date YYYY-MM-DD     Check out submissions as of 5pm on DATE
+  --date GIT_DATE       Check out last submission on DATE (eg, "last week",
+                        "tea time", "2 hrs ago") (see `man git-rev-list`)
 
 grading arguments:
   --no-check, -c        Do not check for unmerged branches
@@ -275,13 +265,15 @@ grading arguments:
 
 
 ## Advanced Usage
-`--stogit URL` lets you change the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
+`--course {sd|hd}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design as well.
+
+`--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
 
 `--gist` creates a private gist so you can see the nice syntax highlighting. If you don't use this argument, no data ever leaves your system.
 
 `--clean` removes the student folders and re-clones them, the same as `rm -rf ./students` would.
 
-`--day` and `--date` have a tendency to break, but _in short_, they check out the repositories as of 5pm on $DATE and run everything based on that state. Powerful, but not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over with this, but that's a bad idea.)
+`--date GIT_DATE` checks out the repositories as of GIT\_DATE, and runs everything based on that state. Powerful, but not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over with this, but that's a bad idea.) See `man git-rev-parse` for more information on what a GIT\_DATE is.
 
 `--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will disable the process pool entirely, which is helpful for debugging.
 
@@ -319,14 +311,20 @@ Again, tag name and version should match what you built.  If you supplied a vers
 ## Contributing
 - `git clone https://github.com/StoDevX/cs251-toolkit`
 - `cd cs251-toolkit`
-- `pyvenv ./venv`
-- `source ./venv/bin/activate`
 - `python3 setup.py develop`
 - go to your cs251 folder that contains the data/ and students/ folders
-- run `cs251tk`; it'll be the development version.
-- run `deactivate` to leave the venv.
+- run `cs251tk`, which will be the development version.
 
 
 ## Maintainers
-- You need a PyPI account: [pypi.org](https://pypi.org)
-- `python3 setup.py sdist upload` should generate a new release and upload it to PyPI
+There are two ways to upload a new release:
+
+1. Automatically, through TravisCI
+    - Tag a commit: `git tag v2.1.3`
+    - Push the tag: `git push --tags`
+    - Wait
+    - Enjoy the new release
+2. Manually, via PyPI:
+    - Get a PyPI account: [pypi.org](https://pypi.org)
+    - Ping @hawkrives or @rye to add you to the PyPI package
+    - Run `python3 setup.py sdist upload` to generate a new release and upload it to PyPI

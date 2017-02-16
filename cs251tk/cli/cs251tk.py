@@ -27,10 +27,10 @@ def make_progress_bar(students, no_progress=False):
         nonlocal invocation_count
         remaining.remove(username)
         invocation_count += 1
-        msg = ', '.join(remaining)
+        msg = ', '.join(sorted(remaining))
         progress_bar(size, invocation_count, message=msg)
 
-    msg = ', '.join(remaining)
+    msg = ', '.join(sorted(remaining))
     progress_bar(size, invocation_count, message=msg)
     return increment
 

@@ -21,7 +21,7 @@ $ mkdir cs251/
 $ cd cs251
 ```
 
-You'll need to add `~/.local/bin` to your `$PATH`. Consult Google or your local unix guru for help.
+You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
 
 ##### Install the toolkit

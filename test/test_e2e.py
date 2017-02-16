@@ -5,6 +5,7 @@ import sys
 import os
 import re
 from io import StringIO
+from contextlib import redirect_stdout, redirect_stderr
 from cs251tk.cli.cs251tk import main
 
 
@@ -14,22 +15,16 @@ def setup():
     os.chdir("./test")
 
     # back up stdout/stderr and replace with testable version
-    _stdout = sys.stdout
-    _stderr = sys.stderr
-    sys.stdout = StringIO()
-    sys.stderr = StringIO()
+    stdout = StringIO()
+    stderr = StringIO()
 
     # catch exceptions so that we always clean up
-    try:
-        yield sys.stdout, sys.stderr
-    except Exception:
-        pass
-
-    # replace stdout/stderr with the actual versions
-    sys.stdout.close()
-    sys.stderr.close()
-    sys.stdout = _stdout
-    sys.stderr = _stderr
+    with redirect_stdout(stdout):
+        with redirect_stderr(stderr):
+            try:
+                yield stdout, stderr
+            except Exception:
+                pass
 
     # return to the previous directory
     os.chdir("..")

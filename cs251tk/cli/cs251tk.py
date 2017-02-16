@@ -36,33 +36,58 @@ def make_progress_bar(students, no_progress=False):
 
 
 def main():
-    args = process_args()
     basedir = getcwd()
-    current_version, new_version = update_available(skip_update_check=args['skip_update_check'])
+
+    args, students, assignments, stogit_url = process_args()
+    clean = args['clean']
+    date = args['date']
+    debug = args['debug']
+    gist = args['gist']
+    highlight_partials = args['highlight_partials']
+    no_check = args['no_check']
+    no_update = args['no_update']
+    no_progress = args['no_progress']
+    quiet = args['quiet']
+    skip_update_check = args['skip_update_check']
+    sort_by = args['sort_by']
+    workers = args['workers']
+
+    current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
         print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
 
-    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
+    logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 
-    if args['date']:
-        print('Checking out {}'.format(args['date']))
+    if date:
+        print('Checking out {}'.format(date))
 
     specs = load_all_specs(basedir)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)
 
-    print_progress = make_progress_bar(args['students'])
+    print_progress = make_progress_bar(students, no_progress=no_progress)
 
     results = []
     records = []
     makedirs('./students', exist_ok=True)
     with chdir('./students'):
-        single = functools.partial(process_student, args=args, specs=specs, basedir=basedir, debug=args['debug'])
+        single = functools.partial(
+            process_student,
+            assignments=assignments,
+            basedir=basedir,
+            clean=clean,
+            date=date,
+            debug=debug,
+            no_check=no_check,
+            no_update=no_update,
+            specs=specs,
+            stogit_url=stogit_url
+        )
 
-        if args['workers'] > 1 and not args['debug']:
-            with ProcessPoolExecutor(max_workers=args['workers']) as pool:
-                futures = [pool.submit(single, student) for student in args['students']]
+        if workers > 1 and not debug:
+            with ProcessPoolExecutor(max_workers=workers) as pool:
+                futures = [pool.submit(single, student) for student in students]
                 for future in as_completed(futures):
                     result, recording = future.result()
                     print_progress(result['username'])
@@ -70,18 +95,18 @@ def main():
                     records.extend(recording)
 
         else:
-            for student in args['students']:
+            for student in students:
                 result, recording = single(student)
                 print_progress(result['username'])
                 results.append(result)
                 records.extend(recording)
 
-    if not args['quiet']:
-        table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
+    if not quiet:
+        table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         print('\n' + table)
 
-    if args['gist']:
-        table = tabulate(results, sort_by=args['sort'], partials=args['partials'])
-        gist_recordings(records, table, debug=args['debug'])
+    if gist:
+        table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
+        gist_recordings(records, table, debug=debug)
     else:
-        save_recordings(records, debug=args['debug'])
+        save_recordings(records, debug=debug)

@@ -1,5 +1,4 @@
-#!/bin/bash
-set -ev
+#!/bin/sh
 
 # Locate our docker binary.
 docker=$(which docker)

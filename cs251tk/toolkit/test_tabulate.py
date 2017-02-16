@@ -256,7 +256,7 @@ def test_tabulate():
 
     assert tabulate(students) == dedent("""
     USER    | 1 2 3 4 | 1
-    ---------------------
+    --------+---------+--
     rives1  | 1 2 - - | 1
     rives2  | 1 2 3 - | -
     rives3  | 1 2 3 4 | -
@@ -264,7 +264,7 @@ def test_tabulate():
 
     assert tabulate(students, sort_by='count') == dedent("""
     USER    | 1 2 3 4 | 1
-    ---------------------
+    --------+---------+--
     rives3  | 1 2 3 4 | -
     rives2  | 1 2 3 - | -
     rives1  | 1 2 - - | 1

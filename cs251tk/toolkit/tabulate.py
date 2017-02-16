@@ -3,12 +3,10 @@ import re
 from sys import stdout
 from termcolor import colored
 
-UNICODE = stdout.encoding == 'UTF-8' and stdout.isatty()
-# unicode = False
-COL = '│' if UNICODE else '|'
-ROW = '─' if UNICODE else '-'
-JOIN = '┼' if UNICODE else '-'
-MISSING = '─' if UNICODE else '-'
+COL = '|'
+ROW = '-'
+JOIN = '+'
+MISSING = '-'
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
@@ -24,12 +22,7 @@ def sort_by_username(user):
 
 def asciiify(table):
     """Take a flashy unicode table and render it with ASCII-only chars"""
-    table = table.replace('│', '|')
-    table = table.replace('─', '-')
-    table = table.replace('┼', '-')
-    table = table.replace('─', '-')
-    table = ANSI_ESCAPE.sub('', table)
-    return table
+    return ANSI_ESCAPE.sub('', table)
 
 
 def pad(string, index):

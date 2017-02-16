@@ -3,12 +3,13 @@
 import datetime
 import argparse
 import textwrap
+import sys
 import re
 from os import cpu_count
 from logging import warning
 from natsort import natsorted
 
-from cs251tk.common import flatten
+from cs251tk.common import flatten, version
 from .get_students import get_students
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
@@ -19,6 +20,8 @@ def get_args():
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
     parser.add_argument('input', nargs='*',
                         help='A mixed list of students and assignments')
+    parser.add_argument('-v', '--version', action='store_true',
+                        help='print the version of the toolkit')
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
 
@@ -136,5 +139,8 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = get_args()
     args = vars(parser.parse_args())
+    if args['version']:
+        print('version', version)
+        sys.exit(0)
     students = get_students()
     return massage_args(args, students)

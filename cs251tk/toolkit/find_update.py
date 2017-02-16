@@ -1,15 +1,11 @@
 import requests
 import natsort
 import re
-import pkg_resources  # part of setuptools
+from cs251tk.common import version
 from .config import conf
 
 
-def get_version(pkg):
-    return pkg_resources.require(pkg)[0].version
-
-
-def get_all_versions(pkg):
+def get_all_versions(pkg='cs251tk'):
     # PyPI has these "simple" html pages. They're how pip does stuff.
     try:
         req = requests.get('https://pypi.python.org/simple/{}'.format(pkg))
@@ -30,14 +26,14 @@ def get_all_versions(pkg):
     return natsort.natsorted(set(versions))
 
 
-def update_available(pkg='cs251tk'):
+def update_available():
     if not conf.needs_update_check():
-        return None
+        return current_version, None
 
     conf.set_last_update_check()
 
-    current_version = get_version(pkg)
-    all_versions = get_all_versions(pkg)
+    current_version = version
+    all_versions = get_all_versions()
 
     if current_version not in all_versions:
         return current_version, None

@@ -5,3 +5,4 @@ from .flatten import flatten
 from .group_by import group_by
 from .parse_commit_msg_for_assignments import parse_commit_msg_for_assignments
 from .run import run
+from .version import version

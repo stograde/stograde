@@ -44,5 +44,5 @@ after_success:
       coveralls;
     fi
 
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null`;
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null`

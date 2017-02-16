@@ -1,3 +1,4 @@
+import datetime
 from .args import (
     build_argparser,
     get_students_from_args,
@@ -43,3 +44,20 @@ def test_section():
 
 def test_record():
     assert get_assignments_from_args(**args(['--record', 'hw4'])) == ['hw4']
+
+
+def test_stogit_url_computation():
+    assert compute_stogit_url(stogit=None, course='sd', _now=datetime.date(2017, 1, 31)) \
+        == 'git@stogit.cs.stolaf.edu:sd-s17'
+
+    assert compute_stogit_url(stogit=None, course='sd', _now=datetime.date(2016, 9, 15)) \
+        == 'git@stogit.cs.stolaf.edu:sd-f16'
+
+    assert compute_stogit_url(stogit=None, course='sd', _now=datetime.date(2016, 4, 15)) \
+        == 'git@stogit.cs.stolaf.edu:sd-s16'
+
+    assert compute_stogit_url(stogit='blah', course='sd', _now=datetime.date.today()) \
+        == 'blah'
+
+    assert compute_stogit_url(stogit=None, course='hd', _now=datetime.date(2016, 4, 15)) \
+        == 'git@stogit.cs.stolaf.edu:hd-s16'

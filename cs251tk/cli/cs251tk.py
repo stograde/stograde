@@ -39,7 +39,7 @@ def main():
     basedir = getcwd()
     current_version, new_version = update_available()
     if new_version:
-        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user cs251tk" to update.'.format(current_version, new_version))
+        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
 
     if args['date']:
         print('Checking out {}'.format(args['date']))

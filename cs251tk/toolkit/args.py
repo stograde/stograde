@@ -103,13 +103,20 @@ def get_students_from_args(*, input, all_sections, sections, students, _all_stud
 
     # sections are identified by only being one char long
     elif sections:
-        sections = []
-        for section in sections:
-            try:
-                sections.append(_all_students['section-' + section] or _all_students[section])
-            except KeyError:
-                warning('Section "{}" could not be found in ./students.txt'.format(section))
-        people = [student for group in sections for student in group]
+        collected = []
+        for section_name in sections:
+            student_set = []
+            prefixed = 'section-{}'.format(section_name)
+
+            if section_name in _all_students:
+                student_set = _all_students[section_name]
+            elif prefixed in _all_students:
+                student_set = _all_students[prefixed]
+            else:
+                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
+
+            collected.append(student_set)
+        people = [student for group in collected for student in group]
 
     # sort students and remove any duplicates
     return sorted(set(people))

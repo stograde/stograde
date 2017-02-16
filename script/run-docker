@@ -17,9 +17,15 @@ fi
 
 if [ -z "$(docker images -q $CS251TK_IMAGE 2>/dev/null)" ];
 then
-    echo "===> CS251TK_IMAGE not installed in Docker... make sure you've built the image!"
-    echo "      (\$CS251TK_IMAGE = \"$CS251TK_IMAGE\")"
-    exit 1
+    echo "===> CS251TK_IMAGE not installed in Docker... Trying to install."
+
+    if docker pull $CS251TK_IMAGE;
+    then
+        echo "      -> Installed successfully."
+    else
+        echo "      -> Installation failed. :("
+        exit 1
+    fi
 else
     echo "===> CS251TK_IMAGE is installed."
 fi

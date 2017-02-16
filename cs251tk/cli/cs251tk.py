@@ -1,4 +1,5 @@
 import functools
+import logging
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
@@ -40,6 +41,8 @@ def main():
     current_version, new_version = update_available()
     if new_version:
         print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
+
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 
     if args['date']:
         print('Checking out {}'.format(args['date']))

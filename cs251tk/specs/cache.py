@@ -35,7 +35,7 @@ def cache_specs(basedir):
         j_modtime = get_modification_time_ns(jsonfile)
         if y_modtime != j_modtime:
             if not j_modtime:
-                warning('caching', yamlfile, 'to', jsonfile)
+                warning('caching {} to {}'.format(yamlfile, jsonfile))
                 atime = os.stat(jsonfile).st_atime_ns
             else:
                 atime = os.stat(yamlfile).st_atime_ns

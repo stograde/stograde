@@ -19,36 +19,37 @@ def cache_specs(basedir):
     json_specs = iglob(basedir + '/data/specs/_cache/*.json')
 
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
-        cache_spec(yamlfile=yamlfile, jsonfile=jsonfile)
+        cache_spec(source_file=yamlfile, dest_file=jsonfile)
 
 
-def cache_spec(*, yamlfile, jsonfile):
-    if not yamlfile:
+def cache_spec(*, source_file, dest_file):
+    if not source_file:
         # If yamlfile doesn't exist, then because we used zip_longest
         # there has to be a jsonfile. We don't want any jsonfiles
         # that don't match the yamlfiles.
-        os.remove(jsonfile)
+        os.remove(dest_file)
         return
 
-    if not jsonfile:
-        jsonfile = yamlfile \
+    if not dest_file:
+        dest_file = source_file \
             .replace('specs/', 'specs/_cache/') \
             .replace('.yaml', '.json')
 
-    y_modtime = get_modification_time_ns(yamlfile)
-    j_modtime = get_modification_time_ns(jsonfile)
-    if y_modtime == j_modtime:
+    source_modtime = get_modification_time_ns(source_file)
+    dest_modtime = get_modification_time_ns(dest_file)
+
+    if source_modtime == dest_modtime:
         return
 
-    if not j_modtime:
-        warning('caching {} to {}'.format(yamlfile, jsonfile))
-        atime = os.stat(jsonfile).st_atime_ns
+    if not dest_modtime:
+        warning('caching {} to {}'.format(source_file, dest_file))
+        atime = os.stat(dest_file).st_atime_ns
     else:
-        atime = os.stat(yamlfile).st_atime_ns
+        atime = os.stat(source_file).st_atime_ns
 
-    convert_spec(yamlfile, jsonfile)
-    mtime = y_modtime
-    os.utime(jsonfile, ns=(atime, mtime))
+    convert_spec(source_file, dest_file)
+    mtime = source_modtime
+    os.utime(dest_file, ns=(atime, mtime))
 
 
 def convert_spec(yaml_path, json_path):
@@ -96,5 +97,3 @@ def get_modification_time_ns(path):
         return os.stat(path).st_mtime_ns
     except:
         return None
-
-

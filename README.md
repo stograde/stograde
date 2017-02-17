@@ -277,16 +277,18 @@ grading arguments:
 
 `--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will disable the process pool entirely, which is helpful for debugging.
 
-## Docker Info (in progress)
+## Docker Info
 
-With [#9](https://github.com/StoDevX/cs251-toolkit/issues/9), we've started converting this project into a Docker image.
-This will make setting it up quite a bit easier.
-Right now, we don't have a place for you to pull the built image from, so you still have to clone this repository and build it yourself.
-
-To do this, first make sure you have [Docker](https://www.docker.com/products/overview#/install_the_platform) installed.
+We have made a Docker Image for this project, which will make setting it up quite a bit easier.
+To set up the project, please first make sure you have [Docker](https://www.docker.com/products/overview#/install_the_platform) installed.
 Follow your particular operating system's instructions to set it up if you haven't already.
 
-To build,
+To pull the latest image of the `master` branch from Docker, (what you should probably do by default)
+```console
+$ docker pull stodevx/cs251-toolkit:HEAD
+```
+
+To build from source,
 
 ```console
 $ # within this repository, run:
@@ -295,18 +297,19 @@ $ # e.g.:
 $ docker build -t stodevx/cs251-toolkit:v0.0.0 .
 ```
 
-Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use `stodevx/cs251-toolkit`, since that's the basis of our GitHub repository, but you can do whatever for your machine.
+Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use `stodevx/cs251-toolkit:HEAD`, since that's what `script/run-docker` does.
 
 To run,
 
 ```console
-$ # anywhere, run:
-$ docker run -it <tag name>:<version> <command, args>
-$ # e.g.:
-$ docker run -it stodevx/cs251-toolkit:v0.0.0 .
+$ # from within the project directory---technically, you can call from any directory
+$ script/run-docker <command>
+$ # e.g.
+$ script/run-docker cs251tk --record hw1
 ```
 
-Again, tag name and version should match what you built.  If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest version as long as you followed semantic versioning.
+Again, tag name and version should match what you built or pulled.
+If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest version as long as you followed semantic versioning.
 
 ## Contributing
 - `git clone https://github.com/StoDevX/cs251-toolkit`

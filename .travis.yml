@@ -17,7 +17,6 @@ install:
 
 script:
   - tox
-  - docker build -t stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null` .
 
 deploy:
   - provider: pypi
@@ -47,6 +46,11 @@ after_success:
     fi
 
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
-      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-      docker push stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null`;
+      tag_to_build=`script/pick-docker-tag 2>/dev/null`;
+      if [[ -z "$tag_to_build" ]];
+      then
+        echo "No tag to build. I'm sad now.";
+      else
+        docker build -t docker push stodevx/cs251-toolkit:$tag_to_build .;
+      fi
     fi

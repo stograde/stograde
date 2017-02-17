@@ -4,14 +4,14 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 
-from cs251tk.common import chdir
-from cs251tk.toolkit import update_available
-from cs251tk.toolkit import process_student
-from cs251tk.toolkit import process_args
-from cs251tk.toolkit import progress_bar
-from cs251tk.toolkit import save_recordings, gist_recordings
-from cs251tk.toolkit import tabulate
-from cs251tk.specs import load_all_specs
+from ..common import chdir
+from ..specs import load_all_specs
+from .find_update import update_available
+from .process_student import process_student
+from .args import process_args
+from .progress_bar import progress_bar
+from .save_recordings import save_recordings, gist_recordings
+from .tabulate import tabulate
 
 
 def make_progress_bar(students, no_progress=False):

@@ -1,14 +1,14 @@
+from tempfile import gettempdir
 import sys
 import os
 
-from cs251tk.referee import process_student
-from cs251tk.referee import process_args
-from cs251tk.referee import parse_commits_for_assignments
-from cs251tk.referee import emailify
-from cs251tk.referee import send_email
-from cs251tk.common import chdir
-from cs251tk.specs import load_some_specs
-from tempfile import gettempdir
+from ..common import chdir
+from ..specs import load_some_specs
+from .args import process_args
+from .process_student import process_student
+from .parse_commits import parse_commits_for_assignments
+from .emailify import emailify
+from .send_email import send_email
 
 
 def main():

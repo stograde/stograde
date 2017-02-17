@@ -43,9 +43,9 @@ def cache_spec(*, source_file, dest_file):
 
     if not dest_modtime:
         warning('caching {} to {}'.format(source_file, dest_file))
-        atime = os.stat(dest_file).st_atime_ns
-    else:
         atime = os.stat(source_file).st_atime_ns
+    else:
+        atime = os.stat(dest_file).st_atime_ns
 
     convert_spec(source_file, dest_file)
     mtime = source_modtime

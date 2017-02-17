@@ -19,30 +19,36 @@ def cache_specs(basedir):
     json_specs = iglob(basedir + '/data/specs/_cache/*.json')
 
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
-        if not yamlfile:
-            # if yamlfile doesn't exist, then because we used zip_longest
-            # there has to be a jsonfile. we don't want any jsonfiles
-            # that don't match the yamlfiles.
-            os.remove(jsonfile)
-            continue
+        cache_spec(yamlfile=yamlfile, jsonfile=jsonfile)
 
-        if not jsonfile:
-            jsonfile = yamlfile\
-                .replace('specs/', 'specs/_cache/')\
-                .replace('.yaml', '.json')
 
-        y_modtime = get_modification_time_ns(yamlfile)
-        j_modtime = get_modification_time_ns(jsonfile)
-        if y_modtime != j_modtime:
-            if not j_modtime:
-                warning('caching {} to {}'.format(yamlfile, jsonfile))
-                atime = os.stat(jsonfile).st_atime_ns
-            else:
-                atime = os.stat(yamlfile).st_atime_ns
+def cache_spec(*, yamlfile, jsonfile):
+    if not yamlfile:
+        # If yamlfile doesn't exist, then because we used zip_longest
+        # there has to be a jsonfile. We don't want any jsonfiles
+        # that don't match the yamlfiles.
+        os.remove(jsonfile)
+        return
 
-            convert_spec(yamlfile, jsonfile)
-            mtime = y_modtime
-            os.utime(jsonfile, ns=(atime, mtime))
+    if not jsonfile:
+        jsonfile = yamlfile \
+            .replace('specs/', 'specs/_cache/') \
+            .replace('.yaml', '.json')
+
+    y_modtime = get_modification_time_ns(yamlfile)
+    j_modtime = get_modification_time_ns(jsonfile)
+    if y_modtime == j_modtime:
+        return
+
+    if not j_modtime:
+        warning('caching {} to {}'.format(yamlfile, jsonfile))
+        atime = os.stat(jsonfile).st_atime_ns
+    else:
+        atime = os.stat(yamlfile).st_atime_ns
+
+    convert_spec(yamlfile, jsonfile)
+    mtime = y_modtime
+    os.utime(jsonfile, ns=(atime, mtime))
 
 
 def convert_spec(yaml_path, json_path):

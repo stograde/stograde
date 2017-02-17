@@ -92,7 +92,7 @@ def get_nums(students):
     return max_hwk_num, max_lab_num
 
 
-def tabulate(students, sort_by='name', partials=False):
+def tabulate(students, sort_by='name', highlight_partials=False):
     """Actually build the table"""
 
     # be sure that the longest username will be at least 4 chars
@@ -127,7 +127,7 @@ def tabulate(students, sort_by='name', partials=False):
         sorter = sort_by_username
         should_reverse = False
 
-    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=partials)
+    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=highlight_partials)
              for student in sorted(students, reverse=should_reverse, key=sorter)]
 
     # and make the table to return

@@ -8,29 +8,34 @@ from cs251tk.student import reset
 from cs251tk.student import analyze
 
 
-def process_student(student, args=None, specs=None, basedir=None, debug=False):
-    if not args:
-        raise Exception('`args` should not be none')
-    if not specs:
-        raise Exception('`specs` should not be none')
-    if not basedir:
-        raise Exception('`basedir` should not be none')
-
-    if args['clean']:
+def process_student(
+    student,
+    *,
+    assignments,
+    basedir,
+    clean,
+    date,
+    debug,
+    no_check,
+    no_update,
+    specs,
+    stogit_url
+):
+    if clean:
         remove(student)
 
-    clone_student(student, baseurl=args['stogit'])
+    clone_student(student, baseurl=stogit_url)
 
     try:
-        stash(student, no_update=args['no_update'])
-        pull(student, no_update=args['no_update'])
+        stash(student, no_update=no_update)
+        pull(student, no_update=no_update)
 
-        checkout_date(student, date=args['date'])
+        checkout_date(student, date=date)
 
-        recordings = record(student, specs, to_record=args['record'], basedir=basedir, debug=debug)
-        analysis = analyze(student, specs, check_for_branches=not args['no_check'])
+        recordings = record(student, specs, to_record=assignments, basedir=basedir, debug=debug)
+        analysis = analyze(student, specs, check_for_branches=not no_check)
 
-        if args['date']:
+        if date:
             reset(student)
 
         return analysis, recordings

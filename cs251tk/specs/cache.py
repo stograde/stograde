@@ -1,9 +1,9 @@
-import copy
-import json
-import os
-from glob import iglob
 from itertools import zip_longest
 from logging import warning
+from glob import iglob
+import json
+import copy
+import os
 
 import yaml
 

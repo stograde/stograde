@@ -1,6 +1,6 @@
-import json
-from glob import iglob
 from logging import warning
+from glob import iglob
+import json
 
 from .cache import cache_specs
 

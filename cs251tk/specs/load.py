@@ -1,6 +1,7 @@
 from logging import warning
 from glob import iglob
 import json
+import os
 
 from .cache import cache_specs
 
@@ -31,10 +32,13 @@ def load_spec(filename):
     with open(filename, 'r', encoding='utf-8') as specfile:
         loaded_spec = json.load(specfile)
 
-    name = filename.split('/')[-1].split('.')[0]
+    name = os.path.splitext(os.path.basename(filename))[0]
     assignment = loaded_spec['assignment']
 
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
+
+    for filepath in loaded_spec.get('dependencies', []):
+        warning('spec {}: required file "{}" could not be found'.format(assignment, filepath))
 
     return assignment, loaded_spec

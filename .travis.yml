@@ -29,6 +29,22 @@ deploy:
       # only deploy tags
       tags: true
 
+  # Deploy master branch to HEAD Docker Tag
+  - provider: script
+    script: script/deploy HEAD
+    on:
+      # only deploy master on Python 3.6 build.
+      python: "3.6"
+      branch: master
+
+  # Deploy all tags to their respective Docker Tag
+  - provider: script
+    script: script/deploy $TRAVIS_TAG
+    on:
+      # only deploy master on Python 3.6 build.
+      python: "3.6"
+      tags: true
+
 # this stops travis from building both pushes and PRs for pr-destined branches
 branches:
   only:
@@ -43,14 +59,4 @@ after_success:
   # only submit code coverage for the newest python version
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
       coveralls;
-    fi
-
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
-      tag_to_build=`script/pick-docker-tag 2>/dev/null`;
-      if [[ -z "$tag_to_build" ]];
-      then
-        echo "No tag to build. I'm sad now.";
-      else
-        docker build -t docker push stodevx/cs251-toolkit:$tag_to_build .;
-      fi
     fi

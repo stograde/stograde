@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'pty'
+
+docker_repository = "stodevx/cs251-toolkit"
+
+tag = ARGV[0]
+
+image_name = "#{docker_repository}:#{tag}"
+
+puts ">>>> Building #{image_name}..."
+
+r, w, pid = PTY.spawn("docker build -t #{image_name} .") do |r, w, pid|
+
+	begin
+		loop do
+
+			begin
+				result = r.read_nonblock(1024)
+			rescue IO::WaitReadable
+				IO.select([r])
+				retry
+			rescue IO::WaitWritable
+				IO.select(nil, [r])
+				retry
+			end
+
+			puts ">>>>   #{result.gsub("\r","\r>>>>   ")}"
+			PTY.check(pid, true)
+		end
+	rescue PTY::ChildExited, EOFError
+		puts ">>>> Child process #{pid} exited."
+	end
+
+end
+
+docker_username = ENV['DOCKER_USERNAME']
+docker_password = ENV['DOCKER_PASSWORD']
+
+# If docker_username or docker_password exists, use those to log in
+if !!docker_username && !!docker_password
+	puts ">>>> Logging into Docker Hub..."
+	system("docker", "login -u='#{docker_username}' -p='#{docker_password}' 2>&1 >/dev/null")
+	puts ">>>> Successfully logged in!"
+end
+
+puts ">>>> Pushing to Docker Hub..."
+
+r, w, pid = PTY.spawn("docker push #{image_name}") do |r, w, pid|
+
+	begin
+		loop do
+
+			begin
+				result = r.read_nonblock(1024)
+			rescue IO::WaitReadable
+				IO.select([r])
+				retry
+			rescue IO::WaitWritable
+				IO.select(nil, [r])
+				retry
+			end
+
+			puts ">>>>   #{result.gsub("\r","\r>>>>   ")}"
+			PTY.check(pid, true)
+		end
+	rescue PTY::ChildExited, EOFError
+		puts ">>>> Child process #{pid} exited."
+	end
+
+end

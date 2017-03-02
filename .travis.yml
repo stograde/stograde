@@ -17,7 +17,6 @@ install:
 
 script:
   - tox
-  - docker build -t stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null` .
 
 deploy:
   - provider: pypi
@@ -28,6 +27,22 @@ deploy:
       # only release on the py36 build
       python: "3.6"
       # only deploy tags
+      tags: true
+
+  # Deploy master branch to HEAD Docker Tag
+  - provider: script
+    script: script/deploy HEAD
+    on:
+      # only deploy master on Python 3.6 build.
+      python: "3.6"
+      branch: master
+
+  # Deploy all tags to their respective Docker Tag
+  - provider: script
+    script: script/deploy $TRAVIS_TAG
+    on:
+      # only deploy master on Python 3.6 build.
+      python: "3.6"
       tags: true
 
 # this stops travis from building both pushes and PRs for pr-destined branches
@@ -44,9 +59,4 @@ after_success:
   # only submit code coverage for the newest python version
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
       coveralls;
-    fi
-
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then
-      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-      docker push stodevx/cs251-toolkit:`script/pick-docker-tag 2>/dev/null`;
     fi

@@ -21,7 +21,7 @@ docker_password = ENV['DOCKER_PASSWORD']
 # If docker_username or docker_password exists, use those to log in
 if !!docker_username && !!docker_password
 	puts "#{LINE_HEADER} Logging into Docker Hub..."
-	system("docker", "login -u='#{docker_username}' -p='#{docker_password}' 2>&1 >/dev/null")
+	`docker login -u='#{docker_username}' -p='#{docker_password}' >/dev/null 2>&1`
 	puts "#{LINE_HEADER} Successfully logged in!"
 end
 

@@ -96,7 +96,7 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
     if 'my' in sections:
         if 'my' not in _all_students:
             warning('There is no [my] section in students.txt')
-            return args
+            return sorted(set(people))
         people = _all_students['my']
 
     elif 'all' in sections:

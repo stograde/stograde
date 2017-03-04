@@ -2,7 +2,6 @@
 
 import datetime
 import argparse
-import textwrap
 import sys
 import re
 from os import cpu_count

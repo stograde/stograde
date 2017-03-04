@@ -12,7 +12,8 @@ def get_students():
     except FileNotFoundError:
         lines = []
 
-    lines = [l.strip() for l in lines if l.strip()]
+    lines = [l.strip() for l in lines]
+    lines = [l for l in lines if l]
     group_regex = re.compile(r'\[.*\]')
     group_list = [clean_header(l) for l in lines if group_regex.match(l)]
     if not group_list:

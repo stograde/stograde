@@ -7,6 +7,7 @@ import re
 from os import cpu_count, getenv
 from logging import warning
 from natsort import natsorted
+from typing import List
 
 from cs251tk.common import flatten, version
 from .get_students import get_students as load_students_from_file
@@ -17,7 +18,7 @@ ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
-    parser.add_argument('input', nargs='*',
+    parser.add_argument('input_items', nargs='*', metavar='ITEM',
                         help='A mixed list of students and assignments')
     parser.add_argument('-v', '--version', action='store_true',
                         help='print the version of the toolkit')
@@ -75,8 +76,8 @@ def build_argparser():
     return parser
 
 
-def get_students_from_args(*, input, all_sections, sections, students, _all_students, **kwargs):
-    people = [l for l in input if not re.match(ASSIGNMENT_REGEX, l)]
+def get_students_from_args(*, input_items, all_sections, sections, students, _all_students, **kwargs) -> List[str]:
+    people = [l for l in input_items if not re.match(ASSIGNMENT_REGEX, l)]
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -122,9 +123,9 @@ def get_students_from_args(*, input, all_sections, sections, students, _all_stud
     return sorted(set(people))
 
 
-def get_assignments_from_args(*, input, to_record, **kwargs):
+def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     # grab the assignments given on the plain args list
-    assignments = [l for l in input if re.match(ASSIGNMENT_REGEX, l)]
+    assignments = [l for l in input_items if re.match(ASSIGNMENT_REGEX, l)]
 
     # argparser puts --record into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -135,7 +136,7 @@ def get_assignments_from_args(*, input, to_record, **kwargs):
     return natsorted(set(assignments))
 
 
-def compute_stogit_url(*, stogit, course, _now, **kwargs):
+def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
     """calculate a default stogit URL, or use the specified one"""
     if stogit:
         return stogit

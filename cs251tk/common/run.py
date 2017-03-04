@@ -1,6 +1,6 @@
+import subprocess
 import copy
 import os
-from subprocess import STDOUT, PIPE, run as _run, CalledProcessError, TimeoutExpired
 
 
 # This env stuff is to catch glibc errors, because
@@ -13,20 +13,20 @@ ENV["LIBC_FATAL_STDERR_"] = "1"
 def run(cmd, input_data=None, timeout=None):
     status = 'success'
     try:
-        result = _run(
+        result = subprocess.run(
             cmd,
-            stdout=PIPE,
-            stderr=STDOUT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             timeout=timeout,
             input=input_data,
             env=ENV,
             check=True)
 
-    except CalledProcessError as err:
+    except subprocess.CalledProcessError as err:
         status = 'called process error'
         result = err.output if err.output else str(err)
 
-    except TimeoutExpired as err:
+    except subprocess.TimeoutExpired as err:
         status = 'timed out after {} seconds'.format(timeout)
         result = err.output if err.output else str(err)
 

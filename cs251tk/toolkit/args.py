@@ -4,7 +4,7 @@ import datetime
 import argparse
 import sys
 import re
-from os import cpu_count
+from os import cpu_count, getenv
 from logging import warning
 from natsort import natsorted
 
@@ -24,6 +24,7 @@ def build_argparser():
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
     parser.add_argument('--skip-update-check', action='store_true',
+                        default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
 
     specs = parser.add_argument_group('control the homework specs')

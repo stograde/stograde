@@ -32,9 +32,12 @@ def run_interactive(cmd):
         except UnicodeDecodeError:
             result = script.getvalue().decode(encoding='cp437')
 
-    print('\nSubmission recording completed.', end='\n\n')
+    print('\nSubmission recording completed.')
 
-    return (status, result)
+    runagain = input('Do you want to run the submission again? [y/N]: ')
+    again = runagain.lower().startswith('y')
+
+    return (status, result, again)
 
 
 def run_static(cmd, input_data=None, timeout=None):
@@ -77,7 +80,7 @@ def run_static(cmd, input_data=None, timeout=None):
     except UnicodeDecodeError:
         result = str(result, 'cp437')
 
-    return (status, result)
+    return (status, result, False)
 
 
 # This is to catch glibc errors, because it prints to /dev/tty

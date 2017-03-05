@@ -65,21 +65,23 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
         test_cmd, input_for_test = pipe(test_cmd)
 
         if os.path.exists(os.path.join(cwd, filename)):
-            status, full_result = run(test_cmd,
-                                      input_data=input_for_test,
-                                      timeout=options['timeout'],
-                                      interact=interact)
+            again = True
+            while again:
+                status, full_result, again = run(test_cmd,
+                                                 input_data=input_for_test,
+                                                 timeout=options['timeout'],
+                                                 interact=interact)
 
-            result = truncate(full_result, options['truncate_output'])
-            truncated = (full_result != result)
+                result = truncate(full_result, options['truncate_output'])
+                was_truncated = (full_result != result)
 
-            results['result'].append({
-                'command': test_cmd,
-                'status': status,
-                'output': result,
-                'truncated': True if truncated else False,
-                'truncated after': options['truncate_output'],
-            })
+                results['result'].append({
+                    'command': test_cmd,
+                    'status': status,
+                    'output': result,
+                    'truncated': was_truncated,
+                    'truncated after': options['truncate_output'],
+                })
 
         else:
             results['result'].append({

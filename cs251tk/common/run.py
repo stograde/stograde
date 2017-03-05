@@ -3,11 +3,6 @@ import copy
 import os
 
 
-# This env stuff is to catch glibc errors, because
-# it apparently prints to /dev/tty instead of stderr.
-# (see http://stackoverflow.com/a/27797579)
-ENV = copy.copy(os.environ)
-ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
 def run(cmd, input_data=None, timeout=None):
@@ -19,7 +14,7 @@ def run(cmd, input_data=None, timeout=None):
             stderr=subprocess.STDOUT,
             timeout=timeout,
             input=input_data,
-            env=ENV,
+            env=copy_env(),
             check=True)
 
     except subprocess.CalledProcessError as err:
@@ -51,3 +46,11 @@ def run(cmd, input_data=None, timeout=None):
         result = str(result, 'cp437')
 
     return (status, result)
+
+
+# This is to catch glibc errors, because it prints to /dev/tty
+# instead of stderr. See https://stackoverflow.com/a/27797579
+def copy_env():
+    env = copy.copy(os.environ)
+    env["LIBC_FATAL_STDERR_"] = "1"
+    return env

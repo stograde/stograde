@@ -49,7 +49,7 @@ def compile_file(filename, steps, results, supporting_dir):
     return True
 
 
-def test_file(filename, spec, results, options, cwd, supporting_dir):
+def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact):
     tests = flatten([test_spec['commands']
                      for test_spec in spec.get('tests', {})
                      if test_spec['filename'] == filename])
@@ -67,7 +67,8 @@ def test_file(filename, spec, results, options, cwd, supporting_dir):
         if os.path.exists(os.path.join(cwd, filename)):
             status, full_result = run(test_cmd,
                                       input_data=input_for_test,
-                                      timeout=options['timeout'])
+                                      timeout=options['timeout'],
+                                      interact=interact)
 
             result = truncate(full_result, options['truncate_output'])
             truncated = (full_result != result)
@@ -90,7 +91,7 @@ def test_file(filename, spec, results, options, cwd, supporting_dir):
     return True
 
 
-def process_file(filename, steps, options, spec, cwd, supporting_dir):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -118,7 +119,13 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
     if not should_continue or not steps:
         return results
 
-    should_continue = test_file(filename, spec, results, options, cwd, supporting_dir)
+    should_continue = test_file(filename,
+                                spec=spec,
+                                results=results,
+                                options=options,
+                                cwd=cwd,
+                                supporting_dir=supporting_dir,
+                                interact=interact)
     if not should_continue:
         return results
 

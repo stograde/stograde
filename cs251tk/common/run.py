@@ -3,7 +3,7 @@ import copy
 import os
 
 
-def run(cmd, input_data=None, timeout=None):
+def run(cmd, input_data=None, timeout=None, interact=False):
     status = 'success'
     try:
         result = subprocess.run(

@@ -16,6 +16,7 @@ def process_student(
     clean,
     date,
     debug,
+    interact,
     no_check,
     no_update,
     specs,
@@ -32,7 +33,7 @@ def process_student(
 
         checkout_date(student, date=date)
 
-        recordings = record(student, specs, to_record=assignments, basedir=basedir, debug=debug)
+        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
         analysis = analyze(student, specs, check_for_branches=not no_check)
 
         if date:

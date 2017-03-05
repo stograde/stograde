@@ -6,7 +6,7 @@ from .process_file import process_file
 from .find_warnings import find_warnings
 
 
-def markdownify(spec_id, username, spec, basedir, debug):
+def markdownify(spec_id, *, username, spec, basedir, debug, interact):
     """Run a spec against the current folder"""
     try:
         cwd = os.getcwd()
@@ -31,7 +31,13 @@ def markdownify(spec_id, username, spec, basedir, debug):
             filename = file['filename']
             steps = file['commands']
             options = file['options']
-            result = process_file(filename, steps, options, spec, cwd, supporting)
+            result = process_file(filename,
+                                  steps=steps,
+                                  options=options,
+                                  spec=spec,
+                                  cwd=cwd,
+                                  supporting_dir=supporting,
+                                  interact=interact)
             results['files'][filename] = result
 
         # now we remove any compiled binaries

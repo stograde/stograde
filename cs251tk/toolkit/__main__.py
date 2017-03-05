@@ -44,6 +44,7 @@ def main():
     debug = args['debug']
     gist = args['gist']
     highlight_partials = args['highlight_partials']
+    interact = args['interact']
     no_check = args['no_check']
     no_update = args['no_update']
     no_progress = args['no_progress']
@@ -54,6 +55,9 @@ def main():
 
     if debug:
         workers = 1
+    if interact:
+        workers = 1
+
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
         print((
@@ -85,6 +89,7 @@ def main():
             clean=clean,
             date=date,
             debug=debug,
+            interact=interact,
             no_check=no_check,
             no_update=no_update,
             specs=specs,

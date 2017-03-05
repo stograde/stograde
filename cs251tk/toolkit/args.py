@@ -73,6 +73,8 @@ def build_argparser():
                          help='Record information on student submissions. Requires a spec file')
     grading.add_argument('--gist', action='store_true',
                          help='Post overview table and student recordings as a private gist')
+    grading.add_argument('--interact', action='store_true',
+                         help="Interact with each student's submission individually")
 
     return parser
 

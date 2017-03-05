@@ -10,7 +10,7 @@ from .pipe import pipe
 def get_file(filename, results, options):
     file_status, file_contents = cat(filename)
     if file_status == 'success':
-        _, last_edit = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])
+        _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])
         results['last modified'] = last_edit
 
     if options['hide_contents']:
@@ -35,7 +35,7 @@ def compile_file(filename, steps, results, supporting_dir):
             .replace('$SUPPORT', supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
-        status, compilation = run(cmd, input_data=input_for_cmd)
+        status, compilation, _ = run(cmd, input_data=input_for_cmd)
 
         results['compilation'].append({
             'command': command,
@@ -49,7 +49,7 @@ def compile_file(filename, steps, results, supporting_dir):
     return True
 
 
-def test_file(filename, spec, results, options, cwd, supporting_dir):
+def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact):
     tests = flatten([test_spec['commands']
                      for test_spec in spec.get('tests', {})
                      if test_spec['filename'] == filename])
@@ -65,20 +65,23 @@ def test_file(filename, spec, results, options, cwd, supporting_dir):
         test_cmd, input_for_test = pipe(test_cmd)
 
         if os.path.exists(os.path.join(cwd, filename)):
-            status, full_result = run(test_cmd,
-                                      input_data=input_for_test,
-                                      timeout=options['timeout'])
+            again = True
+            while again:
+                status, full_result, again = run(test_cmd,
+                                                 input_data=input_for_test,
+                                                 timeout=options['timeout'],
+                                                 interact=interact)
 
-            result = truncate(full_result, options['truncate_output'])
-            truncated = (full_result != result)
+                result = truncate(full_result, options['truncate_output'])
+                was_truncated = (full_result != result)
 
-            results['result'].append({
-                'command': test_cmd,
-                'status': status,
-                'output': result,
-                'truncated': True if truncated else False,
-                'truncated after': options['truncate_output'],
-            })
+                results['result'].append({
+                    'command': test_cmd,
+                    'status': status,
+                    'output': result,
+                    'truncated': was_truncated,
+                    'truncated after': options['truncate_output'],
+                })
 
         else:
             results['result'].append({
@@ -90,7 +93,7 @@ def test_file(filename, spec, results, options, cwd, supporting_dir):
     return True
 
 
-def process_file(filename, steps, options, spec, cwd, supporting_dir):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -118,7 +121,13 @@ def process_file(filename, steps, options, spec, cwd, supporting_dir):
     if not should_continue or not steps:
         return results
 
-    should_continue = test_file(filename, spec, results, options, cwd, supporting_dir)
+    should_continue = test_file(filename,
+                                spec=spec,
+                                results=results,
+                                options=options,
+                                cwd=cwd,
+                                supporting_dir=supporting_dir,
+                                interact=interact)
     if not should_continue:
         return results
 

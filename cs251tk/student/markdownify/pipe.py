@@ -32,7 +32,7 @@ def pipe(cmd_string):
 
     input_for_cmd = None
     for cmd in cmds[:-1]:
-        _, input_for_cmd = run(process_chunk(cmd), input_data=input_for_cmd)
+        _, input_for_cmd, _ = run(process_chunk(cmd), input_data=input_for_cmd)
         input_for_cmd = input_for_cmd.encode('utf-8')
 
     final_cmd = process_chunk(cmds[-1])

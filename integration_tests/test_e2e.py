@@ -1,12 +1,10 @@
 import textwrap
-import pytest
-import shutil
 import sys
 import os
-import re
-from io import StringIO
-from contextlib import redirect_stdout, redirect_stderr
-from cs251tk.cli.cs251tk import main
+
+import pytest
+
+from cs251tk.toolkit.__main__ import main
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

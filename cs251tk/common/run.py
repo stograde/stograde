@@ -1,10 +1,40 @@
 import subprocess
 import copy
+import pty
+import io
 import os
 
 
 def run(cmd, *, interact=False, **kwargs):
+    if interact:
+        return run_interactive(cmd)
     return run_static(cmd, **kwargs)
+
+
+def run_interactive(cmd):
+    status = 'success'
+    result = None
+
+    print('Recording submission. Send EOF (^D) to end.', end='\n\n')
+
+    # This is mostly taken from the stdlib's `pty` docs
+    with io.BytesIO() as script:
+        def read(fd):
+            data = os.read(fd, 1024)
+            script.write(data)
+            return data
+
+        # TODO: update this with try/except clauses as we find exceptions
+        pty.spawn(cmd, read)
+
+        try:
+            result = script.getvalue().decode(encoding='utf-8')
+        except UnicodeDecodeError:
+            result = script.getvalue().decode(encoding='cp437')
+
+    print('Submission recording completed.', end='\n\n')
+
+    return (status, result)
 
 
 def run_static(cmd, input_data=None, timeout=None):

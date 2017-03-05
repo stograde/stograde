@@ -3,8 +3,6 @@ import copy
 import os
 
 
-
-
 def run(cmd, input_data=None, timeout=None):
     status = 'success'
     try:

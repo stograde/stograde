@@ -65,7 +65,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 
     if date:
-        print('Checking out {}'.format(date))
+        logging.debug('Checking out {}'.format(date))
 
     specs = load_all_specs(basedir)
     if not specs:

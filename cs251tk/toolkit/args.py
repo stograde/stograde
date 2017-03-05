@@ -90,7 +90,7 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
         sections = ['all']
 
     # fall back to the students.my section
-    if not students and not sections:
+    if not people and not sections:
         sections = ['my']
 
     # support 'my' students and 'all' students

@@ -3,7 +3,11 @@ import copy
 import os
 
 
-def run(cmd, input_data=None, timeout=None, interact=False):
+def run(cmd, *, interact=False, **kwargs):
+    return run_static(cmd, **kwargs)
+
+
+def run_static(cmd, input_data=None, timeout=None):
     status = 'success'
     try:
         result = subprocess.run(

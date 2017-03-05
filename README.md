@@ -323,8 +323,10 @@ If you supplied a version and you have multiple images on your system, Docker sh
 There are two ways to upload a new release:
 
 1. Automatically, through TravisCI
-    - Tag a commit: `git tag v2.1.3`
-    - Push the tag: `git push --tags`
+    - Update the version in `setup.py`
+    - a) Tag a commit with that same version: `git tag v2.1.3`
+    - a) Push the tag: `git push --tags`
+    - b) Alternately, create a Github release with the tag name
     - Wait
     - Enjoy the new release
 2. Manually, via PyPI:

@@ -56,7 +56,11 @@ def main():
         workers = 1
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
-        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
+        print((
+            'v{} is available: you have v{}. '
+            'Try "pip3 install --no-cache --user --update cs251tk" '
+            'to update.'
+        ).format(current_version, new_version))
 
     logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 

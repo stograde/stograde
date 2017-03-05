@@ -15,7 +15,7 @@ def run_interactive(cmd):
     status = 'success'
     result = None
 
-    print('Recording submission. Send EOF (^D) to end.', end='\n\n')
+    print('Recording {}. Send EOF (^D) to end.'.format(cmd), end='\n\n')
 
     # This is mostly taken from the stdlib's `pty` docs
     with io.BytesIO() as script:

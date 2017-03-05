@@ -10,5 +10,5 @@ def clone_student(student, baseurl):
 
 def clone_url(url):
     logging.info('cloning {}'.format(url))
-    _, output = run(['git', 'clone', '--quiet', url])
+    _, output, _ = run(['git', 'clone', '--quiet', url])
     logging.debug(output)

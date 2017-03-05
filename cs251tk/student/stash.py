@@ -10,5 +10,5 @@ def stash(student, no_update):
 
 
 def has_changed_files():
-    _, output = run(['git', 'status', '--porcelain'])
+    _, output, _ = run(['git', 'status', '--porcelain'])
     return bool(output)

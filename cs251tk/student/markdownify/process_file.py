@@ -10,7 +10,7 @@ from .pipe import pipe
 def get_file(filename, results, options):
     file_status, file_contents = cat(filename)
     if file_status == 'success':
-        _, last_edit = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])
+        _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])
         results['last modified'] = last_edit
 
     if options['hide_contents']:
@@ -35,7 +35,7 @@ def compile_file(filename, steps, results, supporting_dir):
             .replace('$SUPPORT', supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
-        status, compilation = run(cmd, input_data=input_for_cmd)
+        status, compilation, _ = run(cmd, input_data=input_for_cmd)
 
         results['compilation'].append({
             'command': command,

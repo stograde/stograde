@@ -38,7 +38,7 @@ def make_progress_bar(students, no_progress=False):
 def main():
     basedir = getcwd()
 
-    args, students, assignments, stogit_url = process_args()
+    args, usernames, assignments, stogit_url = process_args()
     clean = args['clean']
     date = args['date']
     debug = args['debug']
@@ -72,7 +72,7 @@ def main():
         print('no specs loaded!')
         sys.exit(1)
 
-    print_progress = make_progress_bar(students, no_progress=no_progress)
+    print_progress = make_progress_bar(usernames, no_progress=no_progress)
 
     results = []
     records = []
@@ -93,7 +93,7 @@ def main():
 
         if workers > 1:
             with ProcessPoolExecutor(max_workers=workers) as pool:
-                futures = [pool.submit(single, student) for student in students]
+                futures = [pool.submit(single, name) for name in usernames]
                 for future in as_completed(futures):
                     result, recording = future.result()
                     print_progress(result['username'])
@@ -101,7 +101,7 @@ def main():
                     records.extend(recording)
 
         else:
-            for student in students:
+            for student in usernames:
                 result, recording = single(student)
                 print_progress(result['username'])
                 results.append(result)

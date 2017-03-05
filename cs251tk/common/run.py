@@ -32,7 +32,7 @@ def run_interactive(cmd):
         except UnicodeDecodeError:
             result = script.getvalue().decode(encoding='cp437')
 
-    print('Submission recording completed.', end='\n\n')
+    print('\nSubmission recording completed.', end='\n\n')
 
     return (status, result)
 

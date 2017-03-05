@@ -4,6 +4,7 @@ import json
 import os
 
 from .cache import cache_specs
+from .util import check_dependencies
 
 
 def load_all_specs(basedir='.'):
@@ -38,10 +39,6 @@ def load_spec(filename):
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
 
-    for filepath in loaded_spec.get('dependencies', []):
-        try:
-            os.stat(filepath)
-        except FileNotFoundError:
-            warning('spec {}: required file "{}" could not be found'.format(assignment, filepath))
+    check_dependencies(loaded_spec)
 
     return assignment, loaded_spec

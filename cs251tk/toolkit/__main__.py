@@ -79,8 +79,6 @@ def main():
     for spec_to_use in assignments:
         check_dependencies(specs[spec_to_use])
 
-    print_progress = make_progress_bar(usernames, no_progress=no_progress)
-
     results = []
     records = []
     makedirs('./students', exist_ok=True)
@@ -100,6 +98,7 @@ def main():
         )
 
         if workers > 1:
+            print_progress = make_progress_bar(usernames, no_progress=no_progress)
             with ProcessPoolExecutor(max_workers=workers) as pool:
                 futures = [pool.submit(single, name) for name in usernames]
                 for future in as_completed(futures):
@@ -110,8 +109,8 @@ def main():
 
         else:
             for student in usernames:
+                print('processing {}'.format(student))
                 result, recording = single(student)
-                print_progress(result['username'])
                 results.append(result)
                 records.extend(recording)
 

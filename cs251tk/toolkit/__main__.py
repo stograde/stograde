@@ -5,7 +5,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 
 from ..common import chdir
-from ..specs import load_all_specs
+from ..specs import load_all_specs, check_dependencies
 from .find_update import update_available
 from .process_student import process_student
 from .args import process_args
@@ -75,6 +75,9 @@ def main():
     if not specs:
         print('no specs loaded!')
         sys.exit(1)
+
+    for spec_to_use in assignments:
+        check_dependencies(specs[spec_to_use])
 
     print_progress = make_progress_bar(usernames, no_progress=no_progress)
 

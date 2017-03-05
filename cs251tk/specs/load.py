@@ -38,7 +38,4 @@ def load_spec(filename):
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
 
-    for filepath in loaded_spec.get('dependencies', []):
-        warning('spec {}: required file "{}" could not be found'.format(assignment, filepath))
-
     return assignment, loaded_spec

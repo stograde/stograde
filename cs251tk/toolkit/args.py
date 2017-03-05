@@ -2,12 +2,12 @@
 
 import datetime
 import argparse
-import textwrap
 import sys
 import re
-from os import cpu_count
+from os import cpu_count, getenv
 from logging import warning
 from natsort import natsorted
+from typing import List
 
 from cs251tk.common import flatten, version
 from .get_students import get_students as load_students_from_file
@@ -18,13 +18,14 @@ ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
     parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
-    parser.add_argument('input', nargs='*',
+    parser.add_argument('input_items', nargs='*', metavar='ITEM',
                         help='A mixed list of students and assignments')
     parser.add_argument('-v', '--version', action='store_true',
                         help='print the version of the toolkit')
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
     parser.add_argument('--skip-update-check', action='store_true',
+                        default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
 
     specs = parser.add_argument_group('control the homework specs')
@@ -62,7 +63,8 @@ def build_argparser():
 
     dates = parser.add_argument_group('time-based arguments')
     dates.add_argument('--date', action='store', metavar='GIT_DATE',
-                       help='Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago") (see `man git-rev-list`)')
+                       help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
+                             '(see `man git-rev-list`)'))
 
     grading = parser.add_argument_group('grading arguments')
     grading.add_argument('--no-check', '-c', action='store_true',
@@ -75,8 +77,8 @@ def build_argparser():
     return parser
 
 
-def get_students_from_args(*, input, all_sections, sections, students, _all_students, **kwargs):
-    people = [l for l in input if not re.match(ASSIGNMENT_REGEX, l)]
+def get_students_from_args(*, input_items, all_sections, sections, students, _all_students, **kwargs) -> List[str]:
+    people = [l for l in input_items if not re.match(ASSIGNMENT_REGEX, l)]
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -88,14 +90,14 @@ def get_students_from_args(*, input, all_sections, sections, students, _all_stud
         sections = ['all']
 
     # fall back to the students.my section
-    if not students and not sections:
+    if not people and not sections:
         sections = ['my']
 
     # support 'my' students and 'all' students
     if 'my' in sections:
         if 'my' not in _all_students:
             warning('There is no [my] section in students.txt')
-            return args
+            return sorted(set(people))
         people = _all_students['my']
 
     elif 'all' in sections:
@@ -113,7 +115,10 @@ def get_students_from_args(*, input, all_sections, sections, students, _all_stud
             elif prefixed in _all_students:
                 student_set = _all_students[prefixed]
             else:
-                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
+                warning((
+                    'Neither section [section-{0}] nor [{0}] '
+                    'could not be found in ./students.txt'
+                ).format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]
@@ -122,9 +127,9 @@ def get_students_from_args(*, input, all_sections, sections, students, _all_stud
     return sorted(set(people))
 
 
-def get_assignments_from_args(*, input, to_record, **kwargs):
+def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     # grab the assignments given on the plain args list
-    assignments = [l for l in input if re.match(ASSIGNMENT_REGEX, l)]
+    assignments = [l for l in input_items if re.match(ASSIGNMENT_REGEX, l)]
 
     # argparser puts --record into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -135,7 +140,7 @@ def get_assignments_from_args(*, input, to_record, **kwargs):
     return natsorted(set(assignments))
 
 
-def compute_stogit_url(*, stogit, course, _now, **kwargs):
+def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
     """calculate a default stogit URL, or use the specified one"""
     if stogit:
         return stogit

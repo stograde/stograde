@@ -1,32 +1,25 @@
+import subprocess
 import copy
 import os
-from subprocess import STDOUT, PIPE, run as _run, CalledProcessError, TimeoutExpired
-
-
-# This env stuff is to catch glibc errors, because
-# it apparently prints to /dev/tty instead of stderr.
-# (see http://stackoverflow.com/a/27797579)
-ENV = copy.copy(os.environ)
-ENV["LIBC_FATAL_STDERR_"] = "1"
 
 
 def run(cmd, input_data=None, timeout=None):
     status = 'success'
     try:
-        result = _run(
+        result = subprocess.run(
             cmd,
-            stdout=PIPE,
-            stderr=STDOUT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             timeout=timeout,
             input=input_data,
-            env=ENV,
+            env=copy_env(),
             check=True)
 
-    except CalledProcessError as err:
+    except subprocess.CalledProcessError as err:
         status = 'called process error'
         result = err.output if err.output else str(err)
 
-    except TimeoutExpired as err:
+    except subprocess.TimeoutExpired as err:
         status = 'timed out after {} seconds'.format(timeout)
         result = err.output if err.output else str(err)
 
@@ -51,3 +44,11 @@ def run(cmd, input_data=None, timeout=None):
         result = str(result, 'cp437')
 
     return (status, result)
+
+
+# This is to catch glibc errors, because it prints to /dev/tty
+# instead of stderr. See https://stackoverflow.com/a/27797579
+def copy_env():
+    env = copy.copy(os.environ)
+    env["LIBC_FATAL_STDERR_"] = "1"
+    return env

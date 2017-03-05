@@ -41,4 +41,6 @@ def process_student(
         return analysis, recordings
 
     except Exception as err:
+        if debug:
+            raise err
         return {'username': student, 'error': err}, []

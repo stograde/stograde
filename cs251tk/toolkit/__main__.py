@@ -38,7 +38,7 @@ def make_progress_bar(students, no_progress=False):
 def main():
     basedir = getcwd()
 
-    args, students, assignments, stogit_url = process_args()
+    args, usernames, assignments, stogit_url = process_args()
     clean = args['clean']
     date = args['date']
     debug = args['debug']
@@ -52,21 +52,27 @@ def main():
     sort_by = args['sort_by']
     workers = args['workers']
 
+    if debug:
+        workers = 1
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
-        print('v{} is available: you have v{}. Try "pip3 install --no-cache --user --update cs251tk" to update.'.format(current_version, new_version))
+        print((
+            'v{} is available: you have v{}. '
+            'Try "pip3 install --no-cache --user --update cs251tk" '
+            'to update.'
+        ).format(current_version, new_version))
 
     logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 
     if date:
-        print('Checking out {}'.format(date))
+        logging.debug('Checking out {}'.format(date))
 
     specs = load_all_specs(basedir)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)
 
-    print_progress = make_progress_bar(students, no_progress=no_progress)
+    print_progress = make_progress_bar(usernames, no_progress=no_progress)
 
     results = []
     records = []
@@ -85,9 +91,9 @@ def main():
             stogit_url=stogit_url
         )
 
-        if workers > 1 and not debug:
+        if workers > 1:
             with ProcessPoolExecutor(max_workers=workers) as pool:
-                futures = [pool.submit(single, student) for student in students]
+                futures = [pool.submit(single, name) for name in usernames]
                 for future in as_completed(futures):
                     result, recording = future.result()
                     print_progress(result['username'])
@@ -95,7 +101,7 @@ def main():
                     records.extend(recording)
 
         else:
-            for student in students:
+            for student in usernames:
                 result, recording = single(student)
                 print_progress(result['username'])
                 results.append(result)

@@ -96,7 +96,6 @@ def gitignore():
 
 
 for student in os.listdir('students'):
-# for student in ['hoops']:
     student_dir = os.path.join('students', student)
     if os.path.isdir(student_dir):
         os.chdir(student_dir)

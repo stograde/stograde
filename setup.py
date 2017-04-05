@@ -1,12 +1,12 @@
 import sys
 from setuptools import setup, find_packages
 
-if sys.version_info < (3, 4):
-    sys.exit("The toolkit requires Python 3.4 or greater.\nYou have {}".format(sys.version_info))
+if sys.version_info < (3, 5):
+    sys.exit("The toolkit requires Python 3.5 or greater.\nYou have {}".format(sys.version_info))
 
 setup(
     name='cs251tk',
-    version='2.1.3',
+    version='2.1.15',
     description='The CS251 (Software Design) Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
@@ -30,23 +30,24 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords='stolaf course-tooling',
     install_requires=[
         'PyYAML == 3.*',
         'requests == 2.*',
         'termcolor == 1.*',
-        'natsort == 5.0.*'
+        'natsort == 5.0.*',
+        'appdirs == 1.4.*',
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={
         'console_scripts': [
-            'cs251tk=cs251tk.cli.cs251tk:main',
-            'referee=cs251tk.cli.referee:main',
+            'cs251tk=cs251tk.toolkit.__main__:main',
+            'referee=cs251tk.referee.__main__:main',
         ],
     },
 )

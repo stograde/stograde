@@ -1,5 +1,5 @@
 # ignore the cached specs
-specs/_cache
+/specs/_cache
 
 # ignore any lists of people
 /*students*.txt
@@ -14,12 +14,15 @@ Thumbs.db
 __pycache__/
 *.swp
 
-!logs/.gitkeep
-!specs/.gitkeep
-!students/.gitkeep
-!projects/.gitkeep
-
 build/
 *.egg-info/
 dist/
 venv/
+
+# Configuration files
+/config/environment
+
+# tox
+.cache/
+.tox/
+.coverage

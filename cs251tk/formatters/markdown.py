@@ -19,7 +19,7 @@ def format_assignment_markdown(recording, debug=False):
     except Exception as err:
         if debug:
             raise err
-        output = indent(traceback.format_exc(), ' '*4) + '\n\n'
+        output = indent(traceback.format_exc(), ' ' * 4) + '\n\n'
 
     return {
         'assignment': recording['spec'],
@@ -76,7 +76,7 @@ def format_file(filename, file_info):
 
     if file_info['missing']:
         note = 'File not found. `ls .` says that these files exist:\n'
-        directory_listing = indent('\n'.join(file_info.get('other files', [])), ' '*4)
+        directory_listing = indent('\n'.join(file_info.get('other files', [])), ' ' * 4)
 
         if file_info['optional']:
             file_header = file_header.strip()
@@ -103,7 +103,7 @@ def format_file_compilation(compilations):
             result.append('**no warnings: {}**\n'.format(command))
         else:
             result.append('**warnings: {}**\n'.format(command))
-            result.append(indent(output, ' '*4))
+            result.append(indent(output, ' ' * 4))
 
     return '\n'.join(result)
 

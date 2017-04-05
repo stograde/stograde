@@ -1,11 +1,14 @@
 import statistics
 import sys
 
+
 def avg(data):
     return sum(data) / len(data)
 
+
 def stdev(data):
     return statistics.stdev(data)
+
 
 def main():
     data = sys.stdin.read().split()
@@ -16,4 +19,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

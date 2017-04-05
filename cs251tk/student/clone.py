@@ -1,3 +1,4 @@
+import logging
 from os import path
 from cs251tk.common import run
 
@@ -8,4 +9,6 @@ def clone_student(student, baseurl):
 
 
 def clone_url(url):
-    run(['git', 'clone', '--quiet', url])
+    logging.info('cloning {}'.format(url))
+    _, output, _ = run(['git', 'clone', '--quiet', url])
+    logging.debug(output)

@@ -1,0 +1,109 @@
+#!/bin/sh
+
+# Locate our docker binary.
+docker=$(which docker)
+
+# Start writing out the command.
+command="$docker run -it"
+
+default_CS251TK_IMAGE=stodevx/cs251-toolkit:HEAD
+default_CS251TK_SHARE=$HOME/.cs251tk_share
+
+if [ -z "${CS251TK_IMAGE}" ];
+then
+    echo "===> \$CS251TK_IMAGE is not set. Using $default_CS251TK_IMAGE."
+    CS251TK_IMAGE=$default_CS251TK_IMAGE
+fi
+
+if [ -z "$(docker images -q $CS251TK_IMAGE 2>/dev/null)" ];
+then
+    echo "===> CS251TK_IMAGE not installed in Docker... Trying to install."
+
+    if docker pull $CS251TK_IMAGE;
+    then
+        echo "      -> Installed successfully."
+    else
+        echo "      -> Installation failed. :("
+        exit 1
+    fi
+else
+    echo "===> CS251TK_IMAGE is installed."
+fi
+
+if [ -z "${CS251TK_SHARE}" ];
+then
+    echo "===> CS251TK_SHARE is not set.  Defaulting to ${default_CS251TK_SHARE}."
+    CS251TK_SHARE=$default_CS251TK_SHARE
+fi
+
+if [ -d "$CS251TK_SHARE" ];
+then
+    echo "===> CS251TK_SHARE found."
+else
+    echo "===> CS251TK_SHARE not found! Make sure it exists and is either a directory or a symlink to a directory."
+    echo "      (\$CS251TK_SHARE = \"$CS251TK_SHARE\")"
+    exit 1
+fi
+
+if [ -d "$CS251TK_SHARE/data" ];
+then
+    echo "      -> \$CS251TK_SHARE/data found."
+else
+    echo "===> $CS251TK_SHARE/data does not exist or is not a directory."
+    exit 1
+fi
+
+if [ -d "$CS251TK_SHARE/students" ];
+then
+    echo "      -> \$CS251TK_SHARE/students found."
+else
+    echo "===> $CS251TK_SHARE/students does not exist or is not a directory."
+    exit 1
+fi
+
+if [ -d "$CS251TK_SHARE/logs" ];
+then
+    echo "      -> \$CS251TK_SHARE/logs found."
+else
+    echo "===> $CS251TK_SHARE/logs does not exist or is not a directory."
+    exit 1
+fi
+
+if [ -f "$CS251TK_SHARE/students.txt" ];
+then
+    echo "      -> \$CS251TK_SHARE/students.txt found."
+else
+    echo "===> $CS251TK_SHARE/students.txt does not exist or is not a regular file."
+    exit 1
+fi
+
+if [ -f "$HOME/.ssh/id_rsa" ];
+then
+    echo "===> /root/.ssh/id_rsa ~> ~/.ssh/id_rsa"
+else
+    echo "===> No SSH key on your user account.  Make sure you have ssh set up."
+    exit 1
+fi
+
+if [ -f "$HOME/.ssh/id_rsa.pub" ];
+then
+    echo "===> /root/.ssh/id_rsa.pub ~> ~/.ssh/id_rsa.pub"
+else
+    echo "===> No SSH key on your user account.  Make sure you have ssh set up."
+    exit 1
+fi
+
+
+command="$command -v $(readlink -f $CS251TK_SHARE):/cs251tk_share/"
+command="$command -v $(readlink -f $HOME/.ssh/):/cs251tk_share/.ssh/"
+
+command="$command $CS251TK_IMAGE $@"
+
+if [[ "$@" == "" ]];
+then
+    echo "fail: must provide at least one argument (this is the shell command, try 'cs251tk --help')"
+fi
+
+echo "Running $command..."
+
+$command

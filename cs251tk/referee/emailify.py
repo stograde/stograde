@@ -17,6 +17,9 @@ def emailify(recordings, name, to, debug):
 
     grouped = dict(group_by(recordings, lambda s: s['student']))
 
+    print(plaintext)
+    print(grouped)
+
     # `grouped` is a dictionary, from username to list of assignment results
     if not grouped:
         raise Exception('No students found to create an email!')

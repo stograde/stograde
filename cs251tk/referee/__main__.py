@@ -35,8 +35,8 @@ def main():
     affected_assignments = parse_commits_for_assignments(commits)
 
     stringified_assignments = [''.join(pair) for pair in affected_assignments]
-    # print(sorted(stringified_assignments))
-    specs = load_some_specs(stringified_assignments, basedir)
+
+    specs = load_some_specs(stringified_assignments)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)
@@ -55,6 +55,7 @@ def main():
     print('processing complete')
 
     email_blob = emailify(recordings, name, to=email, debug=args['debug'])
+
     if args['send']:
         send_email(email_blob)
         print('email sent')

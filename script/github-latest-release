@@ -2,7 +2,7 @@
 
 require 'json'
 
-repository = "rye/krye.io"
+repository = "StoDevX/cs251-toolkit"
 
 payload = `curl -s -X GET https://api.github.com/repos/#{repository}/releases/latest`
 

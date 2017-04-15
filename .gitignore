@@ -1,3 +1,12 @@
+# ignore the cached specs
+/specs/_cache
+
+# ignore any lists of people
+/*students*.txt
+
+# ignore data directory
+/data/
+
 # files
 .cs251toolkitrc.yaml
 .DS_Store

@@ -6,4 +6,4 @@ def get_specs_dir():
 
 
 def get_data_dir():
-    return os.getenv('XDG_DATA_HOME', os.path.join(os.getenv('HOME'), '.local', 'share'))
+    return os.getenv('XDG_DATA_HOME', os.path.join(os.path.expanduser('~'), '.local', 'share'))

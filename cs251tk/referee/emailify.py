@@ -17,6 +17,7 @@ def emailify(*, recordings, name, to, debug):
 
     grouped = dict(group_by(recordings, lambda s: s['student']))
 
+    print(recordings)
     print(plaintext)
     print(grouped)
 

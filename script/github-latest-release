@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+repository = "rye/krye.io"
+
+payload = `curl -s -X GET https://api.github.com/repos/#{repository}/releases/latest`
+
+object = JSON.parse(payload)
+
+if tag_name = object["tag_name"]
+	puts tag_name
+else
+	exit -1
+end

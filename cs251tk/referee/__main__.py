@@ -1,4 +1,5 @@
 from tempfile import gettempdir
+import logging
 import sys
 import os
 
@@ -43,6 +44,8 @@ def parse_gitlab9_webhook(payload):
 def main():
     args = process_args()
     basedir = os.getcwd()
+
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 
     payload = args['data']
 

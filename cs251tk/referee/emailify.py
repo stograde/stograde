@@ -21,10 +21,8 @@ def emailify(recordings, name, to, debug):
     print(grouped)
 
     # `grouped` is a dictionary, from username to list of assignment results
-    if not grouped:
+    if not recordings:
         raise Exception('No students found to create an email!')
-    if len(grouped) > 1:
-        raise Exception('More than one student found when creating an email!')
 
     fancy_body = '\n'.join([r['content'] for r in list(fancy.values())[0]])
     plaintext_body = '\n'.join([r['content'] for r in list(plaintext.values())[0]])

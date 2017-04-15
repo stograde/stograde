@@ -20,7 +20,7 @@ def parse_gitlab6_webhook(payload):
         'name': payload['user_name'],
         'email': most_common_email,
         'branch': payload['ref'],
-        'repo': payload['project']['url'],
+        'repo': payload['repository']['url'],
         'commits': payload['commits'],
         'repo_folder': payload['user_id'],
     }

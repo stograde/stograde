@@ -20,7 +20,7 @@ install:
 
 script:
   - tox
-  - '[ "$TRAVIS_PYTHON_VERSION" == "3.6" ] && script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT'
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT; fi
 
 deploy:
   - provider: pypi

@@ -31,9 +31,10 @@ def emailify(*, recordings, name, to, debug):
     print(plaintext_body)
 
     msg = MIMEMultipart('alternative')
-    msg['To'] = '{} <{}>'.format(name, to)
-    msg['From'] = 'cs251-tas@stolaf.edu'
-    msg['Subject'] = build_subject(list(fancy.values())[0])
+    msg['to'] = '{} <{}>'.format(name, to)
+    msg['from'] = 'cs251-tas@stolaf.edu'
+    msg['subject'] = build_subject(list(fancy.values())[0])
+    msg['reply-to'] = 'cs251-tas@stolaf.edu'
 
     msg.attach(MIMEText(plaintext_body, 'plain'))
     msg.attach(MIMEText(fancy_body, 'html'))

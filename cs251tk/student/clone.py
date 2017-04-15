@@ -10,7 +10,7 @@ def clone_student(student, baseurl):
 
 def clone_url(url, into=None):
     if into:
-        logging.info('cloning {} into'.format(url, into))
+        logging.info('cloning {} into {}'.format(url, into))
         _, output, _ = run(['git', 'clone', '--quiet', url, into])
     else:
         logging.info('cloning {}'.format(url))

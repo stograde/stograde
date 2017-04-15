@@ -17,6 +17,9 @@ def main():
 
     payload = args['data']
 
+    print(args)
+    print(payload)
+
     if payload['object_kind'] != 'push':
         sys.exit('Not a push event')
 

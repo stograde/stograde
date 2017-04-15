@@ -70,6 +70,7 @@ def main():
     affected_assignments = parse_commits_for_assignments(commits)
 
     stringified_assignments = [''.join(pair) for pair in affected_assignments]
+    print(stringified_assignments)
 
     specs = load_some_specs(stringified_assignments, basedir='.')
     if not specs:

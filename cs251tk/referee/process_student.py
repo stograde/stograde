@@ -12,7 +12,7 @@ def process_student(repo, branch, assignments, folder, specs, basedir, debug=Fal
         # this is usually going to be a no-op (for any commits on master)
         checkout_ref(folder, ref=branch)
 
-        recordings = record(folder, specs, to_record=assignments, basedir=basedir, debug=debug)
+        recordings = record(folder, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=False)
         analysis = analyze(folder, specs, check_for_branches=False)
 
         remove(folder)

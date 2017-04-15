@@ -1,5 +1,6 @@
 from textwrap import indent
 import traceback
+import html
 
 
 def format_assignment_html(recording, debug=False):
@@ -42,21 +43,21 @@ def format_header(recording, warnings):
     header = '<h1>{spec} – {student}</h1>'.format_map(recording)
 
     if warnings:
-        header += '<ul>' + '\n'.join(warnings) + '</ul>'
+        header += format_as_ul(''.join(warnings))
 
     return header
 
 
 def format_warning(w, value):
     if w == 'no submission':
-        return '<li>' + 'No submission found.' + '</li>'
+        return '<li>No submission found.</li>'
 
     elif w == 'unmerged branches' and value:
-        branches = ['<li>' + b + '</li>' for b in value]
-        return '<li>' + 'Repository has unmerged branches:<ul>{}</ul>'.format('\n'.join(branches)) + '</li>'
+        branches = ['<li>{}</li>'.format(b) for b in value]
+        return '<li>Repository has unmerged branches:<ul>{}</ul></li>'.format('\n'.join(branches))
 
     elif value:
-        return '<li>' + 'Warning: ' + value + '</li>'
+        return '<li>Warning: {}</li>'.format(value)
 
     else:
         return ''
@@ -68,15 +69,15 @@ def format_file(filename, file_info):
     test_results = format_file_results(file_info.get('result', [])) + '\n'
 
     if file_info.get('last modified', None):
-        last_modified = ' (<code>{}</code>)'.format(file_info['last modified'])
+        last_modified = ' (last modified on {})'.format(file_info['last modified'])
     else:
         last_modified = ''
 
-    file_header = '<h2>{}{}</h2>'.format(filename, last_modified)
+    file_header = '<h2><code>{}</code>{}</h2>'.format(filename, last_modified)
 
     if file_info['missing']:
-        note = 'File not found. <code>ls .</code> says that these files exist:\n'
-        directory_listing = indent('\n'.join(file_info.get('other files', [])), ' ' * 4)
+        note = 'File not found. These are the files that exist:\n'
+        directory_listing = format_as_ul(['<li>{}</li>'.format(f) for f in file_info.get('other files', [])])
 
         if file_info['optional']:
             file_header = file_header.strip()
@@ -88,7 +89,7 @@ def format_file(filename, file_info):
 
 
 def format_file_contents(contents, info):
-    return format_as_code(contents.replace('<', '&lt;').replace('>', '&gt;'))
+    return format_as_code(html.escape(contents))
 
 
 def format_file_compilation(compilations):
@@ -115,7 +116,7 @@ def format_file_results(test_results):
         result += header + '\n' + output
 
         if test['truncated']:
-            result += '\n' + '(truncated after {truncated after})'.format_map(test)
+            result += '<p><em>(truncated after {truncated after})</em></p>'.format_map(test)
 
     return result
 
@@ -123,4 +124,10 @@ def format_file_results(test_results):
 def format_as_code(data):
     if not data:
         return ''
-    return '<pre><code>' + data + '</code></pre>'
+    return '<pre><code>{}</code></pre>'.format(data)
+
+
+def format_as_ul(data):
+    if not data:
+        return ''
+    return '<ul>{}</ul>'.format(''.join(data))

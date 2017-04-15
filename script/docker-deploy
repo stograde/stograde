@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), 'lib')))
+
+# Require the entire `script` lib tree.
+require 'script'
+
+raise RuntimeError, "DOCKER_USERNAME not set!" unless ENV['DOCKER_USERNAME']
+raise RuntimeError, "DOCKER_PASSWORD not set!" unless ENV['DOCKER_PASSWORD']
+
+`docker login -u="#{ENV['DOCKER_USERNAME']}" -p="#{ENV['DOCKER_PASSWORD']}"`
+
+raise RuntimeError, "Docker login failed!" unless $? == 0
+
+DOCKER_TAG_REGEXP = /([\w\.\/]+):?([\w\.\/]+)?/
+
+tags = ARGV.grep(DOCKER_TAG_REGEXP)
+
+source_tag = tags.first
+aliases = tags[1..-1]
+
+puts "Source tag: #{source_tag}"
+puts "Deploy targets (#{aliases.count}): #{aliases.join(' ')}"
+
+aliases.each_with_index do |alyas, index|
+	puts "Tagging #{source_tag} as #{alyas}..."
+
+	command = ['docker', 'tag', source_tag, alyas]
+
+	puts "Running `#{command.join(' ')}`..."
+
+	Runner.run(command) do |output_line|
+		puts output_line.chomp
+	end
+end
+
+puts "Pushing #{aliases.count} tags..."
+
+aliases.each_with_index do |alyas, index|
+	command = ["docker", "push", "#{alyas}"]
+
+	puts "Running `#{command.join(' ')}`..."
+
+	Runner.run(command) do |output_line|
+		puts output_line.chomp
+	end
+end

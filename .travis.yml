@@ -10,6 +10,9 @@ python:
   - "3.5"
   - "3.6"
 
+env:
+  - DOCKER_IMAGE=stodevx/cs251-toolkit
+
 install:
   - pip install tox
   - pip install tox-travis
@@ -17,6 +20,7 @@ install:
 
 script:
   - tox
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT; fi
 
 deploy:
   - provider: pypi
@@ -31,7 +35,7 @@ deploy:
 
   # Deploy master branch to HEAD Docker Tag
   - provider: script
-    script: script/deploy HEAD
+    script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
     on:
       # only deploy master on Python 3.6 build.
       python: "3.6"
@@ -39,11 +43,20 @@ deploy:
 
   # Deploy all tags to their respective Docker Tag
   - provider: script
-    script: script/deploy $TRAVIS_TAG
+    script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
     on:
       # only deploy master on Python 3.6 build.
       python: "3.6"
       tags: true
+
+  # Deploy only the latest tag to the `latest` tag.
+  - provider: script
+    script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG $DOCKER_IMAGE:latest
+    on:
+      # only deploy master on Python 3.6 build.
+      python: "3.6"
+      tags: true
+      condition: $(script/github-latest-release) == $TRAVIS_TAG
 
 # this stops travis from building both pushes and PRs for pr-destined branches
 branches:

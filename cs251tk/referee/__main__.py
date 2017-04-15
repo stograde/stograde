@@ -54,11 +54,11 @@ def main():
 
     print('processing complete')
 
-    email = emailify(recordings, name, to=email, debug=args['debug'])
+    email_blob = emailify(recordings, name, to=email, debug=args['debug'])
     if args['send']:
-        send_email(email)
+        send_email(email_blob)
         print('email sent')
     else:
         print('Not sending email: no --send flag')
         print()
-        print(email)
+        print(email_blob)

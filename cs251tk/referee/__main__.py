@@ -23,7 +23,7 @@ def parse_gitlab6_webhook(payload):
         'branch': payload['ref'],
         'repo': payload['repository']['url'],
         'commits': payload['commits'],
-        'repo_folder': payload['user_id'],
+        'repo_folder': str(payload['user_id']),
     }
 
 

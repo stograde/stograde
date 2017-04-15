@@ -40,7 +40,7 @@ def format_warnings(warnings):
 
 
 def format_header(recording, warnings):
-    header = '<h1>{spec} – {student}</h1>'.format_map(recording)
+    header = '<h1>{spec}</h1>'.format_map(recording)
 
     if warnings:
         header += format_as_ul(''.join(warnings))

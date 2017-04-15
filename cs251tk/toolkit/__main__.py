@@ -3,6 +3,7 @@ import logging
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
+import os.path
 
 from ..common import chdir
 from ..specs import load_all_specs, check_dependencies
@@ -71,7 +72,7 @@ def main():
     if date:
         logging.debug('Checking out {}'.format(date))
 
-    specs = load_all_specs(basedir)
+    specs = load_all_specs(basedir=os.path.join(basedir, 'data'))
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

@@ -6,6 +6,7 @@ def send_email(msg):
     username = os.getenv('CS251TK_EMAIL_USERNAME', None)
     if not username:
         raise Exception('Missing $CS251TK_EMAIL_USERNAME')
+
     password = os.getenv('CS251TK_EMAIL_PASSWORD', None)
     if not password:
         raise Exception('Missing $CS251TK_EMAIL_PASSWORD')

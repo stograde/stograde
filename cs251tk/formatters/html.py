@@ -32,6 +32,7 @@ def format_assignment_html(recording, debug=False):
 def format_files_list(files):
     return '\n\n'.join([format_file(name, info) for name, info in files.items()])
 
+
 def format_warnings(warnings):
     formatted = [format_warning(warning, value) for warning, value in warnings]
     return [w for w in formatted if w]
@@ -89,10 +90,6 @@ def format_file(filename, file_info):
 def format_file_contents(contents, info):
     return format_as_code(contents.replace('<', '&lt;').replace('>', '&gt;'))
 
-def format_as_code(data):
-    if not data:
-        return ''
-    return '<pre><code>' + data + '</code></pre>'
 
 def format_file_compilation(compilations):
     result = []
@@ -121,3 +118,9 @@ def format_file_results(test_results):
             result += '\n' + '(truncated after {truncated after})'.format_map(test)
 
     return result
+
+
+def format_as_code(data):
+    if not data:
+        return ''
+    return '<pre><code>' + data + '</code></pre>'

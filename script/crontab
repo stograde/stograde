@@ -1,0 +1,1 @@
+0 * * * * cd /home/referee/.local/share/cs251tk/specs && /usr/bin/git pull origin master > /home/referee/cron-spec-git-pull.log

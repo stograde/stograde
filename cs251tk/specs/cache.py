@@ -14,9 +14,9 @@ def cache_specs(basedir):
     YAML parsing is incredibly slow, and JSON is quite fast,
     so we check modification times and convert any that have changed.
     """
-    os.makedirs(basedir + '/data/specs/_cache', exist_ok=True)
-    yaml_specs = iglob(basedir + '/data/specs/*.yaml')
-    json_specs = iglob(basedir + '/data/specs/_cache/*.json')
+    os.makedirs(os.path.join(basedir, '_cache'), exist_ok=True)
+    yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
+    json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
 
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
         cache_spec(source_file=yamlfile, dest_file=jsonfile)

@@ -66,9 +66,12 @@ def main():
     commits = parsed_payload['commits']
     repo_folder = parsed_payload['repo_folder']
 
-    print('processing', repo)
-    print('before', payload['before'])
-    print('after', payload['after'])
+    print('processing {}#{}'.format(repo, branch))
+    print('author: {} <{}>'.format(name, email))
+    print('destination: {}'.format(repo_folder))
+
+    print('before push', payload['before'])
+    print('after push', payload['after'])
 
     affected_assignments = parse_commits_for_assignments(commits)
 
@@ -93,7 +96,10 @@ def main():
 
     print('processing complete')
 
-    email_blob = emailify(recordings, name, to=email, debug=args['debug'])
+    email_blob = emailify(recordings=recordings,
+                          name=name,
+                          to=email,
+                          debug=args['debug'])
 
     if args['send']:
         send_email(email_blob)

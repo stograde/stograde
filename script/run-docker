@@ -4,7 +4,7 @@
 docker=$(which docker)
 
 # Start writing out the command.
-command="$docker run -it"
+command="$docker run -i"
 
 default_CS251TK_IMAGE=stodevx/cs251-toolkit:HEAD
 default_CS251TK_SHARE=$HOME/.cs251tk_share

@@ -76,8 +76,8 @@ def format_file(filename, file_info):
     file_header = '<h2><code>{}</code>{}</h2>'.format(filename, last_modified)
 
     if file_info['missing']:
-        note = 'File not found. These are the files that exist:\n'
-        directory_listing = format_as_ul(['<li>{}</li>'.format(f) for f in file_info.get('other files', [])])
+        note = '<code>{}</code> was not found. We found these files:\n'.format(filename)
+        directory_listing = format_as_ul(['<li><code>{}</code></li>'.format(f) for f in file_info.get('other files', [])])
 
         if file_info['optional']:
             file_header = file_header.strip()

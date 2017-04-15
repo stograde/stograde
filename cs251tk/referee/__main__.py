@@ -45,6 +45,9 @@ def main():
     basedir = os.getcwd()
 
     payload = args['data']
+
+    print(payload)
+
     parsed_payload = {}
     try:
         parsed_payload = parse_gitlab6_webhook(payload)

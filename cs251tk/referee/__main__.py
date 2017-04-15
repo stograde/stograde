@@ -9,6 +9,35 @@ from .process_student import process_student
 from .parse_commits import parse_commits_for_assignments
 from .emailify import emailify
 from .send_email import send_email
+from collections import Counter
+
+
+def parse_gitlab6_webhook(payload):
+    emails = [c['author']['email'] for c in payload['commits']]
+    most_common_email = Counter(emails).most_common(1)[0][0]
+
+    return {
+        'name': payload['user_name'],
+        'email': most_common_email,
+        'branch': payload['ref'],
+        'repo': payload['project']['url'],
+        'commits': payload['commits'],
+        'repo_folder': payload['user_id'],
+    }
+
+
+def parse_gitlab9_webhook(payload):
+    if payload['object_kind'] != 'push':
+        raise Exception('Not a push event!')
+
+    return {
+        'name': payload['user_name'],
+        'email': payload['user_email'],
+        'branch': payload['ref'],
+        'repo': payload['project']['git_ssh_url'],
+        'commits': payload['commits'],
+        'repo_folder': payload['project']['path_with_namespace'].split('/')[-1],
+    }
 
 
 def main():
@@ -16,20 +45,20 @@ def main():
     basedir = os.getcwd()
 
     payload = args['data']
+    parsed_payload = {}
+    try:
+        parsed_payload = parse_gitlab6_webhook(payload)
+    except KeyError:
+        parsed_payload = parse_gitlab9_webhook(payload)
 
-    print(args)
-    print(payload)
+    print(parsed_payload)
 
-    if payload['object_kind'] != 'push':
-        sys.exit('Not a push event')
-
-    name = payload['user_name']
-    email = payload['user_email']
-
-    branch = payload['ref']
-    repo = payload['project']['git_ssh_url']
-    commits = payload['commits']
-    repo_folder = payload['project']['path_with_namespace'].split('/')[-1]
+    name = parsed_payload['name']
+    email = parsed_payload['email']
+    branch = parsed_payload['branch']
+    repo = parsed_payload['repo']
+    commits = parsed_payload['commits']
+    repo_folder = parsed_payload['repo_folder']
 
     print('processing', repo)
     print('before', payload['before'])

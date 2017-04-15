@@ -93,7 +93,10 @@ def main():
 
     print('processing complete')
 
-    email_blob = emailify(recordings, name, to=email, debug=args['debug'])
+    email_blob = emailify(recordings=recordings,
+                          name=name,
+                          to=email,
+                          debug=args['debug'])
 
     if args['send']:
         send_email(email_blob)

@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-def emailify(recordings, name, to, debug):
+def emailify(*, recordings, name, to, debug):
     fancy = format_collected_data(recordings,
                                   group_by='student',
                                   formatter=html,

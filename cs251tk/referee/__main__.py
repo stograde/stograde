@@ -71,7 +71,7 @@ def main():
 
     stringified_assignments = [''.join(pair) for pair in affected_assignments]
 
-    specs = load_some_specs(stringified_assignments)
+    specs = load_some_specs(stringified_assignments, basedir='.')
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

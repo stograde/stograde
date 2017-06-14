@@ -45,7 +45,6 @@ jobs:
         - script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT
     - <<: *supported_python_build
       stage: deploy
-      python: 3.6
       deploy:
         provider: pypi
         user: "hawkrives"
@@ -55,11 +54,6 @@ jobs:
           tags: true
     - <<: *docker_build
       stage: deploy
-      python: 3.6
-      services:
-        - docker
-      env:
-        - DOCKER_IMAGE=stodevx/cs251-toolkit
       deploy:
         provider: script
         script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
@@ -67,11 +61,6 @@ jobs:
           branch: master
     - <<: *docker_build
       stage: deploy
-      python: 3.6
-      services:
-        - docker
-      env:
-        - DOCKER_IMAGE=stodevx/cs251-toolkit
       deploy:
         provider: script
         script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
@@ -79,11 +68,6 @@ jobs:
           tags: true
     - <<: *docker_build
       stage: deploy
-      python: 3.6
-      services:
-        - docker
-      env:
-        - DOCKER_IMAGE=stodevx/cs251-toolkit
       deploy:
         provider: script
         script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
@@ -91,11 +75,6 @@ jobs:
           tags: true
     - <<: *docker_build
       stage: deploy
-      python: 3.6
-      services:
-        - docker
-      env:
-        - DOCKER_IMAGE=stodevx/cs251-toolkit
       deploy:
         provider: script
         script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:latest
@@ -104,11 +83,6 @@ jobs:
           condition: $(script/github-latest-release) == $TRAVIS_TAG
     - <<: *docker_build
       stage: deploy
-      python: 3.6
-      services:
-        - docker
-      env:
-        - DOCKER_IMAGE=stodevx/cs251-toolkit
       deploy:
         provider: script
         script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT

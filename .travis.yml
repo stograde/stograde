@@ -33,9 +33,8 @@ jobs:
       script:
         - tox
       after_success: coveralls
-    - stage: build + deploy
-      install: *python_deploy_installs
-      script: echo "I'm a teapot!"
+    - <<: *supported_python_build
+      stage: build + deploy
       deploy:
         provider: pypi
         user: "hawkrives"

@@ -21,7 +21,6 @@ jobs:
       install:
         - pip install tox
         - pip install tox-travis
-        - pip install coveralls
       script:
         - tox
     - stage: test

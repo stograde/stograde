@@ -26,15 +26,22 @@ jobs:
     - &supported_python_build
       stage: test
       python: 3.6
-      install:
+      install: &python_deploy_installs
         - pip install tox
         - pip install tox-travis
         - pip install coveralls
       script:
         - tox
       after_success: coveralls
-    - &docker_build
-      stage: build
+    - stage: build + deploy
+      install: *python_deploy_installs
+      after_success: echo "Ready to deploy to PyPI..."
+      deploy:
+        provider: pypi
+        user: "hawkrives"
+        password: { secure: kxjTndHBVztrPi1k74zsL2cjbFrBXe5af0HDn/t4w6CUj0yCf0VPwzR0KnOU6CrvRpMxid7MINsgdh3MsOsgnLiLiQ4TSRqEfB9lsmCopDXArNiC5jq0QmZ1P2KHKguJpkWx8TnwjiJycm1UFJU3l4YRfj5Zo4LvpI/64EUoNhICbf2gAQav8Sb2a9/Ov5hpySBYhmwr/tkODOfZS5+00SAs/OP7bU0xQFhUUwnEY4uAiaTIo+tIOIXx/nwj7XundCEwFXiFDYSEKbk+maHWgUIqbZivL94RigVwTds0KJmpurU1Nc670ggGwT96WcCtNZoMTxB47fXoNqzhTAgp2O2C4lsv1xNIrwSdHzyP20wsDQn3zdMz4aJEfSZMwhvN/GJyQFTKbeD++ysRsfUuI5uQho7BOsGMLDfnDOpncNNXI2zKnea9OStsj/u/aJGNmWFcGa70/CHBeSI9Zmv6Og3KY6fGM28bqQUvO6iFDho98xOTHk+vTIcGyut5DDMuKvQh3ISPYZkz7lSqHqDayXr/RxombkpEPszqlUkn2OO38PLujYJzL8nLUN1g/2m2M4y9h6pXV27sU6hDo0E9WTtRhAA04JqpsJ2S8smw2C+yo446klaMNxUkYbxm4j9PI7pYpLWsqlOMbnCz79PSGuzB17ezk6nr8T22TR0Ci2w= }
+        on: { tags: true }
+    - stage: build + deploy
       python: 3.6
       services:
         - docker
@@ -42,49 +49,18 @@ jobs:
         - DOCKER_IMAGE=stodevx/cs251-toolkit
       script:
         - script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT
-    - <<: *supported_python_build
-      stage: deploy
-      after_success: echo "Ready to deploy to PyPI..."
+      services:
+        - docker
       deploy:
-        provider: pypi
-        user: "hawkrives"
-        password:
-          secure: kxjTndHBVztrPi1k74zsL2cjbFrBXe5af0HDn/t4w6CUj0yCf0VPwzR0KnOU6CrvRpMxid7MINsgdh3MsOsgnLiLiQ4TSRqEfB9lsmCopDXArNiC5jq0QmZ1P2KHKguJpkWx8TnwjiJycm1UFJU3l4YRfj5Zo4LvpI/64EUoNhICbf2gAQav8Sb2a9/Ov5hpySBYhmwr/tkODOfZS5+00SAs/OP7bU0xQFhUUwnEY4uAiaTIo+tIOIXx/nwj7XundCEwFXiFDYSEKbk+maHWgUIqbZivL94RigVwTds0KJmpurU1Nc670ggGwT96WcCtNZoMTxB47fXoNqzhTAgp2O2C4lsv1xNIrwSdHzyP20wsDQn3zdMz4aJEfSZMwhvN/GJyQFTKbeD++ysRsfUuI5uQho7BOsGMLDfnDOpncNNXI2zKnea9OStsj/u/aJGNmWFcGa70/CHBeSI9Zmv6Og3KY6fGM28bqQUvO6iFDho98xOTHk+vTIcGyut5DDMuKvQh3ISPYZkz7lSqHqDayXr/RxombkpEPszqlUkn2OO38PLujYJzL8nLUN1g/2m2M4y9h6pXV27sU6hDo0E9WTtRhAA04JqpsJ2S8smw2C+yo446klaMNxUkYbxm4j9PI7pYpLWsqlOMbnCz79PSGuzB17ezk6nr8T22TR0Ci2w=
-        on:
-          tags: true
-    - <<: *docker_build
-      stage: deploy
-      deploy:
-        provider: script
-        script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
-        on:
-          branch: master
-    - <<: *docker_build
-      stage: deploy
-      deploy:
-        provider: script
-        script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
-        on:
-          tags: true
-    - <<: *docker_build
-      stage: deploy
-      deploy:
-        provider: script
-        script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
-        on:
-          tags: true
-    - <<: *docker_build
-      stage: deploy
-      deploy:
-        provider: script
-        script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:latest
-        on:
-          tags: true
-          condition: $(script/github-latest-release) == $TRAVIS_TAG
-    - <<: *docker_build
-      stage: deploy
-      deploy:
-        provider: script
-        script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT
-        on:
-          branch: travis-*
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
+          on: { branch: master }
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
+          on: { tags: true }
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:latest
+          on: { tags: true, condition: $(script/github-latest-release) == $TRAVIS_TAG }
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT
+          on: { branch: travis-* }

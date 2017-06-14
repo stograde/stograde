@@ -54,7 +54,7 @@ jobs:
       deploy:
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
-          on: { branch: master }
+          on: { branch: 'master' }
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_TAG
           on: { tags: true }
@@ -63,4 +63,4 @@ jobs:
           on: { tags: true, condition: $(script/github-latest-release) == $TRAVIS_TAG }
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT
-          on: { branch: travis-* }
+          on: { branch: 'travis-*' }

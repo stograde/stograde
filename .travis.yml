@@ -35,7 +35,6 @@ jobs:
       after_success: coveralls
     - stage: build + deploy
       install: *python_deploy_installs
-      after_success: echo "Ready to deploy to PyPI..."
       deploy:
         provider: pypi
         user: "hawkrives"

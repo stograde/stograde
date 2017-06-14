@@ -2,6 +2,7 @@
 sudo: false
 dist: trusty
 
+language: python
 
 # this stops travis from building both pushes and PRs for pr-destined branches
 branches:

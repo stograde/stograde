@@ -35,6 +35,7 @@ jobs:
       after_success: coveralls
     - stage: build + deploy
       install: *python_deploy_installs
+      script: echo "I'm a teapot!"
       deploy:
         provider: pypi
         user: "hawkrives"

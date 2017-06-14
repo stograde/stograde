@@ -15,11 +15,7 @@ cache:
 
 jobs:
   include:
-    - &job
-      stage: test
-      sudo: false
-      dist: trusty
-      language: python
+    - stage: test
       python: 3.5
       install:
         - pip install tox
@@ -27,11 +23,7 @@ jobs:
         - pip install coveralls
       script:
         - tox
-    - <<: *job
-      stage: test
-      sudo: false
-      dist: trusty
-      language: python
+    - stage: test
       python: 3.6
       install:
         - pip install tox
@@ -41,17 +33,14 @@ jobs:
         - tox
       after_success:
         - coveralls
-    - <<: *job
-      stage: build
+    - stage: build
       services:
         - docker
       env:
         - DOCKER_IMAGE=stodevx/cs251-toolkit
       script:
         - script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT
-    - <<: *job
-      stage: deploy
-      language: python
+    - stage: deploy
       python: 3.6
       deploy:
         provider: pypi

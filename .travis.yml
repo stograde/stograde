@@ -60,7 +60,9 @@ jobs:
           on: { tags: true }
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:latest
-          on: { tags: true, condition: $(script/github-latest-release) == $TRAVIS_TAG }
+          on:
+            tags: true
+            condition: $(script/github-latest-release) == $TRAVIS_TAG
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT
           on: { branch: 'travis-*' }

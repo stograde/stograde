@@ -32,8 +32,7 @@ jobs:
         - pip install coveralls
       script:
         - tox
-      after_success:
-        - coveralls
+      after_success: coveralls
     - &docker_build
       stage: build
       python: 3.6
@@ -45,6 +44,7 @@ jobs:
         - script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT
     - <<: *supported_python_build
       stage: deploy
+      after_success: echo "Ready to deploy to PyPI..."
       deploy:
         provider: pypi
         user: "hawkrives"

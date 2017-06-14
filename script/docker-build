@@ -1,20 +1,13 @@
-#!/usr/bin/env ruby
+#!/bin/bash
 
-$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), 'lib')))
+function build_tag {
 
-require 'script'
+	docker build -t $1 .
 
-DOCKER_TAG_REGEXP = /([\w\.\/]+):?([\w\.\/]+)?/
+}
 
-tags = ARGV.grep(DOCKER_TAG_REGEXP)
-
-tags.each_with_index do |tag, tag_index|
-	command = ['docker', 'build', '-t', "#{tag}", '.']
-
-	puts "Building tag #{tag_index + 1}/#{tags.count} #{tag}"
-
-	puts "Running `#{command.join(' ')}`..."
-	Runner.run(command) do |output_line|
-		puts output_line.chomp
-	end
-end
+for tag in "$@";
+do
+	echo $tag
+	build_tag $tag
+done

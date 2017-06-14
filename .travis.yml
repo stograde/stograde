@@ -23,7 +23,8 @@ jobs:
         - pip install tox-travis
       script:
         - tox
-    - stage: test
+    - &supported_python_build
+      stage: test
       python: 3.6
       install:
         - pip install tox
@@ -42,7 +43,8 @@ jobs:
         - DOCKER_IMAGE=stodevx/cs251-toolkit
       script:
         - script/docker-build $DOCKER_IMAGE:$TRAVIS_COMMIT
-    - stage: deploy
+    - <<: *supported_python_build
+      stage: deploy
       python: 3.6
       deploy:
         provider: pypi

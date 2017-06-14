@@ -12,7 +12,7 @@ FROM python:3.6
 MAINTAINER Kristofer Rye <kristofer.rye@gmail.com>
 
 # Add the entire project directory to the /cs251tk/ directory in the
-# image. This is pretty cool.
+# image.
 ADD . /cs251tk/
 
 # Create the SSH config directory on the root user account home directory.

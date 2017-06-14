@@ -33,8 +33,10 @@ jobs:
       script:
         - tox
       after_success: coveralls
-    - <<: *supported_python_build
-      stage: build + deploy
+    - stage: build + deploy
+      python: 3.6
+      install: *python_deploy_installs
+      script: skip
       deploy:
         provider: pypi
         user: "hawkrives"

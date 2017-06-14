@@ -1,0 +1,17 @@
+# Ignore Git repository data
+/.git/
+/.gitignore
+
+# Stupid files
+.DS_Store
+Thumbs.db
+__pycache__
+*.swp
+\#*
+
+# Tox
+/.cache/
+/.tox/
+
+# Coveralls data
+/.coverage/

@@ -1,47 +1,23 @@
-#!/usr/bin/env ruby
+#!/bin/bash
 
-$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), 'lib')))
+if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
+if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
 
-# Require the entire `script` lib tree.
-require 'script'
+if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+then
+    (>&2 echo "Logged into Docker Hub.  Ready to roll!")
+else
+    (>&2 echo "Failed to log into Docker properly.  SAD!")
+    exit 1
+fi
 
-raise RuntimeError, "DOCKER_USERNAME not set!" unless ENV['DOCKER_USERNAME']
-raise RuntimeError, "DOCKER_PASSWORD not set!" unless ENV['DOCKER_PASSWORD']
+source_tag="$1"
+deploy_targets="${@:2}"
 
-`docker login -u="#{ENV['DOCKER_USERNAME']}" -p="#{ENV['DOCKER_PASSWORD']}"`
+for deploy_target in $deploy_targets;
+do
+	echo "Deploying $source_tag => $deploy_target!"
 
-raise RuntimeError, "Docker login failed!" unless $? == 0
-
-DOCKER_TAG_REGEXP = /([\w\.\/]+):?([\w\.\/]+)?/
-
-tags = ARGV.grep(DOCKER_TAG_REGEXP)
-
-source_tag = tags.first
-aliases = tags[1..-1]
-
-puts "Source tag: #{source_tag}"
-puts "Deploy targets (#{aliases.count}): #{aliases.join(' ')}"
-
-aliases.each_with_index do |alyas, index|
-	puts "Tagging #{source_tag} as #{alyas}..."
-
-	command = ['docker', 'tag', source_tag, alyas]
-
-	puts "Running `#{command.join(' ')}`..."
-
-	Runner.run(command) do |output_line|
-		puts output_line.chomp
-	end
-end
-
-puts "Pushing #{aliases.count} tags..."
-
-aliases.each_with_index do |alyas, index|
-	command = ["docker", "push", "#{alyas}"]
-
-	puts "Running `#{command.join(' ')}`..."
-
-	Runner.run(command) do |output_line|
-		puts output_line.chomp
-	end
-end
+	docker tag $source_tag $deploy_target
+	docker push $deploy_target
+done

@@ -35,7 +35,7 @@ def compile_file(filename, steps, results, supporting_dir):
             .replace('$SUPPORT', supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
-        status, compilation, _ = run(cmd, input_data=input_for_cmd)
+        status, compilation, _ = run(cmd, timeout=30, input_data=input_for_cmd)
 
         results['compilation'].append({
             'command': command,

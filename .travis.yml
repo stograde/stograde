@@ -18,20 +18,13 @@ jobs:
   include:
     - stage: test
       python: 3.5
-      install:
-        - pip install tox
-        - pip install tox-travis
-      script:
-        - tox
+      install: pip install tox tox-travis
+      script: tox
 
     - stage: test
       python: 3.6
-      install: &python_deploy_installs
-        - pip install tox
-        - pip install tox-travis
-        - pip install coveralls
-      script:
-        - tox
+      install: pip install tox tox-travis coveralls
+      script: tox
       after_success: coveralls
 
     - stage: test
@@ -41,7 +34,6 @@ jobs:
 
     - stage: deploy
       python: 3.6
-      install: *python_deploy_installs
       script: skip
       deploy:
         provider: pypi
@@ -57,8 +49,6 @@ jobs:
         - DOCKER_IMAGE=stodevx/cs251-toolkit
       script:
         - docker build -t $DOCKER_IMAGE:$TRAVIS_COMMIT .
-      services:
-        - docker
       deploy:
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD

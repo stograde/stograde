@@ -1,3 +1,5 @@
+import os
+
 from cs251tk.student import remove
 from cs251tk.student import clone_student
 from cs251tk.student import stash
@@ -6,6 +8,8 @@ from cs251tk.student import checkout_date
 from cs251tk.student import record
 from cs251tk.student import reset
 from cs251tk.student import analyze
+from cs251tk.common import run
+from ..common import chdir
 
 
 def process_student(
@@ -35,6 +39,7 @@ def process_student(
 
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
         analysis = analyze(student, specs, check_for_branches=not no_check)
+
 
         if date:
             reset(student)

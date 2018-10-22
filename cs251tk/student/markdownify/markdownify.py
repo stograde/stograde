@@ -4,15 +4,24 @@ import os
 from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
+from ...common import chdir
+from cs251tk.common import run
 
 
 def markdownify(spec_id, *, username, spec, basedir, debug, interact):
     """Run a spec against the current folder"""
     try:
+        """Try to run the CheckDates program. If not installed, move on."""
+
+        with chdir(os.path.join(basedir, 'data')):
+            _, res, _ = run([os.path.join(basedir, 'data', 'CheckDates'), '-t', '-s', username, '-a', spec_id])
+        if res[:9] == "[Errno 2]":
+            res = ""
+        #     print(res)
         cwd = os.getcwd()
         results = {
             'spec': spec_id,
-            'student': username,
+            'student': username + '\n' + res,
             'warnings': find_warnings(),
             'files': OrderedDict(),
         }

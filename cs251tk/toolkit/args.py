@@ -30,7 +30,7 @@ def build_argparser():
 
     specs = parser.add_argument_group('control the homework specs')
     specs.add_argument('--course', default='sd', choices=['sd', 'hd'],
-                       help='Which course to evaulate (this sets a default stogit url)')
+                       help='Which course to evaluate (this sets a default stogit url)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -138,7 +138,7 @@ def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     # `--record hw4 lab1 --record hw5` becomes `[[hw4, lab1], [hw5]]`
     assignments = [assignment for group in to_record for assignment in group] + assignments
 
-    # sort the assignemnts and remove duplicates
+    # sort the assignments and remove duplicates
     return natsorted(set(assignments))
 
 

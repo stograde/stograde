@@ -8,8 +8,6 @@ from cs251tk.student import checkout_date
 from cs251tk.student import record
 from cs251tk.student import reset
 from cs251tk.student import analyze
-from cs251tk.common import run
-from ..common import chdir
 
 
 def process_student(

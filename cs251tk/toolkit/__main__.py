@@ -74,8 +74,6 @@ def main():
 
     try:
         with chdir(os.path.join(basedir, 'data')):
-            run(['git', 'pull', 'origin', 'master'])
-
             try:
                 with chdir(os.path.join(basedir, 'data', 'source')):
                     run('make')
@@ -83,7 +81,6 @@ def main():
                 if not quiet or not no_update:
                     print("Optional add-on program CheckDates not installed.\n"
                           "Install to see first commit dates for assignments.")
-
     except FileNotFoundError:
         print('data directory not found', file=sys.stderr)
         sys.exit(1)

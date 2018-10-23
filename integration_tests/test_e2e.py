@@ -24,8 +24,8 @@ def test_cs251tk_table(datafiles, capsys):
     out, err = capsys.readouterr()
 
     assert out == textwrap.dedent("""
-    - Optional add-on program CheckDates not installed.
-    - Install to see first commit dates for assignments.
+    Optional add-on program CheckDates not installed.
+    Install to see first commit dates for assignments.
     
     USER      | 1 | 1 | 1
     ----------+---+---+--
@@ -70,8 +70,8 @@ def test_cs251tk_record(datafiles, capsys):
     out, err = capsys.readouterr()
 
     assert out == textwrap.dedent("""
-    - Optional add-on program CheckDates not installed.
-    - Install to see first commit dates for assignments.
+    Optional add-on program CheckDates not installed.
+    Install to see first commit dates for assignments.
 
     USER      | 1 | 1 | 1
     ----------+---+---+--

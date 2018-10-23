@@ -53,7 +53,7 @@ def test_columnize():
         ]
     }
 
-    assert columnize(student, 'rives', 2, 1, 1) == "rives  | 1 2 | 1 | 1"
+    assert columnize(student, 'rives', 2, 1, 1) == "rives  | 1 2 | 1 | -"
     assert columnize(student, 'long_username', 2, 1, 1) == "rives          | 1 2 | 1 |"
     assert columnize(student, 'rives', 5, 1, 1) == "rives  | 1 2 - - - | 1 | -"
     assert columnize(student, 'rives', 2, 5, 1) == "rives  | 1 2 | 1 - - - - | -"
@@ -70,7 +70,7 @@ def test_columnize():
         ]
     }
 
-    assert columnize(student2, 'rives', 2, 1, 1) == "\033[1mrives\033[0m  | 1 2 | 1 | 1"
+    assert columnize(student2, 'rives', 2, 1, 1) == "\033[1mrives\033[0m  | 1 2 | 1 | -"
 
     student3 = {
         'username': 'rives',
@@ -127,7 +127,7 @@ def test_get_nums():
                 {'number': 10, 'status': 'success'},
             ]
         }
-    ]) == (9, 10)
+    ]) == (9, 10, 0)
 
     assert get_nums([
         {
@@ -136,7 +136,7 @@ def test_get_nums():
             'homeworks': [],
             'labs': [],
         }
-    ]) == (0, 0)
+    ]) == (0, 0, 0)
 
     assert get_nums([
         {
@@ -147,7 +147,7 @@ def test_get_nums():
             ],
             'labs': [],
         }
-    ]) == (1, 0)
+    ]) == (1, 0, 0)
 
     assert get_nums([
         {
@@ -158,7 +158,7 @@ def test_get_nums():
                 {'number': 1, 'status': 'success'},
             ],
         }
-    ]) == (0, 1)
+    ]) == (0, 1, 0)
 
 
 def test_sort_by_hw_count():
@@ -255,17 +255,17 @@ def test_tabulate():
     ]
 
     assert tabulate(students) == dedent("""
-    USER    | 1 2 3 4 | 1 | 1
-    --------+---------+---+--
-    rives1  | 1 2 - - | 1 | -
-    rives2  | 1 2 3 - | - | -
-    rives3  | 1 2 3 4 | - | -
+    USER    | 1 2 3 4 | 1 | 
+    --------+---------+---+-
+    rives1  | 1 2 - - | 1 | 
+    rives2  | 1 2 3 - | - | 
+    rives3  | 1 2 3 4 | - | 
     """).strip()
 
     assert tabulate(students, sort_by='count') == dedent("""
-    USER    | 1 2 3 4 | 1 | 1
-    --------+---------+---+--
-    rives3  | 1 2 3 4 | - | -
-    rives2  | 1 2 3 - | - | -
-    rives1  | 1 2 - - | 1 | -
+    USER    | 1 2 3 4 | 1 | 
+    --------+---------+---+-
+    rives3  | 1 2 3 4 | - | 
+    rives2  | 1 2 3 - | - | 
+    rives1  | 1 2 - - | 1 | 
     """).strip()

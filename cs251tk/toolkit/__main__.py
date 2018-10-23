@@ -80,7 +80,8 @@ def main():
             except FileNotFoundError:
                 if not quiet or not no_update:
                     print("Optional add-on program CheckDates not installed.\n"
-                          "Install to see first commit dates for assignments.")
+                          "Install to see first commit dates for assignments.",
+                         file=sys.stderr)
     except FileNotFoundError:
         print('data directory not found', file=sys.stderr)
         sys.exit(1)

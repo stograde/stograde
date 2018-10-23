@@ -23,7 +23,8 @@ def test_cs251tk_table(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("USER      | 1 | 1 | 1\n"
+    assert out == textwrap.dedent("\n"
+                                  "USER      | 1 | 1 | 1\n"
                                   "----------+---+---+--\n"
                                   "rives     | - | - | -\n"
                                   "student2  | 1 | 1 | -\n")
@@ -64,7 +65,8 @@ def test_cs251tk_record(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("USER      | 1 | 1 | 1\n"
+    assert out == textwrap.dedent("\n"
+                                  "USER      | 1 | 1 | 1\n"
                                   "----------+---+---+--\n"
                                   "rives     | - | - | -\n"
                                   "student2  | 1 | 1 | -\n")

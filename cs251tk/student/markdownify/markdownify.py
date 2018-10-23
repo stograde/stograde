@@ -12,12 +12,12 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact):
     """Run a spec against the current folder"""
     try:
         """Try to run the CheckDates program. If not installed, move on."""
-
-        with chdir(os.path.join(basedir, 'data')):
-            _, res, _ = run([os.path.join(basedir, 'data', 'CheckDates'), '-t', '-s', username, '-a', spec_id])
-        if res[:9] == "[Errno 2]":
+        try:
+            with chdir(os.path.join(basedir, 'data')):
+                _, res, _ = run([os.path.join(basedir, 'data', 'CheckDates'), '-t', '-s', username, '-a', spec_id])
+        except IOError:
             res = ""
-        #     print(res)
+
         cwd = os.getcwd()
         results = {
             'spec': spec_id,

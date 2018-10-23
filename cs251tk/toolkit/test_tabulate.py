@@ -54,7 +54,7 @@ def test_columnize():
     }
 
     assert columnize(student, 'rives', 2, 1, 1) == "rives  | 1 2 | 1 | -"
-    assert columnize(student, 'long_username', 2, 1, 1) == "rives          | 1 2 | 1 |"
+    assert columnize(student, 'long_username', 2, 1, 1) == "rives          | 1 2 | 1 | -"
     assert columnize(student, 'rives', 5, 1, 1) == "rives  | 1 2 - - - | 1 | -"
     assert columnize(student, 'rives', 2, 5, 1) == "rives  | 1 2 | 1 - - - - | -"
 
@@ -250,22 +250,25 @@ def test_tabulate():
             ],
             'labs': [
                 {'number': 1, 'status': 'success'},
+            ],
+            'worksheets': [
+                {'number': 1, 'status': 'success'},
             ]
         },
     ]
 
     assert tabulate(students) == dedent("""
-    USER    | 1 2 3 4 | 1 | 
-    --------+---------+---+-
-    rives1  | 1 2 - - | 1 | 
-    rives2  | 1 2 3 - | - | 
-    rives3  | 1 2 3 4 | - | 
+    USER    | 1 2 3 4 | 1 | 1
+    --------+---------+---+--
+    rives1  | 1 2 - - | 1 | 1
+    rives2  | 1 2 3 - | - | -
+    rives3  | 1 2 3 4 | - | -
     """).strip()
 
     assert tabulate(students, sort_by='count') == dedent("""
-    USER    | 1 2 3 4 | 1 | 
-    --------+---------+---+-
-    rives3  | 1 2 3 4 | - | 
-    rives2  | 1 2 3 - | - | 
-    rives1  | 1 2 - - | 1 | 
+    USER    | 1 2 3 4 | 1 | 1
+    --------+---------+---+--
+    rives3  | 1 2 3 4 | - | -
+    rives2  | 1 2 3 - | - | -
+    rives1  | 1 2 - - | 1 | 1
     """).strip()

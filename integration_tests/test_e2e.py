@@ -29,7 +29,8 @@ def test_cs251tk_table(datafiles, capsys):
                                   "USER      | 1 | 1 | 1"
                                   "----------+---+---+--"
                                   "rives     | - | - | -"
-                                  "student2  | 1 | 1 | -")
+                                  "student2  | 1 | 1 | -"
+                                  "")
 
     sys.argv = argv
 
@@ -73,7 +74,8 @@ def test_cs251tk_record(datafiles, capsys):
                                   "USER      | 1 | 1 | 1"
                                   "----------+---+---+--"
                                   "rives     | - | - | -"
-                                  "student2  | 1 | 1 | -")
+                                  "student2  | 1 | 1 | -"
+                                  "")
 
     assert (datafiles / 'logs' / 'log-hw1.md').isfile()
 

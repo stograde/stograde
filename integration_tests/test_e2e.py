@@ -23,14 +23,13 @@ def test_cs251tk_table(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("Optional add-on program CheckDates not installed."
-                                  "Install to see first commit dates for assignments."
-                                  ""
-                                  "USER      | 1 | 1 | 1"
-                                  "----------+---+---+--"
-                                  "rives     | - | - | -"
-                                  "student2  | 1 | 1 | -"
-                                  "")
+    assert out == textwrap.dedent("Optional add-on program CheckDates not installed.\n"
+                                  "Install to see first commit dates for assignments.\n"
+                                  "\n"
+                                  "USER      | 1 | 1 | 1\n"
+                                  "----------+---+---+--\n"
+                                  "rives     | - | - | -\n"
+                                  "student2  | 1 | 1 | -\n")
 
     sys.argv = argv
 
@@ -68,14 +67,13 @@ def test_cs251tk_record(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("Optional add-on program CheckDates not installed."
-                                  "Install to see first commit dates for assignments."
-                                  ""
-                                  "USER      | 1 | 1 | 1"
-                                  "----------+---+---+--"
-                                  "rives     | - | - | -"
-                                  "student2  | 1 | 1 | -"
-                                  "")
+    assert out == textwrap.dedent("Optional add-on program CheckDates not installed.\n"
+                                  "Install to see first commit dates for assignments.\n"
+                                  "\n"
+                                  "USER      | 1 | 1 | 1\n"
+                                  "----------+---+---+--\n"
+                                  "rives     | - | - | -\n"
+                                  "student2  | 1 | 1 | -\n")
 
     assert (datafiles / 'logs' / 'log-hw1.md').isfile()
 

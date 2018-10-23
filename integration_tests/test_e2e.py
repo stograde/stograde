@@ -23,13 +23,13 @@ def test_cs251tk_table(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("""Optional add-on program CheckDates not installed.\nInstall to see first commit dates for assignments.
-    
-    USER      | 1 | 1 | 1
-    ----------+---+---+--
-    rives     | - | - | -
-    student2  | 1 | 1 | -
-    """)
+    assert out == textwrap.dedent("Optional add-on program CheckDates not installed."
+                                  "Install to see first commit dates for assignments."
+                                  ""
+                                  "USER      | 1 | 1 | 1"
+                                  "----------+---+---+--"
+                                  "rives     | - | - | -"
+                                  "student2  | 1 | 1 | -")
 
     sys.argv = argv
 
@@ -67,13 +67,13 @@ def test_cs251tk_record(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == textwrap.dedent("""Optional add-on program CheckDates not installed.\nInstall to see first commit dates for assignments.
-
-    USER      | 1 | 1 | 1
-    ----------+---+---+--
-    rives     | - | - | -
-    student2  | 1 | 1 | -
-    """)
+    assert out == textwrap.dedent("Optional add-on program CheckDates not installed."
+                                  "Install to see first commit dates for assignments."
+                                  ""
+                                  "USER      | 1 | 1 | 1"
+                                  "----------+---+---+--"
+                                  "rives     | - | - | -"
+                                  "student2  | 1 | 1 | -")
 
     assert (datafiles / 'logs' / 'log-hw1.md').isfile()
 

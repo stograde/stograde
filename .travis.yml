@@ -17,7 +17,7 @@ cache:
 jobs:
   include:
     - stage: test
-      python: 3.4
+      python: 3.5
       install: pip install tox tox-travis
       script: tox
 

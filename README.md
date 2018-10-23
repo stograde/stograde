@@ -20,7 +20,7 @@ Prerequisites: macOS/Linux/Windows Linux Subsystem, Python 3.5+, git.
 $ mkdir cs251/
 $ cd cs251
 ```
-*(For Hardware Design use cs241 for your directory name)*
+> For Hardware Design, use `cs241` for your directory name.
 
 You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 

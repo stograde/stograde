@@ -5,7 +5,7 @@ from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
 from ...common import chdir
-from cs251tk.common import run
+from ...common import run, chdir
 
 
 def markdownify(spec_id, *, username, spec, basedir, debug, interact):

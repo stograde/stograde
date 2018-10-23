@@ -20,7 +20,7 @@ Prerequisites: macOS/Linux/Windows Linux Subsystem, Python 3.5+, git.
 $ mkdir cs251/
 $ cd cs251
 ```
-*(For Hardware Design use cs241 for your directory name)*
+> For Hardware Design, use `cs241` for your directory name.
 
 You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
@@ -144,7 +144,7 @@ The toolkit also takes a `--record` parameter. In broad strokes, `--record` does
 
 If you're running this on something other than a lab machine, you'll want to have `gcc` installed.
 
-> The specs for Hardware Design include a program called CheckDates that adds the date and time of the first commit for each assignment. This is not required, but if you want to include it, copy the `source` directory in the [Hardware Design Specs](https://github.com/maxnz/cs241-specs) into `data/source`.
+> The specs for Hardware Design include a program called CheckDates that adds the date and time of the first commit for each assignment. This is not required, but if you want to include it, copy the `source` directory in the [Hardware Design Specs](https://github.com/StoDevX/cs241-specs) into `data/source`.
 
 ###### In a bit more detail
 `--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` folder.

@@ -17,18 +17,18 @@ cache:
 jobs:
   include:
     - stage: test
-      python: 3.5
+      python: 3.4
       install: pip install tox tox-travis
       script: tox
 
     - stage: test
-      python: 3.6
+      python: 3.7
       install: pip install tox tox-travis coveralls
       script: tox
       after_success: coveralls
 
     - stage: deploy
-      python: 3.6
+      python: 3.7
       script: skip
       deploy:
         provider: pypi
@@ -37,7 +37,7 @@ jobs:
         on: { tags: true }
 
     - stage: deploy
-      python: 3.6
+      python: 3.7
       services:
         - docker
       env:

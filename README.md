@@ -45,11 +45,11 @@ $ # make sure you're still in the cs251 folder
 $ git clone https://github.com/StoDevX/cs251-specs data
 ```
 
-###### Hardware design (the link will likely change later)
+###### Hardware Design
 
 ```console
 $ # make sure you're still in the cs241 folder
-$ git clone https://github.com/maxnz/cs241-specs data
+$ git clone https://github.com/StoDevX/cs241-specs data
 ```
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample input, they should go under a `supporting/hw#` folder that matches the assignment name.

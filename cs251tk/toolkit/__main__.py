@@ -85,7 +85,7 @@ def main():
                           "Install to see first commit dates for assignments.")
 
     except FileNotFoundError:
-        print('data directory not found')
+        print('data directory not found', file=sys.stderr)
         sys.exit(1)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'))

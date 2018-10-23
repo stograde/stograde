@@ -80,8 +80,9 @@ def main():
                 with chdir(os.path.join(basedir, 'data', 'source')):
                     run('make')
             except FileNotFoundError:
-                print("Optional add-on program CheckDates not installed.\n"
-                      "Install to see first commit dates for assignments.")
+                if not quiet or not no_update:
+                    print("Optional add-on program CheckDates not installed.\n"
+                          "Install to see first commit dates for assignments.")
 
     except FileNotFoundError:
         print('data directory not found')

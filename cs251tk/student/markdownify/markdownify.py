@@ -4,7 +4,6 @@ import os
 from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
-from ...common import chdir
 from ...common import run, chdir
 
 

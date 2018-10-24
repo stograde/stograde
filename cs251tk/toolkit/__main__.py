@@ -38,7 +38,6 @@ def make_progress_bar(students, no_progress=False):
 
 def main():
     basedir = getcwd()
-    # print(basedir)
     args, usernames, assignments, stogit_url = process_args()
     clean = args['clean']
     date = args['date']

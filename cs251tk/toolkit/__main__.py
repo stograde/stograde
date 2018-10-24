@@ -62,9 +62,9 @@ def main():
     if new_version:
         print((
             'v{} is available: you have v{}. '
-            'Try "pip3 install --no-cache --user --update cs251tk" '
+            'Try "pip3 install --no-cache --user --upgrade cs251tk" '
             'to update.'
-        ).format(current_version, new_version))
+        ).format(new_version, current_version))
 
     logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 

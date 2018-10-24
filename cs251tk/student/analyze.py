@@ -17,12 +17,14 @@ def analyze(student, specs, check_for_branches):
 
     homework_list = [result for result in results.values() if result['kind'] == 'homework']
     lab_list = [result for result in results.values() if result['kind'] == 'lab']
+    worksheet_list = [result for result in results.values() if result['kind'] == 'worksheet']
 
     return {
         'username': student,
         'unmerged_branches': unmerged_branches,
         'homeworks': homework_list,
         'labs': lab_list,
+        'worksheets': worksheet_list,
     }
 
 
@@ -61,6 +63,8 @@ def parse_assignment_name(name):
         kind = 'homework'
     elif kind == 'lab':
         kind = 'lab'
+    elif kind == 'ws':
+        kind = 'worksheet'
     num = int(matches[1])
     return kind, num
 

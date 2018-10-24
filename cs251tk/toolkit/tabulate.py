@@ -58,7 +58,7 @@ def find_columns(num):
     return ' '.join([str(i) for i in range(1, num + 1)])
 
 
-def columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=False):
+def columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num, highlight_partials=False):
     """Build the data for each row of the information table"""
     name = '{0:<{1}}'.format(student['username'], len(longest_user))
 
@@ -67,6 +67,7 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partial
 
     homework_row = concat(student.get('homeworks', []), max_hwk_num, highlight_partials)
     lab_row = concat(student.get('labs', []), max_lab_num, highlight_partials)
+    worksheet_row = concat(student.get('worksheets', []), max_wst_num, highlight_partials)
 
     if 'error' in student:
         return '{name}  {sep} {err}'.format(
@@ -74,22 +75,25 @@ def columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partial
             sep=COL,
             err=student['error'])
 
-    return '{name}  {sep} {hws} {sep} {labs}'.format(
+    return '{name}  {sep} {hws} {sep} {labs} {sep} {wkshts}'.format(
         name=name,
         hws=homework_row,
         labs=lab_row,
+        wkshts=worksheet_row,
         sep=COL)
 
 
 def get_nums(students):
-    """Given a list of students, return the higest hw and lab number among them"""
+    """Given a list of students, return the highest hw and lab number among them"""
     homework_nums = [hw['number'] for s in students for hw in s.get('homeworks', [])]
     lab_nums = [lab['number'] for s in students for lab in s.get('labs', [])]
+    worksheet_nums = [lab['number'] for s in students for lab in s.get('worksheets', [])]
 
     max_hwk_num = max(homework_nums, default=0)
     max_lab_num = max(lab_nums, default=0)
+    max_worksheet_num = max(worksheet_nums, default=0)
 
-    return max_hwk_num, max_lab_num
+    return max_hwk_num, max_lab_num, max_worksheet_num
 
 
 def tabulate(students, sort_by='name', highlight_partials=False):
@@ -100,14 +104,16 @@ def tabulate(students, sort_by='name', highlight_partials=False):
     longest_user = max(usernames, key=len)
 
     # build the header row of the table
-    max_hwk_num, max_lab_num = get_nums(students)
+    max_hwk_num, max_lab_num, max_wst_num = get_nums(students)
     header_hw_nums = find_columns(max_hwk_num)
     header_lab_nums = find_columns(max_lab_num)
-    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums}'.format(
+    header_wst_nums = find_columns(max_wst_num)
+    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums} {sep} {wstnums}'.format(
         name='USER',
         namesize=len(longest_user),
         hwnums=header_hw_nums,
         labnums=header_lab_nums,
+        wstnums=header_wst_nums,
         sep=COL)
 
     # build the header's bottom border
@@ -116,7 +122,9 @@ def tabulate(students, sort_by='name', highlight_partials=False):
         JOIN,
         ''.ljust(len(header_hw_nums) + 2, ROW),
         JOIN,
-        ''.ljust(len(header_lab_nums) + 1, ROW),
+        ''.ljust(len(header_lab_nums) + 2, ROW),
+        JOIN,
+        ''.ljust(len(header_wst_nums) + 1, ROW),
     ])
 
     # build the table body
@@ -127,7 +135,8 @@ def tabulate(students, sort_by='name', highlight_partials=False):
         sorter = sort_by_username
         should_reverse = False
 
-    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, highlight_partials=highlight_partials)
+    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num,
+                       highlight_partials=highlight_partials)
              for student in sorted(students, reverse=should_reverse, key=sorter)]
 
     # and make the table to return

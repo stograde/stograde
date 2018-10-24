@@ -13,13 +13,14 @@ See the ["Run the thing"](#run-the-thing) section for details.
 
 ## Getting Started
 
-Prerequisites: macOS/Linux, Python 3.5+, git.
+Prerequisites: macOS/Linux/Windows Linux Subsystem, Python 3.5+, git.
 
 ##### Make the folder
 ```console
 $ mkdir cs251/
 $ cd cs251
 ```
+> For Hardware Design, use `cs241` for your directory name.
 
 You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
@@ -37,9 +38,18 @@ The toolkit is distributed via `pip`, which is (more or less) Python's packaging
 
 ##### Grab the course specs
 
+###### Software Design
+
 ```console
 $ # make sure you're still in the cs251 folder
 $ git clone https://github.com/StoDevX/cs251-specs data
+```
+
+###### Hardware Design
+
+```console
+$ # make sure you're still in the cs241 folder
+$ git clone https://github.com/StoDevX/cs241-specs data
 ```
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample input, they should go under a `supporting/hw#` folder that matches the assignment name.
@@ -134,6 +144,7 @@ The toolkit also takes a `--record` parameter. In broad strokes, `--record` does
 
 If you're running this on something other than a lab machine, you'll want to have `gcc` installed.
 
+> The specs for Hardware Design include a program called CheckDates that adds the date and time of the first commit for each assignment. This is not required, but if you want to include it, copy the `source` directory in the [Hardware Design Specs](https://github.com/StoDevX/cs241-specs) into `data/source`.
 
 ###### In a bit more detail
 `--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` folder.
@@ -164,6 +175,7 @@ The toolkit then spits out the log into `logs/log-$ASSIGNMENT.md`, which will lo
 
 ```markdown
 # hw2 – rives
+First submission for HW2: 2/11/17 17:00:44
 
 Repository has unmerged branches:
   - remotes/origin/lab8

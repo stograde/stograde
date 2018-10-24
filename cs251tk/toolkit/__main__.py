@@ -5,7 +5,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 import os.path
 
-from ..common import chdir
+from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
 from .find_update import update_available
 from .process_student import process_student
@@ -38,7 +38,6 @@ def make_progress_bar(students, no_progress=False):
 
 def main():
     basedir = getcwd()
-
     args, usernames, assignments, stogit_url = process_args()
     clean = args['clean']
     date = args['date']
@@ -71,6 +70,21 @@ def main():
 
     if date:
         logging.debug('Checking out {}'.format(date))
+
+    try:
+        with chdir(os.path.join(basedir, 'data')):
+            try:
+                with chdir(os.path.join(basedir, 'data', 'source')):
+                    run('make')
+            except FileNotFoundError:
+                if not quiet or not no_update:
+                    print("Optional add-on program CheckDates not installed.\n"
+                          "Install to see first commit dates for assignments.\n",
+                          "See README for instructions",
+                          file=sys.stderr)
+    except FileNotFoundError:
+        print('data directory not found', file=sys.stderr)
+        sys.exit(1)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'))
     if not specs:

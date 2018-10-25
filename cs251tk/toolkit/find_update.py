@@ -13,6 +13,7 @@ def get_all_versions(pkg='cs251tk'):
         return []
     except requests.exceptions.Timeout:
         return []
+    
     # Remove the first and last bits
     page = re.sub(r'.*</h1>|<br/>.*', '', req.text)
     # Grab just the links from the page

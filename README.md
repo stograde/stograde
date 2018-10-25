@@ -33,7 +33,7 @@ $ pip3 install --user cs251tk
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder, instead.
 
-> When you need to update the toolkit, use `pip3 install --user --no-cache --update cs251tk`.
+> When you need to update the toolkit, use `pip3 install --user --no-cache --upgrade cs251tk`.
 
 
 ##### Grab the course specs

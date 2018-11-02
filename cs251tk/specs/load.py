@@ -3,7 +3,6 @@ from glob import iglob
 import json
 import os
 import shutil
-import sys
 
 from .cache import cache_specs
 from .dirs import get_specs_dir
@@ -47,10 +46,9 @@ def load_spec(filename, basedir):
     name = os.path.splitext(os.path.basename(filename))[0]
     assignment = loaded_spec['assignment']
 
+    # Ask if user wants to re-cache specs to fix discrepancy
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
-        # warning("Re-caching specs\n")
-        # print(file=sys.stderr)
         recache = input("Re-cache specs? (Y/N)")
         if recache == "Y" or recache == "y":
             shutil.rmtree(os.path.join(basedir, '_cache'))

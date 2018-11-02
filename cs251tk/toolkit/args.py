@@ -156,7 +156,9 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
     args = vars(parser.parse_args())
+
     debug = args['debug']
+
     if args['version']:
         print('version', version)
         sys.exit(0)

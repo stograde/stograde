@@ -27,26 +27,21 @@ def process_student(
         remove(student)
     if debug:
         logging.debug("Cloning    {}'s repository".format(student))
-        # logging.debug("{} \tClone".format(student))
     clone_student(student, baseurl=stogit_url)
 
     try:
         if debug:
             logging.debug("Stashing   {}'s repository".format(student))
-            # logging.debug("{} \tStash".format(student))
         stash(student, no_update=no_update)
 
         if debug:
             logging.debug("Pulling    {}'s repository".format(student))
-            # logging.debug("{} \tPull")
         pull(student, no_update=no_update)
 
         if debug and date:
             logging.debug("Checking out commits in {}'s repository before {}".format(student, date))
         checkout_date(student, date=date)
 
-        # if debug:
-        #     logging.debug("Recording  {}'s assignments".format(student))
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
         if debug:
             logging.debug("Analyzing  {}'s assignments".format(student))

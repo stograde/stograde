@@ -37,7 +37,7 @@ setup(
     keywords='stolaf course-tooling',
     install_requires=[
         'PyYAML == 3.*',
-        'requests == 2.*',
+        'requests >= 2.20.*',
         'termcolor == 1.*',
         'natsort == 5.0.*',
         'appdirs == 1.4.*',

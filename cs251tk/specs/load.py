@@ -50,7 +50,7 @@ def load_spec(filename, basedir):
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
         recache = input("Re-cache specs? (Y/N)")
-        if recache == "Y" or recache == "y":
+        if recache and recache.lower()[0] == "y":
             shutil.rmtree(os.path.join(basedir, '_cache'))
             cache_specs(basedir)
 

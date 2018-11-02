@@ -32,7 +32,6 @@ def load_some_specs(idents, *, basedir=get_specs_dir()):
     wanted_spec_files = [os.path.join(basedir, '_cache', '{}.json'.format(ident)) for ident in idents]
     all_spec_files = iglob(os.path.join(basedir, '_cache', '*.json'))
     loadable_spec_files = set(all_spec_files).intersection(wanted_spec_files)
-    print(loadable_spec_files)
 
     # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
     # turn that into the {name: spec} pairs of a dictionary for us

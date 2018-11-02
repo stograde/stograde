@@ -32,8 +32,6 @@ def update_available(skip_update_check=False):
     if skip_update_check or not conf.needs_update_check():
         return version, None
 
-    conf.set_last_update_check()
-
     all_versions = get_all_versions()
 
     if version not in all_versions:

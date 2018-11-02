@@ -2,6 +2,7 @@ from logging import warning
 from glob import iglob
 import json
 import os
+import shutil
 
 from .cache import cache_specs
 from .dirs import get_specs_dir
@@ -19,7 +20,7 @@ def load_all_specs(*, basedir=get_specs_dir()):
 
     # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
     # turn that into the {name: spec} pairs of a dictionary for us
-    return dict([load_spec(filename) for filename in spec_files])
+    return dict([load_spec(filename, basedir) for filename in spec_files])
 
 
 def load_some_specs(idents, *, basedir=get_specs_dir()):
@@ -37,14 +38,19 @@ def load_some_specs(idents, *, basedir=get_specs_dir()):
     return dict([load_spec(filename) for filename in loadable_spec_files])
 
 
-def load_spec(filename):
+def load_spec(filename, basedir):
     with open(filename, 'r', encoding='utf-8') as specfile:
         loaded_spec = json.load(specfile)
 
     name = os.path.splitext(os.path.basename(filename))[0]
     assignment = loaded_spec['assignment']
 
+    # Ask if user wants to re-cache specs to fix discrepancy
     if name != assignment:
         warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
+        recache = input("Re-cache specs? (Y/N)")
+        if recache and recache.lower()[0] == "y":
+            shutil.rmtree(os.path.join(basedir, '_cache'))
+            cache_specs(basedir)
 
     return assignment, loaded_spec

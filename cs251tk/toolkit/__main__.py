@@ -125,6 +125,7 @@ def main():
         else:
             for student in usernames:
                 if debug:
+                    print(file=sys.stderr)
                     logging.debug('Processing {}'.format(student))
                 else:
                     print('Processing {}'.format(student))

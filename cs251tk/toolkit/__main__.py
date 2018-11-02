@@ -4,6 +4,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 import os.path
+import logging
 
 from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
@@ -123,7 +124,10 @@ def main():
 
         else:
             for student in usernames:
-                print('processing {}'.format(student))
+                if debug:
+                    logging.debug('Processing {}'.format(student))
+                else:
+                    print('Processing {}'.format(student))
                 result, recording = single(student)
                 results.append(result)
                 records.extend(recording)

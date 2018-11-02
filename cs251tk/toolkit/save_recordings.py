@@ -1,4 +1,5 @@
 import os
+import logging
 from logging import warning
 
 from cs251tk.formatters import format_collected_data, markdown, gist
@@ -46,6 +47,8 @@ def save_recordings(records, debug=False):
                                     debug=debug)
 
     for assignment, content in results.items():
+        if debug:
+            logging.debug("Saving recording for {}".format(assignment))
         record_recording_to_disk(content, assignment)
 
 
@@ -58,6 +61,8 @@ def gist_recordings(records, table, debug=False):
                                     debug=debug)
 
     for assignment, content in results.items():
+        if debug:
+            logging.debug("Saving recording for {}".format(assignment))
         # clean up the table and make it plain ascii
         table = asciiify(table)
         url = send_recording_to_gist(table, content, assignment)

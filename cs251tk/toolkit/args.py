@@ -14,7 +14,6 @@ from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 
-debug = False
 
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
@@ -157,7 +156,6 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
     args = vars(parser.parse_args())
-    global debug
     debug = args['debug']
     if args['version']:
         print('version', version)
@@ -175,12 +173,13 @@ def process_args():
         print_assignments(assignments)
         print(file=sys.stderr)
         print("stogit URL: " + stogit, file=sys.stderr)
+        print(file=sys.stderr)
 
     return args, students, assignments, stogit
 
 
 def print_args(args):
-    print("Arguments:", file=sys.stderr)
+    print("Command Line Arguments:", file=sys.stderr)
     print("input_items:\t\t" + str(args['input_items']), file=sys.stderr)
     print("version:\t\t" + str(args['version']), file=sys.stderr)
     print("debug:\t\t\t" + str(args['debug']), file=sys.stderr)

@@ -25,8 +25,7 @@ def process_student(
 ):
     if clean:
         remove(student)
-    if debug:
-        logging.debug("Cloning    {}'s repository".format(student))
+    logging.debug("Cloning    {}'s repository".format(student))
     clone_student(student, baseurl=stogit_url)
 
     try:

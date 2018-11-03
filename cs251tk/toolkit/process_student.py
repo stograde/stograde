@@ -30,21 +30,18 @@ def process_student(
     clone_student(student, baseurl=stogit_url)
 
     try:
-        if debug:
-            logging.debug("Stashing   {}'s repository".format(student))
+        logging.debug("Stashing   {}'s repository".format(student))
         stash(student, no_update=no_update)
 
-        if debug:
-            logging.debug("Pulling    {}'s repository".format(student))
+        logging.debug("Pulling    {}'s repository".format(student))
         pull(student, no_update=no_update)
 
-        if debug and date:
-            logging.debug("Checking out commits in {}'s repository before {}".format(student, date))
+        logging.debug("Checking out commits in {}'s repository before {}".format(student, date))
         checkout_date(student, date=date)
 
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
-        if debug:
-            logging.debug("Analyzing  {}'s assignments".format(student))
+
+        logging.debug("Analyzing  {}'s assignments".format(student))
         analysis = analyze(student, specs, check_for_branches=not no_check)
 
         if date:

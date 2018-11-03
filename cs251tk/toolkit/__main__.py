@@ -124,10 +124,8 @@ def main():
 
         else:
             for student in usernames:
-                if debug:
-                    print(file=sys.stderr)
-                    logging.debug('Processing {}'.format(student))
-                else:
+                logging.debug('\nProcessing {}'.format(student))
+                if not debug:
                     print('Processing {}'.format(student))
                 result, recording = single(student)
                 results.append(result)

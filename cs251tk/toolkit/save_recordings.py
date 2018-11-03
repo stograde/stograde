@@ -47,8 +47,7 @@ def save_recordings(records, debug=False):
                                     debug=debug)
 
     for assignment, content in results.items():
-        if debug:
-            logging.debug("Saving recording for {}".format(assignment))
+        logging.debug("Saving recording for {}".format(assignment))
         record_recording_to_disk(content, assignment)
 
 
@@ -61,8 +60,7 @@ def gist_recordings(records, table, debug=False):
                                     debug=debug)
 
     for assignment, content in results.items():
-        if debug:
-            logging.debug("Saving recording for {}".format(assignment))
+        logging.debug("Saving recording for {}".format(assignment))
 
         # clean up the table and make it plain ascii
         table = asciiify(table)

@@ -63,7 +63,7 @@ def gist_recordings(records, table, debug=False):
     for assignment, content in results.items():
         if debug:
             logging.debug("Saving recording for {}".format(assignment))
-        
+
         # clean up the table and make it plain ascii
         table = asciiify(table)
         url = send_recording_to_gist(table, content, assignment)

@@ -207,26 +207,28 @@ def print_args(args):
 
 def print_assignments(args):
     print("Assignments:", file=sys.stderr)
-    count = 0
+
+    line = ""
     for arg in args:
-        if count % 5 == 4:
-            print(arg, file=sys.stderr)
-        else:
-            print(arg, end="", file=sys.stderr)
-            for i in range(len(arg), 8):
-                print(end=" ", file=sys.stderr)
-        count += 1
+        line += arg
+        for i in range(len(arg), 10):
+            line += " "
+        if arg.index() % 5 == 4:
+            print(line, file=sys.stderr)
+            line = ""
+    print(line, file=sys.stderr)
     print(file=sys.stderr)
 
 
 def print_students(students):
     print("Students:", file=sys.stderr)
-    count = 0
+
+    line = ""
     for student in students:
-        if count % 5 == 4:
-            print(student, file=sys.stderr)
-        else:
-            print(student, end="", file=sys.stderr)
-            for i in range(student.__len__(), 10):
-                print(end=" ", file=sys.stderr)
-        count += 1
+        line += student
+        for i in range(len(student), 10):
+            line += " "
+        if students.index(student) % 5 == 4:
+            print(line, file=sys.stderr)
+            line = ""
+    print(line, file=sys.stderr)

@@ -14,7 +14,6 @@ from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 
-debug = False
 
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
@@ -157,8 +156,7 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
     args = vars(parser.parse_args())
-    global debug
-    debug = args['debug']
+
     if args['version']:
         print('version', version)
         sys.exit(0)
@@ -167,65 +165,4 @@ def process_args():
     assignments = get_assignments_from_args(**args)
     stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
-    if debug:
-        print_args(args)
-        print(file=sys.stderr)
-        print_students(students)
-        print(file=sys.stderr)
-        print_assignments(assignments)
-        print(file=sys.stderr)
-        print("stogit URL: " + stogit, file=sys.stderr)
-
     return args, students, assignments, stogit
-
-
-def print_args(args):
-    print("Arguments:", file=sys.stderr)
-    print("input_items:\t\t" + str(args['input_items']), file=sys.stderr)
-    print("version:\t\t" + str(args['version']), file=sys.stderr)
-    print("debug:\t\t\t" + str(args['debug']), file=sys.stderr)
-    print("skip_update_check:\t" + str(args['skip_update_check']), file=sys.stderr)
-    print("course:\t\t\t" + str(args['course']), file=sys.stderr)
-    print("students:\t\t" + str(args['students']), file=sys.stderr)
-    print("sections:\t\t" + str(args['sections']), file=sys.stderr)
-    print("all_sections:\t\t" + str(args['all_sections']), file=sys.stderr)
-    print("quiet:\t\t\t" + str(args['quiet']), file=sys.stderr)
-    print("no_progress:\t\t" + str(args['no_progress']), file=sys.stderr)
-    print("workers:\t\t" + str(args['workers']), file=sys.stderr)
-    print("sort_by:\t\t" + str(args['sort_by']), file=sys.stderr)
-    print("highlight_partials:\t" + str(args['highlight_partials']), file=sys.stderr)
-    print("clean:\t\t\t" + str(args['clean']), file=sys.stderr)
-    print("no_update:\t\t" + str(args['no_update']), file=sys.stderr)
-    print("stogit:\t\t\t" + str(args['stogit']), file=sys.stderr)
-    print("date:\t\t\t" + str(args['date']), file=sys.stderr)
-    print("no_check:\t\t" + str(args['no_check']), file=sys.stderr)
-    print("to_record:\t\t" + str(args['to_record']), file=sys.stderr)
-    print("gist:\t\t\t" + str(args['gist']), file=sys.stderr)
-    print("interact:\t\t" + str(args['interact']), file=sys.stderr)
-
-
-def print_assignments(args):
-    print("Assignments:", file=sys.stderr)
-    count = 0
-    for arg in args:
-        if count % 5 == 4:
-            print(arg, file=sys.stderr)
-        else:
-            print(arg, end="", file=sys.stderr)
-            for i in range(arg.__len__(), 8):
-                print(end=" ", file=sys.stderr)
-        count += 1
-    print(file=sys.stderr)
-
-
-def print_students(students):
-    print("Students:", file=sys.stderr)
-    count = 0
-    for student in students:
-        if count % 5 == 4:
-            print(student, file=sys.stderr)
-        else:
-            print(student, end="", file=sys.stderr)
-            for i in range(student.__len__(), 10):
-                print(end=" ", file=sys.stderr)
-        count += 1

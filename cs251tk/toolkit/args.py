@@ -213,7 +213,7 @@ def print_assignments(args):
         line += arg
         for i in range(len(arg), 10):
             line += " "
-        if arg.index() % 5 == 4:
+        if args.index(arg) % 5 == 4:
             print(line, file=sys.stderr)
             line = ""
     print(line, file=sys.stderr)

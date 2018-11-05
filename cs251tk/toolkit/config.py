@@ -32,7 +32,9 @@ class Config:
         return datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
 
     def set_last_update_check(self):
-        return self._config.set('general', 'last_update_check', str(datetime.now()))
+        self._config.set('general', 'last_update_check', str(datetime.now()))
+        with open(self._filename, 'w') as outfile:
+            self._config.write(outfile)
 
     def needs_update_check(self):
         return self.get_last_update_check() < datetime.now() - timedelta(minutes=15)

@@ -213,7 +213,7 @@ def print_assignments(args):
             print(arg, file=sys.stderr)
         else:
             print(arg, end="", file=sys.stderr)
-            for i in range(arg.__len__(), 8):
+            for i in range(len(arg), 8):
                 print(end=" ", file=sys.stderr)
         count += 1
     print(file=sys.stderr)

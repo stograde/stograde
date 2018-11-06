@@ -23,10 +23,9 @@ def load_all_specs(*, basedir=get_specs_dir(), skip_update_check=True):
             _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
 
         if res != '':
-            pull = input('Spec updates found. Pull new specs? (Y/N)')
-            if pull and pull.lower()[0] == "y":
-                with chdir(basedir):
-                    run(['git', 'pull', 'origin', 'master'])
+            print("Spec updates found - Updating", file=sys.stderr)
+            with chdir(basedir):
+                run(['git', 'pull', 'origin', 'master'])
 
     # the repo has a /specs folder
     basedir = os.path.join(basedir, 'specs')

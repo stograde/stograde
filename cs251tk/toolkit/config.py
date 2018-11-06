@@ -42,8 +42,4 @@ class Config:
             self._config.write(outfile)
 
 
-
-
-
-
 conf = Config()

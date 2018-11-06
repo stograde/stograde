@@ -1,3 +1,4 @@
+import sys
 from logging import warning
 from glob import iglob
 import json
@@ -9,18 +10,18 @@ from .cache import cache_specs
 from .dirs import get_specs_dir
 
 
-def load_all_specs(*, basedir=get_specs_dir()):
+def load_all_specs(*, basedir=get_specs_dir(), skip_update_check=True):
     os.makedirs(basedir, exist_ok=True)
 
     with chdir(basedir):
         res, _, _ = run(['git', 'fetch', 'origin'])
 
         if res != 'success':
-            print("Error fetching specs")
+            print("Error fetching specs", file=sys.stderr)
 
         _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
 
-    if res != '':
+    if res != '' and not skip_update_check:
         pull = input('Spec updates found. Pull new specs? (Y/N)')
         if pull and pull.lower()[0] == "y":
             with chdir(basedir):

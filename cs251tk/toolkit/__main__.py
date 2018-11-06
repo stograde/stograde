@@ -90,7 +90,7 @@ def main():
         else:
             sys.exit(1)
 
-    specs = load_all_specs(basedir=os.path.join(basedir, 'data'))
+    specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

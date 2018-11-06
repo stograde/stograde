@@ -24,8 +24,7 @@ class Config:
         self._config['general'] = {}
         self.set_last_update_check()
         # save the file b/c it didn't exist
-        with open(self._filename, 'w') as outfile:
-            self._config.write(outfile)
+        self.save_config()
 
     def get_last_update_check(self):
         value = self._config.get('general', 'last_update_check', fallback=str(datetime.now()))
@@ -33,10 +32,18 @@ class Config:
 
     def set_last_update_check(self):
         self._config.set('general', 'last_update_check', str(datetime.now()))
-        with open(self._filename, 'w') as outfile:
-            self._config.write(outfile)
+        self.save_config()
 
     def needs_update_check(self):
         return self.get_last_update_check() < datetime.now() - timedelta(minutes=15)
+
+    def save_config(self):
+        with open(self._filename, 'w') as outfile:
+            self._config.write(outfile)
+
+
+
+
+
 
 conf = Config()

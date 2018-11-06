@@ -4,12 +4,27 @@ import json
 import os
 import shutil
 
+from ..common import chdir, run
 from .cache import cache_specs
 from .dirs import get_specs_dir
 
 
 def load_all_specs(*, basedir=get_specs_dir()):
     os.makedirs(basedir, exist_ok=True)
+
+    with chdir(basedir):
+        res, _, _ = run(['git', 'fetch', 'origin'])
+
+        if res != 'success':
+            print("Error fetching specs")
+
+        _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
+
+    if res != '':
+        pull = input('Spec updates found. Pull new specs? (Y/N)')
+        if pull and pull.lower()[0] == "y":
+            with chdir(basedir):
+                run(['git', 'pull', 'origin', 'master'])
 
     # the repo has a /specs folder
     basedir = os.path.join(basedir, 'specs')

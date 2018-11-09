@@ -16,11 +16,11 @@ def check_dates(spec_id, username, spec, basedir):
         for file in spec['files']:
 
             # Run a git log on each file with earliest commits listed first
-            _, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601',
-                             os.path.join(basedir, file['filename'])])
+            stat, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601',
+                               os.path.join(basedir, file['filename'])])
 
             # If we didn't get an error, add date to array
-            if res[0] is not 'f':
+            if stat is 'success':
                 # Parse the first line
                 dates.append(parse(res.splitlines()[0]))
 

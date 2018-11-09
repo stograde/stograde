@@ -24,8 +24,5 @@ def check_dates(spec_id, username, spec, basedir):
                 # Parse the first line
                 dates.append(parse(res.splitlines()[0]))
 
-    # Sort dates earliest to latest
-    dates.sort()
-
     # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
-    return dates[0].strftime("%x %X")
+    return min(dates).strftime("%x %X")

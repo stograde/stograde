@@ -24,7 +24,7 @@ def record(student, *, specs, to_record, basedir, debug, interact):
                 recording = {
                     'spec': one_to_record,
                     'student': student,
-                    'submit_date': "",
+                    'first_submit': "",
                     'warnings': {'no submission': True},
                 }
 

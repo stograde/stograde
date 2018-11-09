@@ -41,6 +41,7 @@ setup(
         'termcolor == 1.*',
         'natsort == 5.0.*',
         'appdirs == 1.4.*',
+        'python-dateutil'
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

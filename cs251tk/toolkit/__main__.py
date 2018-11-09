@@ -70,9 +70,7 @@ def main():
     if date:
         logging.debug('Checking out {}'.format(date))
 
-    try:
-        make_checkdates(basedir, quiet, no_update)
-    except FileNotFoundError:
+    if os.path.exists("data") is False:
         print('data directory not found', file=sys.stderr)
         download = input("Download specs? (Y/N)")
         if download and download.lower()[0] == "y":
@@ -86,7 +84,6 @@ def main():
             else:
                 print("Class not recognized", file=sys.stderr)
                 sys.exit(1)
-            make_checkdates(basedir, quiet, no_update)
         else:
             sys.exit(1)
 
@@ -142,16 +139,3 @@ def main():
         gist_recordings(records, table, debug=debug)
     else:
         save_recordings(records, debug=debug)
-
-
-def make_checkdates(basedir, quiet, no_update):
-    with chdir(os.path.join(basedir, 'data')):
-        try:
-            with chdir(os.path.join(basedir, 'data', 'source')):
-                run('make')
-        except FileNotFoundError:
-            if not quiet or not no_update:
-                print("Optional add-on program CheckDates not installed.\n"
-                      "Install to see first commit dates for assignments.\n",
-                      "See README for instructions",
-                      file=sys.stderr)

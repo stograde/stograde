@@ -1,13 +1,17 @@
 import os
-import datetime
 from dateutil.parser import parse
 from ...common import run, chdir
 
 
 def check_dates(spec_id, username, spec, basedir):
+    """ Port of the CheckDates program from C++
+        Finds the first submission date for an assignment
+        by comparing first commits for all files in the spec
+        and returning the earliest """
+
     basedir = os.path.join(basedir, 'students', username, spec_id)
     dates = []
-    
+
     with chdir(basedir):
         for file in spec['files']:
 

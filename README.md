@@ -144,8 +144,6 @@ The toolkit also takes a `--record` parameter. In broad strokes, `--record` does
 
 If you're running this on something other than a lab machine, you'll want to have `gcc` installed.
 
-> The specs for Hardware Design include a program called CheckDates that adds the date and time of the first commit for each assignment. This is not required, but if you want to include it, copy the `source` directory in the [Hardware Design Specs](https://github.com/StoDevX/cs241-specs) into `data/source`.
-
 ###### In a bit more detail
 `--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` folder.
 

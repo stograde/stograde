@@ -125,8 +125,6 @@ def main():
         else:
             for student in usernames:
                 logging.debug('Processing {}'.format(student))
-                if not debug:
-                    print('Processing {}'.format(student))
                 result, recording = single(student)
                 results.append(result)
                 records.extend(recording)

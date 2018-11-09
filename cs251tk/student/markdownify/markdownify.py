@@ -20,7 +20,8 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact):
         cwd = os.getcwd()
         results = {
             'spec': spec_id,
-            'student': username + '\n' + res,
+            'student': username + '\n',
+            'submit_date': res,
             'warnings': find_warnings(),
             'files': OrderedDict(),
         }

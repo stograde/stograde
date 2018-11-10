@@ -210,7 +210,7 @@ def print_assignments(args):
         for i in range(len(arg), 10):
             line += " "
         if args.index(arg) % 5 == 4:
-            print(line, file=sys.stderr)
+            debug(line)
             line = ""
     debug(line)
 

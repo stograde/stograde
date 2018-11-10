@@ -4,23 +4,21 @@ import os
 from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
-from ...common import run, chdir
+from .check_submit_date import check_dates
 
 
 def markdownify(spec_id, *, username, spec, basedir, debug, interact):
     """Run a spec against the current folder"""
     try:
-        """Try to run the CheckDates program. If not installed, move on."""
-        try:
-            with chdir(os.path.join(basedir, 'data')):
-                _, res, _ = run([os.path.join(basedir, 'data', 'CheckDates'), '-t', '-s', username, '-a', spec_id])
-        except IOError:
-            res = ""
+        first_submit = "First Submission for {}: {}".format(
+            spec_id,
+            check_dates(spec_id, username, spec, basedir))
 
         cwd = os.getcwd()
         results = {
             'spec': spec_id,
-            'student': username + '\n' + res,
+            'student': username,
+            'first_submit': first_submit,
             'warnings': find_warnings(),
             'files': OrderedDict(),
         }

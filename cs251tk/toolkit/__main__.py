@@ -70,22 +70,24 @@ def main():
     if date:
         logging.debug('Checking out {}'.format(date))
 
-    try:
-        with chdir(os.path.join(basedir, 'data')):
-            try:
-                with chdir(os.path.join(basedir, 'data', 'source')):
-                    run('make')
-            except FileNotFoundError:
-                if not quiet or not no_update:
-                    print("Optional add-on program CheckDates not installed.\n"
-                          "Install to see first commit dates for assignments.\n",
-                          "See README for instructions",
-                          file=sys.stderr)
-    except FileNotFoundError:
+    if os.path.exists("data") is False:
         print('data directory not found', file=sys.stderr)
-        sys.exit(1)
+        download = input("Download specs? (Y/N)")
+        if download and download.lower()[0] == "y":
+            repo = input("Which class? (SD/HD)")
+            if repo and repo.lower()[0] == 's':
+                with chdir(basedir):
+                    run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
+            elif repo and repo.lower()[0] == "h":
+                with chdir(basedir):
+                    run(['git', 'clone', 'https://github.com/StoDevX/cs241-specs.git', 'data'])
+            else:
+                print("Class not recognized", file=sys.stderr)
+                sys.exit(1)
+        else:
+            sys.exit(1)
 
-    specs = load_all_specs(basedir=os.path.join(basedir, 'data'))
+    specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:
         print('no specs loaded!')
         sys.exit(1)

@@ -1,15 +1,31 @@
+import sys
 from logging import warning
 from glob import iglob
 import json
 import os
 import shutil
 
+from ..common import chdir, run
 from .cache import cache_specs
 from .dirs import get_specs_dir
 
 
-def load_all_specs(*, basedir=get_specs_dir()):
+def load_all_specs(*, basedir=get_specs_dir(), skip_update_check=True):
     os.makedirs(basedir, exist_ok=True)
+
+    if not skip_update_check:
+        with chdir(basedir):
+            res, _, _ = run(['git', 'fetch', 'origin'])
+
+            if res != 'success':
+                print("Error fetching specs", file=sys.stderr)
+
+            _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
+
+        if res != '':
+            print("Spec updates found - Updating", file=sys.stderr)
+            with chdir(basedir):
+                run(['git', 'pull', 'origin', 'master'])
 
     # the repo has a /specs folder
     basedir = os.path.join(basedir, 'specs')

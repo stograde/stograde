@@ -158,7 +158,7 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
-    logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 
     if args['version']:
         print('version', version)

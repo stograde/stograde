@@ -4,8 +4,9 @@ import datetime
 import argparse
 import sys
 import re
+import logging
 from os import cpu_count, getenv
-from logging import warning
+from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
@@ -157,7 +158,7 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
-    debug = args['debug']
+    logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
 
     if args['version']:
         print('version', version)
@@ -167,46 +168,41 @@ def process_args():
     assignments = get_assignments_from_args(**args)
     stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
-    if debug:
-        print_args(args)
-        print(file=sys.stderr)
-        print_students(students)
-        print(file=sys.stderr)
-        print_assignments(assignments)
-        print(file=sys.stderr)
-        print("stogit URL: " + stogit, file=sys.stderr)
-        print(file=sys.stderr)
+    print_args(args)
+    print_students(students)
+    print_assignments(assignments)
+    debug("stogit URL: " + stogit)
 
     return args, students, assignments, stogit
 
 
 def print_args(args):
-    print("Command Line Arguments:", file=sys.stderr)
-    print("input_items:             " + str(args['input_items']), file=sys.stderr)
-    print("version:                 " + str(args['version']), file=sys.stderr)
-    print("debug:                   " + str(args['debug']), file=sys.stderr)
-    print("skip_update_check:       " + str(args['skip_update_check']), file=sys.stderr)
-    print("course:                  " + str(args['course']), file=sys.stderr)
-    print("students:                " + str(args['students']), file=sys.stderr)
-    print("sections:                " + str(args['sections']), file=sys.stderr)
-    print("all_sections:            " + str(args['all_sections']), file=sys.stderr)
-    print("quiet:                   " + str(args['quiet']), file=sys.stderr)
-    print("no_progress:             " + str(args['no_progress']), file=sys.stderr)
-    print("workers:                 " + str(args['workers']), file=sys.stderr)
-    print("sort_by:                 " + str(args['sort_by']), file=sys.stderr)
-    print("highlight_partials:      " + str(args['highlight_partials']), file=sys.stderr)
-    print("clean:                   " + str(args['clean']), file=sys.stderr)
-    print("no_update:               " + str(args['no_update']), file=sys.stderr)
-    print("stogit:                  " + str(args['stogit']), file=sys.stderr)
-    print("date:                    " + str(args['date']), file=sys.stderr)
-    print("no_check:                " + str(args['no_check']), file=sys.stderr)
-    print("to_record:               " + str(args['to_record']), file=sys.stderr)
-    print("gist:                    " + str(args['gist']), file=sys.stderr)
-    print("interact:                " + str(args['interact']), file=sys.stderr)
+    debug("Command Line Arguments:")
+    debug("input_items:             " + str(args['input_items']))
+    debug("version:                 " + str(args['version']))
+    debug("debug:                   " + str(args['debug']))
+    debug("skip_update_check:       " + str(args['skip_update_check']))
+    debug("course:                  " + str(args['course']))
+    debug("students:                " + str(args['students']))
+    debug("sections:                " + str(args['sections']))
+    debug("all_sections:            " + str(args['all_sections']))
+    debug("quiet:                   " + str(args['quiet']))
+    debug("no_progress:             " + str(args['no_progress']))
+    debug("workers:                 " + str(args['workers']))
+    debug("sort_by:                 " + str(args['sort_by']))
+    debug("highlight_partials:      " + str(args['highlight_partials']))
+    debug("clean:                   " + str(args['clean']))
+    debug("no_update:               " + str(args['no_update']))
+    debug("stogit:                  " + str(args['stogit']))
+    debug("date:                    " + str(args['date']))
+    debug("no_check:                " + str(args['no_check']))
+    debug("to_record:               " + str(args['to_record']))
+    debug("gist:                    " + str(args['gist']))
+    debug("interact:                " + str(args['interact']))
 
 
 def print_assignments(args):
-    print("Assignments:", file=sys.stderr)
+    debug("Assignments:")
 
     line = ""
     for arg in args:
@@ -216,12 +212,11 @@ def print_assignments(args):
         if args.index(arg) % 5 == 4:
             print(line, file=sys.stderr)
             line = ""
-    print(line, file=sys.stderr)
-    print(file=sys.stderr)
+    debug(line)
 
 
 def print_students(students):
-    print("Students:", file=sys.stderr)
+    debug("Students:")
 
     line = ""
     for student in students:
@@ -229,6 +224,6 @@ def print_students(students):
         for i in range(len(student), 10):
             line += " "
         if students.index(student) % 5 == 4:
-            print(line, file=sys.stderr)
+            debug(line)
             line = ""
-    print(line, file=sys.stderr)
+    debug(line)

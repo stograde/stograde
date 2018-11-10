@@ -196,7 +196,6 @@ def print_grid(items):
     line = ""
     for i, item in enumerate(items):
         line += item.ljust(10)
-        # line += " " * (10 - len(item))
         if i % 5 == 4:
             debug(line)
             line = ""

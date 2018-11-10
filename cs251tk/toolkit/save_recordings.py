@@ -1,6 +1,5 @@
 import os
 import logging
-from logging import warning
 
 from cs251tk.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
@@ -16,7 +15,7 @@ def record_recording_to_disk(results, file_identifier):
         with open('logs/log-{}.md'.format(file_identifier), 'w', encoding='utf-8') as outfile:
             outfile.write(output)
     except Exception as err:
-        warning('error! could not write recording:', err)
+        logging.warning('error! could not write recording:', err)
 
 
 def send_recording_to_gist(table, results, assignment):

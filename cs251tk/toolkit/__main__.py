@@ -4,6 +4,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
 import os.path
+import logging
 
 from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
@@ -65,8 +66,6 @@ def main():
             'Try "pip3 install --no-cache --user --upgrade cs251tk" '
             'to update.').format(new_version, current_version), file=sys.stderr)
 
-    logging.basicConfig(level=logging.DEBUG if debug else logging.WARNING)
-
     if date:
         logging.debug('Checking out {}'.format(date))
 
@@ -125,7 +124,7 @@ def main():
 
         else:
             for student in usernames:
-                print('processing {}'.format(student))
+                logging.debug('Processing {}'.format(student))
                 result, recording = single(student)
                 results.append(result)
                 records.extend(recording)

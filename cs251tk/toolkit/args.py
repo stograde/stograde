@@ -4,8 +4,9 @@ import datetime
 import argparse
 import sys
 import re
+import logging
 from os import cpu_count, getenv
-from logging import warning
+from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
@@ -157,6 +158,8 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
+
     if args['version']:
         print('version', version)
         sys.exit(0)
@@ -165,4 +168,34 @@ def process_args():
     assignments = get_assignments_from_args(**args)
     stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
+    print_args(args)
+    print_students(students)
+    print_assignments(assignments)
+    debug("stogit URL: " + stogit)
+
     return args, students, assignments, stogit
+
+
+def print_args(args):
+    debug("Command Line Arguments:")
+    for arg, value in args.items():
+        debug("{}: {}".format(arg, str(value)))
+
+
+def print_assignments(things):
+    debug("Assignments:")
+    print_grid(things)
+
+
+def print_students(students):
+    debug("Students:")
+    print_grid(students)
+
+
+def print_grid(items):
+    line = ""
+    for i, item in enumerate(items):
+        line += item.ljust(10)
+        if i % 5 == 4:
+            debug(line)
+            line = ""

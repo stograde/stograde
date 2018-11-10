@@ -1,3 +1,4 @@
+import logging
 import re
 import os
 
@@ -7,6 +8,7 @@ from cs251tk.specs import get_filenames
 
 
 def analyze(student, specs, check_for_branches):
+    logging.debug("Analyzing {}'s assignments".format(student))
     unmerged_branches = has_unmerged_branches(student, check_for_branches)
 
     results = {}

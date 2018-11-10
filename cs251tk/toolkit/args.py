@@ -179,11 +179,7 @@ def process_args():
 def print_args(args):
     debug("Command Line Arguments:")
     for arg, value in args.items():
-        line = ""
-        line += arg + ":"
-        line += ' ' * (24 - len(arg))
-        line += str(value)
-        debug(line)
+        debug("{}: {}".format(arg, str(value)))
 
 
 def print_assignments(things):
@@ -199,8 +195,8 @@ def print_students(students):
 def print_grid(items):
     line = ""
     for i, item in enumerate(items):
-        line += item
-        line += " " * (10 - len(item))
+        line += item.ljust(10)
+        # line += " " * (10 - len(item))
         if i % 5 == 4:
             debug(line)
             line = ""

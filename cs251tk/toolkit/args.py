@@ -178,52 +178,29 @@ def process_args():
 
 def print_args(args):
     debug("Command Line Arguments:")
-    debug(args)
-    debug("version:                 " + str(args['version']))
-    debug("debug:                   " + str(args['debug']))
-    debug("skip_update_check:       " + str(args['skip_update_check']))
-    debug("course:                  " + str(args['course']))
-    debug("students:                " + str(args['students']))
-    debug("sections:                " + str(args['sections']))
-    debug("all_sections:            " + str(args['all_sections']))
-    debug("quiet:                   " + str(args['quiet']))
-    debug("no_progress:             " + str(args['no_progress']))
-    debug("workers:                 " + str(args['workers']))
-    debug("sort_by:                 " + str(args['sort_by']))
-    debug("highlight_partials:      " + str(args['highlight_partials']))
-    debug("clean:                   " + str(args['clean']))
-    debug("no_update:               " + str(args['no_update']))
-    debug("stogit:                  " + str(args['stogit']))
-    debug("date:                    " + str(args['date']))
-    debug("no_check:                " + str(args['no_check']))
-    debug("to_record:               " + str(args['to_record']))
-    debug("gist:                    " + str(args['gist']))
-    debug("interact:                " + str(args['interact']))
+    for arg, value in args.items():
+        line = ""
+        line += arg + ":"
+        line += ' ' * (24 - len(arg))
+        line += str(value)
+        debug(line)
 
 
-def print_assignments(args):
+def print_assignments(things):
     debug("Assignments:")
-
-    line = ""
-    for arg in args:
-        line += arg
-        for i in range(len(arg), 10):
-            line += " "
-        if args.index(arg) % 5 == 4:
-            debug(line)
-            line = ""
-    debug(line)
+    print_grid(things)
 
 
 def print_students(students):
     debug("Students:")
+    print_grid(students)
 
+
+def print_grid(items):
     line = ""
-    for student in students:
-        line += student
-        for i in range(len(student), 10):
-            line += " "
-        if students.index(student) % 5 == 4:
+    for i, item in enumerate(items):
+        line += item
+        line += " " * (10 - len(item))
+        if i % 5 == 4:
             debug(line)
             line = ""
-    debug(line)

@@ -178,7 +178,7 @@ def process_args():
 
 def print_args(args):
     debug("Command Line Arguments:")
-    debug("input_items:             " + str(args['input_items']))
+    debug(args)
     debug("version:                 " + str(args['version']))
     debug("debug:                   " + str(args['debug']))
     debug("skip_update_check:       " + str(args['skip_update_check']))

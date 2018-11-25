@@ -1,5 +1,5 @@
+import datetime
 import functools
-import logging
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from os import makedirs, getcwd
@@ -10,7 +10,7 @@ from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
 from .find_update import update_available
 from .process_student import process_student
-from .args import process_args
+from .args import process_args, compute_stogit_url
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
@@ -69,7 +69,7 @@ def main():
     if date:
         logging.debug('Checking out {}'.format(date))
 
-    if os.path.exists("data") is False:
+    if not os.path.exists("data"):
         print('data directory not found', file=sys.stderr)
         download = input("Download specs? (Y/N)")
         if download and download.lower()[0] == "y":
@@ -77,9 +77,13 @@ def main():
             if repo and repo.lower()[0] == 's':
                 with chdir(basedir):
                     run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
+                    if not args['stogit']:
+                        stogit_url = compute_stogit_url(course="sd", stogit=None, _now=datetime.date.today())
             elif repo and repo.lower()[0] == "h":
                 with chdir(basedir):
                     run(['git', 'clone', 'https://github.com/StoDevX/cs241-specs.git', 'data'])
+                    if not args['stogit']:
+                        stogit_url = compute_stogit_url(course="hd", stogit=None, _now=datetime.date.today())
             else:
                 print("Class not recognized", file=sys.stderr)
                 sys.exit(1)
@@ -93,6 +97,10 @@ def main():
 
     for spec_to_use in assignments:
         check_dependencies(specs[spec_to_use])
+
+    if not os.path.exists("students.txt"):
+        print("students.txt not found", file=sys.stderr)
+        sys.exit(1)
 
     results = []
     records = []

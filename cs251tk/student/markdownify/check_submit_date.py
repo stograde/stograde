@@ -25,4 +25,6 @@ def check_dates(spec_id, username, spec, basedir):
                 dates.append(parse(res.splitlines()[0]))
 
     # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
+    if not dates:
+        return "ERROR"
     return min(dates).strftime("%x %X")

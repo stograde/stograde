@@ -1,6 +1,6 @@
 import os
 from dateutil.parser import parse
-from cs251tk.common import run, chdir
+from ..common import run, chdir
 
 
 def check_dates(spec_id, username, spec, basedir):

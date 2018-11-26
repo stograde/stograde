@@ -11,7 +11,7 @@ def check_dates(spec_id, username, spec, basedir):
 
     basedir = os.path.join(basedir, 'students', username, spec_id)
     dates = []
-    
+
     with chdir(basedir):
         for file in spec['files']:
 

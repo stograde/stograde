@@ -1,6 +1,6 @@
 import os
 from dateutil.parser import parse
-from ...common import run, chdir
+from ..common import run, chdir
 
 
 def check_dates(spec_id, username, spec, basedir):
@@ -19,10 +19,13 @@ def check_dates(spec_id, username, spec, basedir):
             status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601',
                                  os.path.join(basedir, file['filename'])])
 
-            # If we didn't get an error, add date to array
-            if status == 'success':
+            # If we didn't get an error and got an output, add date to array
+            if status == 'success' and res:
                 # Parse the first line
                 dates.append(parse(res.splitlines()[0]))
 
     # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
+    if not dates:
+        return "ERROR"
+
     return min(dates).strftime("%x %X")

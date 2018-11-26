@@ -4,7 +4,7 @@ import os
 from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
-from .check_submit_date import check_dates
+from ...common import check_dates
 
 
 def markdownify(spec_id, *, username, spec, basedir, debug, interact):

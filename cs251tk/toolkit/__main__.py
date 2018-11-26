@@ -98,10 +98,6 @@ def main():
     for spec_to_use in assignments:
         check_dependencies(specs[spec_to_use])
 
-    if not os.path.exists("students.txt"):
-        print("students.txt not found", file=sys.stderr)
-        sys.exit(1)
-
     results = []
     records = []
     makedirs('./students', exist_ok=True)

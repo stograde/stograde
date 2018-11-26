@@ -49,9 +49,6 @@ RUN apt-get update
 # TODO Install any additional requirements.  Do we have any?
 RUN apt-get install -y gcc git g++ make
 
-# Clean up to reduce our overall image size.
-RUN apt-get clean
-
 # Print out the versions of the installed tools.
 RUN gcc --version \
     && g++ --version \

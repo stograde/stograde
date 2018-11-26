@@ -1,4 +1,5 @@
 from .chdir import chdir
+from .check_submit_date import check_dates
 from .dirsize import dirsize
 from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from .flatten import flatten

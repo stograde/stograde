@@ -11,6 +11,7 @@ def check_dates(spec_id, username, spec, basedir):
 
     basedir = os.path.join(basedir, 'students', username, spec_id)
     dates = []
+
     with chdir(basedir):
         for file in spec['files']:
 
@@ -26,4 +27,5 @@ def check_dates(spec_id, username, spec, basedir):
     # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
     if not dates:
         return "ERROR"
+
     return min(dates).strftime("%x %X")

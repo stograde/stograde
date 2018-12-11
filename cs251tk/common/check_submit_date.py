@@ -20,7 +20,7 @@ def check_dates(spec_id, username, spec, basedir):
             # Run a git log on each file with earliest commits listed first
             try:
                 status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601', '--',
-                                 os.path.join(basedir, file['filename'])])
+                                      os.path.join(basedir, file['filename'])])
             except Exception as e:
                 logging.debug("CHECK_DATES Exception: {}".format(e))
                 return "ERROR"

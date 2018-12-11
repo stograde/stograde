@@ -1,6 +1,8 @@
 import os
+import logging
 from dateutil.parser import parse
-from ..common import run, chdir
+from .chdir import chdir
+from .run import run
 
 
 def check_dates(spec_id, username, spec, basedir):
@@ -16,8 +18,12 @@ def check_dates(spec_id, username, spec, basedir):
         for file in spec['files']:
 
             # Run a git log on each file with earliest commits listed first
-            status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601', '--',
+            try:
+                status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601', '--',
                                  os.path.join(basedir, file['filename'])])
+            except Exception as e:
+                logging.debug("CHECK_DATES Exception: {}".format(e))
+                return "ERROR"
 
             # If we didn't get an error and got an output, add date to array
             if status == 'success' and res:

@@ -26,3 +26,5 @@ venv/
 .cache/
 .tox/
 .coverage
+
+.idea/

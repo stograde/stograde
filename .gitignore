@@ -26,3 +26,6 @@ venv/
 .cache/
 .tox/
 .coverage
+
+# PyCharm
+.idea/

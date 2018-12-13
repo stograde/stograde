@@ -7,7 +7,7 @@ import os.path
 import logging
 
 from ..common import chdir, run
-from ..specs import load_all_specs, check_dependencies
+from ..specs import load_all_specs, check_dependencies, check_architecture
 from .find_update import update_available
 from .process_student import process_student
 from .args import process_args, compute_stogit_url
@@ -97,6 +97,12 @@ def main():
 
     for spec_to_use in assignments:
         check_dependencies(specs[spec_to_use])
+        if specs[spec_to_use]["architecture"]:
+            spec_arch = specs[spec_to_use]["architecture"]
+            my_arch = check_architecture(specs[spec_to_use])
+            if my_arch does not contain spec_arch:
+
+
 
     results = []
     records = []

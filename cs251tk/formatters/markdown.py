@@ -41,7 +41,7 @@ def format_warnings(warnings):
 def format_header(recording, warnings):
     try:
         header = '# {spec} – {student}\n{first_submit}\n'.format_map(recording)
-    except:
+    except KeyError:
         header = '# {spec} – {student}\n'.format_map(recording)
 
     if warnings:

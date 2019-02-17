@@ -29,7 +29,7 @@ def get_file(filename, results, options):
 
 
 def compile_file(filename, steps, results, supporting_dir, basedir, web, student):
-    server_path = ''.join([
+    server_path = ' '.join([
         '-o "{}/server/server_file" '.format(basedir),
         '"{}/data/supporting/sd_fun.h" '.format(basedir),
         '"{}/data/supporting/sd_fun.o" '.format(basedir),

@@ -19,7 +19,8 @@ def record(student, *, specs, to_record, basedir, debug, interact):
                                             spec=specs[one_to_record],
                                             basedir=basedir,
                                             debug=debug,
-                                            interact=interact)
+                                            interact=interact,
+                                            student=student)
             else:
                 recording = {
                     'spec': one_to_record,

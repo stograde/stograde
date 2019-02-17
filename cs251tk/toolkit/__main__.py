@@ -2,6 +2,7 @@ import datetime
 import functools
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from threading import Thread
 from os import makedirs, getcwd
 import os.path
 import logging
@@ -14,6 +15,7 @@ from .args import process_args, compute_stogit_url
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
+from webapp import server
 
 
 def make_progress_bar(students, no_progress=False):
@@ -37,6 +39,12 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
+def run_server(basedir):
+    server.exe_name = '"{}/server/server_file"'.format(basedir)
+    server.run_server()
+    return
+
+
 def main():
     basedir = getcwd()
     args, usernames, assignments, stogit_url = process_args()
@@ -53,18 +61,16 @@ def main():
     skip_update_check = args['skip_update_check']
     sort_by = args['sort_by']
     workers = args['workers']
+    web = args['web']
 
-    if debug:
-        workers = 1
-    if interact:
+    if debug or interact or web:
         workers = 1
 
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
-        print((
-            'v{} is available: you have v{}. '
-            'Try "pip3 install --no-cache --user --upgrade cs251tk" '
-            'to update.').format(new_version, current_version), file=sys.stderr)
+        print(('v{} is available: you have v{}. '
+               'Try "pip3 install --no-cache --user --upgrade cs251tk" '
+               'to update.').format(new_version, current_version), file=sys.stderr)
 
     if date:
         logging.debug('Checking out {}'.format(date))
@@ -125,7 +131,14 @@ def main():
                     print_progress(result['username'])
                     results.append(result)
                     records.extend(recording)
-
+        elif web:
+            Thread(target=run_server, args=(basedir,), daemon=True).start()
+            for student in usernames:
+                print("\nStudent: {}".format(student))
+                logging.debug('Processing {}'.format(student))
+                result, recording = single(student)
+                results.append(result)
+                records.extend(recording)
         else:
             for student in usernames:
                 logging.debug('Processing {}'.format(student))

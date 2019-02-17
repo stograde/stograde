@@ -76,6 +76,7 @@ def build_argparser():
                          help='Post overview table and student recordings as a private gist')
     grading.add_argument('--interact', action='store_true',
                          help="Interact with each student's submission individually")
+    grading.add_argument('--web', action='store_true', help='Run web server to grade new SD programs')
 
     return parser
 

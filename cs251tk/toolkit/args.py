@@ -30,7 +30,7 @@ def build_argparser():
                         help='skips the pypi update check')
 
     specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='sd', choices=['sd', 'hd'],
+    specs.add_argument('--course', default='sd', choices=['sd', 'hd', 'ads'],
                        help='Which course to evaluate (this sets a default stogit url)')
 
     selection = parser.add_argument_group('student-selection arguments')

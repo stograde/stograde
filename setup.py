@@ -6,7 +6,7 @@ if sys.version_info < (3, 5):
 
 setup(
     name='cs251tk',
-    version='2.4.2',
+    version='2.4.3',
     description='The CS251 (Software Design) Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',

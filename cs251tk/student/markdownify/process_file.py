@@ -28,11 +28,19 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, steps, results, supporting_dir):
+def compile_file(filename, steps, results, supporting_dir, basedir, web, student):
+    server_path = ' '.join([
+        '-o "{}/server/server_file"'.format(basedir),
+        '"{}/data/supporting/sd_fun.h"'.format(basedir),
+        '"{}/data/supporting/sd_fun.o"'.format(basedir),
+        '"{}/data/supporting/str_util.o"'.format(basedir)
+    ])
+
     for step in steps:
         command = step \
             .replace('$@', './' + filename) \
-            .replace('$SUPPORT', supporting_dir)
+            .replace('$SUPPORT', supporting_dir) \
+            .replace('$SERVER', server_path)
 
         cmd, input_for_cmd = pipe(command)
         status, compilation, _ = run(cmd, timeout=30, input_data=input_for_cmd)
@@ -42,6 +50,12 @@ def compile_file(filename, steps, results, supporting_dir):
             'output': compilation,
             'status': status,
         })
+
+        if web:
+            if status == 'success':
+                input("{} - {}".format(student, filename))
+            else:
+                print("{} - {}  COMPILE ERROR".format(student, filename))
 
         if status != 'success':
             return False
@@ -93,7 +107,7 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -102,6 +116,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
         'truncate_contents': False,
         'optional': False,
         'hide_contents': False,
+        'web': False
     }
     base_opts.update(options)
     options = base_opts
@@ -117,8 +132,10 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
     if not should_continue:
         return results
 
-    should_continue = compile_file(filename, steps, results, supporting_dir)
-    if not should_continue or not steps:
+    should_continue = compile_file(filename, steps, results, supporting_dir,
+                                   basedir, options['web'], student)
+
+    if not should_continue or not steps or options['web']:
         return results
 
     should_continue = test_file(filename,

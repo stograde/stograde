@@ -21,6 +21,7 @@ $ mkdir cs251/
 $ cd cs251
 ```
 > For Hardware Design, use `cs241` for your directory name.
+> For Algorithms and Data Structures, use `cs253` for your directory name.
 
 You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
@@ -277,7 +278,7 @@ grading arguments:
 
 
 ## Advanced Usage
-`--course {sd|hd}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design as well.
+`--course {sd|hd|ads}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design or algorithms and data structures as well.
 
 `--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
 

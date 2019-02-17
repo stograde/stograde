@@ -2,7 +2,7 @@
 # the SD_app React app.
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from subprocess import *
+from subprocess import Popen, PIPE
 import sys
 import logging
 
@@ -32,8 +32,8 @@ class S(BaseHTTPRequestHandler):
         return
 
 
-def run_server(server_class=HTTPServer, handler_class=S, port=25100):
+def run_server(server=HTTPServer, handler=S, port=25100):
     server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
+    httpd = server(server_address, handler)
     logging.debug('Starting httpd...')
     httpd.serve_forever()

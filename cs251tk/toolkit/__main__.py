@@ -135,7 +135,6 @@ def main():
             Thread(target=run_server, args=(basedir,), daemon=True).start()
             for student in usernames:
                 print("\nStudent: {}".format(student))
-                logging.debug('Processing {}'.format(student))
                 result, recording = single(student)
                 results.append(result)
                 records.extend(recording)

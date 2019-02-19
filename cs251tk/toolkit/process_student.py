@@ -9,18 +9,19 @@ from cs251tk.student import analyze
 
 
 def process_student(
-    student,
-    *,
-    assignments,
-    basedir,
-    clean,
-    date,
-    debug,
-    interact,
-    no_check,
-    no_update,
-    specs,
-    stogit_url
+        student,
+        *,
+        assignments,
+        basedir,
+        clean,
+        date,
+        debug,
+        interact,
+        no_check,
+        no_update,
+        specs,
+        stogit_url,
+        web
 ):
     if clean:
         remove(student)
@@ -33,7 +34,8 @@ def process_student(
 
         checkout_date(student, date=date)
 
-        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
+        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
+                            interact=interact, web=web)
         analysis = analyze(student, specs, check_for_branches=not no_check)
 
         if date:

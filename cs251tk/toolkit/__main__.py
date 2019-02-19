@@ -119,7 +119,8 @@ def main():
             no_check=no_check,
             no_update=no_update,
             specs=specs,
-            stogit_url=stogit_url
+            stogit_url=stogit_url,
+            web=web
         )
 
         if workers > 1:

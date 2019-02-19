@@ -102,7 +102,14 @@ def main():
         sys.exit(1)
 
     for spec_to_use in assignments:
-        check_dependencies(specs[spec_to_use])
+        try:
+            check_dependencies(specs[spec_to_use])
+        except KeyError:
+            print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
+            assignments.remove(spec_to_use)
+            if not assignments:
+                print('no valid specs remaining', file=sys.stderr)
+                sys.exit(1)
 
     results = []
     records = []

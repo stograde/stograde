@@ -53,6 +53,8 @@ def build_argparser():
                           help='Sort the students table')
     optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
+    optional.add_argument('--ci', action='store_true',
+                          help='Configure for gitlab-ci usage')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',

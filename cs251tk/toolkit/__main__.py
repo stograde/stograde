@@ -15,7 +15,7 @@ from .args import process_args, compute_stogit_url
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
-from webapp import server
+from ..webapp import server
 
 
 def make_progress_bar(students, no_progress=False):

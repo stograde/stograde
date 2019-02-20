@@ -102,8 +102,21 @@ def main():
         print('no specs loaded!')
         sys.exit(1)
 
-    for spec_to_use in assignments:
-        check_dependencies(specs[spec_to_use])
+    if assignments:
+        available_specs = set(assignments)
+
+        for spec_to_use in assignments:
+            try:
+                check_dependencies(specs[spec_to_use])
+            except KeyError:
+                print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
+                available_specs.remove(spec_to_use)
+
+        assignments = available_specs
+
+        if not assignments:
+            print('no valid specs remaining', file=sys.stderr)
+            sys.exit(1)
 
     results = []
     records = []
@@ -113,6 +126,7 @@ def main():
             process_student,
             assignments=assignments,
             basedir=basedir,
+            ci=ci,
             clean=clean,
             date=date,
             debug=debug,
@@ -121,7 +135,7 @@ def main():
             no_update=no_update,
             specs=specs,
             stogit_url=stogit_url,
-            ci=ci
+            web=web
         )
 
         if workers > 1:

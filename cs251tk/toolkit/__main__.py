@@ -45,20 +45,22 @@ def run_server(basedir):
     return
 
 
-def download_specs(course, basedir, stogit, stogit_url):
+def download_specs(course, basedir, stogit):
     spec_urls = {
         'sd':  'https://github.com/StoDevX/cs251-specs.git',
         'hd':  'https://github.com/StoDevX/cs241-specs.git',
         'ads': 'https://github.com/Jedmeyer/cs253-specs.git'
     }
-    course = course.lower()
+    course = course.split("-")[0].lower()
     try:
         url = spec_urls[course]
     except KeyError:
         print("Course {} not recognized".format(course))
         sys.exit(1)
     with chdir(basedir):
-        run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
+        run(['git', 'clone', url, 'data'])
+        if not stogit:
+            return compute_stogit_url(course="hd", stogit=None, _now=datetime.date.today())
 
 
 def main():
@@ -95,26 +97,31 @@ def main():
     if not os.path.exists("data"):
         if args['ci']:
             if args['course']:
-                download_specs(args['course'], basedir, args['stogit'], stogit_url)
+                url = download_specs(args['course'], basedir, args['stogit'])
+                if not args['stogit']:
+                    stogit_url = url
             else:
                 print("data directory not found and no course specified")
                 sys.exit(1)
 
         else:
+            print('data directory not found', file=sys.stderr)
             if args['course']:
-                print('data directory not found', file=sys.stderr)
                 download = input("Download specs for {}? (Y/N)".format(args['course'].upper()))
                 if download and download.lower()[0] == "y":
-                    download_specs(args['course'], basedir, args['stogit'], stogit_url)
+                    url = download_specs(args['course'], basedir, args['stogit'])
+                    if not args['stogit']:
+                        stogit_url = url
                 else:
                     sys.exit(1)
             else:
-                print('data directory not found', file=sys.stderr)
                 download = input("Download specs? (Y/N)")
                 if download and download.lower()[0] == "y":
                     repo = input("Which class? (SD/HD/ADS)")
                     if repo:
-                        download_specs(repo, basedir, args['stogit'], stogit_url)
+                        url = download_specs(repo, basedir, args['stogit'])
+                        if not args['stogit']:
+                            stogit_url = url
                     else:
                         sys.exit(1)
                 else:

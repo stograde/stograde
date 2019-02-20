@@ -28,13 +28,15 @@ def build_argparser():
     parser.add_argument('--skip-update-check', action='store_true',
                         default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
+    parser.add_argument('--ci', action='store_true',
+                        help='Configure for gitlab-ci usage')
 
     specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='sd', choices=['sd', 'hd', 'ads'],
+    specs.add_argument('--course', default='sd', # choices=['sd', 'hd', 'ads'],
                        help='Which course to evaluate (this sets a default stogit url)')
 
     selection = parser.add_argument_group('student-selection arguments')
-    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
+    selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
                            help='Only iterate over these students.')
     selection.add_argument('--section', action='append', dest='sections', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
@@ -53,8 +55,6 @@ def build_argparser():
                           help='Sort the students table')
     optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
-    optional.add_argument('--ci', action='store_true',
-                          help='Configure for gitlab-ci usage')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',
@@ -162,6 +162,9 @@ def process_args():
     args = vars(parser.parse_args())
 
     if args['ci']:
+        if not args['course'] or not args['students']:
+            print("ci flag must be accompanied by course and student flags", file=sys.stderr)
+            sys.exit(1)
         args['highlight_partials'] = True
         args['no_progress'] = True
         args['no_update'] = True

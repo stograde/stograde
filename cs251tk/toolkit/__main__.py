@@ -48,6 +48,7 @@ def run_server(basedir):
 def main():
     basedir = getcwd()
     args, usernames, assignments, stogit_url = process_args()
+    ci = args['ci']
     clean = args['clean']
     date = args['date']
     debug = args['debug']
@@ -60,8 +61,8 @@ def main():
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
     sort_by = args['sort_by']
-    workers = args['workers']
     web = args['web']
+    workers = args['workers']
 
     if debug or interact or web:
         workers = 1
@@ -119,7 +120,8 @@ def main():
             no_check=no_check,
             no_update=no_update,
             specs=specs,
-            stogit_url=stogit_url
+            stogit_url=stogit_url,
+            ci=ci
         )
 
         if workers > 1:

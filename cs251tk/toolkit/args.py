@@ -53,6 +53,8 @@ def build_argparser():
                           help='Sort the students table')
     optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
+    optional.add_argument('--ci', action='store_true',
+                          help='Configure for gitlab-ci usage')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',
@@ -159,7 +161,13 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
-    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
+    if args['ci']:
+        args['highlight_partials'] = True
+        args['no_progress'] = True
+        args['no_update'] = True
+        args['no_check'] = True
+
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.FATAL if args['ci'] else logging.WARNING)
 
     if args['version']:
         print('version', version)

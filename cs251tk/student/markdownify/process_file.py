@@ -7,7 +7,7 @@ from .cat import cat
 from .pipe import pipe
 
 
-def get_file(filename, results, options):
+def get_file(filename, results, options, ci):
     file_status, file_contents = cat(filename)
     if file_status == 'success':
         _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])
@@ -19,6 +19,8 @@ def get_file(filename, results, options):
         file_contents = truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':
+        if ci:
+            print('file {} missing'.format(filename))
         results['missing'] = True
         results['other files'] = os.listdir('.')
         results['optional'] = options['optional']
@@ -58,6 +60,7 @@ def compile_file(filename, steps, results, supporting_dir, basedir, web, student
                 print("{} - {}  COMPILE ERROR".format(student, filename))
 
         if status != 'success':
+            print(compilation)
             return False
 
     return True
@@ -107,7 +110,7 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, ci):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -128,7 +131,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
         'result': [],
     }
 
-    should_continue = get_file(filename, results, options)
+    should_continue = get_file(filename, results, options, ci)
     if not should_continue:
         return results
 

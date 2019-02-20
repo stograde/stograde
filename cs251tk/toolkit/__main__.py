@@ -109,8 +109,6 @@ def main():
         except KeyError:
             print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
             available_specs.remove(spec_to_use)
-            print(available_specs)
-            print(assignments)
 
     assignments = available_specs
 

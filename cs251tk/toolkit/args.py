@@ -10,7 +10,7 @@ from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
-from cs251tk.common import flatten, version
+from cs251tk.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
@@ -166,6 +166,10 @@ def process_args():
         args['no_progress'] = True
         args['no_update'] = True
         args['no_check'] = True
+        _, string, _ = run(['ls', 'students/{}/'.format(str(args['students'][0]).replace("['", "").replace("']", ""))])
+        for line in string.split('\n'):
+            if "hw" in line or "lab" in line or "ws" in line:
+                args['to_record'] = args['to_record'] + [[line]]
 
     logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.FATAL if args['ci'] else logging.WARNING)
 

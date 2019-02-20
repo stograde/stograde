@@ -45,6 +45,22 @@ def run_server(basedir):
     return
 
 
+def download_specs(course, basedir, stogit, stogit_url):
+    spec_urls = {
+        'sd':  'https://github.com/StoDevX/cs251-specs.git',
+        'hd':  'https://github.com/StoDevX/cs241-specs.git',
+        'ads': 'https://github.com/Jedmeyer/cs253-specs.git'
+    }
+    course = course.lower()
+    try:
+        url = spec_urls[course]
+    except KeyError:
+        print("Course {} not recognized".format(course))
+        sys.exit(1)
+    with chdir(basedir):
+        run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
+
+
 def main():
     basedir = getcwd()
     args, usernames, assignments, stogit_url = process_args()
@@ -77,25 +93,32 @@ def main():
         logging.debug('Checking out {}'.format(date))
 
     if not os.path.exists("data"):
-        print('data directory not found', file=sys.stderr)
-        download = input("Download specs? (Y/N)")
-        if download and download.lower()[0] == "y":
-            repo = input("Which class? (SD/HD)")
-            if repo and repo.lower()[0] == 's':
-                with chdir(basedir):
-                    run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
-                    if not args['stogit']:
-                        stogit_url = compute_stogit_url(course="sd", stogit=None, _now=datetime.date.today())
-            elif repo and repo.lower()[0] == "h":
-                with chdir(basedir):
-                    run(['git', 'clone', 'https://github.com/StoDevX/cs241-specs.git', 'data'])
-                    if not args['stogit']:
-                        stogit_url = compute_stogit_url(course="hd", stogit=None, _now=datetime.date.today())
+        if args['ci']:
+            if args['course']:
+                download_specs(args['course'], basedir, args['stogit'], stogit_url)
             else:
-                print("Class not recognized", file=sys.stderr)
+                print("data directory not found and no course specified")
                 sys.exit(1)
+
         else:
-            sys.exit(1)
+            if args['course']:
+                print('data directory not found', file=sys.stderr)
+                download = input("Download specs for {}? (Y/N)".format(args['course'].upper()))
+                if download and download.lower()[0] == "y":
+                    download_specs(args['course'], basedir, args['stogit'], stogit_url)
+                else:
+                    sys.exit(1)
+            else:
+                print('data directory not found', file=sys.stderr)
+                download = input("Download specs? (Y/N)")
+                if download and download.lower()[0] == "y":
+                    repo = input("Which class? (SD/HD/ADS)")
+                    if repo:
+                        download_specs(repo, basedir, args['stogit'], stogit_url)
+                    else:
+                        sys.exit(1)
+                else:
+                    sys.exit(1)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:
@@ -161,9 +184,15 @@ def main():
                 results.append(result)
                 records.extend(recording)
 
-    if not quiet:
+    if ci or not quiet:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
-        print('\n' + table)
+        if ci:
+            print('\n' + table)
+            if '[31m' in table:
+                print("Files missing")
+                sys.exit(1)
+        elif not quiet:
+            print('\n' + table)
 
     if gist:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)

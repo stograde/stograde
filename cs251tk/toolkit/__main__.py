@@ -101,7 +101,7 @@ def main():
         print('no specs loaded!')
         sys.exit(1)
 
-    available_specs = assignments
+    available_specs = set(assignments)
 
     for spec_to_use in assignments:
         try:
@@ -109,6 +109,8 @@ def main():
         except KeyError:
             print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
             available_specs.remove(spec_to_use)
+            print(available_specs)
+            print(assignments)
 
     assignments = available_specs
 

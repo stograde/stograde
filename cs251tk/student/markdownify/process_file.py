@@ -20,7 +20,7 @@ def get_file(filename, results, options, ci):
 
     if file_status != 'success':
         if ci:
-            print('file {} missing'.format(filename))
+            print('{}: file {} missing'.format(os.getcwd().split("/")[-1], filename))
         results['missing'] = True
         results['other files'] = os.listdir('.')
         results['optional'] = options['optional']

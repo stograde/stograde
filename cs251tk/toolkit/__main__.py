@@ -217,20 +217,6 @@ def main():
                                           .format(record['spec'], record['files'][file]['filename'],
                                                   compilation['output'].replace("\n", "\n\t")))
                             failure = True
-                    # Alert student about any execution errors
-                    for run_result in record['files'][file]['result']:
-                        if run_result['status'] != 'success':
-                            # If timeout occurred, don't fail the build but still log that it occurred
-                            if "timed out after" in run_result['status']:
-                                logging.warning("{}: File {} timed out: {}"
-                                                .format(record['spec'], record['files'][file]['filename'],
-                                                        run_result['status']))
-                            else:
-                                logging.error("{}: File {} execution error: {}\n\n{}"
-                                              .format(record['spec'], record['files'][file]['filename'],
-                                                      run_result['status'],
-                                                      run_result['output']))
-                                failure = True
         if failure:
             sys.exit(1)
     else:

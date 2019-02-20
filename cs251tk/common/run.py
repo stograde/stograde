@@ -71,7 +71,7 @@ def run_static(cmd, input_data=None, timeout=None):
             status = 'process lookup error'
             result = str(err)
 
-    if hasattr(result, 'stdout') and status == 'success':
+    if hasattr(result, 'stdout'):
         result = result.stdout
 
     try:

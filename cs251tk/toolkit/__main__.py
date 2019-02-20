@@ -47,8 +47,8 @@ def run_server(basedir):
 
 def download_specs(course, basedir, stogit):
     spec_urls = {
-        'sd':  'https://github.com/StoDevX/cs251-specs.git',
-        'hd':  'https://github.com/StoDevX/cs241-specs.git',
+        'sd': 'https://github.com/StoDevX/cs251-specs.git',
+        'hd': 'https://github.com/StoDevX/cs241-specs.git',
         'ads': 'https://github.com/Jedmeyer/cs253-specs.git'
     }
     course = course.split("-")[0].lower()
@@ -194,15 +194,44 @@ def main():
     if ci or not quiet:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         if ci:
-            print('\n' + table)
-            if '[31m' in table:
-                print("Files missing")
-                sys.exit(1)
+            print(table + '\n')
         elif not quiet:
             print('\n' + table)
 
     if gist:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         gist_recordings(records, table, debug=debug)
+    elif ci:
+        failure = False
+        for record in records:
+            for file in record['files']:
+                # Alert student about any missing files
+                if record['files'][file]['missing']:
+                    logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
+                    failure = True
+                else:
+                    # Alert student about any compilation errors
+                    for compilation in record['files'][file]['compilation']:
+                        if compilation['status'] != 'success':
+                            logging.error("{}: File {} compile error:\n\n\t{}"
+                                          .format(record['spec'], record['files'][file]['filename'],
+                                                  compilation['output'].replace("\n", "\n\t")))
+                            failure = True
+                    # Alert student about any execution errors
+                    for run_result in record['files'][file]['result']:
+                        if run_result['status'] != 'success':
+                            # If timeout occurred, don't fail the build but still log that it occurred
+                            if "timed out after" in run_result['status']:
+                                logging.warning("{}: File {} timed out: {}"
+                                                .format(record['spec'], record['files'][file]['filename'],
+                                                        run_result['status']))
+                            else:
+                                logging.error("{}: File {} execution error: {}\n\n{}"
+                                              .format(record['spec'], record['files'][file]['filename'],
+                                                      run_result['status'],
+                                                      run_result['output']))
+                                failure = True
+        if failure:
+            sys.exit(1)
     else:
         save_recordings(records, debug=debug)

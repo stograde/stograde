@@ -174,7 +174,7 @@ def process_args():
             if "hw" in line or "lab" in line or "ws" in line:
                 args['to_record'] = args['to_record'] + [[line]]
 
-    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.FATAL if args['ci'] else logging.WARNING)
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 
     if args['version']:
         print('version', version)

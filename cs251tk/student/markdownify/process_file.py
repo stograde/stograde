@@ -19,8 +19,6 @@ def get_file(filename, results, options, ci):
         file_contents = truncate(file_contents, options['truncate_contents'])
 
     if file_status != 'success':
-        if ci:
-            print('{}: file {} missing'.format(os.getcwd().split("/")[-1], filename))
         results['missing'] = True
         results['other files'] = os.listdir('.')
         results['optional'] = options['optional']
@@ -60,7 +58,6 @@ def compile_file(filename, steps, results, supporting_dir, basedir, web, student
                 print("{} - {}  COMPILE ERROR".format(student, filename))
 
         if status != 'success':
-            print(compilation)
             return False
 
     return True

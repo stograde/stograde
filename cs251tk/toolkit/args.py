@@ -5,6 +5,7 @@ import argparse
 import sys
 import re
 import logging
+from glob import glob
 from os import cpu_count, getenv
 from logging import warning, debug
 from natsort import natsorted
@@ -33,7 +34,8 @@ def build_argparser():
 
     specs = parser.add_argument_group('control the homework specs')
     specs.add_argument('--course', default='sd',
-                       help='Which course to evaluate (this sets a default stogit url)')
+                       help='Which course to evaluate (this sets a default stogit url). '
+                            'Can be sd, hd, ads or one of the previous with -f## or -s## (i.e. sd-s19)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -169,10 +171,9 @@ def process_args():
         args['no_progress'] = True
         args['no_update'] = True
         args['no_check'] = True
-        _, string, _ = run(['ls', 'students/{}/'.format(str(args['students'][0]).replace("['", "").replace("']", ""))])
-        for line in string.split('\n'):
-            if "hw" in line or "lab" in line or "ws" in line:
-                args['to_record'].append([line])
+        dirs = glob('students/*/hw*') + glob('students/*/lab*') + glob('students/*/ws*')
+        for line in dirs:
+            args['to_record'].append([line.split('/')[-1]])
 
     logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 

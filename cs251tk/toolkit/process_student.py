@@ -21,7 +21,6 @@ def process_student(
         no_update,
         specs,
         stogit_url,
-        ci,
         web
 ):
     if clean:
@@ -36,7 +35,7 @@ def process_student(
         checkout_date(student, date=date)
 
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
-                            interact=interact, ci=ci, web=web)
+                            interact=interact, web=web)
         analysis = analyze(student, specs, check_for_branches=not no_check)
 
         if date:

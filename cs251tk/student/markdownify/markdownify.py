@@ -7,7 +7,7 @@ from .find_warnings import find_warnings
 from ...common import check_dates
 
 
-def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, ci, web):
+def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, web):
     """Run a spec against the current folder"""
     try:
         first_submit = "First Submission for {}: {}".format(
@@ -47,7 +47,6 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, c
                                   basedir=basedir,
                                   student=student,
                                   web=web,
-                                  ci=ci,
                                   spec_id=spec_id)
             results['files'][filename] = result
 

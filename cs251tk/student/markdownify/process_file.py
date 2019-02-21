@@ -30,7 +30,7 @@ def get_file(filename, results, options):
 
 def compile_file(filename, steps, results, supporting_dir, basedir, web, student, spec_id):
     server_path = ' '.join([
-        '-o "{}/server/{}/server_file"'.format(basedir, spec_id),
+        '-o "{}/server/server_file"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.h"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.o"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/str_util.o"'.format(basedir, spec_id)
@@ -107,7 +107,7 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, ci, web, spec_id):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web, spec_id):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -128,7 +128,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
         'result': [],
     }
 
-    should_continue = get_file(filename, results, options, ci)
+    should_continue = get_file(filename, results, options)
     if not should_continue:
         return results
 

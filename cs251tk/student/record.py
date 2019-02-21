@@ -4,7 +4,7 @@ from cs251tk.common import chdir
 from cs251tk.student.markdownify import markdownify
 
 
-def record(student, *, specs, to_record, basedir, debug, interact, ci, web):
+def record(student, *, specs, to_record, basedir, debug, interact, web):
     recordings = []
     if not to_record:
         return recordings
@@ -21,7 +21,6 @@ def record(student, *, specs, to_record, basedir, debug, interact, ci, web):
                                             debug=debug,
                                             interact=interact,
                                             student=student,
-                                            ci=ci,
                                             web=web)
             else:
                 recording = {

@@ -60,7 +60,7 @@ def download_specs(course, basedir, stogit):
     with chdir(basedir):
         run(['git', 'clone', url, 'data'])
         if not stogit:
-            return compute_stogit_url(course="hd", stogit=None, _now=datetime.date.today())
+            return compute_stogit_url(course=course, stogit=None, _now=datetime.date.today())
 
 
 def main():

@@ -28,12 +28,12 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, steps, results, supporting_dir, basedir, web, student):
+def compile_file(filename, steps, results, supporting_dir, basedir, web, student, spec_id):
     server_path = ' '.join([
-        '-o "{}/server/server_file"'.format(basedir),
-        '"{}/data/supporting/sd_fun.h"'.format(basedir),
-        '"{}/data/supporting/sd_fun.o"'.format(basedir),
-        '"{}/data/supporting/str_util.o"'.format(basedir)
+        '-o "{}/server/{}/server_file"'.format(basedir, spec_id),
+        '"{}/data/supporting/{}/sd_fun.h"'.format(basedir, spec_id),
+        '"{}/data/supporting/{}/sd_fun.o"'.format(basedir, spec_id),
+        '"{}/data/supporting/{}/str_util.o"'.format(basedir, spec_id)
     ])
 
     for step in steps:
@@ -107,7 +107,7 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web, spec_id):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -133,7 +133,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
         return results
 
     should_continue = compile_file(filename, steps, results, supporting_dir,
-                                   basedir, web, student)
+                                   basedir, web, student, spec_id)
 
     if not should_continue or not steps or options['web']:
         return results

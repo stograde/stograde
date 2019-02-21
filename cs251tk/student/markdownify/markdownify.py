@@ -47,7 +47,8 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, c
                                   basedir=basedir,
                                   student=student,
                                   web=web,
-                                  ci=ci)
+                                  ci=ci,
+                                  spec_id=spec_id)
             results['files'][filename] = result
 
         # now we remove any compiled binaries

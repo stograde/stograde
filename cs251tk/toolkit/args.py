@@ -172,7 +172,7 @@ def process_args():
         _, string, _ = run(['ls', 'students/{}/'.format(str(args['students'][0]).replace("['", "").replace("']", ""))])
         for line in string.split('\n'):
             if "hw" in line or "lab" in line or "ws" in line:
-                args['to_record'] = args['to_record'] + [[line]]
+                args['to_record'].append([line])
 
     logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 

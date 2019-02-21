@@ -7,7 +7,7 @@ from .cat import cat
 from .pipe import pipe
 
 
-def get_file(filename, results, options, ci):
+def get_file(filename, results, options):
     file_status, file_contents = cat(filename)
     if file_status == 'success':
         _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', filename])

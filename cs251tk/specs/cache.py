@@ -1,5 +1,5 @@
 from itertools import zip_longest
-from logging import warning
+from logging import debug
 from glob import iglob
 import json
 import copy
@@ -42,7 +42,7 @@ def cache_spec(*, source_file, dest_file):
         return
 
     if not dest_modtime:
-        warning('caching {} to {}'.format(source_file, dest_file))
+        debug('caching {} to {}'.format(source_file, dest_file))
         atime = os.stat(source_file).st_atime_ns
     else:
         atime = os.stat(dest_file).st_atime_ns

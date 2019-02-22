@@ -2,6 +2,7 @@
 
 import datetime
 import argparse
+import os
 import sys
 import re
 import logging
@@ -164,14 +165,16 @@ def process_args():
     args = vars(parser.parse_args())
 
     if args['ci']:
-        if not args['course'] or not args['students']:
-            print("ci flag must be accompanied by course and student flags", file=sys.stderr)
+        if not args['course']:
+            print("ci flag must be accompanied by course flag", file=sys.stderr)
             sys.exit(1)
         args['highlight_partials'] = True
         args['no_progress'] = True
         args['no_update'] = True
         args['no_check'] = True
-        dirs = glob('students/*/hw*') + glob('students/*/lab*') + glob('students/*/ws*')
+        project_name = os.environ['CI_PROJECT_NAME']
+        args['students'] = [[project_name]]
+        dirs = glob('hw*') + glob('lab*') + glob('ws*')
         for line in dirs:
             args['to_record'].append([line.split('/')[-1]])
 

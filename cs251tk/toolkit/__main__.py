@@ -220,6 +220,7 @@ def main():
                                                   compilation['output'].replace("\n", "\n\t")))
                             failure = True
         if failure:
+            logging.debug('Build failed')
             sys.exit(1)
     else:
         save_recordings(records, debug=debug)

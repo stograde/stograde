@@ -39,7 +39,7 @@ def process_student(
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
                             interact=interact, web=web, ci=ci)
         analysis = analyze(student, specs, check_for_branches=not no_check, ci=ci)
-        print(analysis)
+
         if date:
             reset(student)
 

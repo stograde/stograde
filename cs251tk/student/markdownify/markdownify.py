@@ -7,12 +7,12 @@ from .find_warnings import find_warnings
 from ...common import check_dates
 
 
-def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, web):
+def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, web, ci):
     """Run a spec against the current folder"""
     try:
         first_submit = "First Submission for {}: {}".format(
             spec_id,
-            check_dates(spec_id, username, spec, basedir))
+            check_dates(spec_id, username, spec, basedir)) if not ci else ''
 
         cwd = os.getcwd()
         results = {

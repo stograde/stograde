@@ -37,7 +37,7 @@ def analyze_assignment(spec, assignment):
     folder = spec.get('folder', assignment)
     kind, num = parse_assignment_name(assignment)
     results = {'number': num, 'kind': kind}
-    
+
     if not os.path.exists(folder):
         results['status'] = 'missing'
         return results

@@ -170,7 +170,7 @@ def process_args():
         args['no_update'] = True
         args['no_check'] = True
         args['students'] = [[os.environ['CI_PROJECT_NAME']]]
-        args['course'] = [os.environ['CI_PROJECT_NAMESPACE']]
+        args['course'] = os.environ['CI_PROJECT_NAMESPACE']
         dirs = glob('hw*') + glob('lab*') + glob('ws*')
         for line in dirs:
             args['to_record'].append([line.split('/')[-1]])

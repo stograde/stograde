@@ -13,6 +13,7 @@ def process_student(
         *,
         assignments,
         basedir,
+        ci,
         clean,
         date,
         debug,
@@ -25,19 +26,20 @@ def process_student(
 ):
     if clean:
         remove(student)
-
-    clone_student(student, baseurl=stogit_url)
+    if not ci:
+        clone_student(student, baseurl=stogit_url)
 
     try:
-        stash(student, no_update=no_update)
-        pull(student, no_update=no_update)
+        if not ci:
+            stash(student, no_update=no_update)
+            pull(student, no_update=no_update)
 
-        checkout_date(student, date=date)
+            checkout_date(student, date=date)
 
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
-                            interact=interact, web=web)
-        analysis = analyze(student, specs, check_for_branches=not no_check)
-
+                            interact=interact, web=web, ci=ci)
+        analysis = analyze(student, specs, check_for_branches=not no_check, ci=ci)
+        print(analysis)
         if date:
             reset(student)
 

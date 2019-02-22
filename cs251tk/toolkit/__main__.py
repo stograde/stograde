@@ -158,6 +158,7 @@ def main():
             process_student,
             assignments=assignments,
             basedir=basedir,
+            ci=ci,
             clean=clean,
             date=date,
             debug=debug,

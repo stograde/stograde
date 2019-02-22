@@ -45,9 +45,28 @@ def run_server(basedir):
     return
 
 
+def download_specs(course, basedir, stogit):
+    spec_urls = {
+        'sd': 'https://github.com/StoDevX/cs251-specs.git',
+        'hd': 'https://github.com/StoDevX/cs241-specs.git',
+        'ads': 'https://github.com/Jedmeyer/cs253-specs.git'
+    }
+    course = course.split("-")[0].lower()
+    try:
+        url = spec_urls[course]
+    except KeyError:
+        print("Course {} not recognized".format(course))
+        sys.exit(1)
+    with chdir(basedir):
+        run(['git', 'clone', url, 'data'])
+        if not stogit:
+            return compute_stogit_url(course=course, stogit=None, _now=datetime.date.today())
+
+
 def main():
     basedir = getcwd()
     args, usernames, assignments, stogit_url = process_args()
+    ci = args['ci']
     clean = args['clean']
     date = args['date']
     debug = args['debug']
@@ -60,8 +79,8 @@ def main():
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
     sort_by = args['sort_by']
-    workers = args['workers']
     web = args['web']
+    workers = args['workers']
 
     if debug or interact or web:
         workers = 1
@@ -76,25 +95,37 @@ def main():
         logging.debug('Checking out {}'.format(date))
 
     if not os.path.exists("data"):
-        print('data directory not found', file=sys.stderr)
-        download = input("Download specs? (Y/N)")
-        if download and download.lower()[0] == "y":
-            repo = input("Which class? (SD/HD)")
-            if repo and repo.lower()[0] == 's':
-                with chdir(basedir):
-                    run(['git', 'clone', 'https://github.com/StoDevX/cs251-specs.git', 'data'])
-                    if not args['stogit']:
-                        stogit_url = compute_stogit_url(course="sd", stogit=None, _now=datetime.date.today())
-            elif repo and repo.lower()[0] == "h":
-                with chdir(basedir):
-                    run(['git', 'clone', 'https://github.com/StoDevX/cs241-specs.git', 'data'])
-                    if not args['stogit']:
-                        stogit_url = compute_stogit_url(course="hd", stogit=None, _now=datetime.date.today())
+        if args['ci']:
+            if args['course']:
+                url = download_specs(args['course'], basedir, args['stogit'])
+                if not args['stogit']:
+                    stogit_url = url
             else:
-                print("Class not recognized", file=sys.stderr)
+                print("data directory not found and no course specified")
                 sys.exit(1)
+
         else:
-            sys.exit(1)
+            print('data directory not found', file=sys.stderr)
+            if args['course']:
+                download = input("Download specs for {}? (Y/N)".format(args['course'].upper()))
+                if download and download.lower()[0] == "y":
+                    url = download_specs(args['course'], basedir, args['stogit'])
+                    if not args['stogit']:
+                        stogit_url = url
+                else:
+                    sys.exit(1)
+            else:
+                download = input("Download specs? (Y/N)")
+                if download and download.lower()[0] == "y":
+                    repo = input("Which class? (SD/HD/ADS)")
+                    if repo:
+                        url = download_specs(repo, basedir, args['stogit'])
+                        if not args['stogit']:
+                            stogit_url = url
+                    else:
+                        sys.exit(1)
+                else:
+                    sys.exit(1)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:
@@ -159,12 +190,33 @@ def main():
                 results.append(result)
                 records.extend(recording)
 
-    if not quiet:
+    if ci or not quiet:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
-        print('\n' + table)
+        if ci:
+            print(table + '\n')
+        elif not quiet:
+            print('\n' + table)
 
     if gist:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         gist_recordings(records, table, debug=debug)
+    elif ci:
+        failure = False
+        for record in records:
+            for file in record['files']:
+                # Alert student about any missing files
+                if record['files'][file]['missing']:
+                    logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
+                    failure = True
+                else:
+                    # Alert student about any compilation errors
+                    for compilation in record['files'][file]['compilation']:
+                        if compilation['status'] != 'success':
+                            logging.error("{}: File {} compile error:\n\n\t{}"
+                                          .format(record['spec'], record['files'][file]['filename'],
+                                                  compilation['output'].replace("\n", "\n\t")))
+                            failure = True
+        if failure:
+            sys.exit(1)
     else:
         save_recordings(records, debug=debug)

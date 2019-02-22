@@ -30,7 +30,7 @@ def get_file(filename, results, options):
 
 def compile_file(filename, steps, results, supporting_dir, basedir, web, student, spec_id):
     server_path = ' '.join([
-        '-o "{}/server/{}/server_file"'.format(basedir, spec_id),
+        '-o "{}/server/server_file"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.h"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.o"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/str_util.o"'.format(basedir, spec_id)

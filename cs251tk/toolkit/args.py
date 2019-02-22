@@ -5,12 +5,13 @@ import argparse
 import sys
 import re
 import logging
+from glob import glob
 from os import cpu_count, getenv
 from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
-from cs251tk.common import flatten, version
+from cs251tk.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
@@ -28,13 +29,16 @@ def build_argparser():
     parser.add_argument('--skip-update-check', action='store_true',
                         default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
+    parser.add_argument('--ci', action='store_true',
+                        help='Configure for gitlab-ci usage')
 
     specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='sd', choices=['sd', 'hd', 'ads'],
-                       help='Which course to evaluate (this sets a default stogit url)')
+    specs.add_argument('--course', default='sd',
+                       help='Which course to evaluate (this sets a default stogit url). '
+                            'Can be sd, hd, ads or one of the previous with -f## or -s## (i.e. sd-s19)')
 
     selection = parser.add_argument_group('student-selection arguments')
-    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
+    selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
                            help='Only iterate over these students.')
     selection.add_argument('--section', action='append', dest='sections', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
@@ -158,6 +162,18 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
     args = vars(parser.parse_args())
+
+    if args['ci']:
+        if not args['course'] or not args['students']:
+            print("ci flag must be accompanied by course and student flags", file=sys.stderr)
+            sys.exit(1)
+        args['highlight_partials'] = True
+        args['no_progress'] = True
+        args['no_update'] = True
+        args['no_check'] = True
+        dirs = glob('students/*/hw*') + glob('students/*/lab*') + glob('students/*/ws*')
+        for line in dirs:
+            args['to_record'].append([line.split('/')[-1]])
 
     logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
 

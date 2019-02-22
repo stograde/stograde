@@ -165,15 +165,12 @@ def process_args():
     args = vars(parser.parse_args())
 
     if args['ci']:
-        if not args['course']:
-            print("ci flag must be accompanied by course flag", file=sys.stderr)
-            sys.exit(1)
         args['highlight_partials'] = True
         args['no_progress'] = True
         args['no_update'] = True
         args['no_check'] = True
-        project_name = os.environ['CI_PROJECT_NAME']
-        args['students'] = [[project_name]]
+        args['students'] = [[os.environ['CI_PROJECT_NAME']]]
+        args['course'] = [[os.environ['CI_PROJECT_NAMESPACE']]]
         dirs = glob('hw*') + glob('lab*') + glob('ws*')
         for line in dirs:
             args['to_record'].append([line.split('/')[-1]])

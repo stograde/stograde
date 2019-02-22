@@ -10,9 +10,12 @@ from ...common import check_dates
 def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, web, ci):
     """Run a spec against the current folder"""
     try:
-        first_submit = "First Submission for {}: {}".format(
-            spec_id,
-            check_dates(spec_id, username, spec, basedir)) if not ci else ''
+        first_submit = ''
+
+        if not ci:
+            first_submit = "First Submission for {}: {}".format(
+                spec_id,
+                check_dates(spec_id, username, spec, basedir))
 
         cwd = os.getcwd()
         results = {

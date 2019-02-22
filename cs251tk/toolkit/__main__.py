@@ -150,8 +150,10 @@ def main():
 
     results = []
     records = []
-    makedirs('./students', exist_ok=True)
-    with chdir('./students'):
+    if not ci:
+        makedirs('./students', exist_ok=True)
+    directory = './students' if not ci else '.'
+    with chdir(directory):
         single = functools.partial(
             process_student,
             assignments=assignments,

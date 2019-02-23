@@ -58,6 +58,8 @@ def build_argparser():
                           help='Sort the students table')
     optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
+    optional.add_argument('--skip-web-compile', action='store_true',
+                          help='Skip compilation and testing of files marked with web: true')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',

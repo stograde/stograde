@@ -78,6 +78,7 @@ def main():
     no_progress = args['no_progress']
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
+    skip_web_compile = args['skip_web_compile']
     sort_by = args['sort_by']
     web = args['web']
     workers = args['workers']
@@ -167,6 +168,7 @@ def main():
             no_check=no_check,
             no_update=no_update,
             specs=specs,
+            skip_web_compile=skip_web_compile,
             stogit_url=stogit_url,
             web=web
         )

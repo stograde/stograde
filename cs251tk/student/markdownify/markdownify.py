@@ -43,6 +43,7 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, w
                                   steps=steps,
                                   options=options,
                                   spec=spec,
+                                  ci=ci,
                                   cwd=cwd,
                                   supporting_dir=supporting,
                                   interact=interact,

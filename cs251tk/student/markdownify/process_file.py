@@ -107,7 +107,8 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web, spec_id):
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web, spec_id,
+                 skip_web_compile):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
     base_opts = {
@@ -129,7 +130,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
     }
 
     should_continue = get_file(filename, results, options)
-    if not should_continue:
+    if not should_continue or skip_web_compile and options['web']:
         return results
 
     should_continue = compile_file(filename, steps, results, supporting_dir,

@@ -4,12 +4,13 @@ from cs251tk.common import chdir
 from cs251tk.student.markdownify import markdownify
 
 
-def record(student, *, specs, to_record, basedir, debug, interact, web):
+def record(student, *, specs, to_record, basedir, debug, interact, web, ci):
     recordings = []
     if not to_record:
         return recordings
 
-    with chdir(student):
+    directory = student if not ci else '.'
+    with chdir(directory):
         for one_to_record in to_record:
             logging.debug("Recording  {}'s {}".format(student, one_to_record))
             if path.exists(one_to_record):
@@ -21,7 +22,8 @@ def record(student, *, specs, to_record, basedir, debug, interact, web):
                                             debug=debug,
                                             interact=interact,
                                             student=student,
-                                            web=web)
+                                            web=web,
+                                            ci=ci)
             else:
                 recording = {
                     'spec': one_to_record,

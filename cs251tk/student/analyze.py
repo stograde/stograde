@@ -7,12 +7,15 @@ from cs251tk.common import find_unmerged_branches_in_cwd
 from cs251tk.specs import get_filenames
 
 
-def analyze(student, specs, check_for_branches):
+def analyze(student, specs, check_for_branches, ci):
     logging.debug("Analyzing {}'s assignments".format(student))
-    unmerged_branches = has_unmerged_branches(student, check_for_branches)
+    unmerged_branches = None
+    if not ci:
+        unmerged_branches = has_unmerged_branches(student, check_for_branches)
 
     results = {}
-    with chdir(student):
+    directory = student if not ci else '.'
+    with chdir(directory):
         for spec in specs.values():
             assignment = spec['assignment']
             results[assignment] = analyze_assignment(spec, assignment)

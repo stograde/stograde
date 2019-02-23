@@ -150,12 +150,16 @@ def main():
 
     results = []
     records = []
-    makedirs('./students', exist_ok=True)
-    with chdir('./students'):
+    if not ci:
+        makedirs('./students', exist_ok=True)
+
+    directory = './students' if not ci else '.'
+    with chdir(directory):
         single = functools.partial(
             process_student,
             assignments=assignments,
             basedir=basedir,
+            ci=ci,
             clean=clean,
             date=date,
             debug=debug,
@@ -217,6 +221,7 @@ def main():
                                                   compilation['output'].replace("\n", "\n\t")))
                             failure = True
         if failure:
+            logging.debug('Build failed')
             sys.exit(1)
     else:
         save_recordings(records, debug=debug)

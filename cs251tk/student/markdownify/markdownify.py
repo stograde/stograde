@@ -14,9 +14,7 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, w
 
         if not ci:
             first_date = check_dates(spec_id, username, spec, basedir)
-            first_submit = "First Submission for {}: {}".format(
-                spec_id,
-                first_date)
+            first_submit = "First Submission for {}: {}".format(spec_id, first_date)
 
         cwd = os.getcwd()
         results = {

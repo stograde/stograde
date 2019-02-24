@@ -5,7 +5,7 @@ from .chdir import chdir
 def test_chdir(fs):
     os_module = fake_filesystem.FakeOsModule(fs)
 
-    fs.CreateDirectory('./folder')
+    fs.create_dir('./folder')
 
     assert os_module.getcwd() == '/'
     with chdir('./folder'):

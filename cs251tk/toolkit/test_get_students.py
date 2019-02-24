@@ -5,7 +5,7 @@ from .get_students import get_students
 
 
 def write_students_file(fs, students):
-    fs.CreateFile('./students.txt')
+    fs.create_file('./students.txt')
     with open('./students.txt', 'w', encoding='utf-8') as outfile:
         outfile.write(dedent(students).strip())
 

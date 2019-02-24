@@ -8,7 +8,7 @@ from .config import conf
 def get_all_versions(pkg='cs251tk'):
     # PyPI has these "simple" html pages. They're how pip does stuff.
     try:
-        req = requests.get('https://pypi.python.org/simple/{}'.format(pkg), timeout=0.01)
+        req = requests.get('https://pypi.python.org/simple/{}'.format(pkg), timeout=0.5)
     except requests.exceptions.ConnectionError:
         return []
     except requests.exceptions.Timeout:
@@ -17,7 +17,7 @@ def get_all_versions(pkg='cs251tk'):
     # Remove the first and last bits
     page = re.sub(r'.*</h1>|<br/>.*', '', req.text)
     # Grab just the links from the page
-    lines = [l for l in page.splitlines() if l.startswith('<a')]
+    lines = [l for l in page.splitlines() if l.strip().startswith('<a')]
     # Grab just the middles of the links
     packages = [re.sub('.*>(.*)<.*', '\\1', l) for l in lines]
     # Remove the suffixes

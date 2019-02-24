@@ -2,14 +2,17 @@
 
 import datetime
 import argparse
+import os
 import sys
 import re
+import logging
+from glob import glob
 from os import cpu_count, getenv
-from logging import warning
+from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
-from cs251tk.common import flatten, version
+from cs251tk.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
@@ -27,13 +30,16 @@ def build_argparser():
     parser.add_argument('--skip-update-check', action='store_true',
                         default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
+    parser.add_argument('--ci', action='store_true',
+                        help='Configure for gitlab-ci usage')
 
     specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='sd', choices=['sd', 'hd'],
-                       help='Which course to evaulate (this sets a default stogit url)')
+    specs.add_argument('--course', default='sd',
+                       help='Which course to evaluate (this sets a default stogit url). '
+                            'Can be sd, hd, ads or one of the previous with -f## or -s## (i.e. sd-s19)')
 
     selection = parser.add_argument_group('student-selection arguments')
-    selection.add_argument('--students', action='append', nargs='+', metavar='USERNAME', default=[],
+    selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
                            help='Only iterate over these students.')
     selection.add_argument('--section', action='append', dest='sections', nargs='+', metavar='SECTION', default=[],
                            help='Only check these sections: my, all, a, b, etc')
@@ -52,6 +58,8 @@ def build_argparser():
                           help='Sort the students table')
     optional.add_argument('--partials', '-p', dest='highlight_partials', action='store_true',
                           help='Highlight partial submissions')
+    optional.add_argument('--skip-web-compile', action='store_true',
+                          help='Skip compilation and testing of files marked with web: true')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',
@@ -75,6 +83,7 @@ def build_argparser():
                          help='Post overview table and student recordings as a private gist')
     grading.add_argument('--interact', action='store_true',
                          help="Interact with each student's submission individually")
+    grading.add_argument('--web', action='store_true', help='Run web server to grade new SD programs')
 
     return parser
 
@@ -138,7 +147,7 @@ def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     # `--record hw4 lab1 --record hw5` becomes `[[hw4, lab1], [hw5]]`
     assignments = [assignment for group in to_record for assignment in group] + assignments
 
-    # sort the assignemnts and remove duplicates
+    # sort the assignments and remove duplicates
     return natsorted(set(assignments))
 
 
@@ -157,6 +166,19 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
+    if args['ci']:
+        args['highlight_partials'] = True
+        args['no_progress'] = True
+        args['no_update'] = True
+        args['no_check'] = True
+        args['students'] = [[os.environ['CI_PROJECT_NAME']]]
+        args['course'] = os.environ['CI_PROJECT_NAMESPACE']
+        dirs = glob('hw*') + glob('lab*') + glob('ws*')
+        for line in dirs:
+            args['to_record'].append([line.split('/')[-1]])
+
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
+
     if args['version']:
         print('version', version)
         sys.exit(0)
@@ -165,4 +187,34 @@ def process_args():
     assignments = get_assignments_from_args(**args)
     stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
+    print_args(args)
+    print_students(students)
+    print_assignments(assignments)
+    debug("stogit URL: " + stogit)
+
     return args, students, assignments, stogit
+
+
+def print_args(args):
+    debug("Command Line Arguments:")
+    for arg, value in args.items():
+        debug("{}: {}".format(arg, str(value)))
+
+
+def print_assignments(things):
+    debug("Assignments:")
+    print_grid(things)
+
+
+def print_students(students):
+    debug("Students:")
+    print_grid(students)
+
+
+def print_grid(items):
+    line = ""
+    for i, item in enumerate(items):
+        line += item.ljust(10)
+        if i % 5 == 4:
+            debug(line)
+            line = ""

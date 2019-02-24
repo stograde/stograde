@@ -13,13 +13,15 @@ See the ["Run the thing"](#run-the-thing) section for details.
 
 ## Getting Started
 
-Prerequisites: macOS/Linux, Python 3.5+, git.
+Prerequisites: macOS/Linux/Windows Linux Subsystem, Python 3.5+, git.
 
 ##### Make the folder
 ```console
 $ mkdir cs251/
 $ cd cs251
 ```
+> For Hardware Design, use `cs241` for your directory name.
+> For Algorithms and Data Structures, use `cs253` for your directory name.
 
 You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
@@ -32,14 +34,23 @@ $ pip3 install --user cs251tk
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder, instead.
 
-> When you need to update the toolkit, use `pip3 install --user --no-cache --update cs251tk`.
+> When you need to update the toolkit, use `pip3 install --user --no-cache --upgrade cs251tk`.
 
 
 ##### Grab the course specs
 
+###### Software Design
+
 ```console
 $ # make sure you're still in the cs251 folder
 $ git clone https://github.com/StoDevX/cs251-specs data
+```
+
+###### Hardware Design
+
+```console
+$ # make sure you're still in the cs241 folder
+$ git clone https://github.com/StoDevX/cs241-specs data
 ```
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample input, they should go under a `supporting/hw#` folder that matches the assignment name.
@@ -88,6 +99,7 @@ As mentioned in the introduction, this toolkit can do a bunch of things, includi
 - check which assignments the students have turned in
 - run tests against those assignments and produce a log file
 - checking out the contents of a student's submission at a given date/time
+- viewing programs one at a time in the SD_app React app
 
 If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and run `cs251tk --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the printing of the summary table.)
 
@@ -134,7 +146,6 @@ The toolkit also takes a `--record` parameter. In broad strokes, `--record` does
 
 If you're running this on something other than a lab machine, you'll want to have `gcc` installed.
 
-
 ###### In a bit more detail
 `--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` folder.
 
@@ -164,6 +175,7 @@ The toolkit then spits out the log into `logs/log-$ASSIGNMENT.md`, which will lo
 
 ```markdown
 # hw2 – rives
+First submission for HW2: 2/11/17 17:00:44
 
 Repository has unmerged branches:
   - remotes/origin/lab8
@@ -261,11 +273,12 @@ grading arguments:
                         spec file
   --gist                Post overview table and student recordings as a
                         private gist
+  --web                 Run web server to grade new SD programs
 ```
 
 
 ## Advanced Usage
-`--course {sd|hd}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design as well.
+`--course {sd|hd|ads}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for hardware design or algorithms and data structures as well.
 
 `--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form `git clone --quiet $URL/$USERNAME.git`.
 
@@ -276,6 +289,8 @@ grading arguments:
 `--date GIT_DATE` checks out the repositories as of GIT\_DATE, and runs everything based on that state. Powerful, but not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over with this, but that's a bad idea.) See `man git-rev-parse` for more information on what a GIT\_DATE is.
 
 `--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will disable the process pool entirely, which is helpful for debugging.
+
+`--web` starts a web server to view programs created for the SD_app React app
 
 ## Docker Info
 

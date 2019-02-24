@@ -3,7 +3,7 @@
 #
 # NOTE This could be changed to something like `python:latest` if we
 # find that there is no dependency on 3.6 itself.
-FROM python:3.6
+FROM python:3-slim
 
 # Set the MAINTAINER flag of the docker image.
 #
@@ -47,10 +47,7 @@ RUN pip3 install .
 RUN apt-get update
 
 # TODO Install any additional requirements.  Do we have any?
-# RUN apt-get install -y cool-package
-
-# Clean up to reduce our overall image size.
-RUN apt-get clean
+RUN apt-get install -y gcc git g++ make
 
 # Print out the versions of the installed tools.
 RUN gcc --version \

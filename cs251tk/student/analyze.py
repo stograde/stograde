@@ -1,3 +1,4 @@
+import logging
 import re
 import os
 
@@ -6,23 +7,29 @@ from cs251tk.common import find_unmerged_branches_in_cwd
 from cs251tk.specs import get_filenames
 
 
-def analyze(student, specs, check_for_branches):
-    unmerged_branches = has_unmerged_branches(student, check_for_branches)
+def analyze(student, specs, check_for_branches, ci):
+    logging.debug("Analyzing {}'s assignments".format(student))
+    unmerged_branches = None
+    if not ci:
+        unmerged_branches = has_unmerged_branches(student, check_for_branches)
 
     results = {}
-    with chdir(student):
+    directory = student if not ci else '.'
+    with chdir(directory):
         for spec in specs.values():
             assignment = spec['assignment']
             results[assignment] = analyze_assignment(spec, assignment)
 
     homework_list = [result for result in results.values() if result['kind'] == 'homework']
     lab_list = [result for result in results.values() if result['kind'] == 'lab']
+    worksheet_list = [result for result in results.values() if result['kind'] == 'worksheet']
 
     return {
         'username': student,
         'unmerged_branches': unmerged_branches,
         'homeworks': homework_list,
         'labs': lab_list,
+        'worksheets': worksheet_list,
     }
 
 
@@ -61,6 +68,8 @@ def parse_assignment_name(name):
         kind = 'homework'
     elif kind == 'lab':
         kind = 'lab'
+    elif kind == 'ws':
+        kind = 'worksheet'
     num = int(matches[1])
     return kind, num
 

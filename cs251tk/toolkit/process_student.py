@@ -9,32 +9,37 @@ from cs251tk.student import analyze
 
 
 def process_student(
-    student,
-    *,
-    assignments,
-    basedir,
-    clean,
-    date,
-    debug,
-    interact,
-    no_check,
-    no_update,
-    specs,
-    stogit_url
+        student,
+        *,
+        assignments,
+        basedir,
+        ci,
+        clean,
+        date,
+        debug,
+        interact,
+        no_check,
+        no_update,
+        specs,
+        skip_web_compile,
+        stogit_url,
+        web
 ):
     if clean:
         remove(student)
-
-    clone_student(student, baseurl=stogit_url)
+    if not ci:
+        clone_student(student, baseurl=stogit_url)
 
     try:
-        stash(student, no_update=no_update)
-        pull(student, no_update=no_update)
+        if not ci:
+            stash(student, no_update=no_update)
+            pull(student, no_update=no_update)
 
-        checkout_date(student, date=date)
+            checkout_date(student, date=date)
 
-        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug, interact=interact)
-        analysis = analyze(student, specs, check_for_branches=not no_check)
+        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
+                            interact=interact, web=web, ci=ci, skip_web_compile=skip_web_compile)
+        analysis = analyze(student, specs, check_for_branches=not no_check, ci=ci)
 
         if date:
             reset(student)

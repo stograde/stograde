@@ -6,7 +6,7 @@ if sys.version_info < (3, 5):
 
 setup(
     name='cs251tk',
-    version='2.2.0',
+    version='2.6.1',
     description='The CS251 (Software Design) Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
@@ -32,14 +32,16 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     keywords='stolaf course-tooling',
     install_requires=[
         'PyYAML == 3.*',
-        'requests == 2.*',
+        'requests >= 2.20.*',
         'termcolor == 1.*',
         'natsort == 5.0.*',
         'appdirs == 1.4.*',
+        'python-dateutil == 2.7.*'
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

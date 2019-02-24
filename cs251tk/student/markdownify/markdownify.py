@@ -4,15 +4,23 @@ import os
 from collections import OrderedDict
 from .process_file import process_file
 from .find_warnings import find_warnings
+from ...common import check_dates
 
 
-def markdownify(spec_id, *, username, spec, basedir, debug, interact):
+def markdownify(spec_id, *, username, spec, basedir, debug, interact, student, web, ci, skip_web_compile):
     """Run a spec against the current folder"""
     try:
+        first_submit = ''
+
+        if not ci:
+            first_date = check_dates(spec_id, username, spec, basedir)
+            first_submit = "First Submission for {}: {}".format(spec_id, first_date)
+
         cwd = os.getcwd()
         results = {
             'spec': spec_id,
             'student': username,
+            'first_submit': first_submit,
             'warnings': find_warnings(),
             'files': OrderedDict(),
         }
@@ -37,7 +45,12 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact):
                                   spec=spec,
                                   cwd=cwd,
                                   supporting_dir=supporting,
-                                  interact=interact)
+                                  interact=interact,
+                                  basedir=basedir,
+                                  student=student,
+                                  web=web,
+                                  spec_id=spec_id,
+                                  skip_web_compile=skip_web_compile)
             results['files'][filename] = result
 
         # now we remove any compiled binaries

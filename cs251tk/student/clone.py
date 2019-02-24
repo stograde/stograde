@@ -4,6 +4,7 @@ from cs251tk.common import run
 
 
 def clone_student(student, baseurl):
+    logging.debug("Cloning {}'s repository".format(student))
     if not path.exists(student):
         clone_url('{}/{}.git'.format(baseurl, student))
 

@@ -4,7 +4,7 @@ from .cat import cat
 def test_cat(fs):
     filename = 'foo.txt'
     contents = 'insert a story here'
-    fs.CreateFile(filename, contents=contents)
+    fs.create_file(filename, contents=contents)
 
     result = cat(filename)
     assert result[0] == 'success'

@@ -27,13 +27,13 @@ jobs:
       script: tox
 
     - stage: test
-      python: 3.6
+      python: 3.7
       install: pip install tox tox-travis coveralls
       script: tox
       after_success: coveralls
 
     - stage: deploy docker
-      python: 3.6
+      python: 3.7
       services:
         - docker
       env:
@@ -57,7 +57,7 @@ jobs:
           on: { branch: 'travis-*' }
 
     - stage: deploy pypi
-      python: 3.6
+      python: 3.7
       script: skip
       deploy:
         provider: pypi

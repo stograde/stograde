@@ -28,7 +28,7 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, steps, results, supporting_dir, basedir, web, student, spec_id):
+def compile_file(filename, *, steps, results, supporting_dir, basedir, web, web_file, student, spec_id):
     server_path = ' '.join([
         '-o "{}/server/server_file"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.h"'.format(basedir, spec_id),
@@ -51,7 +51,7 @@ def compile_file(filename, steps, results, supporting_dir, basedir, web, student
             'status': status,
         })
 
-        if web:
+        if web and web_file:
             if status == 'success':
                 input("{} - {}".format(student, filename))
             else:
@@ -133,8 +133,15 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
     if not should_continue or skip_web_compile and options['web']:
         return results
 
-    should_continue = compile_file(filename, steps, results, supporting_dir,
-                                   basedir, web, student, spec_id)
+    should_continue = compile_file(filename,
+                                   steps=steps,
+                                   results=results,
+                                   supporting_dir=supporting_dir,
+                                   basedir=basedir,
+                                   web=web,
+                                   web_file=options['web'],
+                                   student=student,
+                                   spec_id=spec_id)
 
     if not should_continue or not steps or options['web']:
         return results

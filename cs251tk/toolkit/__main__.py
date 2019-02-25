@@ -154,7 +154,8 @@ def main():
     if not ci:
         makedirs('./students', exist_ok=True)
 
-    makedirs('./server', exist_ok=True)
+    if ci or web:
+        makedirs('./server', exist_ok=True)
 
     directory = './students' if not ci else '.'
     with chdir(directory):

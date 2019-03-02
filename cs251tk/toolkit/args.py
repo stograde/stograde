@@ -127,9 +127,9 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
                 student_set = _all_students[prefixed]
             else:
                 warning((
-                    'Neither section [section-{0}] nor [{0}] '
-                    'could not be found in ./students.txt'
-                ).format(section_name))
+                            'Neither section [section-{0}] nor [{0}] '
+                            'could not be found in ./students.txt'
+                        ).format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]
@@ -166,13 +166,10 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
-    try:
-        if args['web'] and not len(args['to_record']) == 1 or not len(args['to_record'][0]) == 1:
+    if args['web'] and not len(args['to_record']) == 1:
+        if not len(args['to_record'][0]) == 1:
             print('--web can only be used with one assignment at a time')
             sys.exit(1)
-    except IndexError:
-        print('--web can only be used with one assignment at a time')
-        sys.exit(1)
 
     if args['web']:
         args['highlight_partials'] = True

@@ -115,7 +115,6 @@ def launch_cli(basedir,
                  for user in usernames]
 
     while True:
-
         student = ask_student(usernames)
 
         if not student or student == 'QUIT':

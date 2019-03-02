@@ -11,7 +11,6 @@ def check_student(student, spec, basedir):
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
         with chdir('{}/{}'.format(student, spec['assignment'])):
             for file in spec['files']:
-
                 result = process_file(file['filename'],
                                       steps=file['commands'],
                                       options=file['options'],

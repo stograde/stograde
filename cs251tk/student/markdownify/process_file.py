@@ -28,7 +28,7 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, *, steps, results, supporting_dir, basedir, web, web_file, student, spec_id):
+def compile_file(filename, *, steps, results, supporting_dir, basedir, spec_id):
     server_path = ' '.join([
         '-o "{}/server/server_file"'.format(basedir, spec_id),
         '"{}/data/supporting/{}/sd_fun.h"'.format(basedir, spec_id),
@@ -50,12 +50,6 @@ def compile_file(filename, *, steps, results, supporting_dir, basedir, web, web_
             'output': compilation,
             'status': status,
         })
-
-        if web and web_file:
-            if status == 'success':
-                input("{} - {}".format(student, filename))
-            else:
-                print("{} - {}  COMPILE ERROR".format(student, filename))
 
         if status != 'success':
             return False
@@ -107,7 +101,7 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, student, web, spec_id,
+def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, spec_id,
                  skip_web_compile):
     steps = steps if isinstance(steps, Iterable) else [steps]
 
@@ -138,9 +132,6 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
                                    results=results,
                                    supporting_dir=supporting_dir,
                                    basedir=basedir,
-                                   web=web,
-                                   web_file=options['web'],
-                                   student=student,
                                    spec_id=spec_id)
 
     if not should_continue or not steps or options['web']:

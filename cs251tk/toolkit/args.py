@@ -170,6 +170,9 @@ def process_args():
         print('--web can only be used with one assignment at a time')
         sys.exit(1)
 
+    if args['web']:
+        args['highlight_partials'] = True
+
     if args['ci']:
         args['highlight_partials'] = True
         args['no_progress'] = True

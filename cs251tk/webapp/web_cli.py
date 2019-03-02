@@ -106,7 +106,12 @@ def launch_cli(basedir,
                no_update,
                spec,
                usernames):
-    usernames = ['{} NO SUBMISSION'.format(user) if not os.path.exists('{}/{}'.format(user, spec['assignment'])) else user
+    usernames = [
+        '{} NO SUBMISSION'.format(user)
+        if not os.path.exists('{}/{}'.format(user, spec['assignment']))
+        else user
+        for user in usernames
+    ]
                  for user in usernames]
 
     while True:

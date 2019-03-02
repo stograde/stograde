@@ -42,7 +42,7 @@ setup(
         'natsort == 5.0.*',
         'appdirs == 1.4.*',
         'python-dateutil == 2.7.*',
-        'PyInquirer == 1.0.*'
+        'PyInquirer == 1.0.*',
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

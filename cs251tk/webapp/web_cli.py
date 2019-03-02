@@ -99,6 +99,8 @@ def ask_file(files, student, spec, basedir):
                                  basedir=basedir,
                                  spec_id=spec['assignment'],
                                  skip_web_compile=False)
+        else:
+            return
 
 
 def launch_cli(basedir, date, no_update, spec, usernames):

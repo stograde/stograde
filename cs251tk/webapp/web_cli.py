@@ -48,7 +48,7 @@ def ask_student(usernames):
             'type': 'list',
             'name': 'student',
             'message': 'Choose student',
-            'choices': ['QUIT', 'LOG and QUIT'] + usernames
+            'choices': ['QUIT', 'LOG and QUIT', *usernames]
         }
     ]
 
@@ -79,9 +79,7 @@ def ask_file(files, student, spec, basedir):
         ]
         file = prompt(questions, style=style)
 
-        if not file or file['file'] == 'BACK':
-            return
-        else:
+        if file and file['file'] != 'BACK':
             file_spec = {}
             for f in spec['files']:
                 if f['filename'] == file['file']:
@@ -101,18 +99,13 @@ def ask_file(files, student, spec, basedir):
                                  skip_web_compile=False)
 
 
-def launch_cli(basedir,
-               date,
-               no_update,
-               spec,
-               usernames):
+def launch_cli(basedir, date, no_update, spec, usernames):
     usernames = [
         '{} NO SUBMISSION'.format(user)
         if not os.path.exists('{}/{}'.format(user, spec['assignment']))
         else user
         for user in usernames
     ]
-                 for user in usernames]
 
     while True:
         student = ask_student(usernames)

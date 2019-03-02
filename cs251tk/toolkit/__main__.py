@@ -179,25 +179,24 @@ def main():
 
         if web:
             Thread(target=run_server, args=(basedir,), daemon=True).start()
-            if usernames:
-                for user in usernames:
-                    clone_student(user, baseurl=stogit_url)
-                do_record = launch_cli(basedir=basedir,
-                                       date=date,
-                                       no_update=no_update,
-                                       spec=specs[next(iter(assignments))],
-                                       usernames=usernames)
-                if do_record:
-                    print_progress = make_progress_bar(usernames, no_progress=no_progress)
-                    with ProcessPoolExecutor(max_workers=workers) as pool:
-                        futures = [pool.submit(single, name) for name in usernames]
-                        for future in as_completed(futures):
-                            result, recording = future.result()
-                            print_progress(result['username'])
-                            results.append(result)
-                            records.extend(recording)
-                else:
-                    quiet = True
+            for user in usernames:
+                clone_student(user, baseurl=stogit_url)
+            do_record = launch_cli(basedir=basedir,
+                                   date=date,
+                                   no_update=no_update,
+                                   spec=specs[next(iter(assignments))],
+                                   usernames=usernames)
+            if do_record:
+                print_progress = make_progress_bar(usernames, no_progress=no_progress)
+                with ProcessPoolExecutor(max_workers=workers) as pool:
+                    futures = [pool.submit(single, name) for name in usernames]
+                    for future in as_completed(futures):
+                        result, recording = future.result()
+                        print_progress(result['username'])
+                        results.append(result)
+                        records.extend(recording)
+            else:
+                quiet = True
         elif workers > 1:
             print_progress = make_progress_bar(usernames, no_progress=no_progress)
             with ProcessPoolExecutor(max_workers=workers) as pool:

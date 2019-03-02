@@ -28,8 +28,10 @@ def check_student(student, spec, basedir):
                         files = files + [file['filename'] + ' MISSING (OPTIONAL)']
                     else:
                         files = files + [file['filename'] + ' MISSING']
-                else:
+                elif 'web' in file['options']:
                     files = files + [file['filename']]
+                else:
+                    continue
     return files
 
 

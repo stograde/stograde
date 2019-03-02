@@ -32,6 +32,7 @@ def check_student(student, spec, basedir):
                         files = files + [file['filename']]
                 else:
                     continue
+
     return files
 
 

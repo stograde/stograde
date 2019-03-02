@@ -166,7 +166,11 @@ def process_args():
     parser = build_argparser()
     args = vars(parser.parse_args())
 
-    if args['web'] and not len(args['to_record']) == 1 or not len(args['to_record'][0]) == 1:
+    try:
+        if args['web'] and not len(args['to_record']) == 1 or not len(args['to_record'][0]) == 1:
+            print('--web can only be used with one assignment at a time')
+            sys.exit(1)
+    except IndexError:
         print('--web can only be used with one assignment at a time')
         sys.exit(1)
 

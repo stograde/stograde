@@ -23,13 +23,14 @@ def check_student(student, spec, basedir):
                                       spec_id=spec['assignment'],
                                       skip_web_compile=False)
 
-                if result['missing']:
-                    if 'optional' in file['options']:
-                        files = files + [file['filename'] + ' MISSING (OPTIONAL)']
+                if 'web' in file['options']:
+                    if result['missing']:
+                        if 'optional' in file['options']:
+                            files = files + [file['filename'] + ' MISSING (OPTIONAL)']
+                        else:
+                            files = files + [file['filename'] + ' MISSING']
                     else:
-                        files = files + [file['filename'] + ' MISSING']
-                elif 'web' in file['options']:
-                    files = files + [file['filename']]
+                        files = files + [file['filename']]
                 else:
                     continue
     return files

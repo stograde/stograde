@@ -126,10 +126,9 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
             elif prefixed in _all_students:
                 student_set = _all_students[prefixed]
             else:
-                warning((
-                            'Neither section [section-{0}] nor [{0}] '
-                            'could not be found in ./students.txt'
-                        ).format(section_name))
+                warning(('Neither section [section-{0}] nor [{0}] '
+                         'could not be found in ./students.txt'
+                         ).format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]

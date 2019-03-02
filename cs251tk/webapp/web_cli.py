@@ -9,7 +9,7 @@ from PyInquirer import style_from_dict, Token, prompt
 def check_student(student, spec, basedir):
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
-        with (chdir('{}/{}'.format(student, spec['assignment']))):
+        with chdir('{}/{}'.format(student, spec['assignment'])):
             for file in spec['files']:
 
                 result = process_file(file['filename'],

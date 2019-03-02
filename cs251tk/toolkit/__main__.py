@@ -184,7 +184,7 @@ def main():
             do_record = launch_cli(basedir=basedir,
                                    date=date,
                                    no_update=no_update,
-                                   spec=specs[next(iter(assignments))],
+                                   spec=specs[list(assignments)[0]],
                                    usernames=usernames)
             if do_record:
                 print_progress = make_progress_bar(usernames, no_progress=no_progress)

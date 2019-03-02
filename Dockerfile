@@ -40,14 +40,14 @@ RUN ln -sv /cs251tk_share/students.txt /cs251tk/students.txt
 RUN ln -sv /cs251tk_share/.ssh/id_rsa /root/.ssh/id_rsa
 RUN ln -sv /cs251tk_share/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
 
-# Install the toolkit from the source directory.
-RUN pip3 install .
-
 # Update the package cache.
 RUN apt-get update
 
 # TODO Install any additional requirements.  Do we have any?
 RUN apt-get install -y gcc git g++ make
+
+# Install the toolkit from the source directory.
+RUN pip3 install .
 
 # Print out the versions of the installed tools.
 RUN gcc --version \

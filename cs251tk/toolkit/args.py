@@ -126,10 +126,7 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
             elif prefixed in _all_students:
                 student_set = _all_students[prefixed]
             else:
-                warning((
-                    'Neither section [section-{0}] nor [{0}] '
-                    'could not be found in ./students.txt'
-                ).format(section_name))
+                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]
@@ -165,6 +162,12 @@ def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
     args = vars(parser.parse_args())
+
+    if args['web']:
+        args['highlight_partials'] = True
+        if not args['to_record'] or len(args['to_record']) != 1 or len(args['to_record'][0]) != 1:
+            print('--web can only be used with one assignment at a time')
+            sys.exit(1)
 
     if args['ci']:
         args['highlight_partials'] = True

@@ -7,6 +7,7 @@ from os import makedirs, getcwd
 import os.path
 import logging
 
+from ..student import clone_student
 from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
 from .find_update import update_available
@@ -16,6 +17,7 @@ from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
 from ..webapp import server
+from ..webapp.web_cli import launch_cli
 
 
 def make_progress_bar(students, no_progress=False):
@@ -83,7 +85,7 @@ def main():
     web = args['web']
     workers = args['workers']
 
-    if debug or interact or web:
+    if debug or interact:
         workers = 1
 
     current_version, new_version = update_available(skip_update_check=skip_update_check)
@@ -172,11 +174,30 @@ def main():
             no_update=no_update,
             specs=specs,
             skip_web_compile=skip_web_compile,
-            stogit_url=stogit_url,
-            web=web
+            stogit_url=stogit_url
         )
 
-        if workers > 1:
+        if web:
+            Thread(target=run_server, args=(basedir,), daemon=True).start()
+            for user in usernames:
+                clone_student(user, baseurl=stogit_url)
+            do_record = launch_cli(basedir=basedir,
+                                   date=date,
+                                   no_update=no_update,
+                                   spec=specs[list(assignments)[0]],
+                                   usernames=usernames)
+            if do_record:
+                print_progress = make_progress_bar(usernames, no_progress=no_progress)
+                with ProcessPoolExecutor(max_workers=workers) as pool:
+                    futures = [pool.submit(single, name) for name in usernames]
+                    for future in as_completed(futures):
+                        result, recording = future.result()
+                        print_progress(result['username'])
+                        results.append(result)
+                        records.extend(recording)
+            else:
+                quiet = True
+        elif workers > 1:
             print_progress = make_progress_bar(usernames, no_progress=no_progress)
             with ProcessPoolExecutor(max_workers=workers) as pool:
                 futures = [pool.submit(single, name) for name in usernames]
@@ -185,13 +206,6 @@ def main():
                     print_progress(result['username'])
                     results.append(result)
                     records.extend(recording)
-        elif web:
-            Thread(target=run_server, args=(basedir,), daemon=True).start()
-            for student in usernames:
-                print("\nStudent: {}".format(student))
-                result, recording = single(student)
-                results.append(result)
-                records.extend(recording)
         else:
             for student in usernames:
                 logging.debug('Processing {}'.format(student))

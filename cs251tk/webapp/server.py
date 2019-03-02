@@ -24,7 +24,7 @@ class S(BaseHTTPRequestHandler):
         (stdout, stderr) = x.communicate(incoming_data)
         outgoing_data = stdout
         if len(stderr) > 0:
-            print(stderr, file=sys.stderr)
+            logging.debug(stderr, file=sys.stderr)
         self._set_headers()
         self.wfile.write(outgoing_data)
 

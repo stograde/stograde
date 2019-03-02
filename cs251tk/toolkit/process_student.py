@@ -22,8 +22,7 @@ def process_student(
         no_update,
         specs,
         skip_web_compile,
-        stogit_url,
-        web
+        stogit_url
 ):
     if clean:
         remove(student)
@@ -38,7 +37,7 @@ def process_student(
             checkout_date(student, date=date)
 
         recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
-                            interact=interact, web=web, ci=ci, skip_web_compile=skip_web_compile)
+                            interact=interact, ci=ci, skip_web_compile=skip_web_compile)
         analysis = analyze(student, specs, check_for_branches=not no_check, ci=ci)
 
         if date:

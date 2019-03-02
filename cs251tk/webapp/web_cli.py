@@ -106,6 +106,8 @@ def launch_cli(basedir,
                no_update,
                spec,
                usernames):
+    usernames = ['{} NO SUBMISSION'.format(user) if not os.path.exists('{}/{}'.format(user, spec['assignment'])) else user
+                 for user in usernames]
 
     while True:
 
@@ -125,7 +127,3 @@ def launch_cli(basedir,
 
         if files:
             ask_file(files, student, spec, basedir)
-        else:
-            usernames = [
-                '{} NO SUBMISSION'.format(user) if user == student and 'NO SUBMISSION' not in user else user
-                for user in usernames]

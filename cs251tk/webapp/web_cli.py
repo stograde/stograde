@@ -88,7 +88,7 @@ def ask_file(files, student, spec, basedir):
                     file_spec = f
                     break
             if file_spec:
-                with (chdir('{}/{}'.format(student, spec['assignment']))):
+                with chdir('{}/{}'.format(student, spec['assignment'])):
                     process_file(file_spec['filename'],
                                  steps=file_spec['commands'],
                                  options=file_spec['options'],

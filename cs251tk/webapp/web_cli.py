@@ -23,13 +23,15 @@ def check_student(student, spec, basedir):
                                       skip_web_compile=False)
 
                 if 'web' in file['options']:
+                    description = file['filename']
+
                     if result['missing']:
                         if 'optional' in file['options']:
-                            files = files + [file['filename'] + ' MISSING (OPTIONAL)']
+                            description = '{} MISSING (OPTIONAL)'.format(file['filename'])
                         else:
-                            files = files + [file['filename'] + ' MISSING']
-                    else:
-                        files = files + [file['filename']]
+                            description = '{} MISSING'.format(file['filename'])
+
+                    files = files + [description]
                 else:
                     continue
 

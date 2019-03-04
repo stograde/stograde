@@ -41,9 +41,9 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def run_server(basedir):
+def run_server(basedir, port):
     server.exe_name = '"{}/server/server_file"'.format(basedir)
-    server.run_server()
+    server.run_server(port=port)
     return
 
 
@@ -78,6 +78,7 @@ def main():
     no_check = args['no_check']
     no_update = args['no_update']
     no_progress = args['no_progress']
+    port = args['server_port']
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
     skip_web_compile = args['skip_web_compile']
@@ -178,7 +179,7 @@ def main():
         )
 
         if web:
-            Thread(target=run_server, args=(basedir,), daemon=True).start()
+            Thread(target=run_server, args=(basedir,port,), daemon=True).start()
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)
             do_record = launch_cli(basedir=basedir,

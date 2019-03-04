@@ -60,6 +60,8 @@ def build_argparser():
                           help='Highlight partial submissions')
     optional.add_argument('--skip-web-compile', action='store_true',
                           help='Skip compilation and testing of files marked with web: true')
+    optional.add_argument('--port', type=int, dest='server_port', default=25100,
+                          help='Set the port for the server to use')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',
@@ -126,7 +128,8 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
             elif prefixed in _all_students:
                 student_set = _all_students[prefixed]
             else:
-                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
+                warning(
+                    'Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]

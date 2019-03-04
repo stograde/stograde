@@ -229,7 +229,7 @@ def main():
         for record in records:
             for file in record['files']:
                 # Alert student about any missing files
-                if record['files'][file]['missing']:
+                if record['files'][file]['missing'] and not record['files'][file]['optional']:
                     logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
                     failure = True
                 else:

@@ -179,7 +179,7 @@ def main():
         )
 
         if web:
-            Thread(target=run_server, args=(basedir,port,), daemon=True).start()
+            Thread(target=run_server, args=(basedir, port,), daemon=True).start()
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)
             do_record = launch_cli(basedir=basedir,
@@ -227,19 +227,22 @@ def main():
     elif ci:
         failure = False
         for record in records:
-            for file in record['files']:
-                # Alert student about any missing files
-                if record['files'][file]['missing'] and not record['files'][file]['optional']:
-                    logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
-                    failure = True
-                else:
-                    # Alert student about any compilation errors
-                    for compilation in record['files'][file]['compilation']:
-                        if compilation['status'] != 'success':
-                            logging.error("{}: File {} compile error:\n\n\t{}"
-                                          .format(record['spec'], record['files'][file]['filename'],
-                                                  compilation['output'].replace("\n", "\n\t")))
-                            failure = True
+            try:
+                for file in record['files']:
+                    # Alert student about any missing files
+                    if record['files'][file]['missing'] and not record['files'][file]['optional']:
+                        logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
+                        failure = True
+                    else:
+                        # Alert student about any compilation errors
+                        for compilation in record['files'][file]['compilation']:
+                            if compilation['status'] != 'success':
+                                logging.error("{}: File {} compile error:\n\n\t{}"
+                                              .format(record['spec'], record['files'][file]['filename'],
+                                                      compilation['output'].replace("\n", "\n\t")))
+                                failure = True
+            except KeyError:
+                print("KeyError on {}".format(record['spec']))
         if failure:
             logging.debug('Build failed')
             sys.exit(1)

@@ -10,6 +10,16 @@ def check_student(student, spec, basedir):
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
         with chdir('{}/{}'.format(student, spec['assignment'])):
+            # prepare the current folder
+            inputs = spec.get('inputs', [])
+            supporting = os.path.join(basedir, 'data', 'supporting')
+            # write the supporting files into the folder
+            for filename in inputs:
+                with open(os.path.join(supporting, spec['assignment'], filename), 'rb') as infile:
+                    contents = infile.read()
+                with open(os.path.join(os.getcwd(), filename), 'wb') as outfile:
+                    outfile.write(contents)
+
             for file in spec['files']:
                 result = process_file(file['filename'],
                                       steps=file['commands'],

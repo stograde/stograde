@@ -242,7 +242,7 @@ def main():
                                                       compilation['output'].replace("\n", "\n\t")))
                                 failure = True
             except KeyError:
-                print("KeyError on {}".format(record['spec']))
+                logging.error("KeyError with {}".format(record['spec']))
         if failure:
             logging.debug('Build failed')
             sys.exit(1)

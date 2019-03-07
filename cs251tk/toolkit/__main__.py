@@ -41,9 +41,9 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def run_server(basedir):
+def run_server(basedir, port):
     server.exe_name = '"{}/server/server_file"'.format(basedir)
-    server.run_server()
+    server.run_server(port=port)
     return
 
 
@@ -78,6 +78,7 @@ def main():
     no_check = args['no_check']
     no_update = args['no_update']
     no_progress = args['no_progress']
+    port = args['server_port']
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
     skip_web_compile = args['skip_web_compile']
@@ -178,7 +179,7 @@ def main():
         )
 
         if web:
-            Thread(target=run_server, args=(basedir,), daemon=True).start()
+            Thread(target=run_server, args=(basedir, port,), daemon=True).start()
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)
             do_record = launch_cli(basedir=basedir,
@@ -226,19 +227,22 @@ def main():
     elif ci:
         failure = False
         for record in records:
-            for file in record['files']:
-                # Alert student about any missing files
-                if record['files'][file]['missing']:
-                    logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
-                    failure = True
-                else:
-                    # Alert student about any compilation errors
-                    for compilation in record['files'][file]['compilation']:
-                        if compilation['status'] != 'success':
-                            logging.error("{}: File {} compile error:\n\n\t{}"
-                                          .format(record['spec'], record['files'][file]['filename'],
-                                                  compilation['output'].replace("\n", "\n\t")))
-                            failure = True
+            try:
+                for file in record['files']:
+                    # Alert student about any missing files
+                    if record['files'][file]['missing'] and not record['files'][file]['optional']:
+                        logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
+                        failure = True
+                    else:
+                        # Alert student about any compilation errors
+                        for compilation in record['files'][file]['compilation']:
+                            if compilation['status'] != 'success':
+                                logging.error("{}: File {} compile error:\n\n\t{}"
+                                              .format(record['spec'], record['files'][file]['filename'],
+                                                      compilation['output'].replace("\n", "\n\t")))
+                                failure = True
+            except KeyError:
+                logging.error("KeyError with {}".format(record['spec']))
         if failure:
             logging.debug('Build failed')
             sys.exit(1)

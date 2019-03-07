@@ -10,6 +10,16 @@ def check_student(student, spec, basedir):
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
         with chdir('{}/{}'.format(student, spec['assignment'])):
+            # prepare the current folder
+            inputs = spec.get('inputs', [])
+            supporting = os.path.join(basedir, 'data', 'supporting')
+            # write the supporting files into the folder
+            for filename in inputs:
+                with open(os.path.join(supporting, spec['assignment'], filename), 'rb') as infile:
+                    contents = infile.read()
+                with open(os.path.join(os.getcwd(), filename), 'wb') as outfile:
+                    outfile.write(contents)
+
             for file in spec['files']:
                 result = process_file(file['filename'],
                                       steps=file['commands'],
@@ -34,6 +44,12 @@ def check_student(student, spec, basedir):
                     files = files + [description]
                 else:
                     continue
+            # and we remove any supporting files
+            try:
+                for inputfile in inputs:
+                    os.remove(inputfile)
+            except FileNotFoundError:
+                pass
 
     return files
 
@@ -89,6 +105,15 @@ def ask_file(files, student, spec, basedir):
                     break
             if file_spec:
                 with chdir('{}/{}'.format(student, spec['assignment'])):
+                    # prepare the current folder
+                    inputs = spec.get('inputs', [])
+                    supporting = os.path.join(basedir, 'data', 'supporting')
+                    # write the supporting files into the folder
+                    for filename in inputs:
+                        with open(os.path.join(supporting, spec['assignment'], filename), 'rb') as infile:
+                            contents = infile.read()
+                        with open(os.path.join(os.getcwd(), filename), 'wb') as outfile:
+                            outfile.write(contents)
                     process_file(file_spec['filename'],
                                  steps=file_spec['commands'],
                                  options=file_spec['options'],
@@ -99,6 +124,12 @@ def ask_file(files, student, spec, basedir):
                                  basedir=basedir,
                                  spec_id=spec['assignment'],
                                  skip_web_compile=False)
+                    # and we remove any supporting files
+                    try:
+                        for inputfile in inputs:
+                            os.remove(inputfile)
+                    except FileNotFoundError:
+                        pass
         else:
             return
 

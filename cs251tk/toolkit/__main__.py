@@ -140,13 +140,12 @@ def main():
         available_specs = set(assignments)
 
         if ci:
-            ignored_specs = open('.cs251tkignore').read().split('\n')
-            logging.debug("Ignored specs: {}".format(ignored_specs))
-
-            for spec_to_use in assignments:
-                if spec_to_use in ignored_specs:
-                    available_specs.remove(spec_to_use)
-                    continue
+            with open('.cs251tkignore') as ignored_specs_file:
+                ignored_specs = ignored_specs_file.read().splitlines()
+                for i in range(0, len(ignored_specs)-1):
+                    ignored_specs[i] = ignored_specs[i].strip()
+                logging.debug("Ignored specs: {}".format(ignored_specs))
+            available_specs = available_specs.difference(ignored_specs)
 
         for spec_to_use in assignments:
             try:

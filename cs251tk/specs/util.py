@@ -4,7 +4,15 @@ from logging import warning
 
 def get_filenames(spec):
     """returns the list of files from an assignment spec"""
-    return [file['filename'] for file in spec['files']]
+    files = [file['filename'] for file in spec['files']]
+    for file in spec['files']:
+        try:
+            if file['options']['optional']:
+                files.remove(file['filename'])
+        except KeyError:
+            continue
+
+    return files
 
 
 def check_dependencies(spec):

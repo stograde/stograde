@@ -139,18 +139,28 @@ def main():
     if assignments:
         available_specs = set(assignments)
 
+        if ci:
+            with open('.cs251tkignore') as infile:
+                ignored_specs = [line.strip() for line in infile.read().splitlines()]
+                logging.debug("Ignored specs: {}".format(ignored_specs))
+            available_specs = available_specs.difference(ignored_specs)
+
         for spec_to_use in assignments:
             try:
                 check_dependencies(specs[spec_to_use])
             except KeyError:
-                print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
+                # Prevent lab0 directory from causing an extraneous output
+                if spec_to_use != 'lab0':
+                    print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
                 available_specs.remove(spec_to_use)
 
         assignments = available_specs
 
         if not assignments:
-            print('no valid specs remaining', file=sys.stderr)
+            print('No valid specs remaining', file=sys.stderr)
             sys.exit(1)
+        else:
+            logging.debug("Remaining specs: {}".format(assignments))
 
     results = []
     records = []

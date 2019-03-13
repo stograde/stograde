@@ -41,7 +41,7 @@ setup(
         'termcolor == 1.*',
         'natsort == 5.0.*',
         'appdirs == 1.4.*',
-        'python-dateutil == 2.7.*',
+        'python-dateutil==2.8.*',
         'PyInquirer == 1.0.*',
     ],
     tests_require=['tox'],

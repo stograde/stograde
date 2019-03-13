@@ -140,10 +140,8 @@ def main():
         available_specs = set(assignments)
 
         if ci:
-            with open('.cs251tkignore') as ignored_specs_file:
-                ignored_specs = ignored_specs_file.read().splitlines()
-                for i in range(0, len(ignored_specs) - 1):
-                    ignored_specs[i] = ignored_specs[i].strip()
+            with open('.cs251tkignore') as infile:
+                ignored_specs = [line.strip() for line in infile.read().splitlines()]
                 logging.debug("Ignored specs: {}".format(ignored_specs))
             available_specs = available_specs.difference(ignored_specs)
 
@@ -151,6 +149,7 @@ def main():
             try:
                 check_dependencies(specs[spec_to_use])
             except KeyError:
+                # Prevent lab0 directory from causing an extraneous output
                 if spec_to_use != 'lab0':
                     print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
                 available_specs.remove(spec_to_use)

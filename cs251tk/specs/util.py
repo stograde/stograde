@@ -4,7 +4,7 @@ from logging import warning
 
 def get_filenames(spec):
     """returns the list of files from an assignment spec"""
-    return [file['filename'] for file in spec['files']]
+    return [file['filename'] for file in spec['files'] if not file['options'].get('optional', False)]
 
 
 def check_dependencies(spec):

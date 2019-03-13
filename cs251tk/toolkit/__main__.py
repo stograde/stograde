@@ -140,10 +140,13 @@ def main():
         available_specs = set(assignments)
 
         if ci:
-            with open('.cs251tkignore') as infile:
-                ignored_specs = [line.strip() for line in infile.read().splitlines()]
-                logging.debug("Ignored specs: {}".format(ignored_specs))
-            available_specs = available_specs.difference(ignored_specs)
+            try:
+                with open('.cs251tkignore') as infile:
+                    ignored_specs = [line.strip() for line in infile.read().splitlines()]
+                    logging.debug("Ignored specs: {}".format(ignored_specs))
+                available_specs = available_specs.difference(ignored_specs)
+            except FileNotFoundError:
+                logging.debug("No .cs251tkignore file found")
 
         for spec_to_use in assignments:
             try:

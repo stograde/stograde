@@ -51,7 +51,7 @@ def download_specs(course, basedir, stogit):
     spec_urls = {
         'sd': 'https://github.com/StoDevX/cs251-specs.git',
         'hd': 'https://github.com/StoDevX/cs241-specs.git',
-        'ads': 'https://github.com/Jedmeyer/cs253-specs.git'
+        'ads': 'https://github.com/StoDevX/cs253-specs.git'
     }
     course = course.split("-")[0].lower()
     try:

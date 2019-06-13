@@ -7,7 +7,7 @@ if sys.version_info < (3, 5):
 setup(
     name='stograde',
     version='2.7.2',
-    description='The CS251 (Software Design) Toolkit',
+    description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
     url='https://github.com/stodevx/cs251-toolkit',

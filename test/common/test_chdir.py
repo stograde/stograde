@@ -1,5 +1,5 @@
 from pyfakefs import fake_filesystem
-from .chdir import chdir
+from stograde.common.chdir import chdir
 
 
 def test_chdir(fs):

@@ -1,5 +1,5 @@
 import pytest
-from .truncate import truncate
+from stograde.student.markdownify.truncate import truncate
 
 
 def test_truncate():

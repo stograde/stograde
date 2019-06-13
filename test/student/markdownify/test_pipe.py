@@ -1,4 +1,4 @@
-from .pipe import pipe, expand_chunk, process_chunk
+from stograde.student.markdownify.pipe import pipe, expand_chunk, process_chunk
 
 
 def test_expand_chunk(fs):

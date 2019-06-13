@@ -1,4 +1,4 @@
-from .parse_commit_msg_for_assignments import parse_commit_msg_for_assignments
+from stograde.common.parse_commit_msg_for_assignments import parse_commit_msg_for_assignments
 sample = parse_commit_msg_for_assignments
 
 

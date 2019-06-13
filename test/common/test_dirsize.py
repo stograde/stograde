@@ -1,5 +1,5 @@
 from pyfakefs import fake_filesystem
-from .dirsize import dirsize
+from stograde.common.dirsize import dirsize
 
 
 def test_chdir(fs):

@@ -1,5 +1,5 @@
 from textwrap import dedent
-from .tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, sort_by_username, tabulate
+from stograde.toolkit.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, sort_by_username, tabulate
 
 
 def test_pad():

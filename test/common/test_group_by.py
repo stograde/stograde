@@ -1,5 +1,5 @@
 from inspect import isgenerator
-from .group_by import group_by
+from stograde.common.group_by import group_by
 
 
 def test_group_by():

@@ -1,4 +1,4 @@
-from .run import run
+from stograde.common.run import run
 
 
 def test_run():

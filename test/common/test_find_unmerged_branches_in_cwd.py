@@ -1,6 +1,6 @@
 import pytest
-from .find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from .run import run
+from stograde.common.find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
+from stograde.common.run import run
 
 
 def git(cmd, *args):

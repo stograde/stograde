@@ -1,7 +1,7 @@
 from textwrap import dedent
 from pyfakefs import fake_filesystem
 from collections import Mapping
-from .get_students import get_students
+from stograde.toolkit.get_students import get_students
 
 
 def write_students_file(fs, students):

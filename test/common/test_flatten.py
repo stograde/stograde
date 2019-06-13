@@ -1,5 +1,5 @@
 from inspect import isgenerator
-from .flatten import flatten
+from stograde.common.flatten import flatten
 
 
 def test_flatten():

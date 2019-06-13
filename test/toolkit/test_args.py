@@ -1,5 +1,5 @@
 import datetime
-from .args import (
+from stograde.toolkit.args import (
     build_argparser,
     get_students_from_args,
     get_assignments_from_args,

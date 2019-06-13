@@ -1,5 +1,5 @@
 from collections import defaultdict
-from cs251tk.common import group_by as group
+from stograde.common import group_by as group
 
 
 def format_collected_data(records, group_by: str, formatter, debug):

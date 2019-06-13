@@ -1,6 +1,6 @@
 import os
 from collections import Iterable
-from cs251tk.common import run, flatten
+from stograde.common import run, flatten
 
 from .truncate import truncate
 from .cat import cat

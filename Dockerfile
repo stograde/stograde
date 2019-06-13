@@ -11,7 +11,7 @@ FROM python:3-slim
 # unless pushing to Docker Hub.
 MAINTAINER Kristofer Rye <kristofer.rye@gmail.com>
 
-# Add the entire project directory to the /cs251tk/ directory in the
+# Add the entire project directory to the /stograde/ directory in the
 # image.
 ADD . /cs251tk/
 
@@ -30,7 +30,7 @@ VOLUME /cs251tk_share/
 # Change into our project directory.
 WORKDIR /cs251tk
 
-# Make a symlink between /cs251tk_share/blah and /cs251tk/blah
+# Make a symlink between /cs251tk_share/blah and /stograde/blah
 RUN ln -sv /cs251tk_share/data /cs251tk/data
 RUN ln -sv /cs251tk_share/students /cs251tk/students
 RUN ln -sv /cs251tk_share/logs /cs251tk/logs
@@ -56,5 +56,5 @@ RUN gcc --version \
     && git --version \
     && python --version
 
-# Finally, set our default command to just "cs251tk".
+# Finally, set our default command to just "stograde".
 CMD ["cs251tk"]

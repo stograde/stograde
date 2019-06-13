@@ -1,7 +1,7 @@
 import os
 import logging
 
-from cs251tk.formatters import format_collected_data, markdown, gist
+from stograde.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
 

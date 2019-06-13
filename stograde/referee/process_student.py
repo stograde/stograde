@@ -1,8 +1,8 @@
-from cs251tk.student import remove
-from cs251tk.student import clone_url
-from cs251tk.student import checkout_ref
-from cs251tk.student import record
-from cs251tk.student import analyze
+from stograde.student import remove
+from stograde.student import clone_url
+from stograde.student import checkout_ref
+from stograde.student import record
+from stograde.student import analyze
 
 
 def process_student(*, repo, branch, assignments, folder, specs, basedir, debug=False):

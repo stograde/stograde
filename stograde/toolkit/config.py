@@ -3,11 +3,11 @@ from configparser import ConfigParser
 from appdirs import AppDirs
 import os
 
-_dirs = AppDirs('cs251tk', 'StoDevX')
+_dirs = AppDirs('stograde', 'StoDevX')
 
 
 class Config:
-    _filename = os.path.join(_dirs.user_config_dir, 'cs251tk.ini')
+    _filename = os.path.join(_dirs.user_config_dir, 'stograde.ini')
     _config = ConfigParser()
 
     def __init__(self):

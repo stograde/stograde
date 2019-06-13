@@ -92,7 +92,7 @@ def main():
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
         print(('v{} is available: you have v{}. '
-               'Try "pip3 install --no-cache --user --upgrade cs251tk" '
+               'Try "pip3 install --no-cache --user --upgrade stograde" '
                'to update.').format(new_version, current_version), file=sys.stderr)
 
     if date:

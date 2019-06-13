@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from cs251tk.toolkit.__main__ import main
+from stograde.toolkit.__main__ import main
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

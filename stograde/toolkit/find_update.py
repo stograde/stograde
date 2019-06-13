@@ -1,11 +1,11 @@
 import requests
 import natsort
 import re
-from cs251tk.common import version
+from stograde.common import version
 from .config import conf
 
 
-def get_all_versions(pkg='cs251tk'):
+def get_all_versions(pkg='stograde'):
     # PyPI has these "simple" html pages. They're how pip does stuff.
     try:
         req = requests.get('https://pypi.python.org/simple/{}'.format(pkg), timeout=0.5)

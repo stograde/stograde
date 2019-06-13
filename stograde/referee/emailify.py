@@ -1,5 +1,5 @@
-from cs251tk.formatters import format_collected_data, html, markdown
-from cs251tk.common import group_by
+from stograde.formatters import format_collected_data, html, markdown
+from stograde.common import group_by
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 

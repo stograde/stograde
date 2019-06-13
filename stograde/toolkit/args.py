@@ -12,7 +12,7 @@ from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
-from cs251tk.common import flatten, version, run
+from stograde.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)

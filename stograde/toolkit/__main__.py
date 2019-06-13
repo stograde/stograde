@@ -111,13 +111,9 @@ def main():
         else:
             print('data directory not found', file=sys.stderr)
             if args['course']:
-                download = input("Download specs for {}? (Y/N)".format(args['course'].upper()))
-                if download and download.lower()[0] == "y":
-                    url = download_specs(args['course'], basedir, args['stogit'])
-                    if not args['stogit']:
-                        stogit_url = url
-                else:
-                    sys.exit(1)
+                url = download_specs(args['course'], basedir, args['stogit'])
+                if not args['stogit']:
+                    stogit_url = url
             else:
                 download = input("Download specs? (Y/N)")
                 if download and download.lower()[0] == "y":

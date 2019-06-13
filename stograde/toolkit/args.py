@@ -20,7 +20,7 @@ ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
 
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
-    parser = argparse.ArgumentParser(description='The core of the CS251 toolkit')
+    parser = argparse.ArgumentParser(description='The core of the StoGrade toolkit')
     parser.add_argument('input_items', nargs='*', metavar='ITEM',
                         help='A mixed list of students and assignments')
     parser.add_argument('-v', '--version', action='store_true',
@@ -28,7 +28,7 @@ def build_argparser():
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
     parser.add_argument('--skip-update-check', action='store_true',
-                        default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
+                        default=getenv('STOGRADE_SKIP_UPDATE_CHECK', False) is not False,
                         help='skips the pypi update check')
     parser.add_argument('--ci', action='store_true',
                         help='Configure for gitlab-ci usage')

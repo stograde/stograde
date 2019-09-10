@@ -16,7 +16,7 @@ from stograde.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
-COURSE_REGEX = re.compile(r'^([\w]{2,3}-[sf]\d\d)')
+COURSE_REGEX = re.compile(r'^([\w]{2,3}-[sf]\d\d)$')
 
 
 def build_argparser():

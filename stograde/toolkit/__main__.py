@@ -219,7 +219,7 @@ def main():
             spec = specs[list(assignments)[0]]
             web_spec = check_web_spec(spec)
             if not web_spec:
-                print("No web files in the assignment")
+                print("No web files in assignment {}".format(list(assignments)[0]))
                 sys.exit(1)
 
             Thread(target=run_server, args=(basedir, port,), daemon=True).start()

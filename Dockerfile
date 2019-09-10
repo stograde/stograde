@@ -11,9 +11,9 @@ FROM python:3-slim
 # unless pushing to Docker Hub.
 MAINTAINER Kristofer Rye <kristofer.rye@gmail.com>
 
-# Add the entire project directory to the /cs251tk/ directory in the
+# Add the entire project directory to the /stograde/ directory in the
 # image.
-ADD . /cs251tk/
+ADD . /stograde/
 
 # Create the SSH config directory on the root user account home directory.
 RUN mkdir -p /root/.ssh/
@@ -25,20 +25,20 @@ RUN echo "Host *.stolaf.edu\n\tUserKnownHostsFile /dev/null\n\tStrictHostKeyChec
 RUN chmod 600 /root/.ssh/config
 
 # Add a marked dependency volume folder.
-VOLUME /cs251tk_share/
+VOLUME /stograde_share/
 
 # Change into our project directory.
-WORKDIR /cs251tk
+WORKDIR /stograde
 
-# Make a symlink between /cs251tk_share/blah and /cs251tk/blah
-RUN ln -sv /cs251tk_share/data /cs251tk/data
-RUN ln -sv /cs251tk_share/students /cs251tk/students
-RUN ln -sv /cs251tk_share/logs /cs251tk/logs
-RUN ln -sv /cs251tk_share/students.txt /cs251tk/students.txt
+# Make a symlink between /stograde_share/blah and /stograde/blah
+RUN ln -sv /stograde_share/data /stograde/data
+RUN ln -sv /stograde_share/students /stograde/students
+RUN ln -sv /stograde_share/logs /stograde/logs
+RUN ln -sv /stograde_share/students.txt /stograde/students.txt
 
 # Make symlinks for our SSH keys.
-RUN ln -sv /cs251tk_share/.ssh/id_rsa /root/.ssh/id_rsa
-RUN ln -sv /cs251tk_share/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+RUN ln -sv /stograde_share/.ssh/id_rsa /root/.ssh/id_rsa
+RUN ln -sv /stograde_share/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
 
 # Update the package cache.
 RUN apt-get update
@@ -56,5 +56,5 @@ RUN gcc --version \
     && git --version \
     && python --version
 
-# Finally, set our default command to just "cs251tk".
-CMD ["cs251tk"]
+# Finally, set our default command to just "stograde".
+CMD ["stograde"]

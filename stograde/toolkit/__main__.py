@@ -92,7 +92,7 @@ def main():
     current_version, new_version = update_available(skip_update_check=skip_update_check)
     if new_version:
         print(('v{} is available: you have v{}. '
-               'Try "pip3 install --no-cache --user --upgrade cs251tk" '
+               'Try "pip3 install --no-cache --user --upgrade stograde" '
                'to update.').format(new_version, current_version), file=sys.stderr)
 
     if date:
@@ -141,12 +141,18 @@ def main():
 
         if ci:
             try:
-                with open('.cs251tkignore') as infile:
+                with open('.stogradeignore') as infile:
                     ignored_specs = [line.strip() for line in infile.read().splitlines()]
                     logging.debug("Ignored specs: {}".format(ignored_specs))
                 available_specs = available_specs.difference(ignored_specs)
             except FileNotFoundError:
-                logging.debug("No .cs251tkignore file found")
+                try:
+                    with open('.cs251tkignore') as infile:
+                        ignored_specs = [line.strip() for line in infile.read().splitlines()]
+                        logging.debug("Ignored specs: {}".format(ignored_specs))
+                    available_specs = available_specs.difference(ignored_specs)
+                except FileNotFoundError:
+                    logging.debug("No .stogradeignore file found")
 
         for spec_to_use in assignments:
             try:

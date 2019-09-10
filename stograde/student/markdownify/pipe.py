@@ -1,8 +1,8 @@
 from glob import glob
 import shlex
 
-from cs251tk.common import flatten
-from cs251tk.common import run
+from stograde.common import flatten
+from stograde.common import run
 
 
 def expand_chunk(command_chunk):

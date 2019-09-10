@@ -2,9 +2,9 @@ import logging
 import re
 import os
 
-from cs251tk.common import chdir
-from cs251tk.common import find_unmerged_branches_in_cwd
-from cs251tk.specs import get_filenames
+from stograde.common import chdir
+from stograde.common import find_unmerged_branches_in_cwd
+from stograde.specs import get_filenames
 
 
 def analyze(student, specs, check_for_branches, ci):

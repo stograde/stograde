@@ -1,5 +1,5 @@
-from cs251tk.common import chdir
-from cs251tk.common import run
+from stograde.common import chdir
+from stograde.common import run
 
 
 def reset(student):

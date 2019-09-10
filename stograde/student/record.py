@@ -1,7 +1,7 @@
 import logging
 from os import path
-from cs251tk.common import chdir
-from cs251tk.student.markdownify import markdownify
+from stograde.common import chdir
+from stograde.student.markdownify import markdownify
 
 
 def record(student, *, specs, to_record, basedir, debug, interact, ci, skip_web_compile):

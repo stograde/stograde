@@ -1,13 +1,13 @@
-# cs251-toolkit
-[![PyPI](https://img.shields.io/pypi/v/cs251tk.svg)](https://pypi.python.org/pypi/cs251tk) [![TraviCI](https://travis-ci.org/StoDevX/cs251-toolkit.svg?branch=master)](https://travis-ci.org/StoDevX/cs251-toolkit) [![Coverage Status](https://coveralls.io/repos/github/StoDevX/cs251-toolkit/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/cs251-toolkit?branch=master)
+# stograde
+[![PyPI](https://img.shields.io/pypi/v/stograde.svg)](https://pypi.python.org/pypi/stograde) [![TraviCI](https://travis-ci.org/StoDevX/stograde.svg?branch=master)](https://travis-ci.org/StoDevX/stograde) [![Coverage Status](https://coveralls.io/repos/github/StoDevX/stograde/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/stograde?branch=master)
 
 Welcome to the CS251 toolkit, designed to help TAs and graders for St. Olaf's Software Design course.
 
 This toolkit can be used to
 
-- simply manage a set of student repositories (`cs251tk`)
-- check which assignments the students have turned in (`cs251tk`)
-- run tests against those assignments and produce a log file (`cs251tk --record hw3`)
+- simply manage a set of student repositories (`stograde`)
+- check which assignments the students have turned in (`stograde`)
+- run tests against those assignments and produce a log file (`stograde --record hw3`)
 
 See the ["Run the thing"](#run-the-thing) section for details.
 
@@ -29,12 +29,12 @@ You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Pyth
 ##### Install the toolkit
 
 ```console
-$ pip3 install --user cs251tk
+$ pip3 install --user stograde
 ```
 
 The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder, instead.
 
-> When you need to update the toolkit, use `pip3 install --user --no-cache --upgrade cs251tk`.
+> When you need to update the toolkit, use `pip3 install --user --no-cache --upgrade stograde`.
 
 
 ##### Grab the course specs
@@ -90,7 +90,7 @@ magnusow
 ## Run the thing
 
 ```console
-$ cs251tk --help
+$ stograde --help
 ```
 
 As mentioned in the introduction, this toolkit can do a bunch of things, including
@@ -101,11 +101,11 @@ As mentioned in the introduction, this toolkit can do a bunch of things, includi
 - checking out the contents of a student's submission at a given date/time
 - viewing programs one at a time in the SD_app React app
 
-If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and run `cs251tk --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the printing of the summary table.)
+If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and run `stograde --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the printing of the summary table.)
 
 ## Summaries
 
-If you want to see the summary table of what people've turned in, you can just run `cs251tk` to produce something like this:
+If you want to see the summary table of what people've turned in, you can just run `stograde` to produce something like this:
 
 ```text
 USER       | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 | 1 2 3 4 5 6 7 8 9 10 11
@@ -225,10 +225,10 @@ Repository has unmerged branches:
 Then, you can just scroll through the file, seeing what people submitted, and saving you from needing to `cd` between every folder and make each part of the assignment manually.
 
 
-## `cs251tk --help`
+## `stograde --help`
 
 ```text
-usage: cs251tk [-h] [--debug] [--students USERNAME [USERNAME ...]]
+usage: stograde [-h] [--debug] [--students USERNAME [USERNAME ...]]
                [--section SECTION [SECTION ...]] [--all] [--quiet]
                [--no-progress] [--workers N] [--sort {name,count}]
                [--partials] [--clean] [--no-update] [--stogit URL]
@@ -300,7 +300,7 @@ Follow your particular operating system's instructions to set it up if you haven
 
 To pull the latest image of the `master` branch from Docker, (what you should probably do by default)
 ```console
-$ docker pull stodevx/cs251-toolkit:HEAD
+$ docker pull stodevx/stograde:HEAD
 ```
 
 To build from source,
@@ -309,10 +309,10 @@ To build from source,
 $ # within this repository, run:
 $ docker build -t <tag name>:<version> .
 $ # e.g.:
-$ docker build -t stodevx/cs251-toolkit:v0.0.0 .
+$ docker build -t stodevx/stograde:v0.0.0 .
 ```
 
-Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use `stodevx/cs251-toolkit:HEAD`, since that's what `script/run-docker` does.
+Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use `stodevx/stograde:HEAD`, since that's what `script/run-docker` does.
 
 To run,
 
@@ -320,18 +320,18 @@ To run,
 $ # from within the project directory---technically, you can call from any directory
 $ script/run-docker <command>
 $ # e.g.
-$ script/run-docker cs251tk --record hw1
+$ script/run-docker stograde --record hw1
 ```
 
 Again, tag name and version should match what you built or pulled.
 If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest version as long as you followed semantic versioning.
 
 ## Contributing
-- `git clone https://github.com/StoDevX/cs251-toolkit`
-- `cd cs251-toolkit`
+- `git clone https://github.com/StoDevX/stograde`
+- `cd stograde`
 - `python3 setup.py develop`
 - go to your cs251 folder that contains the data/ and students/ folders
-- run `cs251tk`, which will be the development version.
+- run `stograde`, which will be the development version.
 
 
 ## Maintainers
@@ -366,12 +366,11 @@ There are somewhere around 3 crontabs.
 2. (daily) Git: Pull the toolkit. Since our scripts are run from the toolkit’s repository, we should keep this up-to-date on the server. Only the master branch is pulled.
 3. (daily) Git: Pull the specs. Since the specs can change over time, we should keep them up-to-date.
 
-The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/cs251-toolkit/blob/master/script/crontab).
+The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/stograde/blob/master/script/crontab).
 
 # email
-Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the `CS251TK_EMAIL_USERNAME` and `CS251TK_EMAIL_PASSWORD` environment variables by way of editing the file `/home/referee/gmail_auth.sh` (which is a docker env file, not a shell script).
+Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the `STOGRADE_EMAIL_USERNAME` and `STOGRADE_EMAIL_PASSWORD` environment variables by way of editing the file `/home/referee/gmail_auth.sh` (which is a docker env file, not a shell script).
 
 # env vars
-- `CS251TK_EMAIL_USERNAME`: the username to authenticate to gmail with
-- `CS251TK_EMAIL_PASSWORD`: the password to authenticate to gmail with
-
+- `STOGRADE_EMAIL_USERNAME`: the username to authenticate to gmail with
+- `STOGRADE_EMAIL_PASSWORD`: the password to authenticate to gmail with

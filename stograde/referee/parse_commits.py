@@ -1,5 +1,5 @@
-from cs251tk.common import parse_commit_msg_for_assignments
-from cs251tk.common import flatten
+from stograde.common import parse_commit_msg_for_assignments
+from stograde.common import flatten
 from natsort import natsorted
 
 

@@ -4,13 +4,13 @@ import os
 
 import pytest
 
-from cs251tk.toolkit.__main__ import main
+from stograde.toolkit.__main__ import main
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
-def test_cs251tk_table(datafiles, capsys):
+def test_stograde_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
@@ -33,7 +33,7 @@ def test_cs251tk_table(datafiles, capsys):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
-def test_cs251tk_hidden_table(datafiles, capsys):
+def test_stograde_hidden_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
@@ -52,7 +52,7 @@ def test_cs251tk_hidden_table(datafiles, capsys):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
-def test_cs251tk_record(datafiles, capsys):
+def test_stograde_record(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv

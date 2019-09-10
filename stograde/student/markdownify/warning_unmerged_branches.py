@@ -1,4 +1,4 @@
-from cs251tk.common import find_unmerged_branches_in_cwd
+from stograde.common import find_unmerged_branches_in_cwd
 
 
 def find_unmerged_branches():

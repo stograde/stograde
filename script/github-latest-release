@@ -2,7 +2,7 @@
 
 require 'json'
 
-repository = "StoDevX/cs251-toolkit"
+repository = "StoDevX/stograde"
 
 payload = `curl -s -X GET https://api.github.com/repos/#{repository}/releases/latest`
 

@@ -12,7 +12,7 @@ from logging import warning, debug
 from natsort import natsorted
 from typing import List
 
-from cs251tk.common import flatten, version, run
+from stograde.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB)', re.IGNORECASE)
@@ -28,7 +28,7 @@ def build_argparser():
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
     parser.add_argument('--skip-update-check', action='store_true',
-                        default=getenv('CS251TK_SKIP_UPDATE_CHECK', False) is not False,
+                        default=getenv('STOGRADE_SKIP_UPDATE_CHECK', getenv('CS251TK_SKIP_UPDATE_CHECK', False)) is not False,
                         help='skips the pypi update check')
     parser.add_argument('--ci', action='store_true',
                         help='Configure for gitlab-ci usage')

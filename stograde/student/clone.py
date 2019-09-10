@@ -1,6 +1,6 @@
 import logging
 from os import path
-from cs251tk.common import run
+from stograde.common import run
 
 
 def clone_student(student, baseurl):

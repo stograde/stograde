@@ -2,7 +2,7 @@ import os
 
 
 def get_specs_dir():
-    return os.path.join(get_data_dir(), 'cs251tk', 'data')
+    return os.path.join(get_data_dir(), 'stograde', 'data')
 
 
 def get_data_dir():

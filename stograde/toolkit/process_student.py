@@ -1,11 +1,11 @@
-from cs251tk.student import remove
-from cs251tk.student import clone_student
-from cs251tk.student import stash
-from cs251tk.student import pull
-from cs251tk.student import checkout_date
-from cs251tk.student import record
-from cs251tk.student import reset
-from cs251tk.student import analyze
+from stograde.student import remove
+from stograde.student import clone_student
+from stograde.student import stash
+from stograde.student import pull
+from stograde.student import checkout_date
+from stograde.student import record
+from stograde.student import reset
+from stograde.student import analyze
 
 
 def process_student(

@@ -2,4 +2,7 @@ import shutil
 
 
 def remove(student):
-    shutil.rmtree(student)
+    try:
+        shutil.rmtree(student)
+    except FileNotFoundError:
+        return

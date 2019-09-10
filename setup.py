@@ -5,12 +5,12 @@ if sys.version_info < (3, 5):
     sys.exit("The toolkit requires Python 3.5 or greater.\nYou have {}".format(sys.version_info))
 
 setup(
-    name='cs251tk',
+    name='stograde',
     version='2.7.2',
-    description='The CS251 (Software Design) Toolkit',
+    description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
-    url='https://github.com/stodevx/cs251-toolkit',
+    url='https://github.com/stodevx/stograde',
     license='MIT',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -49,8 +49,8 @@ setup(
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={
         'console_scripts': [
-            'cs251tk=cs251tk.toolkit.__main__:main',
-            'referee=cs251tk.referee.__main__:main',
+            'stograde=stograde.toolkit.__main__:main',
+            'referee=stograde.referee.__main__:main',
         ],
     },
 )

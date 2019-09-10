@@ -7,6 +7,7 @@ from os import makedirs, getcwd
 import os.path
 import logging
 
+from .ci_analyze import ci_analyze
 from ..student import clone_student
 from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies
@@ -70,6 +71,7 @@ def main():
     args, usernames, assignments, stogit_url = process_args()
     ci = args['ci']
     clean = args['clean']
+    course = args['course']
     date = args['date']
     debug = args['debug']
     gist = args['gist']
@@ -83,6 +85,7 @@ def main():
     skip_update_check = args['skip_update_check']
     skip_web_compile = args['skip_web_compile']
     sort_by = args['sort_by']
+    stogit = args['stogit']
     web = args['web']
     workers = args['workers']
 
@@ -99,10 +102,10 @@ def main():
         logging.debug('Checking out {}'.format(date))
 
     if not os.path.exists("data"):
-        if args['ci']:
-            if args['course']:
-                url = download_specs(args['course'], basedir, args['stogit'])
-                if not args['stogit']:
+        if ci:
+            if course:
+                url = download_specs(course, basedir, stogit)
+                if not stogit:
                     stogit_url = url
             else:
                 print("data directory not found and no course specified")
@@ -110,17 +113,17 @@ def main():
 
         else:
             print('data directory not found', file=sys.stderr)
-            if args['course']:
-                url = download_specs(args['course'], basedir, args['stogit'])
-                if not args['stogit']:
+            if course:
+                url = download_specs(course, basedir, stogit)
+                if not stogit:
                     stogit_url = url
             else:
                 download = input("Download specs? (Y/N)")
                 if download and download.lower()[0] == "y":
                     repo = input("Which class? (SD/HD/ADS)")
                     if repo:
-                        url = download_specs(repo, basedir, args['stogit'])
-                        if not args['stogit']:
+                        url = download_specs(repo, basedir, stogit)
+                        if not stogit:
                             stogit_url = url
                     else:
                         sys.exit(1)
@@ -234,25 +237,8 @@ def main():
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         gist_recordings(records, table, debug=debug)
     elif ci:
-        failure = False
-        for record in records:
-            try:
-                for file in record['files']:
-                    # Alert student about any missing files
-                    if record['files'][file]['missing'] and not record['files'][file]['optional']:
-                        logging.error("{}: File {} missing".format(record['spec'], record['files'][file]['filename']))
-                        failure = True
-                    else:
-                        # Alert student about any compilation errors
-                        for compilation in record['files'][file]['compilation']:
-                            if compilation['status'] != 'success':
-                                logging.error("{}: File {} compile error:\n\n\t{}"
-                                              .format(record['spec'], record['files'][file]['filename'],
-                                                      compilation['output'].replace("\n", "\n\t")))
-                                failure = True
-            except KeyError:
-                logging.error("KeyError with {}".format(record['spec']))
-        if failure:
+        passing = ci_analyze(records)
+        if not passing:
             logging.debug('Build failed')
             sys.exit(1)
     else:

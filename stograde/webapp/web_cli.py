@@ -1,10 +1,10 @@
 import os
 
-from PyInquirer import style_from_dict, Token, prompt
 
 from ..common import chdir
 from ..student import stash, pull, checkout_date
 from ..student.markdownify.process_file import process_file
+from PyInquirer import style_from_dict, Token, prompt
 
 
 def check_student(student, spec, basedir):

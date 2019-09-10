@@ -18,7 +18,7 @@ from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
 from ..webapp import server
-from ..webapp.web_cli import launch_cli
+from ..webapp.web_cli import launch_cli, check_web_spec
 
 
 def make_progress_bar(students, no_progress=False):
@@ -64,6 +64,29 @@ def download_specs(course, basedir, stogit):
         run(['git', 'clone', url, 'data'])
         if not stogit:
             return compute_stogit_url(course=course, stogit=None, _now=datetime.date.today())
+
+
+def run_analysis(*, no_progress=False, parallel, single_analysis, usernames, workers=1):
+    results = []
+    records = []
+
+    if parallel:
+        print_progress = make_progress_bar(usernames, no_progress=no_progress)
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            futures = [pool.submit(single_analysis, name) for name in usernames]
+            for future in as_completed(futures):
+                result, recording = future.result()
+                print_progress(result['username'])
+                results.append(result)
+                records.extend(recording)
+    else:
+        for student in usernames:
+            logging.debug('Processing {}'.format(student))
+            result, recording = single_analysis(student)
+            results.append(result)
+            records.extend(recording)
+
+    return results, records
 
 
 def main():
@@ -174,7 +197,7 @@ def main():
 
     directory = './students' if not ci else '.'
     with chdir(directory):
-        single = functools.partial(
+        single_analysis = functools.partial(
             process_student,
             assignments=assignments,
             basedir=basedir,
@@ -190,41 +213,40 @@ def main():
             stogit_url=stogit_url
         )
 
+        do_record = True
+
         if web:
+            spec = specs[list(assignments)[0]]
+            web_spec = check_web_spec(spec)
+            if not web_spec:
+                print("No web files in the assignment")
+                sys.exit(1)
+
             Thread(target=run_server, args=(basedir, port,), daemon=True).start()
+
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)
+
             do_record = launch_cli(basedir=basedir,
                                    date=date,
                                    no_update=no_update,
-                                   spec=specs[list(assignments)[0]],
+                                   spec=spec,
                                    usernames=usernames)
-            if do_record:
-                print_progress = make_progress_bar(usernames, no_progress=no_progress)
-                with ProcessPoolExecutor(max_workers=workers) as pool:
-                    futures = [pool.submit(single, name) for name in usernames]
-                    for future in as_completed(futures):
-                        result, recording = future.result()
-                        print_progress(result['username'])
-                        results.append(result)
-                        records.extend(recording)
-            else:
+            if not do_record:
                 quiet = True
-        elif workers > 1:
-            print_progress = make_progress_bar(usernames, no_progress=no_progress)
-            with ProcessPoolExecutor(max_workers=workers) as pool:
-                futures = [pool.submit(single, name) for name in usernames]
-                for future in as_completed(futures):
-                    result, recording = future.result()
-                    print_progress(result['username'])
-                    results.append(result)
-                    records.extend(recording)
-        else:
-            for student in usernames:
-                logging.debug('Processing {}'.format(student))
-                result, recording = single(student)
-                results.append(result)
-                records.extend(recording)
+
+        if do_record:
+            if workers > 1:
+                results, records = run_analysis(no_progress=no_progress,
+                                                parallel=True,
+                                                single_analysis=single_analysis,
+                                                usernames=usernames,
+                                                workers=workers)
+            else:
+                results, records = run_analysis(no_progress=no_progress,
+                                                parallel=False,
+                                                single_analysis=single_analysis,
+                                                usernames=usernames)
 
     if ci or not quiet:
         table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)

@@ -1,5 +1,6 @@
 import os
 
+
 from ..common import chdir
 from ..student import stash, pull, checkout_date
 from ..student.markdownify.process_file import process_file
@@ -159,3 +160,12 @@ def launch_cli(basedir, date, no_update, spec, usernames):
 
         if files:
             ask_file(files, student, spec, basedir)
+
+
+def check_web_spec(spec):
+    web_spec = False
+    for file in spec['files']:
+        if 'web' in file['options']:
+            web_spec = True
+            break
+    return web_spec

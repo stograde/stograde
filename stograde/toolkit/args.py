@@ -35,9 +35,9 @@ def build_argparser():
                         help='Configure for gitlab-ci usage')
 
     specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='sd',
+    specs.add_argument('--course', default='',
                        help='Which course to evaluate (this sets a default stogit url). '
-                            'Can be sd, hd, ads or one of the previous with -f## or -s## (i.e. sd-s19)')
+                            'Can be sd, hd, ads, os or one of the previous with -f## or -s## (i.e. sd-s19)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],

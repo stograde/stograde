@@ -1,6 +1,5 @@
-from itertools import zip_longest
 from logging import debug
-from glob import iglob
+import pathlib
 import json
 import copy
 import os
@@ -14,11 +13,13 @@ def cache_specs(basedir):
     YAML parsing is incredibly slow, and JSON is quite fast,
     so we check modification times and convert any that have changed.
     """
-    os.makedirs(os.path.join(basedir, '_cache'), exist_ok=True)
-    yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
-    json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
+    basedir = pathlib.Path(basedir)
 
-    for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
+    cachedir = pathlib / '_cache'
+    cachedir.mkdir(exist_ok=True)
+
+    for yamlfile in basedir.glob('*.yaml'):
+        jsonfile = cachedir / yamlfile.with_suffix('.json')
         cache_spec(source_file=yamlfile, dest_file=jsonfile)
 
 

@@ -24,18 +24,6 @@ def cache_specs(basedir):
 
 
 def cache_spec(*, source_file, dest_file):
-    if not source_file:
-        # If yamlfile doesn't exist, then because we used zip_longest
-        # there has to be a jsonfile. We don't want any jsonfiles
-        # that don't match the yamlfiles.
-        os.remove(dest_file)
-        return
-
-    if not dest_file:
-        dest_file = source_file \
-            .replace('specs/', 'specs/_cache/') \
-            .replace('.yaml', '.json')
-
     source_modtime = get_modification_time_ns(source_file)
     dest_modtime = get_modification_time_ns(dest_file)
 

@@ -15,7 +15,7 @@ def cache_specs(basedir):
     """
     basedir = pathlib.Path(basedir)
 
-    cachedir = pathlib / '_cache'
+    cachedir = basedir / '_cache'
     cachedir.mkdir(exist_ok=True)
 
     for yamlfile in basedir.glob('*.yaml'):

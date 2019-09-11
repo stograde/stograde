@@ -91,7 +91,7 @@ def clean():
 
 
 def gitignore():
-    with open('.gitignore', 'w') as gitignore:
+    with open('.gitignore', 'w', encoding='utf-8') as gitignore:
         gitignore.write(big)
 
 

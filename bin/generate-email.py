@@ -62,7 +62,7 @@ def make_email(user):
 
 
 def write_email(user, email):
-    with open(user + '.eml', 'w') as output:
+    with open(user + '.eml', 'w', encoding='utf-8') as output:
         output.write(email)
 
 

@@ -38,7 +38,7 @@ class Config:
         return self.get_last_update_check() < datetime.now() - timedelta(minutes=15)
 
     def save_config(self):
-        with open(self._filename, 'w') as outfile:
+        with open(self._filename, 'w', encoding='utf-8') as outfile:
             self._config.write(outfile)
 
 

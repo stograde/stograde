@@ -163,7 +163,7 @@ def main():
 
         if ci:
             try:
-                with open('.stogradeignore') as infile:
+                with open('.stogradeignore', encoding='utf-8') as infile:
                     ignored_specs = [line.strip() for line in infile.read().splitlines()]
                     logging.debug("Ignored specs: {}".format(ignored_specs))
                 available_specs = available_specs.difference(ignored_specs)

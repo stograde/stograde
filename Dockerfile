@@ -30,7 +30,7 @@ VOLUME /stograde_share/
 # Change into our project directory.
 WORKDIR /stograde
 
-# Make a symlink between /cs251tk_share/blah and /stograde/blah
+# Make a symlink between /stograde_share/blah and /stograde/blah
 RUN ln -sv /stograde_share/data /stograde/data
 RUN ln -sv /stograde_share/students /stograde/students
 RUN ln -sv /stograde_share/logs /stograde/logs

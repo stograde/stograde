@@ -1,6 +1,6 @@
 # stograde
-[![PyPI](https://img.shields.io/pypi/v/stograde.svg)](https://pypi.python.org/pypi/stograde) 
-[![TraviCI](https://travis-ci.org/StoDevX/stograde.svg?branch=master)](https://travis-ci.org/StoDevX/stograde) 
+[![PyPI](https://img.shields.io/pypi/v/stograde.svg)](https://pypi.python.org/pypi/stograde)
+[![TraviCI](https://travis-ci.org/StoDevX/stograde.svg?branch=master)](https://travis-ci.org/StoDevX/stograde)
 [![Coverage Status](https://coveralls.io/repos/github/StoDevX/stograde/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/stograde?branch=master)
 
 Welcome to the StoGrade toolkit, designed to help TAs and graders for St. Olaf's Computer Science courses.
@@ -18,14 +18,14 @@ See the ["Run the thing"](#run-the-thing) section for details.
 Prerequisites: macOS/Linux/Windows Linux Subsystem, Python 3.5+, git.
 
 ##### Make the folder
-Make a directory for grading. We recommend naming the folder after the course id, i.e. `cs251` for Software Design, 
+Make a directory for grading. We recommend naming the folder after the course id, i.e. `cs251` for Software Design,
 `cs241` for Hardware Design, `cs253` for Algorithms and Data Structures, etc.
 ```console
 $ mkdir dirName
 $ cd dirName
-``` 
+```
 
-You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where 
+You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Python/3.X/bin` (if you're on macOS, where
 `X` is your python version – check with `python3 -V`) to your `$PATH`. Consult Google or your local unix guru for help.
 
 
@@ -35,8 +35,8 @@ You'll need to add either `~/.local/bin` (if you're on Linux) or `~/Library/Pyth
 $ pip3 install --user stograde
 ```
 
-The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install 
-something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which 
+The toolkit is distributed via `pip`, which is (more or less) Python's packaging system. `pip3 install` will install
+something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which
 installs into your home folder, instead.
 
 > When you need to update the toolkit, use `pip3 install --user --no-cache --upgrade stograde`.
@@ -54,8 +54,8 @@ created above):
 - HD: `git clone https://github.com/StoDevX/cs241-specs data`
 - ADS: `git clone https://github.com/StoDevX/cs253-specs data`
 
-The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data` 
-folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample 
+The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data`
+folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample
 input, they should go under a `supporting/hw#` folder that matches the assignment name.
 
 ##### List your students
@@ -66,7 +66,7 @@ $ touch students.txt
 
 Put a newline-separated list of your students in `./students.txt`.
 
-The students file can also include delimited sections of students, which allows the `--section-a` arguments to work. If 
+The students file can also include delimited sections of students, which allows the `--section-a` arguments to work. If
 no sections are provided, all students are assumed to be in the `[my]` section.
 
 ###### Basic Sample
@@ -105,13 +105,13 @@ As mentioned in the introduction, this toolkit can do a bunch of things, includi
 - checking out the contents of a student's submission at a given date/time
 - viewing programs one at a time in the SD_app React app
 
-If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and 
-run `stograde --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the 
+If you only want to manage the repositories, all you need to do is put your list of students into `students.txt` and
+run `stograde --quiet`. It will clone the repositories into `students/$USERNAME` and exit. (`--quiet` just disables the
 printing of the summary table.)
 
 ## Summaries
 
-If you want to see the summary table of what people've turned in, you can just run `stograde` to produce something like 
+If you want to see the summary table of what people've turned in, you can just run `stograde` to produce something like
 this:
 
 ```text
@@ -131,10 +131,10 @@ You can use the `--section`, `--my`, `--all`, and `--students` arguments to filt
 - `--section` relies on there being sections in the `students.txt` file
 - `--my` is shorthand for `--section my`
 - `--all` is a superset of all sections
-- `--students` overrides all of the other options. For example, `--students rives piersonv` would only look at those two 
+- `--students` overrides all of the other options. For example, `--students rives piersonv` would only look at those two
 students.
 
-You can use the `--sort-by` argument to sort the table, as well. `name` is the default, sorting by username, and `count` 
+You can use the `--sort-by` argument to sort the table, as well. `name` is the default, sorting by username, and `count`
 sorts by the number of completed submissions.
 
 If you want the table as quickly as possible, pass `-n`/`--no-check` to bypass the remote repository check.
@@ -156,7 +156,7 @@ The toolkit also takes a `--record` parameter. In broad strokes, `--record` does
 If you're running this on something other than a lab machine, you'll want to have `gcc` installed.
 
 ###### In a bit more detail
-`--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs` 
+`--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs`
 folder.
 
 ```yaml
@@ -173,16 +173,16 @@ tests:
   - [ types.cpp, $@.exec ]
 ```
 
-This spec will go into the `hw2` folder and look for the `types.cpp` file. If it's not found, it'll print a warning to 
+This spec will go into the `hw2` folder and look for the `types.cpp` file. If it's not found, it'll print a warning to
 the log, and exit.
 
-If it exists, it's compiled with the `cpp` compiler command, as listed under `compilers`. The syntax for variables takes 
+If it exists, it's compiled with the `cpp` compiler command, as listed under `compilers`. The syntax for variables takes
 after `make` a bit here; `$@` is the "target" of the command, so it'll compile `types.cpp` into `types.cpp.exec`.
 
-Once every file has been compiled, the tests are run. In this case, all that happens is that the binary is called. The 
+Once every file has been compiled, the tests are run. In this case, all that happens is that the binary is called. The
 output is caught and redirected to the log file. This is repeated for every test.
 
-After the tests are complete, the toolkit removes any artifacts and resets the repository to the state of the last 
+After the tests are complete, the toolkit removes any artifacts and resets the repository to the state of the last
 commit.
 
 The toolkit then spits out the log into `logs/log-$ASSIGNMENT.md`, which will look something like this:
@@ -236,7 +236,7 @@ Repository has unmerged branches:
     4294967246
 ```
 
-Then, you can just scroll through the file, seeing what people submitted, and saving you from needing to `cd` between 
+Then, you can just scroll through the file, seeing what people submitted, and saving you from needing to `cd` between
 every folder and make each part of the assignment manually.
 
 
@@ -311,22 +311,22 @@ grading arguments:
 
 
 ## Advanced Usage
-`--course {sd|hd|ads}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for 
+`--course {sd|hd|ads}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for
 Hardware Design or Algorithms and Data Structures as well.
 
-`--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form 
+`--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form
 `git clone --quiet $URL/$USERNAME.git`.
 
-`--gist` creates a private gist so you can see the nice syntax highlighting. If you don't use this argument, no data 
+`--gist` creates a private gist so you can see the nice syntax highlighting. If you don't use this argument, no data
 ever leaves your system.
 
 `--clean` removes the student folders and re-clones them, the same as `rm -rf ./students` would.
 
-`--date GIT_DATE` checks out the repositories as of GIT\_DATE, and runs everything based on that state. Powerful, but 
-not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over 
+`--date GIT_DATE` checks out the repositories as of GIT\_DATE, and runs everything based on that state. Powerful, but
+not used much. (Theoretically, you could grade everyone's submissions as to their timeliness after the semester is over
 with this, but that's a bad idea.) See `man git-rev-parse` for more information on what a GIT\_DATE is.
 
-`--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will 
+`--workers` controls the amount of parallelization. It defaults to the number of cores in your machine. `-w1` will
 disable the process pool entirely, which is helpful for debugging.
 
 `--web` starts a web server to view programs created for the SD_app React app
@@ -339,7 +339,7 @@ Follow your particular operating system's instructions to set it up if you haven
 
 To pull the latest image of the `master` branch from Docker, (what you should probably do by default)
 ```console
-$ docker pull stodevx/cs251-toolkit:HEAD
+$ docker pull stodevx/stograde:HEAD
 ```
 
 To build from source,
@@ -348,11 +348,11 @@ To build from source,
 $ # within this repository, run:
 $ docker build -t <tag name>:<version> .
 $ # e.g.:
-$ docker build -t stodevx/cs251-toolkit:v0.0.0 .
+$ docker build -t stodevx/stograde:v0.0.0 .
 ```
 
-Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use 
-`stodevx/cs251-toolkit:HEAD`, since that's what `script/run-docker` does.
+Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use
+`stodevx/stograde:HEAD`, since that's what `script/run-docker` does.
 
 To run,
 
@@ -360,16 +360,16 @@ To run,
 $ # from within the project directory---technically, you can call from any directory
 $ script/run-docker <command>
 $ # e.g.
-$ script/run-docker cs251tk --record hw1
+$ script/run-docker stograde --record hw1
 ```
 
 Again, tag name and version should match what you built or pulled.
-If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest 
+If you supplied a version and you have multiple images on your system, Docker should intelligently figure out the latest
 version as long as you followed semantic versioning.
 
 ## Contributing
-- `git clone https://github.com/StoDevX/cs251-toolkit`
-- `cd cs251-toolkit`
+- `git clone https://github.com/StoDevX/stograde`
+- `cd stograde`
 - `python3 setup.py develop`
 - go to your grading folder that contains the data/ and students/ folders
 - run `stograde`, which will be the development version.
@@ -403,21 +403,21 @@ There are two ways to upload a new release:
 ## cron
 There are somewhere around 3 crontabs.
 
-1. (daily) Update Docker image locally on machine. Since this is a transitory process and isn’t always running, there is 
-no downtime, per se, but requests made during a tiny interval will fail. (This is run at midnight, which is a pretty safe 
+1. (daily) Update Docker image locally on machine. Since this is a transitory process and isn’t always running, there is
+no downtime, per se, but requests made during a tiny interval will fail. (This is run at midnight, which is a pretty safe
 time.)
-2. (daily) Git: Pull the toolkit. Since our scripts are run from the toolkit’s repository, we should keep this up-to-date 
+2. (daily) Git: Pull the toolkit. Since our scripts are run from the toolkit’s repository, we should keep this up-to-date
 on the server. Only the master branch is pulled.
 3. (daily) Git: Pull the specs. Since the specs can change over time, we should keep them up-to-date.
 
-The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/cs251-toolkit/blob/master/script/crontab).
+The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/stograde/blob/master/script/crontab).
 
 # email
-Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the 
-`CS251TK_EMAIL_USERNAME` and `CS251TK_EMAIL_PASSWORD` environment variables by way of editing the file 
+Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the
+`STOGRADE_EMAIL_USERNAME` and `STOGRADE_EMAIL_PASSWORD` environment variables by way of editing the file
 `/home/referee/gmail_auth.sh` (which is a docker env file, not a shell script).
 
 # env vars
-- `CS251TK_EMAIL_USERNAME`: the username to authenticate to gmail with
-- `CS251TK_EMAIL_PASSWORD`: the password to authenticate to gmail with
+- `STOGRADE_EMAIL_USERNAME`: the username to authenticate to gmail with
+- `STOGRADE_EMAIL_PASSWORD`: the password to authenticate to gmail with
 

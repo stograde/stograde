@@ -7,12 +7,12 @@ run() {
   whoami
   pwd
 
-  export CS251TK_SHARE="$(mktemp -d)"
-  echo CS251TK_SHARE: $CS251TK_SHARE
+  export STOGRADE_SHARE="$(mktemp -d)"
+  echo STOGRADE_SHARE: $STOGRADE_SHARE
 
-  cp -rv /home/referee/.local/share/cs251tk/* $CS251TK_SHARE/
+  cp -rv /home/referee/.local/share/stograde/* $STOGRADE_SHARE/
 
-  command="/usr/bin/docker run -v $(readlink -f $CS251TK_SHARE):/cs251tk_share/ -v $(readlink -f /home/referee/.ssh/):/cs251tk_share/.ssh/ --env-file /home/referee/gmail_auth.sh -i stodevx/cs251-toolkit:HEAD"
+  command="/usr/bin/docker run -v $(readlink -f $STOGRADE_SHARE):/stograde_share/ -v $(readlink -f /home/referee/.ssh/):/stograde_share/.ssh/ --env-file /home/referee/gmail_auth.sh -i stodevx/stograde:HEAD"
 
   echo "docker command: $command"
 
@@ -23,13 +23,13 @@ run() {
 
   echo "doing some cleanup in the container"
 
-  $command rm -rfv /cs251tk_share/data/specs/_cache/ 2>&1
+  $command rm -rfv /stograde_share/data/specs/_cache/ 2>&1
   echo "res code: $?"
-  $command rm -rfv /cs251tk_share/students 2>&1
+  $command rm -rfv /stograde_share/students 2>&1
   echo "res code: $?"
 
   echo "now doing the rest of the cleanup"
-  rm -rfv $CS251TK_SHARE
+  rm -rfv $STOGRADE_SHARE
 }
 
-cat - | run 2>&1 | tee -a /home/referee/cs251tk-cgi.log
+cat - | run 2>&1 | tee -a /home/referee/stograde-cgi.log

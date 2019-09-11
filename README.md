@@ -53,6 +53,7 @@ created above):
 - SD: `git clone https://github.com/StoDevX/cs251-specs data`
 - HD: `git clone https://github.com/StoDevX/cs241-specs data`
 - ADS: `git clone https://github.com/StoDevX/cs253-specs data`
+- OS: `git clone https://github.com/StoDevX/cs273-specs data`
 
 The toolkit expects to be run in a folder that contains both a `data` folder and a `students.txt` file. The `data`
 folder should have a `specs` subfolder, which should have at least a `specs` folder. If any specs need to provide sample

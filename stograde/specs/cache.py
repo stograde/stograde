@@ -95,5 +95,5 @@ def json_date_handler(obj):
 def get_modification_time_ns(path):
     try:
         return os.stat(path).st_mtime_ns
-    except:
+    except Exception:
         return None

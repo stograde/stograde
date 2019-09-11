@@ -6,20 +6,20 @@ docker=$(which docker)
 # Start writing out the command.
 command="$docker run -it"
 
-default_CS251TK_IMAGE=stodevx/cs251-toolkit:HEAD
-default_CS251TK_SHARE=$HOME/.cs251tk_share
+default_STOGRADE_IMAGE=stodevx/stograde:HEAD
+default_STOGRADE_SHARE=$HOME/.stograde_share
 
-if [ -z "${CS251TK_IMAGE}" ];
+if [ -z "${STOGRADE_IMAGE}" ];
 then
-    echo "===> \$CS251TK_IMAGE is not set. Using $default_CS251TK_IMAGE."
-    CS251TK_IMAGE=$default_CS251TK_IMAGE
+    echo "===> \$STOGRADE_IMAGE is not set. Using $default_STOGRADE_IMAGE."
+    STOGRADE_IMAGE=$default_STOGRADE_IMAGE
 fi
 
-if [ -z "$(docker images -q $CS251TK_IMAGE 2>/dev/null)" ];
+if [ -z "$(docker images -q $STOGRADE_IMAGE 2>/dev/null)" ];
 then
-    echo "===> CS251TK_IMAGE not installed in Docker... Trying to install."
+    echo "===> STOGRADE_IMAGE not installed in Docker... Trying to install."
 
-    if docker pull $CS251TK_IMAGE;
+    if docker pull $STOGRADE_IMAGE;
     then
         echo "      -> Installed successfully."
     else
@@ -27,53 +27,53 @@ then
         exit 1
     fi
 else
-    echo "===> CS251TK_IMAGE is installed."
+    echo "===> STOGRADE_IMAGE is installed."
 fi
 
-if [ -z "${CS251TK_SHARE}" ];
+if [ -z "${STOGRADE_SHARE}" ];
 then
-    echo "===> CS251TK_SHARE is not set.  Defaulting to ${default_CS251TK_SHARE}."
-    CS251TK_SHARE=$default_CS251TK_SHARE
+    echo "===> STOGRADE_SHARE is not set.  Defaulting to ${default_STOGRADE_SHARE}."
+    STOGRADE_SHARE=$default_STOGRADE_SHARE
 fi
 
-if [ -d "$CS251TK_SHARE" ];
+if [ -d "$STOGRADE_SHARE" ];
 then
-    echo "===> CS251TK_SHARE found."
+    echo "===> STOGRADE_SHARE found."
 else
-    echo "===> CS251TK_SHARE not found! Make sure it exists and is either a directory or a symlink to a directory."
-    echo "      (\$CS251TK_SHARE = \"$CS251TK_SHARE\")"
+    echo "===> STOGRADE_SHARE not found! Make sure it exists and is either a directory or a symlink to a directory."
+    echo "      (\$STOGRADE_SHARE = \"$STOGRADE_SHARE\")"
     exit 1
 fi
 
-if [ -d "$CS251TK_SHARE/data" ];
+if [ -d "$STOGRADE_SHARE/data" ];
 then
-    echo "      -> \$CS251TK_SHARE/data found."
+    echo "      -> \$STOGRADE_SHARE/data found."
 else
-    echo "===> $CS251TK_SHARE/data does not exist or is not a directory."
+    echo "===> $STOGRADE_SHARE/data does not exist or is not a directory."
     exit 1
 fi
 
-if [ -d "$CS251TK_SHARE/students" ];
+if [ -d "$STOGRADE_SHARE/students" ];
 then
-    echo "      -> \$CS251TK_SHARE/students found."
+    echo "      -> \$STOGRADE_SHARE/students found."
 else
-    echo "===> $CS251TK_SHARE/students does not exist or is not a directory."
+    echo "===> $STOGRADE_SHARE/students does not exist or is not a directory."
     exit 1
 fi
 
-if [ -d "$CS251TK_SHARE/logs" ];
+if [ -d "$STOGRADE_SHARE/logs" ];
 then
-    echo "      -> \$CS251TK_SHARE/logs found."
+    echo "      -> \$STOGRADE_SHARE/logs found."
 else
-    echo "===> $CS251TK_SHARE/logs does not exist or is not a directory."
+    echo "===> $STOGRADE_SHARE/logs does not exist or is not a directory."
     exit 1
 fi
 
-if [ -f "$CS251TK_SHARE/students.txt" ];
+if [ -f "$STOGRADE_SHARE/students.txt" ];
 then
-    echo "      -> \$CS251TK_SHARE/students.txt found."
+    echo "      -> \$STOGRADE_SHARE/students.txt found."
 else
-    echo "===> $CS251TK_SHARE/students.txt does not exist or is not a regular file."
+    echo "===> $STOGRADE_SHARE/students.txt does not exist or is not a regular file."
     exit 1
 fi
 
@@ -94,14 +94,14 @@ else
 fi
 
 
-command="$command -v $(readlink -f $CS251TK_SHARE):/cs251tk_share/"
-command="$command -v $(readlink -f $HOME/.ssh/):/cs251tk_share/.ssh/"
+command="$command -v $(readlink -f $STOGRADE_SHARE):/stograde_share/"
+command="$command -v $(readlink -f $HOME/.ssh/):/stograde_share/.ssh/"
 
-command="$command $CS251TK_IMAGE $@"
+command="$command $STOGRADE_IMAGE $@"
 
 if [[ "$@" == "" ]];
 then
-    echo "fail: must provide at least one argument (this is the shell command, try 'cs251tk --help')"
+    echo "fail: must provide at least one argument (this is the shell command, try 'stograde --help')"
 fi
 
 echo "Running $command..."

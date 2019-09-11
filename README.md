@@ -339,7 +339,7 @@ Follow your particular operating system's instructions to set it up if you haven
 
 To pull the latest image of the `master` branch from Docker, (what you should probably do by default)
 ```console
-$ docker pull stodevx/cs251-toolkit:HEAD
+$ docker pull stodevx/stograde:HEAD
 ```
 
 To build from source,
@@ -348,11 +348,11 @@ To build from source,
 $ # within this repository, run:
 $ docker build -t <tag name>:<version> .
 $ # e.g.:
-$ docker build -t stodevx/cs251-toolkit:v0.0.0 .
+$ docker build -t stodevx/stograde:v0.0.0 .
 ```
 
 Technically, you don't need to supply a version, and you can pick whatever tag name you want.  It's conventional to use 
-`stodevx/cs251-toolkit:HEAD`, since that's what `script/run-docker` does.
+`stodevx/stograde:HEAD`, since that's what `script/run-docker` does.
 
 To run,
 
@@ -360,7 +360,7 @@ To run,
 $ # from within the project directory---technically, you can call from any directory
 $ script/run-docker <command>
 $ # e.g.
-$ script/run-docker cs251tk --record hw1
+$ script/run-docker stograde --record hw1
 ```
 
 Again, tag name and version should match what you built or pulled.
@@ -368,8 +368,8 @@ If you supplied a version and you have multiple images on your system, Docker sh
 version as long as you followed semantic versioning.
 
 ## Contributing
-- `git clone https://github.com/StoDevX/cs251-toolkit`
-- `cd cs251-toolkit`
+- `git clone https://github.com/StoDevX/stograde`
+- `cd stograde`
 - `python3 setup.py develop`
 - go to your grading folder that contains the data/ and students/ folders
 - run `stograde`, which will be the development version.
@@ -410,14 +410,14 @@ time.)
 on the server. Only the master branch is pulled.
 3. (daily) Git: Pull the specs. Since the specs can change over time, we should keep them up-to-date.
 
-The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/cs251-toolkit/blob/master/script/crontab).
+The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/stograde/blob/master/script/crontab).
 
 # email
-Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the 
-`CS251TK_EMAIL_USERNAME` and `CS251TK_EMAIL_PASSWORD` environment variables by way of editing the file 
+Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the
+`STOGRADE_EMAIL_USERNAME` and `STOGRADE_EMAIL_PASSWORD` environment variables by way of editing the file
 `/home/referee/gmail_auth.sh` (which is a docker env file, not a shell script).
 
 # env vars
-- `CS251TK_EMAIL_USERNAME`: the username to authenticate to gmail with
-- `CS251TK_EMAIL_PASSWORD`: the password to authenticate to gmail with
+- `STOGRADE_EMAIL_USERNAME`: the username to authenticate to gmail with
+- `STOGRADE_EMAIL_PASSWORD`: the password to authenticate to gmail with
 

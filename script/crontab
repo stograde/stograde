@@ -1,3 +1,3 @@
-0 0 * * *	referee	cd /home/referee/.local/share/cs251tk/data && /usr/bin/git pull origin master >> /home/referee/cron-specs-git-pull.log 2>&1
-0 0 * * *	referee	cd /home/referee/cs251-toolkit && /usr/bin/git pull origin master >> /home/referee/cron-specs-git-pull.log 2>&1
-0 0 * * *	referee	docker pull stodevx/cs251-toolkit:HEAD && docker container prune -f && docker rmi $(docker images -aq --no-trunc --filter 'dangling=true') >> /home/referee/docker-cleanup.log 2>&1
+0 0 * * *	referee	cd /home/referee/.local/share/stograde/data && /usr/bin/git pull origin master >> /home/referee/cron-specs-git-pull.log 2>&1
+0 0 * * *	referee	cd /home/referee/stograde && /usr/bin/git pull origin master >> /home/referee/cron-specs-git-pull.log 2>&1
+0 0 * * *	referee	docker pull stodevx/stograde:HEAD && docker container prune -f && docker rmi $(docker images -aq --no-trunc --filter 'dangling=true') >> /home/referee/docker-cleanup.log 2>&1

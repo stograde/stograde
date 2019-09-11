@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-docker_repository = "stodevx/cs251-toolkit"
+docker_repository = "stodevx/stograde"
 
 tag = ARGV[0]
 

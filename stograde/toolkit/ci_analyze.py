@@ -5,8 +5,7 @@ def ci_analyze(records):
     passing = True
     for record in records:
         try:
-            for filename in record['files']:
-                file = record['files'][filename]
+            for filename, file in record['files'].items():
                 # Alert student about any missing files
                 if file['missing'] and not file['optional']:
                     logging.error("{}: File {} missing".format(record['spec'], file['filename']))

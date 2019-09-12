@@ -52,7 +52,8 @@ def download_specs(course, basedir, stogit):
     spec_urls = {
         'sd': 'https://github.com/StoDevX/cs251-specs.git',
         'hd': 'https://github.com/StoDevX/cs241-specs.git',
-        'ads': 'https://github.com/StoDevX/cs253-specs.git'
+        'ads': 'https://github.com/StoDevX/cs253-specs.git',
+        'os': 'https://github.com/StoDevX/cs273-specs.git'
     }
     course = course.split("-")[0].lower()
     try:
@@ -143,7 +144,7 @@ def main():
             else:
                 download = input("Download specs? (Y/N)")
                 if download and download.lower()[0] == "y":
-                    repo = input("Which class? (SD/HD/ADS)")
+                    repo = input("Which class? (SD/HD/ADS/OS)")
                     if repo:
                         url = download_specs(repo, basedir, stogit)
                         if not stogit:

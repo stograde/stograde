@@ -24,6 +24,7 @@ def get_file(filename, results, options):
         results['optional'] = options['optional']
         return False
 
+    results['optional_compile'] = options['optional_compile']
     results['contents'] = file_contents
     return True
 
@@ -110,6 +111,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
         'truncate_output': 10000,  # 10K
         'truncate_contents': False,
         'optional': False,
+        'optional_compile': False,
         'hide_contents': False,
         'web': False
     }

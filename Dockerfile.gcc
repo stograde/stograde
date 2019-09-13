@@ -3,7 +3,7 @@
 #
 # NOTE This could be changed to something like `python:latest` if we
 # find that there is no dependency on 3.6 itself.
-FROM python:3-slim
+FROM gcc:latest
 
 # Set the MAINTAINER flag of the docker image.
 #

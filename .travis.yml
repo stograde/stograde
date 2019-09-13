@@ -39,7 +39,7 @@ jobs:
       env:
         - DOCKER_IMAGE=stodevx/stograde
       script:
-        - docker build -t $DOCKER_IMAGE:$TRAVIS_COMMIT .
+        - docker build -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile .
       deploy:
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD
@@ -54,6 +54,30 @@ jobs:
             condition: $(script/github-latest-release) == $TRAVIS_TAG
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$TRAVIS_COMMIT
+          on: { branch: 'travis-*' }
+
+    - stage: deploy docker (gcc)
+      python: 3.7
+      services:
+        - docker
+      env:
+        - DOCKER_IMAGE=stodevx/stograde
+      script:
+        - docker build -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile.gcc .
+      deploy:
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD-gcc
+          on: { branch: 'master' }
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$(TRAVIS_TAG)-gcc
+          on: { tags: true }
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:latest-gcc
+          on:
+            tags: true
+            condition: $(script/github-latest-release) == $TRAVIS_TAG
+        - provider: script
+          script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:$(TRAVIS_COMMIT)-gcc
           on: { branch: 'travis-*' }
 
     - stage: deploy pypi

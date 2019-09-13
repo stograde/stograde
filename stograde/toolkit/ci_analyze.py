@@ -14,13 +14,13 @@ def ci_analyze(records):
                     # Alert student about any compilation errors
                     for compilation in file['compilation']:
                         if compilation['status'] != 'success':
-                            message = "{}: File {} compile error:\n\n\t{}" \
-                                .format(record['spec'], file['filename'],
-                                        compilation['output'].replace("\n", "\n\t"))
                             if file['optional_compile']:
-                                logging.warning(message)
+                                logging.warning("{}: File {} compile error (This did not fail the build)"
+                                                .format(record['spec'], file['filename']))
                             else:
-                                logging.error(message)
+                                logging.error("{}: File {} compile error:\n\n\t{}"
+                                              .format(record['spec'], file['filename'],
+                                                      compilation['output'].replace("\n", "\n\t")))
                                 passing = False
         except KeyError:
             logging.error("KeyError with {}".format(record['spec']))

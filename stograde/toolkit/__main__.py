@@ -10,7 +10,7 @@ import logging
 from .ci_analyze import ci_analyze
 from ..student import clone_student
 from ..common import chdir, run
-from ..specs import load_all_specs, check_dependencies
+from ..specs import load_all_specs, check_dependencies, check_architecture
 from .find_update import update_available
 from .process_student import process_student
 from .args import process_args, compute_stogit_url
@@ -174,6 +174,8 @@ def main():
         for spec_to_use in assignments:
             try:
                 check_dependencies(specs[spec_to_use])
+                if not check_architecture(spec_to_use, specs[spec_to_use], ci):
+                    available_specs.remove(spec_to_use)
             except KeyError:
                 # Prevent lab0 directory from causing an extraneous output
                 if spec_to_use != 'lab0':

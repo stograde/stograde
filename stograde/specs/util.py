@@ -21,16 +21,13 @@ def check_dependencies(spec):
 def check_architecture(assignment, spec, ci):
     # get check_architecture()
     _, arch, _ = run(['uname', '-m'])
-    try:
-        if spec['architecture'] != arch:
-            if ci:
-                logging.info('Skipping {}: wrong architecture'.format(assignment))
-            else:
-                print('{} requires {} architecture. You have {}'
-                      .format(assignment, spec['architecture'], arch),
-                      file=sys.stderr)
-            return False
-        else:
-            return True
-    except KeyError:
+    if spec.get('architecture', None) == arch:
         return True
+    else:
+        if ci:
+            logging.info('Skipping {}: wrong architecture'.format(assignment))
+        else:
+            print('{} requires {} architecture. You have {}'
+                  .format(assignment, spec['architecture'], arch),
+                  file=sys.stderr)
+        return False

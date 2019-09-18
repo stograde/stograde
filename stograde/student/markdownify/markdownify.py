@@ -3,7 +3,7 @@
 import os
 from collections import OrderedDict
 
-from .add_remove_supporting import import_supporting, remove_supporting
+from .supporting import import_supporting, remove_supporting
 from .process_file import process_file
 from .find_warnings import find_warnings
 from ...common import check_dates

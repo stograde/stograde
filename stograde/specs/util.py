@@ -21,7 +21,8 @@ def check_dependencies(spec):
 def check_architecture(assignment, spec, ci):
     # get check_architecture()
     _, arch, _ = run(['uname', '-m'])
-    if spec.get('architecture', None) == arch:
+    spec_arch = spec.get('architecture', None)
+    if not spec_arch or spec_arch == arch:
         return True
     else:
         if ci:

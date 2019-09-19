@@ -2,6 +2,8 @@
 
 import os
 from collections import OrderedDict
+
+from .supporting import import_supporting, remove_supporting
 from .process_file import process_file
 from .find_warnings import find_warnings
 from ...common import check_dates
@@ -26,15 +28,9 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
         }
 
         # prepare the current folder
-        inputs = spec.get('inputs', [])
-        supporting = os.path.join(basedir, 'data', 'supporting')
-        # write the supporting files into the folder
-        for filename in inputs:
-            with open(os.path.join(supporting, spec_id, filename), 'rb') as infile:
-                contents = infile.read()
-            with open(os.path.join(cwd, filename), 'wb') as outfile:
-                outfile.write(contents)
-
+        supporting_dir, written_files = import_supporting(spec=spec,
+                                                          spec_id=spec_id,
+                                                          basedir=basedir)
         for file in spec['files']:
             filename = file['filename']
             steps = file['commands']
@@ -44,7 +40,7 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
                                   options=options,
                                   spec=spec,
                                   cwd=cwd,
-                                  supporting_dir=supporting,
+                                  supporting_dir=supporting_dir,
                                   interact=interact,
                                   basedir=basedir,
                                   spec_id=spec_id,
@@ -52,18 +48,10 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
             results['files'][filename] = result
 
         # now we remove any compiled binaries
-        try:
-            for file in spec['files']:
-                os.remove('{}.exec'.format(file['filename']))
-        except FileNotFoundError:
-            pass
+        remove_execs(spec)
 
         # and we remove any supporting files
-        try:
-            for inputfile in inputs:
-                os.remove(inputfile)
-        except FileNotFoundError:
-            pass
+        remove_supporting(written_files)
 
         return results
 
@@ -77,3 +65,11 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
                 'Recording error': str(err),
             },
         }
+
+
+def remove_execs(spec):
+    try:
+        for file in spec['files']:
+            os.remove('{}.exec'.format(file['filename']))
+    except FileNotFoundError:
+        pass

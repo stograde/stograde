@@ -22,7 +22,7 @@ def check_architecture(assignment, spec, ci):
     # get check_architecture()
     _, arch, _ = run(['uname', '-m'])
     spec_arch = spec.get('architecture', None)
-    if not spec_arch or spec_arch == arch:
+    if spec_arch is None or spec_arch == arch:
         return True
     else:
         if ci:

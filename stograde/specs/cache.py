@@ -15,8 +15,14 @@ def cache_specs(basedir):
     so we check modification times and convert any that have changed.
     """
     os.makedirs(os.path.join(basedir, '_cache'), exist_ok=True)
+
     yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
+    yaml_specs = [spec for spec in yaml_specs]
+    yaml_specs.sort()
+
     json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
+    json_specs = [spec for spec in json_specs]
+    json_specs.sort()
 
     for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
         cache_spec(source_file=yamlfile, dest_file=jsonfile)

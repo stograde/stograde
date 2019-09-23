@@ -1,4 +1,3 @@
-from itertools import zip_longest
 from logging import debug
 from glob import iglob
 import json
@@ -18,21 +17,35 @@ def cache_specs(basedir):
 
     yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
     yaml_specs = [spec for spec in yaml_specs]
-    yaml_specs.sort()
 
     json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
     json_specs = [spec for spec in json_specs]
-    json_specs.sort()
 
-    for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
-        cache_spec(source_file=yamlfile, dest_file=jsonfile)
+    yaml_spec_names = [os.path.splitext(os.path.basename(filename))[0] for filename in yaml_specs]
+    json_spec_names = [os.path.splitext(os.path.basename(filename))[0] for filename in json_specs]
+
+    spec_names = yaml_spec_names + list(set(json_spec_names) - set(yaml_spec_names))
+
+    spec_pairs = {}
+    for name in spec_names:
+        spec_pairs[name] = [None, None]
+
+    for spec in yaml_specs:
+        name = os.path.splitext(os.path.basename(spec))[0]
+        spec_pairs[name][0] = spec
+
+    for spec in json_specs:
+        name = os.path.splitext(os.path.basename(spec))[0]
+        spec_pairs[name][1] = spec
+
+    for _, specs in spec_pairs.items():
+        cache_spec(source_file=specs[0], dest_file=specs[1])
 
 
 def cache_spec(*, source_file, dest_file):
     if not source_file:
-        # If yamlfile doesn't exist, then because we used zip_longest
-        # there has to be a jsonfile. We don't want any jsonfiles
-        # that don't match the yamlfiles.
+        # There should not be any jsonfiles without
+        # corresponding yamlfiles
         os.remove(dest_file)
         return
 
@@ -40,6 +53,8 @@ def cache_spec(*, source_file, dest_file):
         dest_file = source_file \
             .replace('specs/', 'specs/_cache/') \
             .replace('.yaml', '.json')
+        convert_spec(source_file, dest_file)
+        return
 
     source_modtime = get_modification_time_ns(source_file)
     dest_modtime = get_modification_time_ns(dest_file)

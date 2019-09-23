@@ -64,8 +64,9 @@ def convert_spec(yaml_path, json_path):
 
 def clarify_yaml(data):
     copied = copy.deepcopy(data)
-    copied['files'] = [process_filelike_into_dict(f) for f in copied['files']]
-    if 'tests' in copied:
+    if 'files' in copied and copied['files'] is not None:
+        copied['files'] = [process_filelike_into_dict(f) for f in copied['files']]
+    if 'tests' in copied and copied['tests'] is not None:
         copied['tests'] = [process_filelike_into_dict(f) for f in copied['tests']]
     return copied
 

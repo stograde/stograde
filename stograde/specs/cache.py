@@ -1,8 +1,8 @@
 from logging import debug
-from glob import iglob
 import json
 import copy
 import os
+from pathlib import Path
 
 import yaml
 
@@ -13,33 +13,23 @@ def cache_specs(basedir):
     YAML parsing is incredibly slow, and JSON is quite fast,
     so we check modification times and convert any that have changed.
     """
-    os.makedirs(os.path.join(basedir, '_cache'), exist_ok=True)
 
-    yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
-    yaml_specs = [spec for spec in yaml_specs]
+    basedir = Path(basedir)
 
-    json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
-    json_specs = [spec for spec in json_specs]
+    cachedir = basedir / '_cache'
+    cachedir.mkdir(exist_ok=True, parents=True)
 
-    yaml_spec_names = [os.path.splitext(os.path.basename(filename))[0] for filename in yaml_specs]
-    json_spec_names = [os.path.splitext(os.path.basename(filename))[0] for filename in json_specs]
+    known_json_specs = set()
+    for specfile in basedir.glob('*.yaml'):
+        dest = specfile.parent / '_cache' / f"{specfile.stem}.json"
+        cache_spec(source_file=specfile, dest_file=dest)
+        known_json_specs.add(dest)
 
-    spec_names = yaml_spec_names + list(set(json_spec_names) - set(yaml_spec_names))
+    all_json_specs = set(cachedir.glob('*.json'))
+    unknown_json_specs = all_json_specs - known_json_specs
 
-    spec_pairs = {}
-    for name in spec_names:
-        spec_pairs[name] = [None, None]
-
-    for spec in yaml_specs:
-        name = os.path.splitext(os.path.basename(spec))[0]
-        spec_pairs[name][0] = spec
-
-    for spec in json_specs:
-        name = os.path.splitext(os.path.basename(spec))[0]
-        spec_pairs[name][1] = spec
-
-    for _, specs in spec_pairs.items():
-        cache_spec(source_file=specs[0], dest_file=specs[1])
+    for cachedfile in unknown_json_specs:
+        cachedfile.unlink()
 
 
 def cache_spec(*, source_file, dest_file):

@@ -44,7 +44,7 @@ installs into your home folder, instead.
 
 ##### Grab the course specs
 
-If grading for Software Design, Hardware Design or Algorithms and Data Structures, the toolkit will automatically
+If grading for Software Design, Hardware Design, Algorithms and Data Structures or Operating Systems, the toolkit will automatically
 download the specs for the course if they are not present and the `--course` flag is set.
 
 If you want to grab the course specs yourself, you can clone the specs (make sure you're still in the directory you

@@ -1,9 +1,8 @@
-from itertools import zip_longest
 from logging import debug
-from glob import iglob
 import json
 import copy
 import os
+from pathlib import Path
 
 import yaml
 
@@ -14,19 +13,29 @@ def cache_specs(basedir):
     YAML parsing is incredibly slow, and JSON is quite fast,
     so we check modification times and convert any that have changed.
     """
-    os.makedirs(os.path.join(basedir, '_cache'), exist_ok=True)
-    yaml_specs = iglob(os.path.join(basedir, '*.yaml'))
-    json_specs = iglob(os.path.join(basedir, '_cache', '*.json'))
 
-    for yamlfile, jsonfile in zip_longest(yaml_specs, json_specs):
-        cache_spec(source_file=yamlfile, dest_file=jsonfile)
+    basedir = Path(basedir)
+
+    cachedir = basedir / '_cache'
+    cachedir.mkdir(exist_ok=True, parents=True)
+
+    known_json_specs = set()
+    for specfile in basedir.glob('*.yaml'):
+        dest = specfile.parent / '_cache' / f"{specfile.stem}.json"
+        cache_spec(source_file=specfile, dest_file=dest)
+        known_json_specs.add(dest)
+
+    all_json_specs = set(cachedir.glob('*.json'))
+    unknown_json_specs = all_json_specs - known_json_specs
+
+    for cachedfile in unknown_json_specs:
+        cachedfile.unlink()
 
 
 def cache_spec(*, source_file, dest_file):
     if not source_file:
-        # If yamlfile doesn't exist, then because we used zip_longest
-        # there has to be a jsonfile. We don't want any jsonfiles
-        # that don't match the yamlfiles.
+        # There should not be any jsonfiles without
+        # corresponding yamlfiles
         os.remove(dest_file)
         return
 
@@ -34,6 +43,8 @@ def cache_spec(*, source_file, dest_file):
         dest_file = source_file \
             .replace('specs/', 'specs/_cache/') \
             .replace('.yaml', '.json')
+        convert_spec(source_file, dest_file)
+        return
 
     source_modtime = get_modification_time_ns(source_file)
     dest_modtime = get_modification_time_ns(dest_file)
@@ -64,8 +75,9 @@ def convert_spec(yaml_path, json_path):
 
 def clarify_yaml(data):
     copied = copy.deepcopy(data)
-    copied['files'] = [process_filelike_into_dict(f) for f in copied['files']]
-    if 'tests' in copied:
+    if 'files' in copied and copied['files'] is not None:
+        copied['files'] = [process_filelike_into_dict(f) for f in copied['files']]
+    if 'tests' in copied and copied['tests'] is not None:
         copied['tests'] = [process_filelike_into_dict(f) for f in copied['tests']]
     return copied
 

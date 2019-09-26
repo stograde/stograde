@@ -1,25 +1,21 @@
 import os
 
-
 from ..common import chdir
 from ..student import stash, pull, checkout_date
 from ..student.markdownify.process_file import process_file
+from ..student.markdownify.supporting import import_supporting, remove_supporting
 from PyInquirer import style_from_dict, Token, prompt
 
 
-def check_student(student, spec, basedir):
+def check_student(student, spec, spec_id, basedir):
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
+        print("Processing...")
         with chdir('{}/{}'.format(student, spec['assignment'])):
             # prepare the current folder
-            inputs = spec.get('inputs', [])
-            supporting = os.path.join(basedir, 'data', 'supporting')
-            # write the supporting files into the folder
-            for filename in inputs:
-                with open(os.path.join(supporting, spec['assignment'], filename), 'rb') as infile:
-                    contents = infile.read()
-                with open(os.path.join(os.getcwd(), filename), 'wb') as outfile:
-                    outfile.write(contents)
+            supporting_dir, written_files = import_supporting(spec=spec,
+                                                              spec_id=spec_id,
+                                                              basedir=basedir)
 
             for file in spec['files']:
                 result = process_file(file['filename'],
@@ -27,7 +23,7 @@ def check_student(student, spec, basedir):
                                       options=file['options'],
                                       spec=spec,
                                       cwd=os.getcwd(),
-                                      supporting_dir=os.path.join(basedir, 'data', 'supporting'),
+                                      supporting_dir=supporting_dir,
                                       interact=False,
                                       basedir=basedir,
                                       spec_id=spec['assignment'],
@@ -46,11 +42,7 @@ def check_student(student, spec, basedir):
                 else:
                     continue
             # and we remove any supporting files
-            try:
-                for inputfile in inputs:
-                    os.remove(inputfile)
-            except FileNotFoundError:
-                pass
+            remove_supporting(written_files)
 
     return files
 
@@ -79,7 +71,7 @@ def ask_student(usernames):
     return student['student']
 
 
-def ask_file(files, student, spec, basedir):
+def ask_file(files, student, spec, spec_id, basedir):
     style = style_from_dict({
         Token.QuestionMark: '#e3bd27 bold',
         Token.Selected: '#e3bd27',
@@ -107,35 +99,28 @@ def ask_file(files, student, spec, basedir):
             if file_spec:
                 with chdir('{}/{}'.format(student, spec['assignment'])):
                     # prepare the current folder
-                    inputs = spec.get('inputs', [])
-                    supporting = os.path.join(basedir, 'data', 'supporting')
-                    # write the supporting files into the folder
-                    for filename in inputs:
-                        with open(os.path.join(supporting, spec['assignment'], filename), 'rb') as infile:
-                            contents = infile.read()
-                        with open(os.path.join(os.getcwd(), filename), 'wb') as outfile:
-                            outfile.write(contents)
+                    supporting_dir, written_files = import_supporting(spec=spec,
+                                                                      spec_id=spec_id,
+                                                                      basedir=basedir)
+
                     process_file(file_spec['filename'],
                                  steps=file_spec['commands'],
                                  options=file_spec['options'],
                                  spec=spec,
                                  cwd=os.getcwd(),
-                                 supporting_dir=os.path.join(basedir, 'data', 'supporting'),
+                                 supporting_dir=supporting_dir,
                                  interact=False,
                                  basedir=basedir,
                                  spec_id=spec['assignment'],
                                  skip_web_compile=False)
                     # and we remove any supporting files
-                    try:
-                        for inputfile in inputs:
-                            os.remove(inputfile)
-                    except FileNotFoundError:
-                        pass
+                    remove_supporting(written_files)
+
         else:
             return
 
 
-def launch_cli(basedir, date, no_update, spec, usernames):
+def launch_cli(basedir, date, no_update, spec, spec_id, usernames):
     usernames = [
         '{} NO SUBMISSION'.format(user)
         if not os.path.exists('{}/{}'.format(user, spec['assignment']))
@@ -150,16 +135,18 @@ def launch_cli(basedir, date, no_update, spec, usernames):
             return False
         elif student == 'LOG and QUIT':
             return True
+        elif "NO SUBMISSION" in student:
+            continue
 
         stash(student, no_update=no_update)
         pull(student, no_update=no_update)
 
         checkout_date(student, date=date)
 
-        files = check_student(student, spec, basedir)
+        files = check_student(student, spec, spec_id, basedir)
 
         if files:
-            ask_file(files, student, spec, basedir)
+            ask_file(files, student, spec, spec_id, basedir)
 
 
 def check_web_spec(spec):

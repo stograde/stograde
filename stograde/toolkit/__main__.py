@@ -219,7 +219,8 @@ def main():
         do_record = True
 
         if web:
-            spec = specs[list(assignments)[0]]
+            spec_id = list(assignments)[0]
+            spec = specs[spec_id]
             web_spec = check_web_spec(spec)
             if not web_spec:
                 print("No web files in assignment {}".format(list(assignments)[0]))
@@ -234,6 +235,7 @@ def main():
                                    date=date,
                                    no_update=no_update,
                                    spec=spec,
+                                   spec_id=spec_id,
                                    usernames=usernames)
             if not do_record:
                 quiet = True

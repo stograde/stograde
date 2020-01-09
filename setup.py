@@ -39,7 +39,7 @@ setup(
         'PyYAML==5.*',
         'requests >= 2.20.*',
         'termcolor == 1.*',
-        'natsort==6.2.*',
+        'natsort==7.0.*',
         'appdirs == 1.4.*',
         'python-dateutil == 2.7.*',
         'PyInquirer == 1.0.*',

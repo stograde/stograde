@@ -76,13 +76,40 @@ def convert_spec(yaml_path, json_path):
 def clarify_yaml(data):
     copied = copy.deepcopy(data)
     if 'files' in copied and copied['files'] is not None:
-        copied['files'] = [process_filelike_into_dict(f) for f in copied['files']]
+        copied['files'] = [process_file_yaml_into_dict(f) for f in copied['files']] \
+            if 'new_spec' in copied and copied['new_spec'] is True else \
+            [process_file_yaml_into_dict_legacy(f) for f in copied['files']]
     if 'tests' in copied and copied['tests'] is not None:
-        copied['tests'] = [process_filelike_into_dict(f) for f in copied['tests']]
+        copied['tests'] = [process_file_yaml_into_dict(f) for f in copied['tests']] \
+            if 'new_spec' in copied and copied['new_spec'] is True else \
+            [process_file_yaml_into_dict_legacy(f) for f in copied['tests']]
     return copied
 
 
-def process_filelike_into_dict(file_list):
+def process_file_yaml_into_dict(file_list):
+    filename = file_list['file']
+    if filename is None:
+        raise Exception("File name must be specified")
+
+    commands = [] if 'commands' not in file_list else \
+        [file_list['commands']] if isinstance(file_list['commands'], str) else \
+        file_list['commands'] if isinstance(file_list['commands'], list) else None
+    if commands is None:
+        raise TypeError
+
+    options = {} if 'options' not in file_list else \
+        file_list['options'] if isinstance(file_list['options'], dict) else None
+    if options is None:
+        raise TypeError
+
+    return {
+        'filename': filename,
+        'commands': commands,
+        'options': options,
+    }
+
+
+def process_file_yaml_into_dict_legacy(file_list):
     filename = file_list[0]
     commands = [f for f in file_list[1:] if isinstance(f, str)]
     option_list = [opt for opt in file_list[1:] if isinstance(opt, dict)]

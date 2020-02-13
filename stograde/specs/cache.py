@@ -93,12 +93,12 @@ def process_file_yaml_into_dict(file_list):
     if filename is None:
         raise Exception("File name must be specified")
 
-    commands = [] if 'commands' not in file_list else file_list['commands']
+    commands = file_list.get('commands', [])
     if isinstance(commands, str):
         commands = [commands]
     assert isinstance(commands, list)
 
-    options = {} if 'options' not in file_list else file_list['options']
+    options = file_list.get('options', {})
     assert isinstance(options, dict)
 
     return {

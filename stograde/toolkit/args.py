@@ -63,6 +63,7 @@ def build_argparser():
                           help='Skip compilation and testing of files marked with web: true')
     optional.add_argument('--port', type=int, dest='server_port', default=25100,
                           help='Set the port for the server to use')
+    optional.add_argument('--re-cache', action='store_true', help='Force a re-caching of specs')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',

@@ -16,7 +16,7 @@ from stograde.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
-COURSE_REGEX = re.compile(r'^([\w]{2,3}-[sf]\d\d)$')
+COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 
 
 def build_argparser():
@@ -37,7 +37,7 @@ def build_argparser():
     specs = parser.add_argument_group('control the homework specs')
     specs.add_argument('--course', default='',
                        help='Which course to evaluate (this sets a default stogit url). '
-                            'Can be sd, hd, ads, os or one of the previous with -f## or -s## (i.e. sd-s19)')
+                            'Can be sd, hd, ads, os or one of the previous with /f## or /s## (i.e. sd/s19)')
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -71,7 +71,7 @@ def build_argparser():
     folder.add_argument('--no-update', '-n', action='store_true',
                         help='Do not update the student folders when checking')
     folder.add_argument('--stogit', metavar='URL',
-                        help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd-s17)')
+                        help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
 
     dates = parser.add_argument_group('time-based arguments')
     dates.add_argument('--date', action='store', metavar='GIT_DATE',
@@ -161,7 +161,7 @@ def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
 
     semester = 's' if _now.month < 7 else 'f'
     year = str(_now.year)[2:]
-    return 'git@stogit.cs.stolaf.edu:{}-{}{}'.format(course, semester, year)
+    return 'git@stogit.cs.stolaf.edu:{}/{}{}'.format(course, semester, year)
 
 
 def process_args():

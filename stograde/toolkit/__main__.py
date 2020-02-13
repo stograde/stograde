@@ -55,7 +55,7 @@ def download_specs(course, basedir, stogit):
         'ads': 'https://github.com/StoDevX/cs253-specs.git',
         'os': 'https://github.com/StoDevX/cs273-specs.git'
     }
-    course = course.split("-")[0].lower()
+    course = course.split("/")[0].lower()
     try:
         url = spec_urls[course]
     except KeyError:

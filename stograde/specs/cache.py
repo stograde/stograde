@@ -76,13 +76,15 @@ def convert_spec(yaml_path, json_path):
 def clarify_yaml(data):
     copied = copy.deepcopy(data)
     if 'files' in copied and copied['files'] is not None:
-        copied['files'] = [process_file_yaml_into_dict(f) for f in copied['files']] \
-            if 'new_spec' in copied and copied['new_spec'] is True else \
-            [process_file_yaml_into_dict_legacy(f) for f in copied['files']]
+        if copied.get('spec_version', 2) >= 3:
+            copied['files'] = [process_file_yaml_into_dict(f) for f in copied['files']]
+        else:
+            copied['files'] = [process_file_yaml_into_dict_legacy(f) for f in copied['files']]
     if 'tests' in copied and copied['tests'] is not None:
-        copied['tests'] = [process_file_yaml_into_dict(f) for f in copied['tests']] \
-            if 'new_spec' in copied and copied['new_spec'] is True else \
-            [process_file_yaml_into_dict_legacy(f) for f in copied['tests']]
+        if copied.get('spec_version', 2) >= 3:
+            copied['tests'] = [process_file_yaml_into_dict(f) for f in copied['tests']]
+        else:
+            copied['tests'] = [process_file_yaml_into_dict_legacy(f) for f in copied['tests']]
     return copied
 
 
@@ -91,16 +93,13 @@ def process_file_yaml_into_dict(file_list):
     if filename is None:
         raise Exception("File name must be specified")
 
-    commands = [] if 'commands' not in file_list else \
-        [file_list['commands']] if isinstance(file_list['commands'], str) else \
-        file_list['commands'] if isinstance(file_list['commands'], list) else None
-    if commands is None:
-        raise TypeError
+    commands = [] if 'commands' not in file_list else file_list['commands']
+    if isinstance(commands, str):
+        commands = [commands]
+    assert isinstance(commands, list)
 
-    options = {} if 'options' not in file_list else \
-        file_list['options'] if isinstance(file_list['options'], dict) else None
-    if options is None:
-        raise TypeError
+    options = {} if 'options' not in file_list else file_list['options']
+    assert isinstance(options, dict)
 
     return {
         'filename': filename,

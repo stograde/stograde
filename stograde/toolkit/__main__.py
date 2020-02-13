@@ -105,6 +105,7 @@ def main():
     no_update = args['no_update']
     no_progress = args['no_progress']
     port = args['server_port']
+    re_cache_specs = args['re_cache']
     quiet = args['quiet']
     skip_update_check = args['skip_update_check']
     skip_web_compile = args['skip_web_compile']
@@ -153,6 +154,9 @@ def main():
                         sys.exit(1)
                 else:
                     sys.exit(1)
+
+    if re_cache_specs and os.path.exists("data/_cache"):
+        os.removedirs("data/_cache")
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

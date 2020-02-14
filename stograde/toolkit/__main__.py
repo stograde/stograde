@@ -43,7 +43,7 @@ def make_progress_bar(students, no_progress=False):
 
 
 def run_server(basedir, port):
-    server.exe_name = '"{}/server/server_file"'.format(basedir)
+    server.exe_name = '{}/server/server_file'.format(basedir)
     server.run_server(port=port)
     return
 

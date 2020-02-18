@@ -1,5 +1,6 @@
 import datetime
 import functools
+import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from threading import Thread
@@ -155,8 +156,11 @@ def main():
                 else:
                     sys.exit(1)
 
-    if re_cache_specs and os.path.exists("data/specs/_cache"):
-        os.removedirs("data/specs/_cache")
+    if re_cache_specs:
+        try:
+            shutil.rmtree("data/specs/_cache")
+        except OSError:
+            pass
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

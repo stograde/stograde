@@ -155,8 +155,8 @@ def main():
                 else:
                     sys.exit(1)
 
-    if re_cache_specs and os.path.exists("data/_cache"):
-        os.removedirs("data/_cache")
+    if re_cache_specs and os.path.exists("data/specs/_cache"):
+        os.removedirs("data/specs/_cache")
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

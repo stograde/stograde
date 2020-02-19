@@ -160,7 +160,7 @@ def main():
         try:
             shutil.rmtree(os.path.join(basedir, 'data', 'specs', '_cache'))
         except OSError:
-            pass
+            print('Could not remove cached specs', file=sys.stderr)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

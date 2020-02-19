@@ -158,7 +158,7 @@ def main():
 
     if re_cache_specs:
         try:
-            shutil.rmtree("data/specs/_cache")
+            shutil.rmtree(os.path.join(basedir, 'data', 'specs', '_cache'))
         except OSError:
             pass
 

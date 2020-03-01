@@ -126,6 +126,9 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
     if not should_continue or skip_web_compile and options['web']:
         return results
 
+    if options['web']:
+        os.makedirs('{}/server'.format(basedir), exist_ok=True)
+
     should_continue = compile_file(filename,
                                    steps=steps,
                                    results=results,

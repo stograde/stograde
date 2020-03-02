@@ -139,14 +139,12 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
     if not should_continue or not steps or options['web']:
         return results
 
-    should_continue = test_file(filename,
-                                spec=spec,
-                                results=results,
-                                options=options,
-                                cwd=cwd,
-                                supporting_dir=supporting_dir,
-                                interact=interact)
-    if not should_continue:
-        return results
+    test_file(filename,
+              spec=spec,
+              results=results,
+              options=options,
+              cwd=cwd,
+              supporting_dir=supporting_dir,
+              interact=interact)
 
     return results

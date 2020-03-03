@@ -98,12 +98,18 @@ def process_file_yaml_into_dict(file_list):
         commands = [commands]
     assert isinstance(commands, list)
 
+    tests = file_list.get('tests', [])
+    if isinstance(tests, str):
+        tests = [tests]
+    assert isinstance(tests, list)
+
     options = file_list.get('options', {})
     assert isinstance(options, dict)
 
     return {
         'filename': filename,
         'commands': commands,
+        'tests': tests,
         'options': options,
     }
 
@@ -116,6 +122,7 @@ def process_file_yaml_into_dict_legacy(file_list):
     return {
         'filename': filename,
         'commands': commands,
+        'tests': [],
         'options': options,
     }
 

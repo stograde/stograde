@@ -55,10 +55,11 @@ def compile_file(filename, *, steps, results, supporting_dir, basedir, spec_id):
     return True
 
 
-def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact):
-    tests = flatten([test_spec['commands']
-                     for test_spec in spec.get('tests', {})
-                     if test_spec['filename'] == filename])
+def test_file(filename, *, spec, tests, results, options, cwd, supporting_dir, interact):
+    tests = tests if spec.get('spec_version', 2) >= 3 else \
+        flatten([test_spec['commands']
+                 for test_spec in spec.get('tests', {})
+                 if test_spec['filename'] == filename])
 
     for test_cmd in tests:
         if not test_cmd:
@@ -99,9 +100,10 @@ def test_file(filename, *, spec, results, options, cwd, supporting_dir, interact
     return True
 
 
-def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interact, basedir, spec_id,
-                 skip_web_compile):
+def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, basedir,
+                 spec_id, skip_web_compile):
     steps = steps if isinstance(steps, Iterable) else [steps]
+    tests = tests if isinstance(tests, Iterable) else [tests]
 
     base_opts = {
         'timeout': 4,
@@ -141,6 +143,7 @@ def process_file(filename, *, steps, options, spec, cwd, supporting_dir, interac
 
     test_file(filename,
               spec=spec,
+              tests=tests,
               results=results,
               options=options,
               cwd=cwd,

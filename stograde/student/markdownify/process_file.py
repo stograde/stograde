@@ -56,10 +56,9 @@ def compile_file(filename, *, steps, results, supporting_dir, basedir, spec_id):
 
 
 def test_file(filename, *, spec, tests, results, options, cwd, supporting_dir, interact):
-    tests = tests if spec.get('spec_version', 2) >= 3 else \
-        flatten([test_spec['commands']
-                 for test_spec in spec.get('tests', {})
-                 if test_spec['filename'] == filename])
+    tests = flatten(tests + [test_spec['commands']
+                             for test_spec in spec.get('tests', {})
+                             if test_spec['filename'] == filename])
 
     for test_cmd in tests:
         if not test_cmd:

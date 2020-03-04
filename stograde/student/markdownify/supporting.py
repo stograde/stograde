@@ -16,9 +16,14 @@ def import_supporting(*, spec, spec_id, basedir):
             else:
                 in_name = filename[0]
                 out_name = filename[1]
-        else:
+        elif isinstance(filename, dict):
+            in_name = filename['file']
+            out_name = filename.get('destination', in_name)
+        elif isinstance(filename, str):
             in_name = filename
             out_name = filename
+        else:
+            raise TypeError("A supporting file in {} cannot be parsed".format(spec_id))
 
         with open(os.path.join(supporting_dir, spec_id, in_name), 'rb') as infile:
             contents = infile.read()

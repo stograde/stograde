@@ -3,12 +3,12 @@ import os
 
 def import_supporting(*, spec, spec_id, basedir):
     cwd = os.getcwd()
-    inputs = spec.get('inputs', [])
+    supporting_files = spec.get('inputs', []) + spec.get('supporting', [])
     supporting_dir = os.path.join(basedir, 'data', 'supporting')
     written_files = []
 
     # write the supporting files into the folder
-    for filename in inputs:
+    for filename in supporting_files:
         if isinstance(filename, list):
             if len(filename) == 1:
                 in_name = filename[0]

@@ -9,6 +9,7 @@ import os.path
 import logging
 
 from .ci_analyze import ci_analyze
+from ..specs import delete_cache
 from ..student import clone_student
 from ..common import chdir, run
 from ..specs import load_all_specs, check_dependencies, check_architecture
@@ -157,10 +158,7 @@ def main():
                     sys.exit(1)
 
     if re_cache_specs:
-        try:
-            shutil.rmtree(os.path.join(basedir, 'data', 'specs', '_cache'))
-        except OSError:
-            print('Could not remove cached specs', file=sys.stderr)
+        delete_cache(basedir)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

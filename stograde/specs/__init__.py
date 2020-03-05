@@ -1,3 +1,4 @@
+from .cache import delete_cache
 from .load import load_all_specs
 from .load import load_some_specs
 from .util import get_filenames

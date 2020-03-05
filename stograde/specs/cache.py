@@ -1,3 +1,5 @@
+import shutil
+import sys
 from logging import debug
 import json
 import copy
@@ -137,3 +139,10 @@ def get_modification_time_ns(path):
         return os.stat(path).st_mtime_ns
     except Exception:
         return None
+
+
+def delete_cache(basedir, dir_name='data'):
+    try:
+        shutil.rmtree(os.path.join(basedir, dir_name, 'specs', '_cache'))
+    except OSError:
+        print('Could not remove cached specs', file=sys.stderr)

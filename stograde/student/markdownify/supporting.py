@@ -18,7 +18,7 @@ def import_supporting(*, spec, spec_id, basedir):
                 out_name = filename[1]
         elif isinstance(filename, dict):
             in_name = filename['file']
-            out_name = filename.get('destination', filename.get('dest', in_name))
+            out_name = filename.get('destination', in_name)
         elif isinstance(filename, str):
             in_name = filename
             out_name = filename

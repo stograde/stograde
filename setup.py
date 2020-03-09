@@ -43,6 +43,7 @@ setup(
         'appdirs == 1.4.*',
         'python-dateutil == 2.7.*',
         'PyInquirer == 1.0.*',
+        'bidict == 0.19.*',
     ],
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),

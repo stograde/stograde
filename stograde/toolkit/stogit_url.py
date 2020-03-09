@@ -17,7 +17,7 @@ def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
     else:
         if not course:
             course = get_course_from_specs()
-            print('Course {} inferred from specs'.format(course.upper()))
+            print('Course {} inferred from specs'.format(course.upper()), file=sys.stderr)
         semester = 's' if _now.month < 7 else 'f'
         year = str(_now.year)[2:]
         return 'git@stogit.cs.stolaf.edu:{}/{}{}'.format(course, semester, year)

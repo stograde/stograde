@@ -63,7 +63,9 @@ def download_specs(course, basedir, stogit):
         print("Course {} not recognized".format(course))
         sys.exit(1)
     with chdir(basedir):
+        print('Downloading specs for {}'.format(course.upper()))
         run(['git', 'clone', url, 'data'])
+        print('Download complete')
         if not stogit:
             return compute_stogit_url(course=course, stogit=None, _now=datetime.date.today())
 

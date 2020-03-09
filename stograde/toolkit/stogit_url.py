@@ -30,5 +30,9 @@ def get_course_from_specs():
 
     with chdir('./data'):
         _, res, _ = run(['git', 'config', '--get', 'remote.origin.url'])
-        return SPEC_URLS.inverse[res.rstrip()]
-
+        try:
+            course = SPEC_URLS.inverse[res.rstrip()]
+        except KeyError:
+            course = 'sd'     # default to SD as last resort
+        finally:
+            return course

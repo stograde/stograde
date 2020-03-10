@@ -66,7 +66,7 @@ def format_warning(w, value):
 
 
 def format_file(filename, file_info):
-    contents = format_file_contents(file_info.get('contents', ''), file_info) + '\n'
+    contents = format_file_contents(file_info.get('contents', ''), filename) + '\n'
     compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
     test_results = format_file_results(file_info.get('result', [])) + '\n'
 
@@ -90,10 +90,10 @@ def format_file(filename, file_info):
     return '\n'.join([file_header, contents, compilation, test_results])
 
 
-def format_file_contents(contents, info):
+def format_file_contents(contents, filename):
     if not contents:
-        return ''
-    return indent(contents, '    ')
+        return '*File empty*'
+    return '```{}\n'.format(filename.split('.')[-1]) + contents + '\n```\n'
 
 
 def format_file_compilation(compilations):
@@ -106,7 +106,7 @@ def format_file_compilation(compilations):
             result.append('**no warnings: {}**\n'.format(command))
         else:
             result.append('**warnings: {}**\n'.format(command))
-            result.append(indent(output, ' ' * 4))
+            result.append('```\n' + output + '\n```\n')
 
     return '\n'.join(result)
 
@@ -116,8 +116,7 @@ def format_file_results(test_results):
 
     for test in test_results:
         header = '**results of `{command}`** (status: {status})\n'.format_map(test)
-        output = indent(test['output'], '    ')
-        result += header + '\n' + output
+        result += header + '\n```' + test['output'] + '```'
         if test['truncated']:
             result += '\n' + '(truncated after {truncated after})'.format_map(test)
 

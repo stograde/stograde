@@ -1,4 +1,7 @@
 import logging
+import re
+
+LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 
 
 def ci_analyze(records):
@@ -9,7 +12,8 @@ def ci_analyze(records):
                 # Alert student about any missing files
                 if file['missing'] and not file['optional']:
                     logging.error("{}: File {} missing".format(record['spec'], file['filename']))
-                    passing = False
+                    if not re.match(LAB_REGEX, record['spec']):
+                        passing = False
                 else:
                     # Alert student about any compilation errors
                     for compilation in file['compilation']:
@@ -21,7 +25,8 @@ def ci_analyze(records):
                                 logging.error("{}: File {} compile error:\n\n\t{}"
                                               .format(record['spec'], file['filename'],
                                                       compilation['output'].replace("\n", "\n\t")))
-                                passing = False
+                                if not re.match(LAB_REGEX, record['spec']):
+                                    passing = False
         except KeyError:
             logging.error("KeyError with {}".format(record['spec']))
     return passing

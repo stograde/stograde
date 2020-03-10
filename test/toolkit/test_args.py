@@ -3,8 +3,9 @@ from stograde.toolkit.args import (
     build_argparser,
     get_students_from_args,
     get_assignments_from_args,
-    compute_stogit_url,
 )
+
+from stograde.toolkit.stogit_url import compute_stogit_url
 
 
 def args(arglist):

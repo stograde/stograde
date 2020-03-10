@@ -39,6 +39,8 @@ def format_warnings(warnings):
 
 
 def format_header(recording, warnings):
+    """Format the header for the section of the log file"""
+
     try:
         header = '# {spec} – {student}\n{first_submit}\n'.format_map(recording)
     except KeyError:
@@ -52,20 +54,28 @@ def format_header(recording, warnings):
 
 def format_warning(w, value):
     if w == 'no submission':
-        return 'No submission found.\n'
+        return '**No submission found**\n'
 
     elif w == 'unmerged branches' and value:
         branches = ['  - ' + b for b in value]
-        return 'Repository has unmerged branches:\n{}'.format('\n'.join(branches))
+        return '**Repository has unmerged branches:\n{}**'.format('\n'.join(branches))
 
     elif value:
-        return 'Warning: ' + value
+        return '**Warning: ' + value + '**'
 
     else:
         return ''
 
 
 def format_file(filename, file_info):
+    """Format a file for the log.
+    Formats and concatenates a header, the file contents, compile output and test output.
+
+    Last modification is calculated and added to header.
+    If file does not exist, adds a list of all files in the directory.
+    If file is missing and is optional, adds a note in place of last modification time.'
+    """
+
     contents = format_file_contents(file_info.get('contents', ''), filename) + '\n'
     compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
     test_results = format_file_results(file_info.get('result', [])) + '\n'
@@ -91,12 +101,19 @@ def format_file(filename, file_info):
 
 
 def format_file_contents(contents, filename):
-    if not contents:
+    """Add markdown code block around file contents with extension for code highlighting.
+
+    If a file is empty or contains only whitespace, note this in the log.
+    """
+
+    if not contents.rstrip():
         return '*File empty*'
     return '```{}\n'.format(filename.split('.')[-1]) + contents + '\n```\n'
 
 
 def format_file_compilation(compilations):
+    """Add header and markdown code block to compile command outputs"""
+
     result = []
     for status in compilations:
         output = status['output']
@@ -112,8 +129,9 @@ def format_file_compilation(compilations):
 
 
 def format_file_results(test_results):
-    result = ''
+    """Add header and markdown code block to test outputs"""
 
+    result = ''
     for test in test_results:
         header = '**results of `{command}`** (status: {status})\n'.format_map(test)
         result += header + '\n```' + test['output'] + '```'

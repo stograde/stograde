@@ -62,5 +62,18 @@ magnusow
 The toolkit expects to have a `students.txt` file and a `data` directory where it is run from.
 If you don't have the `data` directory, don't worry because the toolkit will clone it for you.
 
+Run `stograde`.
+If there are multiple sections in your `students.txt`, use `stograde -a` (`-a` indicates all sections).
+
+If you don't have a `data` directory yet, you will be asked if you want to download specs:
+```
+data directory not found
+Download specs? (Y/N)
+```
+
+After answering with `Y`, it will then ask which course to download for:
+```yaml
+Which class? (SD/HD/ADS/
+``` 
 
 ## Common Pitfalls

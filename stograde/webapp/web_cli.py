@@ -21,6 +21,7 @@ def check_student(student, spec, spec_id, basedir):
                 result = process_file(file['filename'],
                                       steps=file['commands'],
                                       options=file['options'],
+                                      tests=file['tests'],
                                       spec=spec,
                                       cwd=os.getcwd(),
                                       supporting_dir=supporting_dir,
@@ -102,10 +103,11 @@ def ask_file(files, student, spec, spec_id, basedir):
                     supporting_dir, written_files = import_supporting(spec=spec,
                                                                       spec_id=spec_id,
                                                                       basedir=basedir)
-
+                    print(file_spec)
                     process_file(file_spec['filename'],
                                  steps=file_spec['commands'],
                                  options=file_spec['options'],
+                                 tests=file_spec['tests'],
                                  spec=spec,
                                  cwd=os.getcwd(),
                                  supporting_dir=supporting_dir,

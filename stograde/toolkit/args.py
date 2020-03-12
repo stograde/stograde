@@ -1,6 +1,5 @@
 """Deal with argument parsing for the toolkit"""
 
-import datetime
 import argparse
 import os
 import sys
@@ -16,7 +15,6 @@ from stograde.common import flatten, version, run
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
-COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 
 
 def build_argparser():
@@ -152,18 +150,6 @@ def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     return natsorted(set(assignments))
 
 
-def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
-    """calculate a default stogit URL, or use the specified one"""
-    if stogit:
-        return stogit
-    if re.match(COURSE_REGEX, course):
-        return 'git@stogit.cs.stolaf.edu:{}'.format(course)
-
-    semester = 's' if _now.month < 7 else 'f'
-    year = str(_now.year)[2:]
-    return 'git@stogit.cs.stolaf.edu:{}/{}{}'.format(course, semester, year)
-
-
 def process_args():
     """Process the arguments and create usable data from them"""
     parser = build_argparser()
@@ -194,14 +180,14 @@ def process_args():
 
     students = get_students_from_args(**args, _all_students=load_students_from_file())
     assignments = get_assignments_from_args(**args)
-    stogit = compute_stogit_url(**args, _now=datetime.date.today())
+    # stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
     print_args(args)
     print_students(students)
     print_assignments(assignments)
-    debug("stogit URL: " + stogit)
+    # debug("stogit URL: " + stogit)
 
-    return args, students, assignments, stogit
+    return args, students, assignments #, stogit
 
 
 def print_args(args):

@@ -134,7 +134,7 @@ def format_file_results(test_results):
     result = ''
     for test in test_results:
         header = '**results of `{command}`** (status: {status})\n'.format_map(test)
-        result += header + '\n```' + test['output'] + '```'
+        result += header + '\n```\n' + test['output'] + '\n```'
         if test['truncated']:
             result += '\n' + '(truncated after {truncated after})'.format_map(test)
 

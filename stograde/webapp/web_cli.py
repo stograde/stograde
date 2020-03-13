@@ -8,7 +8,63 @@ from ..student.markdownify.supporting import import_supporting, remove_supportin
 from PyInquirer import style_from_dict, Token, prompt
 
 
+def launch_cli(basedir, date, no_update, spec, spec_id, usernames):
+    """Start the web grading CLI"""
+    usernames = [
+        '{} NO SUBMISSION'.format(user)
+        if not os.path.exists('{}/{}'.format(user, spec['assignment']))
+        else user
+        for user in usernames
+    ]
+
+    while True:
+        student = ask_student(usernames)
+
+        if not student or student == 'QUIT':
+            return False
+        elif student == 'LOG and QUIT':
+            return True
+        elif "NO SUBMISSION" in student:
+            continue
+
+        stash(student, no_update=no_update)
+        pull(student, no_update=no_update)
+
+        checkout_date(student, date=date)
+
+        files = check_student(student, spec, spec_id, basedir)
+
+        if files:
+            ask_file(files, student, spec, spec_id, basedir)
+
+
+def ask_student(usernames):
+    """Ask user to select a student"""
+    style = style_from_dict({
+        Token.QuestionMark: '#959ee7 bold',
+        Token.Selected: '#959ee7',
+        Token.Pointer: '#959ee7 bold',
+        Token.Answer: '#959ee7 bold',
+    })
+    questions = [
+        {
+            'type': 'list',
+            'name': 'student',
+            'message': 'Choose student',
+            'choices': ['QUIT', 'LOG and QUIT', *usernames]
+        }
+    ]
+
+    student = prompt(questions, style=style)
+
+    if not student:
+        return None
+
+    return student['student']
+
+
 def check_student(student, spec, spec_id, basedir):
+    """Process student's files and populate file list"""
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
         print("Processing...")
@@ -50,31 +106,8 @@ def check_student(student, spec, spec_id, basedir):
     return files
 
 
-def ask_student(usernames):
-    style = style_from_dict({
-        Token.QuestionMark: '#959ee7 bold',
-        Token.Selected: '#959ee7',
-        Token.Pointer: '#959ee7 bold',
-        Token.Answer: '#959ee7 bold',
-    })
-    questions = [
-        {
-            'type': 'list',
-            'name': 'student',
-            'message': 'Choose student',
-            'choices': ['QUIT', 'LOG and QUIT', *usernames]
-        }
-    ]
-
-    student = prompt(questions, style=style)
-
-    if not student:
-        return None
-
-    return student['student']
-
-
 def ask_file(files, student, spec, spec_id, basedir):
+    """Ask user to select a file to view"""
     style = style_from_dict({
         Token.QuestionMark: '#e3bd27 bold',
         Token.Selected: '#e3bd27',
@@ -126,36 +159,8 @@ def ask_file(files, student, spec, spec_id, basedir):
             return
 
 
-def launch_cli(basedir, date, no_update, spec, spec_id, usernames):
-    usernames = [
-        '{} NO SUBMISSION'.format(user)
-        if not os.path.exists('{}/{}'.format(user, spec['assignment']))
-        else user
-        for user in usernames
-    ]
-
-    while True:
-        student = ask_student(usernames)
-
-        if not student or student == 'QUIT':
-            return False
-        elif student == 'LOG and QUIT':
-            return True
-        elif "NO SUBMISSION" in student:
-            continue
-
-        stash(student, no_update=no_update)
-        pull(student, no_update=no_update)
-
-        checkout_date(student, date=date)
-
-        files = check_student(student, spec, spec_id, basedir)
-
-        if files:
-            ask_file(files, student, spec, spec_id, basedir)
-
-
 def check_web_spec(spec):
+    """Check if the spec contains any web files"""
     web_spec = False
     for file in spec['files']:
         if 'web' in file['options']:

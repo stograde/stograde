@@ -1,5 +1,6 @@
 import os
 
+from . import server
 from ..common import chdir
 from ..student import stash, pull, checkout_date
 from ..student.markdownify.process_file import process_file
@@ -18,19 +19,20 @@ def check_student(student, spec, spec_id, basedir):
                                                               basedir=basedir)
 
             for file in spec['files']:
-                result = process_file(file['filename'],
-                                      steps=file['commands'],
-                                      options=file['options'],
-                                      tests=file['tests'],
-                                      spec=spec,
-                                      cwd=os.getcwd(),
-                                      supporting_dir=supporting_dir,
-                                      interact=False,
-                                      basedir=basedir,
-                                      spec_id=spec['assignment'],
-                                      skip_web_compile=False)
-
                 if 'web' in file['options']:
+                    # Process file just enough to determine if it exists and/or is optional
+                    result = process_file(file['filename'],
+                                          steps=[],             # Thus, run no compile commands
+                                          options=file['options'],
+                                          tests=[],             # And no tests
+                                          spec=spec,
+                                          cwd=os.getcwd(),
+                                          supporting_dir=supporting_dir,
+                                          interact=False,
+                                          basedir=basedir,
+                                          spec_id=spec['assignment'],
+                                          skip_web_compile=False)
+
                     description = file['filename']
 
                     if result['missing']:
@@ -114,6 +116,9 @@ def ask_file(files, student, spec, spec_id, basedir):
                                  basedir=basedir,
                                  spec_id=spec['assignment'],
                                  skip_web_compile=False)
+
+                    server.work_dir = os.getcwd()
+
                     # and we remove any supporting files
                     remove_supporting(written_files)
 

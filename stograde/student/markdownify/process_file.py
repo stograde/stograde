@@ -30,15 +30,10 @@ def get_file(filename, results, options):
 
 
 def compile_file(filename, *, steps, results, supporting_dir, basedir):
-    server_path = ' '.join([
-        '-o "{}/server/server_file"'.format(basedir)
-    ])
-
     for step in steps:
         command = step \
             .replace('$@', './' + filename) \
-            .replace('$SUPPORT', supporting_dir) \
-            .replace('$SERVER', server_path)
+            .replace('$SUPPORT', supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
         status, compilation, _ = run(cmd, timeout=30, input_data=input_for_cmd)

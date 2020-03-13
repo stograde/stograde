@@ -1,3 +1,5 @@
+import shutil
+import sys
 from logging import debug
 import json
 import copy
@@ -76,48 +78,50 @@ def convert_spec(yaml_path, json_path):
 def clarify_yaml(data):
     copied = copy.deepcopy(data)
     if 'files' in copied and copied['files'] is not None:
-        if copied.get('spec_version', 2) >= 3:
-            copied['files'] = [process_file_yaml_into_dict(f) for f in copied['files']]
-        else:
-            copied['files'] = [process_file_yaml_into_dict_legacy(f) for f in copied['files']]
+        copied['files'] = [process_file_yaml_into_dict(f) for f in copied['files']]
     if 'tests' in copied and copied['tests'] is not None:
-        if copied.get('spec_version', 2) >= 3:
-            copied['tests'] = [process_file_yaml_into_dict(f) for f in copied['tests']]
-        else:
-            copied['tests'] = [process_file_yaml_into_dict_legacy(f) for f in copied['tests']]
+        copied['tests'] = [process_file_yaml_into_dict(f) for f in copied['tests']]
     return copied
 
 
 def process_file_yaml_into_dict(file_list):
-    filename = file_list['file']
-    if filename is None:
-        raise Exception("File name must be specified")
+    if isinstance(file_list, dict):
+        filename = file_list['file']
+        if filename is None:
+            raise Exception("File name must be specified")
 
-    commands = file_list.get('commands', [])
-    if isinstance(commands, str):
-        commands = [commands]
-    assert isinstance(commands, list)
+        commands = file_list.get('commands', [])
+        if isinstance(commands, str):
+            commands = [commands]
+        assert isinstance(commands, list)
 
-    options = file_list.get('options', {})
-    assert isinstance(options, dict)
+        tests = file_list.get('tests', [])
+        if isinstance(tests, str):
+            tests = [tests]
+        assert isinstance(tests, list)
 
-    return {
-        'filename': filename,
-        'commands': commands,
-        'options': options,
-    }
+        options = file_list.get('options', {})
+        assert isinstance(options, dict)
 
-
-def process_file_yaml_into_dict_legacy(file_list):
-    filename = file_list[0]
-    commands = [f for f in file_list[1:] if isinstance(f, str)]
-    option_list = [opt for opt in file_list[1:] if isinstance(opt, dict)]
-    options = {k: v for opt in option_list for k, v in opt.items()}
-    return {
-        'filename': filename,
-        'commands': commands,
-        'options': options,
-    }
+        return {
+            'filename': filename,
+            'commands': commands,
+            'tests': tests,
+            'options': options,
+        }
+    elif isinstance(file_list, list):
+        filename = file_list[0]
+        commands = [f for f in file_list[1:] if isinstance(f, str)]
+        option_list = [opt for opt in file_list[1:] if isinstance(opt, dict)]
+        options = {k: v for opt in option_list for k, v in opt.items()}
+        return {
+            'filename': filename,
+            'commands': commands,
+            'tests': [],
+            'options': options,
+        }
+    else:
+        raise TypeError('Cannot parse spec: incorrect data type')
 
 
 def json_date_handler(obj):
@@ -135,3 +139,10 @@ def get_modification_time_ns(path):
         return os.stat(path).st_mtime_ns
     except Exception:
         return None
+
+
+def delete_cache(basedir, dir_name='data'):
+    try:
+        shutil.rmtree(os.path.join(basedir, dir_name, 'specs', '_cache'))
+    except OSError:
+        print('Could not remove cached specs', file=sys.stderr)

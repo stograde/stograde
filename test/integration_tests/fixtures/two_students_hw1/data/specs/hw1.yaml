@@ -10,11 +10,13 @@ files:
   - [ second.cpp, *cpp ]
   - [ secondComment.cpp, *cpp ]
   - [ Makefile ]
-  - [ Dog.h ]
-  - [ Dog.cpp ]
-  - - tryDog.cpp
-    - rm -f tryDog tryDog.o Dog.o
-    - make
+  - file: Dog.h
+  - file: Dog.cpp
+  - file: tryDog.cpp
+    commands:
+      - rm -f tryDog tryDog.o Dog.o
+      - make
+    tests: ./tryDog
 
 tests:
   - [ hello.cpp, $@.exec ]

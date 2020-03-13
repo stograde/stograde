@@ -13,7 +13,7 @@ from .download_specs import create_data_dir
 from .stogit_url import compute_stogit_url
 from ..student import clone_student
 from ..common import chdir, run
-from ..specs import load_all_specs, check_dependencies, check_architecture
+from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
 from .find_update import update_available
 from .process_student import process_student
 from .args import process_args
@@ -116,10 +116,7 @@ def main():
     stogit_url = compute_stogit_url(stogit=stogit, course=course, _now=datetime.date.today())
 
     if re_cache_specs:
-        try:
-            shutil.rmtree(os.path.join(basedir, 'data', 'specs', '_cache'))
-        except OSError:
-            print('Could not remove cached specs', file=sys.stderr)
+        delete_cache(basedir)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:

@@ -24,7 +24,7 @@ def launch_cli(basedir, date, no_update, spec, spec_id, usernames):
             return False
         elif student == 'LOG and QUIT':
             return True
-        elif "NO SUBMISSION" in student:
+        elif 'NO SUBMISSION' in student:
             continue
 
         stash(student, no_update=no_update)
@@ -67,7 +67,7 @@ def check_student(student, spec, spec_id, basedir):
     """Process student's files and populate file list"""
     files = []
     if os.path.exists('{}/{}'.format(student, spec['assignment'])):
-        print("Processing...")
+        print('Processing...')
         with chdir('{}/{}'.format(student, spec['assignment'])):
             # prepare the current folder
             supporting_dir, written_files = import_supporting(spec=spec,

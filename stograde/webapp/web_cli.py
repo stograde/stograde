@@ -85,8 +85,6 @@ def check_student(student, spec, spec_id, basedir):
                                           cwd=os.getcwd(),
                                           supporting_dir=supporting_dir,
                                           interact=False,
-                                          basedir=basedir,
-                                          spec_id=spec['assignment'],
                                           skip_web_compile=False)
 
                     description = file['filename']
@@ -147,8 +145,6 @@ def ask_file(files, student, spec, spec_id, basedir):
                                  cwd=os.getcwd(),
                                  supporting_dir=supporting_dir,
                                  interact=False,
-                                 basedir=basedir,
-                                 spec_id=spec['assignment'],
                                  skip_web_compile=False)
 
                     server.work_dir = os.getcwd()

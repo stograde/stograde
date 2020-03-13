@@ -29,7 +29,7 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, *, steps, results, supporting_dir, basedir):
+def compile_file(filename, *, steps, results, supporting_dir):
     for step in steps:
         command = step \
             .replace('$@', './' + filename) \
@@ -94,8 +94,7 @@ def test_file(filename, *, spec, tests, results, options, cwd, supporting_dir, i
     return True
 
 
-def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, basedir,
-                 spec_id, skip_web_compile):
+def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, skip_web_compile):
 
     base_opts = {
         'timeout': 4,
@@ -123,8 +122,7 @@ def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, 
     should_continue = compile_file(filename,
                                    steps=steps,
                                    results=results,
-                                   supporting_dir=supporting_dir,
-                                   basedir=basedir)
+                                   supporting_dir=supporting_dir)
 
     if not should_continue or not steps or options['web']:
         return results

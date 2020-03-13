@@ -126,6 +126,7 @@ def ask_file(files, student, spec, spec_id, basedir):
         ]
         file = prompt(questions, style=style)
 
+        # File has been selected so process and display it
         if file and file['file'] != 'BACK':
             file_spec = {}
             for f in spec['files']:

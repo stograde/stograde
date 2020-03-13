@@ -101,8 +101,6 @@ def test_file(filename, *, spec, tests, results, options, cwd, supporting_dir, i
 
 def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, basedir,
                  spec_id, skip_web_compile):
-    steps = steps if isinstance(steps, Iterable) else [steps]
-    tests = tests if isinstance(tests, Iterable) else [tests]
 
     base_opts = {
         'timeout': 4,

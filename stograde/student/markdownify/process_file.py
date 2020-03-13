@@ -29,7 +29,7 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, *, steps, results, supporting_dir, basedir, spec_id):
+def compile_file(filename, *, steps, results, supporting_dir, basedir):
     server_path = ' '.join([
         '-o "{}/server/server_file"'.format(basedir)
     ])
@@ -129,8 +129,7 @@ def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, 
                                    steps=steps,
                                    results=results,
                                    supporting_dir=supporting_dir,
-                                   basedir=basedir,
-                                   spec_id=spec_id)
+                                   basedir=basedir)
 
     if not should_continue or not steps or options['web']:
         return results

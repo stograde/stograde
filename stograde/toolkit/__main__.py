@@ -45,8 +45,7 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def run_server(basedir, port):
-    server.exe_name = '{}/server/server_file'.format(basedir)
+def run_server(port):
     server.run_server(port=port)
     return
 
@@ -190,7 +189,7 @@ def main():
                 print("No web files in assignment {}".format(list(assignments)[0]))
                 sys.exit(1)
 
-            Thread(target=run_server, args=(basedir, port,), daemon=True).start()
+            Thread(target=run_server, args=(port,), daemon=True).start()
 
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)

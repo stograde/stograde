@@ -1,6 +1,5 @@
 import datetime
 import functools
-import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from threading import Thread
@@ -12,7 +11,7 @@ from .ci_analyze import ci_analyze
 from .download_specs import create_data_dir
 from .stogit_url import compute_stogit_url
 from ..student import clone_student
-from ..common import chdir, run
+from ..common import chdir
 from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
 from .find_update import update_available
 from .process_student import process_student

@@ -1,6 +1,5 @@
 import datetime
 import functools
-import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from threading import Thread
@@ -12,7 +11,7 @@ from .ci_analyze import ci_analyze
 from .download_specs import create_data_dir
 from .stogit_url import compute_stogit_url
 from ..student import clone_student
-from ..common import chdir, run
+from ..common import chdir
 from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
 from .find_update import update_available
 from .process_student import process_student
@@ -45,8 +44,7 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def run_server(basedir, port):
-    server.exe_name = '{}/server/server_file'.format(basedir)
+def run_server(port):
     server.run_server(port=port)
     return
 
@@ -159,9 +157,6 @@ def main():
     if not ci:
         makedirs('./students', exist_ok=True)
 
-    if ci or web:
-        makedirs('./server', exist_ok=True)
-
     directory = './students' if not ci else '.'
     with chdir(directory):
         single_analysis = functools.partial(
@@ -190,7 +185,7 @@ def main():
                 print("No web files in assignment {}".format(list(assignments)[0]))
                 sys.exit(1)
 
-            Thread(target=run_server, args=(basedir, port,), daemon=True).start()
+            Thread(target=run_server, args=(port,), daemon=True).start()
 
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)

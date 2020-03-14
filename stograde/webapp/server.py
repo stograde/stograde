@@ -10,8 +10,10 @@ import os
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from subprocess import *
+from ..common import chdir
 
-exe_name = ""
+exe_name = "a.out"
+work_dir = "."
 exe_mtime = -1
 message_id = {}
 yaml_files_name = "app.files"
@@ -87,13 +89,17 @@ class S(BaseHTTPRequestHandler):
                 logging.debug(" running with incoming len:\n")
                 sys.stderr.buffer.write(incoming_data)
                 logging.debug("\n")
-            proc = Popen(exe_name, stdin=PIPE, stdout=PIPE, stderr=PIPE)
             try:
-                (stdout_, stderr_) = proc.communicate(incoming_data, timeout=2)
-            except TimeoutExpired:
-                proc.kill()
-                (stdout_, stderr_) = proc.communicate()
-                stderr_ = b'timeout expired:  your code may have an infinite loop!\n' + stderr_
+                proc = Popen(os.path.join(os.getcwd(), exe_name), stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                try:
+                    (stdout_, stderr_) = proc.communicate(incoming_data, timeout=2)
+                except TimeoutExpired:
+                    proc.kill()
+                    (stdout_, stderr_) = proc.communicate()
+                    stderr_ = b'timeout expired:  your code may have an infinite loop!\n' + stderr_
+            except FileNotFoundError:
+                stdout_ = ""
+                stderr_ = "File {} not found".format(os.path.join(os.getcwd(), exe_name))
             if 'str' == type(stdout_):
                 stdout_ = bytes(stdout_, 'utf-8')
                 stderr_ = bytes(stderr_, 'utf-8')
@@ -168,24 +174,27 @@ class S(BaseHTTPRequestHandler):
             self.wfile.write(load_binary(self.path[self.path.rfind("/") + 1:]))
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        incoming_data = self.rfile.read(content_length)
-        # parse the incoming data, to look for some key parts
-        global exe_name, separator
-        sep_pos = incoming_data.find(separator.encode())
-        if -1 == sep_pos:
-            yaml_part = ''
-        else:
-            yaml_part = incoming_data[:sep_pos].decode() + '\n'
-        first_name = get_top_key('- first_name: ', yaml_part)
+        with chdir(work_dir):
+            content_length = int(self.headers['Content-Length'])
+            incoming_data = self.rfile.read(content_length)
+            # parse the incoming data, to look for some key parts
+            global exe_name, separator
+            sep_pos = incoming_data.find(separator.encode())
+            if -1 == sep_pos:
+                yaml_part = ''
+            else:
+                yaml_part = incoming_data[:sep_pos].decode() + '\n'
+            first_name = get_top_key('- first_name: ', yaml_part)
 
-        # does the executable exist?
-        if os.path.isfile(exe_name):
-            # logging.debug()(" has_exe ")
-            self.use_exe(first_name, yaml_part, incoming_data)
-        elif os.path.isfile(yaml_files_name):
-            # logging.debug()(" no_exe ")
-            self.use_static_yaml()
+            # does the executable exist?
+            if os.path.isfile(exe_name):
+                logging.debug(" has_exe ")
+                self.use_exe(first_name, yaml_part, incoming_data)
+            elif os.path.isfile(yaml_files_name):
+                logging.debug(" no_exe ")
+                self.use_static_yaml()
+            else:
+                logging.debug(" nothing ")
 
     def log_message(self, format, *args):
         pass

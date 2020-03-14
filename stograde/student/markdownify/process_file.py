@@ -29,16 +29,11 @@ def get_file(filename, results, options):
     return True
 
 
-def compile_file(filename, *, steps, results, supporting_dir, basedir, spec_id):
-    server_path = ' '.join([
-        '-o "{}/server/server_file"'.format(basedir)
-    ])
-
+def compile_file(filename, *, steps, results, supporting_dir):
     for step in steps:
         command = step \
             .replace('$@', './' + filename) \
-            .replace('$SUPPORT', supporting_dir) \
-            .replace('$SERVER', server_path)
+            .replace('$SUPPORT', supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
         status, compilation, _ = run(cmd, timeout=30, input_data=input_for_cmd)
@@ -99,10 +94,7 @@ def test_file(filename, *, spec, tests, results, options, cwd, supporting_dir, i
     return True
 
 
-def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, basedir,
-                 spec_id, skip_web_compile):
-    steps = steps if isinstance(steps, Iterable) else [steps]
-    tests = tests if isinstance(tests, Iterable) else [tests]
+def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, interact, skip_web_compile):
 
     base_opts = {
         'timeout': 4,
@@ -127,15 +119,10 @@ def process_file(filename, *, steps, tests, options, spec, cwd, supporting_dir, 
     if not should_continue or skip_web_compile and options['web']:
         return results
 
-    if options['web']:
-        os.makedirs('{}/server'.format(basedir), exist_ok=True)
-
     should_continue = compile_file(filename,
                                    steps=steps,
                                    results=results,
-                                   supporting_dir=supporting_dir,
-                                   basedir=basedir,
-                                   spec_id=spec_id)
+                                   supporting_dir=supporting_dir)
 
     if not should_continue or not steps or options['web']:
         return results

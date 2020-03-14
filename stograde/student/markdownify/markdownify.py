@@ -44,8 +44,6 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
                                   cwd=cwd,
                                   supporting_dir=supporting_dir,
                                   interact=interact,
-                                  basedir=basedir,
-                                  spec_id=spec_id,
                                   skip_web_compile=skip_web_compile)
             results['files'][filename] = result
 

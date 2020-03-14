@@ -1,6 +1,5 @@
 """Make a nice table from the student results"""
 import re
-from sys import stdout
 from termcolor import colored
 
 COL = '|'

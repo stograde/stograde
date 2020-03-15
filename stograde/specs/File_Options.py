@@ -19,3 +19,4 @@ class FileOptions:
         self.truncate_contents = options.get('truncate_contents', self.truncate_contents)
         self.truncate_output = options.get('truncate_output', self.truncate_output)
         self.web_file = options.get('web', self.web_file)
+        return self

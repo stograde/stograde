@@ -12,7 +12,7 @@ SPEC_URLS = bidict({
 })
 
 
-def download_specs(course, basedir):
+def download_specs(course: str, basedir: str) -> str:
     course = course.split("/")[0].lower()
     try:
         url = SPEC_URLS[course]
@@ -26,7 +26,7 @@ def download_specs(course, basedir):
         return course
 
 
-def create_data_dir(ci, course, basedir):
+def create_data_dir(ci: bool, course: str, basedir: str):
     if ci:
         if course:
             download_specs(course, basedir)

@@ -2,7 +2,7 @@ from glob import glob
 import shlex
 
 from stograde.common import flatten
-from stograde.common import run
+from stograde.common.run import run
 
 
 def expand_chunk(command_chunk):

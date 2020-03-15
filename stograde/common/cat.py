@@ -1,4 +1,7 @@
-def cat(filename):
+from typing import Tuple
+
+
+def cat(filename: str) -> Tuple[str, str]:
     """Return the contents of a file. Replaces the `cat` command.
 
     This function took about ~148 time units per call, while
@@ -8,4 +11,4 @@ def cat(filename):
         with open(filename, 'r', encoding='utf-8') as infile:
             return 'success', infile.read()
     except Exception:
-        return 'failure', None
+        return 'failure', ''

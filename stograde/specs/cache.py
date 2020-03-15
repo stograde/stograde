@@ -141,7 +141,7 @@ def get_modification_time_ns(path):
         return None
 
 
-def delete_cache(basedir, dir_name='data'):
+def delete_cache(basedir: str, dir_name: str = 'data'):
     try:
         shutil.rmtree(os.path.join(basedir, dir_name, 'specs', '_cache'))
     except OSError:

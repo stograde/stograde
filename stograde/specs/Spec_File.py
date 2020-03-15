@@ -45,6 +45,7 @@ def create_spec_file(file_spec) -> SpecFile:
 
     :param file_spec: A `dict` or `list` with the file specifications
     """
+
     if isinstance(file_spec, dict):
         assert 'file' in file_spec
         file_name = file_spec['file']

@@ -3,7 +3,7 @@ import os
 
 
 @contextlib.contextmanager
-def chdir(path):
+def chdir(path: str):
     """Create a `with` block for changing into a directory"""
     current_dir = os.getcwd()
     try:

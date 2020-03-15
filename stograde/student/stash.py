@@ -4,14 +4,14 @@ from stograde.common import chdir
 from stograde.common import run
 
 
-def stash(student, no_update):
+def stash(student: str, no_repo_update: bool):
     logging.debug("Stashing {}'s repository".format(student))
     with chdir(student):
-        if not no_update and has_changed_files():
+        if not no_repo_update and has_changed_files():
             run(['git', 'stash', '-u'])
             run(['git', 'stash', 'clear'])
 
 
-def has_changed_files():
+def has_changed_files() -> bool:
     _, output, _ = run(['git', 'status', '--porcelain'])
     return bool(output)

@@ -6,10 +6,12 @@ from threading import Thread
 from os import makedirs, getcwd
 import os.path
 import logging
+from typing import List
 
 from .ci_analyze import ci_analyze
 from .download_specs import create_data_dir
 from .stogit_url import compute_stogit_url
+from ..specs.Spec import Spec
 from ..student import clone_student
 from ..common import chdir
 from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
@@ -19,6 +21,7 @@ from .args import process_args
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
+from ..student.Student_Result import StudentResult
 from ..webapp import server
 from ..webapp.web_cli import launch_cli, check_web_spec
 
@@ -49,27 +52,29 @@ def run_server(port):
     return
 
 
-def run_analysis(*, no_progress=False, parallel, single_analysis, usernames, workers=1):
-    results = []
-    records = []
+def run_analysis(*,
+                 no_progress: bool = False,
+                 parallel: bool,
+                 single_analysis: functools.partial,
+                 usernames: List[str],
+                 workers: int = 1) -> List[StudentResult]:
+    results: List[StudentResult] = []
 
     if parallel:
         print_progress = make_progress_bar(usernames, no_progress=no_progress)
         with ProcessPoolExecutor(max_workers=workers) as pool:
             futures = [pool.submit(single_analysis, name) for name in usernames]
             for future in as_completed(futures):
-                result, recording = future.result()
-                print_progress(result['username'])
+                result: StudentResult = future.result()
+                print_progress(result.name)
                 results.append(result)
-                records.extend(recording)
     else:
         for student in usernames:
             logging.debug('Processing {}'.format(student))
-            result, recording = single_analysis(student)
+            result: StudentResult = single_analysis(student)
             results.append(result)
-            records.extend(recording)
 
-    return results, records
+    return results
 
 
 def main():
@@ -83,7 +88,7 @@ def main():
     gist = args['gist']
     highlight_partials = args['highlight_partials']
     interact = args['interact']
-    no_check = args['no_check']
+    no_branch_check = args['no_check']
     no_update = args['no_update']
     no_progress = args['no_progress']
     port = args['server_port']
@@ -116,7 +121,9 @@ def main():
     if re_cache_specs:
         delete_cache(basedir)
 
-    specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
+    specs: List[Spec] = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
+    loaded_specs = {spec.id: spec for spec in specs}
+
     if not specs:
         print('No specs loaded!')
         sys.exit(1)
@@ -133,16 +140,17 @@ def main():
             except FileNotFoundError:
                 logging.debug("No .stogradeignore file found")
 
-        for spec_to_use in assignments:
+        for spec_id in assignments:
+            spec_to_use = loaded_specs[spec_id]
             try:
-                check_dependencies(specs[spec_to_use])
-                if not check_architecture(spec_to_use, specs[spec_to_use], ci):
-                    available_specs.remove(spec_to_use)
+                check_dependencies(spec_to_use)
+                if not check_architecture(spec_to_use, ci):
+                    available_specs.remove(spec_to_use.id)
             except KeyError:
                 # Prevent lab0 directory from causing an extraneous output
-                if spec_to_use != 'lab0':
-                    print('Spec {} does not exist'.format(spec_to_use), file=sys.stderr)
-                available_specs.remove(spec_to_use)
+                if spec_to_use.id != 'lab0':
+                    print('Spec {} does not exist'.format(spec_to_use.id), file=sys.stderr)
+                available_specs.remove(spec_to_use.id)
 
         assignments = available_specs
 
@@ -168,8 +176,8 @@ def main():
             date=date,
             debug=debug,
             interact=interact,
-            no_check=no_check,
-            no_update=no_update,
+            no_branch_check=no_branch_check,
+            no_repo_update=no_update,
             specs=specs,
             skip_web_compile=skip_web_compile,
             stogit_url=stogit_url
@@ -179,51 +187,50 @@ def main():
 
         if web:
             spec_id = list(assignments)[0]
-            spec = specs[spec_id]
+            spec = loaded_specs[spec_id]
             web_spec = check_web_spec(spec)
             if not web_spec:
-                print("No web files in assignment {}".format(list(assignments)[0]))
+                print("No web files in assignment {}".format(spec_id))
                 sys.exit(1)
 
             Thread(target=run_server, args=(port,), daemon=True).start()
 
             for user in usernames:
-                clone_student(user, baseurl=stogit_url)
+                clone_student(user, base_url=stogit_url)
 
             do_record = launch_cli(basedir=basedir,
                                    date=date,
-                                   no_update=no_update,
+                                   no_repo_update=no_update,
                                    spec=spec,
-                                   spec_id=spec_id,
                                    usernames=usernames)
             if not do_record:
                 quiet = True
 
         if do_record:
             if workers > 1:
-                results, records = run_analysis(no_progress=no_progress,
-                                                parallel=True,
-                                                single_analysis=single_analysis,
-                                                usernames=usernames,
-                                                workers=workers)
+                results: List[StudentResult] = run_analysis(no_progress=no_progress,
+                                                            parallel=True,
+                                                            single_analysis=single_analysis,
+                                                            usernames=usernames,
+                                                            workers=workers)
             else:
-                results, records = run_analysis(no_progress=no_progress,
-                                                parallel=False,
-                                                single_analysis=single_analysis,
-                                                usernames=usernames)
+                results: List[StudentResult] = run_analysis(no_progress=no_progress,
+                                                            parallel=False,
+                                                            single_analysis=single_analysis,
+                                                            usernames=usernames)
 
     if ci or not quiet:
-        table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
+        table: str = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         if ci:
             print(table + '\n')
         elif not quiet:
             print('\n' + table)
 
     if gist:
-        table = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
+        table: str = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
         gist_recordings(records, table, debug=debug)
     elif ci:
-        passing = ci_analyze(records)
+        passing = ci_analyze(results)
         if not passing:
             logging.debug('Build failed')
             sys.exit(1)

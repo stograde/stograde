@@ -1,51 +1,51 @@
-from stograde.student import remove
-from stograde.student import clone_student
-from stograde.student import stash
-from stograde.student import pull
-from stograde.student import checkout_date
-from stograde.student import record
-from stograde.student import reset
-from stograde.student import analyze
+from typing import List
+
+from ..specs import Spec
+from ..student import analyze, checkout_date, clone_student, pull, record, remove, reset, stash
+from ..student.Student_Result import StudentResult
 
 
 def process_student(
-        student,
+        student: str,
         *,
-        assignments,
-        basedir,
-        ci,
-        clean,
-        date,
-        debug,
-        interact,
-        no_check,
-        no_update,
-        specs,
-        skip_web_compile,
-        stogit_url
-):
+        assignments: List[str],
+        basedir: str,
+        ci: bool,
+        clean: bool,
+        date: str,
+        debug: bool,
+        interact: bool,
+        no_branch_check: bool,
+        no_repo_update: bool,
+        specs: List[Spec],
+        skip_web_compile: bool,
+        stogit_url: str
+) -> StudentResult:
     if clean:
         remove(student)
     if not ci:
-        clone_student(student, baseurl=stogit_url)
+        clone_student(student, base_url=stogit_url)
 
     try:
         if not ci:
-            stash(student, no_update=no_update)
-            pull(student, no_update=no_update)
+            stash(student, no_repo_update=no_repo_update)
+            pull(student, no_repo_update=no_repo_update)
 
             checkout_date(student, date=date)
 
-        recordings = record(student, specs=specs, to_record=assignments, basedir=basedir, debug=debug,
-                            interact=interact, ci=ci, skip_web_compile=skip_web_compile)
-        analysis = analyze(student, specs, check_for_branches=not no_check, ci=ci)
+        student_result = StudentResult(name=student)
+
+        record(student, specs=specs, assignments=assignments, basedir=basedir, debug=debug,
+               interact=interact, ci=ci, skip_web_compile=skip_web_compile)
+        analyze(student_result, specs=specs, check_for_branches=not no_branch_check, ci=ci)
 
         if date:
             reset(student)
 
-        return analysis, recordings
+        return student_result
 
     except Exception as err:
         if debug:
             raise err
-        return {'username': student, 'error': err}, []
+        else:
+            return StudentResult(name=student, error=err)

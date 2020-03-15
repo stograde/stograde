@@ -1,6 +1,12 @@
 """Make a nice table from the student results"""
 import re
+from typing import List, Tuple, Dict
+
 from termcolor import colored
+
+from stograde.process_assignment.Assignment_Status import AssignmentStatus
+from stograde.process_assignment.Assignment_Type import get_assignment_number, AssignmentType
+from stograde.student.Student_Result import StudentResult
 
 COL = '|'
 ROW = '-'
@@ -9,42 +15,50 @@ MISSING = '-'
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
-def sort_by_hw_count(user):
+def sort_by_hw_count(user: StudentResult) -> int:
     """Sort students by the number of completed homeworks"""
-    return sum([1 if hw['status'] == 'success' else 0 for hw in user['homeworks']])
+    return sum([1 if stat is AssignmentStatus.SUCCESS else 0 for _, stat in user.assignments()])
 
 
-def sort_by_username(user):
+def sort_by_username(user: StudentResult) -> str:
     """Sort students by their username"""
-    return user['username']
+    return user.name
 
 
-def asciiify(table):
+def asciiify(table: str) -> str:
     """Take a flashy unicode table and render it with ASCII-only chars"""
     return ANSI_ESCAPE.sub('', table)
 
 
-def pad(string, index):
+def pad(string: str,
+        index: int) -> str:
     """Pad a string to the width of the stringified number"""
     padding_char = string if string == MISSING else ' '
     return string.ljust(len(str(index)), padding_char)
 
 
-def symbol(assignment, highlight_partials=False):
+def symbol(assignment: Tuple[str, AssignmentStatus],
+           highlight_partials: bool = False) -> str:
     """Turn an assignment status into the symbol for the table"""
-    if assignment['status'] == 'success':
-        return str(assignment['number'])
-    elif assignment['status'] == 'partial':
-        retval = str(assignment['number'])
+    (num, status) = assignment
+
+    if status is AssignmentStatus.SUCCESS:
+        return str(num)
+    elif status is AssignmentStatus.PARTIAL:
+        return_val = str(num)
         if highlight_partials:
-            return colored(retval, 'red', attrs={'bold': True})
-        return retval
-    return MISSING
+            return colored(return_val, 'red', attrs={'bold': True})
+        return return_val
+    else:
+        return MISSING
 
 
-def concat(lst, to_num, highlight_partials=False):
+def concat(assignments: Dict[str, AssignmentStatus],
+           to_num: int,
+           highlight_partials: bool = False) -> str:
     """Create the informative row of data for a list of assignment statuses"""
-    nums = {item['number']: item for item in lst}
+    nums = {get_assignment_number(a_id): (get_assignment_number(a_id), stat)
+            for a_id, stat in assignments.items()}
     lst = [pad(symbol(nums[idx], highlight_partials), idx)
            if idx in nums
            else pad('-', idx)
@@ -52,41 +66,46 @@ def concat(lst, to_num, highlight_partials=False):
     return ' '.join(lst)
 
 
-def find_columns(num):
+def find_columns(num: int) -> str:
     """Build the table headings for the assignment sections"""
     return ' '.join([str(i) for i in range(1, num + 1)])
 
 
-def columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num, highlight_partials=False):
+def columnize(student: StudentResult,
+              longest_user: str,
+              max_hwk_num: int,
+              max_lab_num: int,
+              max_wst_num: int,
+              highlight_partials: bool = False):
     """Build the data for each row of the information table"""
-    name = '{0:<{1}}'.format(student['username'], len(longest_user))
+    name = '{0:<{1}}'.format(student.name, len(longest_user))
 
-    if student.get('unmerged_branches', False):
+    if len(student.unmerged_branches) > 0:
         name = colored(name, attrs={'bold': True})
 
-    homework_row = concat(student.get('homeworks', []), max_hwk_num, highlight_partials)
-    lab_row = concat(student.get('labs', []), max_lab_num, highlight_partials)
-    worksheet_row = concat(student.get('worksheets', []), max_wst_num, highlight_partials)
+    homework_row = concat(student.homeworks, max_hwk_num, highlight_partials)
+    lab_row = concat(student.labs, max_lab_num, highlight_partials)
+    worksheet_row = concat(student.worksheets, max_wst_num, highlight_partials)
 
-    if 'error' in student:
+    if student.error:
         return '{name}  {sep} {err}'.format(
             name=name,
             sep=COL,
-            err=student['error'])
+            err=student.error)
+    else:
+        return '{name}  {sep} {hws} {sep} {labs} {sep} {wkshts}'.format(
+            name=name,
+            hws=homework_row,
+            labs=lab_row,
+            wkshts=worksheet_row,
+            sep=COL)
 
-    return '{name}  {sep} {hws} {sep} {labs} {sep} {wkshts}'.format(
-        name=name,
-        hws=homework_row,
-        labs=lab_row,
-        wkshts=worksheet_row,
-        sep=COL)
 
-
-def get_nums(students):
+def get_nums(students: List[StudentResult]) -> Tuple[int, int, int]:
     """Given a list of students, return the highest hw and lab number among them"""
-    homework_nums = [hw['number'] for s in students for hw in s.get('homeworks', [])]
-    lab_nums = [lab['number'] for s in students for lab in s.get('labs', [])]
-    worksheet_nums = [lab['number'] for s in students for lab in s.get('worksheets', [])]
+    homework_nums = [get_assignment_number(hw) for s in students for hw in s.homeworks.keys()]
+    lab_nums = [get_assignment_number(lab) for s in students for lab in s.labs.keys()]
+    worksheet_nums = [get_assignment_number(ws) for s in students for ws in s.worksheets.keys()]
 
     max_hwk_num = max(homework_nums, default=0)
     max_lab_num = max(lab_nums, default=0)
@@ -95,15 +114,17 @@ def get_nums(students):
     return max_hwk_num, max_lab_num, max_worksheet_num
 
 
-def tabulate(students, sort_by='name', highlight_partials=False):
+def tabulate(student_results: List[StudentResult],
+             sort_by: str = 'name',
+             highlight_partials: bool = False) -> str:
     """Actually build the table"""
 
     # be sure that the longest username will be at least 4 chars
-    usernames = [user['username'] for user in students] + ['USER']
+    usernames = [user.name for user in student_results] + ['USER']
     longest_user = max(usernames, key=len)
 
     # build the header row of the table
-    max_hwk_num, max_lab_num, max_wst_num = get_nums(students)
+    max_hwk_num, max_lab_num, max_wst_num = get_nums(student_results)
     header_hw_nums = find_columns(max_hwk_num)
     header_lab_nums = find_columns(max_lab_num)
     header_wst_nums = find_columns(max_wst_num)
@@ -136,7 +157,7 @@ def tabulate(students, sort_by='name', highlight_partials=False):
 
     lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num,
                        highlight_partials=highlight_partials)
-             for student in sorted(students, reverse=should_reverse, key=sorter)]
+             for student in sorted(student_results, reverse=should_reverse, key=sorter)]
 
     # and make the table to return
     table = [header, border] + lines

@@ -1,7 +1,7 @@
 import shutil
 
 
-def remove(student):
+def remove(student: str):
     try:
         shutil.rmtree(student)
     except FileNotFoundError:

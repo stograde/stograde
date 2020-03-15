@@ -4,13 +4,16 @@ from glob import iglob
 import json
 import os
 import shutil
+from typing import List
 
-from ..common import chdir, run
+from .Spec import Spec, create_spec
+from ..common.chdir import chdir
+from ..common.run import run
 from .cache import cache_specs
 from .dirs import get_specs_dir
 
 
-def load_all_specs(*, basedir=get_specs_dir(), skip_update_check=True):
+def load_all_specs(*, basedir: str = get_specs_dir(), skip_update_check: bool = True) -> List[Spec]:
     os.makedirs(basedir, exist_ok=True)
 
     if not skip_update_check:
@@ -30,15 +33,18 @@ def load_all_specs(*, basedir=get_specs_dir(), skip_update_check=True):
     # the repo has a /specs folder
     basedir = os.path.join(basedir, 'specs')
 
-    cache_specs(basedir)
+    # cache_specs(basedir)
 
-    spec_files = iglob(os.path.join(basedir, '_cache', '*.json'))
+    spec_files = iglob(os.path.join(basedir, '*.yaml'))
 
     # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
     # turn that into the {name: spec} pairs of a dictionary for us
-    return dict([load_spec(filename, basedir) for filename in spec_files])
+    # return dict([load_spec(filename, basedir) for filename in spec_files])
+
+    return [create_spec(filename, basedir) for filename in spec_files]
 
 
+# unused
 def load_some_specs(idents, *, basedir=get_specs_dir()):
     # the repo has a /specs folder
     basedir = os.path.join(basedir, 'specs')
@@ -51,10 +57,12 @@ def load_some_specs(idents, *, basedir=get_specs_dir()):
 
     # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
     # turn that into the {name: spec} pairs of a dictionary for us
-    return dict([load_spec(filename) for filename in loadable_spec_files])
+    return dict([load_spec(filename, basedir) for filename in loadable_spec_files])
 
 
+# unused
 def load_spec(filename, basedir):
+    create_spec()
     with open(filename, 'r', encoding='utf-8') as specfile:
         loaded_spec = json.load(specfile)
 
@@ -69,4 +77,4 @@ def load_spec(filename, basedir):
             shutil.rmtree(os.path.join(basedir, '_cache'))
             cache_specs(basedir)
 
-    return assignment, loaded_spec
+    return loaded_spec

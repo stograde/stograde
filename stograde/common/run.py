@@ -3,9 +3,10 @@ import copy
 import pty
 import io
 import os
+from typing import Tuple
 
 
-def run(cmd, *, interact=False, **kwargs):
+def run(cmd, *, interact=False, **kwargs) -> Tuple[str, str, bool]:
     if interact:
         return run_interactive(cmd)
     return run_static(cmd, **kwargs)
@@ -37,7 +38,7 @@ def run_interactive(cmd):
     runagain = input('Do you want to run the submission again? [y/N]: ')
     again = runagain.lower().startswith('y')
 
-    return (status, result, again)
+    return status, result, again
 
 
 def run_static(cmd, input_data=None, timeout=None):
@@ -66,7 +67,7 @@ def run_static(cmd, input_data=None, timeout=None):
 
     except ProcessLookupError as err:
         try:
-            status, result = run(cmd, input_data=input_data, timeout=timeout)
+            status, result, _ = run(cmd, input_data=input_data, timeout=timeout)
         except:
             status = 'process lookup error'
             result = str(err)
@@ -80,7 +81,7 @@ def run_static(cmd, input_data=None, timeout=None):
     except UnicodeDecodeError:
         result = str(result, 'cp437')
 
-    return (status, result, False)
+    return status, result, False
 
 
 # This is to catch glibc errors, because it prints to /dev/tty

@@ -1,4 +1,4 @@
-from stograde.student.markdownify.cat import cat
+from stograde.common.cat import cat
 
 
 def test_cat(fs):

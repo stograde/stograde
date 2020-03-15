@@ -1,81 +1,52 @@
 import logging
-import re
 import os
+from typing import List
 
 from stograde.common import chdir
 from stograde.common import find_unmerged_branches_in_cwd
-from stograde.specs import get_filenames
+from stograde.process_assignment.Assignment_Status import AssignmentStatus
+from stograde.process_assignment.Assignment_Type import AssignmentType, get_assignment_type
+from stograde.specs import get_filenames, Spec
+from stograde.student.Student_Result import StudentResult
 
 
-def analyze(student, specs, check_for_branches, ci):
-    logging.debug("Analyzing {}'s assignments".format(student))
-    unmerged_branches = None
-    if not ci:
-        unmerged_branches = has_unmerged_branches(student, check_for_branches)
+def analyze(student: StudentResult, specs: List[Spec], check_for_branches: bool, ci: bool):
+    logging.debug("Analyzing {}'s assignments".format(student.name))
 
-    results = {}
-    directory = student if not ci else '.'
+    if check_for_branches and not ci:
+        student.unmerged_branches = find_unmerged_branches_in_cwd()
+
+    directory = student.name if not ci else '.'
+    analyses = {}
     with chdir(directory):
-        for spec in specs.values():
-            assignment = spec['assignment']
-            results[assignment] = analyze_assignment(spec, assignment)
+        for spec in specs:
+            analyses[spec.id] = analyze_assignment(spec)
 
-    homework_list = [result for result in results.values() if result['kind'] == 'homework']
-    lab_list = [result for result in results.values() if result['kind'] == 'lab']
-    worksheet_list = [result for result in results.values() if result['kind'] == 'worksheet']
-
-    return {
-        'username': student,
-        'unmerged_branches': unmerged_branches,
-        'homeworks': homework_list,
-        'labs': lab_list,
-        'worksheets': worksheet_list,
-    }
+    for name, analysis in analyses.items():
+        a_type = get_assignment_type(name)
+        if a_type is AssignmentType.HOMEWORK:
+            student.homeworks[name] = analysis
+        elif a_type is AssignmentType.LAB:
+            student.labs[name] = analysis
+        elif a_type is AssignmentType.WORKSHEET:
+            student.worksheets[name] = analysis
 
 
-def analyze_assignment(spec, assignment):
-    folder = spec.get('folder', assignment)
-    kind, num = parse_assignment_name(assignment)
-    results = {'number': num, 'kind': kind}
+def analyze_assignment(spec: Spec) -> AssignmentStatus:
+    if not os.path.exists(spec.folder):
+        return AssignmentStatus.MISSING
 
-    if not os.path.exists(folder):
-        results['status'] = 'missing'
-        return results
-
-    with chdir(folder):
+    with chdir(spec.folder):
         files_that_do_exist = set(os.listdir('.'))
         files_which_should_exist = set(get_filenames(spec))
         intersection_of = files_that_do_exist.intersection(files_which_should_exist)
 
         if intersection_of == files_which_should_exist:
             # if every file that should exist, does: we're good.
-            results['status'] = 'success'
+            return AssignmentStatus.SUCCESS
         elif intersection_of:
             # if some files that should exist, do: it's a partial assignment
-            results['status'] = 'partial'
+            return AssignmentStatus.PARTIAL
         else:
             # otherwise, none of the required files are there
-            results['status'] = 'missing'
-
-    return results
-
-
-def parse_assignment_name(name):
-    """returns the kind and number from an assignment name"""
-    matches = re.match(r'([a-zA-Z]+)(\d+)', name).groups()
-    kind = matches[0]
-    if kind == 'hw':
-        kind = 'homework'
-    elif kind == 'lab':
-        kind = 'lab'
-    elif kind == 'ws':
-        kind = 'worksheet'
-    num = int(matches[1])
-    return kind, num
-
-
-def has_unmerged_branches(student, should_check):
-    with chdir(student):
-        if should_check:
-            return find_unmerged_branches_in_cwd()
-        return None
+            return AssignmentStatus.MISSING

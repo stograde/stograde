@@ -6,7 +6,7 @@ if sys.version_info < (3, 5):
 
 setup(
     name='stograde',
-    version='3.1.0',
+    version='3.2.0',
     description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',

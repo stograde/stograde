@@ -14,4 +14,4 @@ def test_cat(fs):
 def test_cat_missing(fs):
     result = cat('file.txt')
     assert result[0] == 'failure'
-    assert result[1] is None
+    assert result[1] == ''

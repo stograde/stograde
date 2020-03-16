@@ -1,5 +1,6 @@
 from typing import List
 
+from ..process_assignment import find_unmerged_branches
 from ..specs import Spec
 from ..student import analyze, checkout_date, clone_student, pull, record, remove, reset, stash
 from ..student.Student_Result import StudentResult
@@ -35,7 +36,9 @@ def process_student(
 
         student_result = StudentResult(name=student)
 
-        record(student, specs=specs, assignments=assignments, basedir=basedir, debug=debug,
+        find_unmerged_branches(student_result)
+
+        record(student_result, specs=specs, assignments=assignments, basedir=basedir, debug=debug,
                interact=interact, ci=ci, skip_web_compile=skip_web_compile)
         analyze(student_result, specs=specs, check_for_branches=not no_branch_check, ci=ci)
 

@@ -30,8 +30,6 @@ def process_assignment(*,
         result = RecordResult(spec_id=spec.id,
                               first_submission=first_submit)
 
-        find_unmerged_branches(result)
-
         # prepare the current folder
         supporting_dir, written_files = import_supporting(spec=spec,
                                                           basedir=basedir)

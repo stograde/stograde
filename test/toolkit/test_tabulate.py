@@ -17,9 +17,9 @@ def test_find_columns():
 
 
 def test_symbol():
-    assert symbol(('hw5', AssignmentStatus.SUCCESS)) == '5', "return the number for successful assignments"
-    assert symbol(('hw5', AssignmentStatus.MISSING)) == MISSING, "returns MISSING for missing assignments"
-    assert symbol(('hw5', AssignmentStatus.PARTIAL)) == '5', "returns the raw number if stdout can't handle fanciness"
+    assert symbol((5, AssignmentStatus.SUCCESS)) == '5', "return the number for successful assignments"
+    assert symbol((5, AssignmentStatus.MISSING)) == MISSING, "returns MISSING for missing assignments"
+    assert symbol((5, AssignmentStatus.PARTIAL)) == '5', "returns the raw number if stdout can't handle fanciness"
 
 
 def test_concat():

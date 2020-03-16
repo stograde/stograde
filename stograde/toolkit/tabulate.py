@@ -37,10 +37,10 @@ def pad(string: str,
     return string.ljust(len(str(index)), padding_char)
 
 
-def symbol(assignment: Tuple[str, AssignmentStatus],
+def symbol(assignment: Tuple[int, AssignmentStatus],
            highlight_partials: bool = False) -> str:
     """Turn an assignment status into the symbol for the table"""
-    (num, status) = assignment      # TODO: Fix num
+    (num, status) = assignment
 
     if status is AssignmentStatus.SUCCESS:
         return str(num)

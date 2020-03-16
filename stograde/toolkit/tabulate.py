@@ -17,7 +17,7 @@ ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 def sort_by_hw_count(user: StudentResult) -> int:
     """Sort students by the number of completed homeworks"""
-    return sum([1 if stat is AssignmentStatus.SUCCESS else 0 for _, stat in user.assignments()])
+    return sum([1 if stat is AssignmentStatus.SUCCESS else 0 for _, stat in user.assignments().items()])
 
 
 def sort_by_username(user: StudentResult) -> str:
@@ -40,7 +40,7 @@ def pad(string: str,
 def symbol(assignment: Tuple[str, AssignmentStatus],
            highlight_partials: bool = False) -> str:
     """Turn an assignment status into the symbol for the table"""
-    (num, status) = assignment
+    (num, status) = assignment      # TODO: Fix num
 
     if status is AssignmentStatus.SUCCESS:
         return str(num)

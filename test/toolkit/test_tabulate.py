@@ -214,6 +214,7 @@ def test_tabulate():
                       },
                       labs={
                           'lab1': AssignmentStatus.SUCCESS,
+                          'lab2': AssignmentStatus.SUCCESS,
                       },
                       worksheets={
                           'ws1': AssignmentStatus.SUCCESS
@@ -221,17 +222,17 @@ def test_tabulate():
     ]
 
     assert tabulate(students) == dedent("""
-    USER    | 1 2 3 4 | 1 | 1
-    --------+---------+---+--
-    rives1  | 1 2 - - | 1 | 1
-    rives2  | 1 2 3 - | - | -
-    rives3  | 1 2 3 4 | - | -
+    USER    | 1 2 3 4 | 1 2 | 1
+    --------+---------+-----+--
+    rives1  | 1 2 - - | 1 2 | 1
+    rives2  | 1 2 3 - | - - | -
+    rives3  | 1 2 3 4 | - - | -
     """).strip()
 
     assert tabulate(students, sort_by='count') == dedent("""
-    USER    | 1 2 3 4 | 1 | 1
-    --------+---------+---+--
-    rives3  | 1 2 3 4 | - | -
-    rives2  | 1 2 3 - | - | -
-    rives1  | 1 2 - - | 1 | 1
+    USER    | 1 2 3 4 | 1 2 | 1
+    --------+---------+-----+--
+    rives3  | 1 2 3 4 | - - | -
+    rives2  | 1 2 3 - | - - | -
+    rives1  | 1 2 - - | 1 2 | 1
     """).strip()

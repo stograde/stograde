@@ -148,16 +148,21 @@ def tabulate(student_results: List[StudentResult],
     ])
 
     # build the table body
+    # Sorts by sorter2, then by sorter1
+    # This works because sorted is "stable", meaning it preserves the original order
+    # So sorter1 is the main sort, and any duplicate keys are sorted by sorter2
     if sort_by == 'count':
-        sorter = sort_by_hw_count
+        sorter1 = sort_by_hw_count
+        sorter2 = sort_by_username
         should_reverse = True
     else:
-        sorter = sort_by_username
+        sorter1 = sort_by_username
+        sorter2 = sort_by_hw_count
         should_reverse = False
 
     lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num,
                        highlight_partials=highlight_partials)
-             for student in sorted(student_results, reverse=should_reverse, key=sorter)]
+             for student in sorted(sorted(student_results, key=sorter2), reverse=should_reverse, key=sorter1)]
 
     # and make the table to return
     table = [header, border] + lines

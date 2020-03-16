@@ -130,7 +130,7 @@ def test_get_nums():
     ]) == (0, 1, 0)
 
 
-def test_sort_by_hw_count():  # TODO: Update
+def test_sort_by_hw_count():
     students = [
         StudentResult(name='rives1',
                       homeworks={
@@ -155,7 +155,7 @@ def test_sort_by_hw_count():  # TODO: Update
     assert sorted(students, key=sort_by_hw_count) == list(reversed(students))
 
 
-def test_sort_by_username():  # TODO: Update
+def test_sort_by_username():
     students = [
         StudentResult(name='rives1',
                       homeworks={

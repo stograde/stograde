@@ -132,30 +132,24 @@ def test_get_nums():
 
 def test_sort_by_hw_count():  # TODO: Update
     students = [
-        {
-            'username': 'rives1',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-                {'number': 3, 'status': 'success'},
-                {'number': 4, 'status': 'success'},
-            ],
-        },
-        {
-            'username': 'rives2',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-                {'number': 3, 'status': 'success'},
-            ],
-        },
-        {
-            'username': 'rives3',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-            ],
-        },
+        StudentResult(name='rives1',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                          'hw3': AssignmentStatus.SUCCESS,
+                          'hw4': AssignmentStatus.SUCCESS,
+                      }),
+        StudentResult(name='rives2',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                          'hw3': AssignmentStatus.SUCCESS,
+                      }),
+        StudentResult(name='rives3',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                      }),
     ]
 
     assert sorted(students, key=sort_by_hw_count) == list(reversed(students))
@@ -163,30 +157,24 @@ def test_sort_by_hw_count():  # TODO: Update
 
 def test_sort_by_username():  # TODO: Update
     students = [
-        {
-            'username': 'rives1',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-                {'number': 3, 'status': 'success'},
-                {'number': 4, 'status': 'success'},
-            ],
-        },
-        {
-            'username': 'rives2',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-                {'number': 3, 'status': 'success'},
-            ],
-        },
-        {
-            'username': 'rives3',
-            'homeworks': [
-                {'number': 1, 'status': 'success'},
-                {'number': 2, 'status': 'success'},
-            ],
-        },
+        StudentResult(name='rives1',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                          'hw3': AssignmentStatus.SUCCESS,
+                          'hw4': AssignmentStatus.SUCCESS,
+                      }),
+        StudentResult(name='rives2',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                          'hw3': AssignmentStatus.SUCCESS,
+                      }),
+        StudentResult(name='rives3',
+                      homeworks={
+                          'hw1': AssignmentStatus.SUCCESS,
+                          'hw2': AssignmentStatus.SUCCESS,
+                      }),
     ]
 
     assert sorted(students, key=sort_by_username) == students
@@ -232,7 +220,7 @@ def test_tabulate():
     assert tabulate(students, sort_by='count') == dedent("""
     USER    | 1 2 3 4 | 1 2 | 1
     --------+---------+-----+--
+    rives1  | 1 2 - - | 1 2 | 1
     rives3  | 1 2 3 4 | - - | -
     rives2  | 1 2 3 - | - - | -
-    rives1  | 1 2 - - | 1 2 | 1
     """).strip()

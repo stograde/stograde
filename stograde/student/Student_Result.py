@@ -14,7 +14,7 @@ class StudentResult:
     labs: Dict[str, AssignmentStatus] = field(default_factory=OrderedDict)
     worksheets: Dict[str, AssignmentStatus] = field(default_factory=OrderedDict)
     unmerged_branches: List[str] = field(default_factory=list)
-    error: Exception = None
+    error: str = ''
 
     def assignments(self) -> Dict[str, AssignmentStatus]:
         assignments = {}

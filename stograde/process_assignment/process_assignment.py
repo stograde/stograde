@@ -2,16 +2,17 @@
 
 import os
 
-from .warning_unmerged_branches import find_unmerged_branches
 from ..common import check_dates
 from ..process_file import process_file
 from .Record_Result import RecordResult
 from ..specs import Spec
 from .Submission_Warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
+from ..student.Student_Result import StudentResult
 
 
 def process_assignment(*,
+                       student: StudentResult,
                        spec: Spec,
                        basedir: str,
                        debug: bool,
@@ -28,7 +29,8 @@ def process_assignment(*,
             first_submit = "First Submission for {}: {}".format(spec.id, first_date)
 
         result = RecordResult(spec_id=spec.id,
-                              first_submission=first_submit)
+                              first_submission=first_submit,
+                              student=student.name)
 
         # prepare the current folder
         supporting_dir, written_files = import_supporting(spec=spec,

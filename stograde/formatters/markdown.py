@@ -1,8 +1,16 @@
 from textwrap import indent
 import traceback
+from typing import List
+
+from stograde.process_assignment.Record_Result import RecordResult
+from stograde.process_assignment.Submission_Warnings import SubmissionWarnings
+from stograde.process_file import FileResult
+from stograde.process_file.Compile_Result import CompileResult
+from stograde.process_file.Test_Result import TestResult
 
 
-def format_assignment_markdown(recording, debug=False):
+def format_assignment_markdown(result: RecordResult,
+                               debug=False):
     """Given a single recording, format it into a markdown file.
 
     Each recording will only have one student.
@@ -11,9 +19,9 @@ def format_assignment_markdown(recording, debug=False):
     """
 
     try:
-        files = format_files_list(recording.get('files', {}))
-        warnings = format_warnings(recording.get('warnings', {}).items())
-        header = format_header(recording, warnings)
+        files = format_files_list(result.file_results)
+        warnings = format_warnings(result.warnings)
+        header = format_header(result, warnings)
         output = (header + files) + '\n\n'
 
     except Exception as err:
@@ -22,52 +30,50 @@ def format_assignment_markdown(recording, debug=False):
         output = indent(traceback.format_exc(), ' ' * 4) + '\n\n'
 
     return {
-        'assignment': recording['spec'],
+        'assignment': result.spec_id,
         'content': output,
-        'student': recording['student'],
+        'student': result.student,
         'type': 'md',
     }
 
 
 def format_files_list(files):
-    return '\n\n' + '\n\n'.join([format_file(name, info) for name, info in files.items()])
+    return '\n\n' + '\n\n'.join([format_file(info) for info in files])
 
 
-def format_warnings(warnings):
-    formatted = [format_warning(warning, value) for warning, value in warnings]
-    return [w for w in formatted if w]
-
-
-def format_header(recording, warnings):
+def format_header(result: RecordResult, warnings: str):
     """Format the header for the section of the log file"""
 
     try:
-        header = '# {spec} – {student}\n{first_submit}\n'.format_map(recording)
+        header = '# {spec} – {student}\n{first_submit}\n'.format(spec=result.spec_id,
+                                                                 student=result.student,
+                                                                 first_submit=result.first_submission)
     except KeyError:
-        header = '# {spec} – {student}\n'.format_map(recording)
+        header = '# {spec} – {student}\n'.format(spec=result.spec_id,
+                                                 student=result.student)
 
     if warnings:
-        header += '\n' + '\n'.join(warnings) + '\n'
+        header += '\n' + warnings + '\n'
 
     return header
 
 
-def format_warning(w, value):
-    if w == 'no submission':
+def format_warnings(warnings: SubmissionWarnings) -> str:
+    if warnings.assignment_missing:
         return '**No submission found**\n'
 
-    elif w == 'unmerged branches' and value:
-        branches = ['  - ' + b for b in value]
+    elif warnings.unmerged_branches:
+        branches = ['  - ' + b for b in warnings.unmerged_branches]
         return '**Repository has unmerged branches:\n{}**'.format('\n'.join(branches))
 
-    elif value:
-        return '**Warning: ' + value + '**'
+    elif warnings.recording_err:
+        return '**Warning: ' + warnings.recording_err + '**'
 
     else:
         return ''
 
 
-def format_file(filename, file_info):
+def format_file(file_info: FileResult) -> str:
     """Format a file for the log.
     Formats and concatenates a header, the file contents, compile output and test output.
 
@@ -76,22 +82,22 @@ def format_file(filename, file_info):
     If file is missing and is optional, adds a note in place of last modification time.'
     """
 
-    contents = format_file_contents(file_info.get('contents', ''), filename) + '\n'
-    compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
-    test_results = format_file_results(file_info.get('result', [])) + '\n'
+    contents = format_file_contents(file_info.contents, file_info.file_name) + '\n'
+    compilation = format_file_compilation(file_info.compile_results) + '\n'
+    test_results = format_file_results(file_info.test_results) + '\n'
 
-    if file_info.get('last modified', None):
-        last_modified = ' ({})'.format(file_info['last modified'])
+    if file_info.last_modified:
+        last_modified = ' ({})'.format(file_info.last_modified)
     else:
         last_modified = ''
 
-    file_header = '## {}{}\n'.format(filename, last_modified)
+    file_header = '## {}{}\n'.format(file_info.file_name, last_modified)
 
-    if file_info['missing']:
+    if file_info.file_missing:
         note = 'File not found. `ls .` says that these files exist:\n'
-        directory_listing = indent('\n'.join(file_info.get('other files', [])), ' ' * 4)
+        directory_listing = indent('\n'.join(file_info.other_files), ' ' * 4)
 
-        if file_info['optional']:
+        if file_info.optional:
             file_header = file_header.strip()
             file_header += ' (**optional submission**)\n'
 
@@ -100,7 +106,7 @@ def format_file(filename, file_info):
     return '\n'.join([file_header, contents, compilation, test_results])
 
 
-def format_file_contents(contents, filename):
+def format_file_contents(contents: str, filename: str) -> str:
     """Add markdown code block around file contents with extension for code highlighting.
 
     If a file is empty or contains only whitespace, note this in the log.
@@ -111,13 +117,13 @@ def format_file_contents(contents, filename):
     return '```{}\n'.format(filename.split('.')[-1]) + contents + '\n```\n'
 
 
-def format_file_compilation(compilations):
+def format_file_compilation(compilations: List[CompileResult]) -> str:
     """Add header and markdown code block to compile command outputs"""
 
     result = []
-    for status in compilations:
-        output = status['output']
-        command = '`{command}`'.format_map(status)
+    for compile_result in compilations:
+        output = compile_result.output
+        command = '`{command}`'.format(command=compile_result.command)
 
         if not output:
             result.append('**no warnings: {}**\n'.format(command))
@@ -128,14 +134,15 @@ def format_file_compilation(compilations):
     return '\n'.join(result)
 
 
-def format_file_results(test_results):
+def format_file_results(test_results: List[TestResult]) -> str:
     """Add header and markdown code block to test outputs"""
 
     result = ''
     for test in test_results:
-        header = '**results of `{command}`** (status: {status})\n'.format_map(test)
-        result += header + '\n```\n' + test['output'] + '\n```'
-        if test['truncated']:
-            result += '\n' + '(truncated after {truncated after})'.format_map(test)
+        header = '**results of `{command}`** (status: {status})\n'.format(command=test.command,
+                                                                          status=test.status)
+        result += header + '\n```\n' + test.output + '\n```'
+        if test.truncated:
+            result += '\n' + '(truncated after {})'.format(test.truncated_after)
 
     return result

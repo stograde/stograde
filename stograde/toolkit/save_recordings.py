@@ -1,9 +1,11 @@
 import os
 import logging
+from typing import List
 
 from stograde.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
+from ..student.Student_Result import StudentResult
 
 
 def record_recording_to_disk(results, file_identifier):
@@ -37,10 +39,10 @@ def send_recording_to_gist(table, results, assignment):
     return post_gist('log for ' + assignment, files)
 
 
-def save_recordings(records, debug=False):
+def save_recordings(results: List[StudentResult], debug=False):
     """Take the list of recordings, group by assignment, then save to disk"""
 
-    results = format_collected_data(records,
+    results = format_collected_data(results,
                                     group_by='assignment',
                                     formatter=markdown,
                                     debug=debug)

@@ -10,7 +10,7 @@ LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 def ci_analyze(student_results: List[StudentResult]) -> bool:
     passing = True
     for student_result in student_results:
-        for result in student_result.records:
+        for result in student_result.results:
             try:
                 for file in result.file_results:
                     # Alert student about any missing files

@@ -36,11 +36,13 @@ def process_student(
 
         student_result = StudentResult(name=student)
 
-        find_unmerged_branches(student_result)
-
         record(student=student_result, specs=specs, assignments=assignments, basedir=basedir, debug=debug,
                interact=interact, ci=ci, skip_web_compile=skip_web_compile)
         analyze(student=student_result, specs=specs, check_for_branches=not no_branch_check, ci=ci)
+
+        if student_result.unmerged_branches:
+            for result in student_result.results:
+                result.warnings.unmerged_branches = student_result.unmerged_branches
 
         if date:
             reset(student)

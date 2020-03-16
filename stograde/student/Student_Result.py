@@ -9,7 +9,7 @@ from stograde.process_assignment.Record_Result import RecordResult
 @dataclass
 class StudentResult:
     name: str
-    records: List[RecordResult] = field(default_factory=list)
+    results: List[RecordResult] = field(default_factory=list)
     homeworks: Dict[str, AssignmentStatus] = field(default_factory=OrderedDict)
     labs: Dict[str, AssignmentStatus] = field(default_factory=OrderedDict)
     worksheets: Dict[str, AssignmentStatus] = field(default_factory=OrderedDict)

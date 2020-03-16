@@ -161,7 +161,6 @@ def main():
             logging.debug("Remaining specs: {}".format(assignments))
 
     results = []
-    records = []
     if not ci:
         makedirs('./students', exist_ok=True)
 
@@ -228,11 +227,11 @@ def main():
 
     if gist:
         table: str = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
-        gist_recordings(records, table, debug=debug)
+        gist_recordings(results, table, debug=debug)
     elif ci:
         passing = ci_analyze(results)
         if not passing:
             logging.debug('Build failed')
             sys.exit(1)
     else:
-        save_recordings(records, debug=debug)
+        save_recordings(results, debug=debug)

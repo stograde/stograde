@@ -8,6 +8,7 @@ from .Submission_Warnings import SubmissionWarnings
 @dataclass
 class RecordResult:
     spec_id: str
+    student: str
     first_submission: str = ''
     warnings: SubmissionWarnings = field(default_factory=SubmissionWarnings)
     file_results: List[FileResult] = field(default_factory=list)

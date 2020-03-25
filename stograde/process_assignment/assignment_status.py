@@ -2,6 +2,7 @@ from enum import auto, Enum
 
 
 class AssignmentStatus(Enum):
-    SUCCESS = auto()
-    PARTIAL = auto()
-    MISSING = auto()
+    """The completeness of the assignment"""
+    SUCCESS = auto()  # All required files are present
+    PARTIAL = auto()  # Some files are missing
+    MISSING = auto()  # No files are present

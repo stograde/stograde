@@ -7,6 +7,7 @@ from ..specs.spec import Spec
 def import_supporting(*,
                       spec: Spec,
                       basedir: str) -> Tuple[str, List[str]]:
+    """Copy supporting and input files into student's homework directory"""
     cwd = os.getcwd()
     supporting_dir = os.path.join(basedir, 'data', 'supporting')
     written_files = []
@@ -22,7 +23,8 @@ def import_supporting(*,
     return supporting_dir, written_files
 
 
-def remove_supporting(written_files):
+def remove_supporting(written_files: List[str]):
+    """Remove supporting and input files after testing is complete"""
     try:
         for supporting_file in written_files:
             os.remove(supporting_file)

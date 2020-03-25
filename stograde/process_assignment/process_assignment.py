@@ -60,6 +60,7 @@ def process_assignment(*,
 
 
 def remove_execs(spec: Spec):
+    """Remove executable files (identified by a .exec extension)"""
     try:
         for file in spec.files:
             os.remove('{}.exec'.format(file.file_name))

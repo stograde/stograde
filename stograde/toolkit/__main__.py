@@ -19,7 +19,7 @@ from .find_update import update_available
 from .process_student import process_student
 from .args import process_args
 from .progress_bar import progress_bar
-from .save_recordings import save_recordings, gist_recordings
+from .save_recordings import save_recordings
 from .tabulate import tabulate
 from ..student.student_result import StudentResult
 from ..webapp import server
@@ -218,20 +218,17 @@ def main():
                                                             single_analysis=single_analysis,
                                                             usernames=usernames)
 
-    if ci or not quiet:
+    table = ''
+    if ci or gist or not quiet:
         table: str = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
-        if ci:
-            print(table + '\n')
-        elif not quiet:
-            print('\n' + table)
 
-    if gist:
-        table: str = tabulate(results, sort_by=sort_by, highlight_partials=highlight_partials)
-        gist_recordings(results, table, debug=debug)
-    elif ci:
+    if ci or not quiet:
+        print('\n' + table + '\n')
+
+    save_recordings(results, table, debug=debug, gist=gist)
+
+    if ci:
         passing = ci_analyze(results)
         if not passing:
             logging.debug('Build failed')
             sys.exit(1)
-    else:
-        save_recordings(results, debug=debug)

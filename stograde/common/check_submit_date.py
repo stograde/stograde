@@ -2,7 +2,7 @@ import os
 import logging
 from dateutil.parser import parse
 from .run import run
-from ..specs.Spec import Spec
+from ..specs import Spec
 
 
 def check_dates(spec: Spec, cwd: str) -> str:

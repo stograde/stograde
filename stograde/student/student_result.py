@@ -2,8 +2,8 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-from stograde.process_assignment.Assignment_Status import AssignmentStatus
-from stograde.process_assignment.Record_Result import RecordResult
+from stograde.process_assignment.assignment_status import AssignmentStatus
+from stograde.process_assignment.record_result import RecordResult
 
 
 @dataclass

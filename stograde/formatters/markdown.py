@@ -2,11 +2,11 @@ from textwrap import indent
 import traceback
 from typing import List
 
-from stograde.process_assignment.Record_Result import RecordResult
-from stograde.process_assignment.Submission_Warnings import SubmissionWarnings
-from stograde.process_file import FileResult
-from stograde.process_file.Compile_Result import CompileResult
-from stograde.process_file.Test_Result import TestResult
+from ..process_assignment.record_result import RecordResult
+from ..process_assignment.submission_warnings import SubmissionWarnings
+from ..process_file.file_result import FileResult
+from ..process_file.compile_result import CompileResult
+from ..process_file.test_result import TestResult
 
 
 def format_assignment_markdown(result: RecordResult,
@@ -79,7 +79,7 @@ def format_file(file_info: FileResult) -> str:
 
     Last modification is calculated and added to header.
     If file does not exist, adds a list of all files in the directory.
-    If file is missing and is optional, adds a note in place of last modification time.'
+    If file is missing and is optional, adds a note in place of last modification time.
     """
 
     contents = format_file_contents(file_info.contents, file_info.file_name) + '\n'

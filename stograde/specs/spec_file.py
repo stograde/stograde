@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from .File_Options import FileOptions
+from .file_options import FileOptions
 
 
 @dataclass

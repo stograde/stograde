@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from ..process_file import FileResult
-from .Submission_Warnings import SubmissionWarnings
+from .submission_warnings import SubmissionWarnings
 
 
 @dataclass

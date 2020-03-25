@@ -5,7 +5,7 @@ from typing import List
 from stograde.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
-from ..student.Student_Result import StudentResult
+from ..student.student_result import StudentResult
 
 
 def record_recording_to_disk(results, file_identifier):

@@ -3,7 +3,7 @@ from typing import List
 from ..process_assignment import find_unmerged_branches
 from ..specs import Spec
 from ..student import analyze, checkout_date, clone_student, pull, record, remove, reset, stash
-from ..student.Student_Result import StudentResult
+from ..student.student_result import StudentResult
 
 
 def process_student(

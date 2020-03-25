@@ -4,9 +4,9 @@ from typing import List, Tuple, Dict
 
 from termcolor import colored
 
-from stograde.process_assignment.Assignment_Status import AssignmentStatus
-from stograde.process_assignment.Assignment_Type import get_assignment_number, AssignmentType
-from stograde.student.Student_Result import StudentResult
+from stograde.process_assignment.assignment_status import AssignmentStatus
+from stograde.process_assignment.assignment_type import get_assignment_number, AssignmentType
+from stograde.student.student_result import StudentResult
 
 COL = '|'
 ROW = '-'

@@ -1,6 +1,6 @@
 from stograde.common import find_unmerged_branches_in_cwd
-from . import Record_Result
-from ..student.Student_Result import StudentResult
+from . import record_result
+from ..student.student_result import StudentResult
 
 
 def find_unmerged_branches(result: StudentResult):

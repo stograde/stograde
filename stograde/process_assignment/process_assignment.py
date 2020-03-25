@@ -4,11 +4,11 @@ import os
 
 from ..common import check_dates
 from ..process_file import process_file
-from .Record_Result import RecordResult
+from .record_result import RecordResult
 from ..specs import Spec
-from .Submission_Warnings import SubmissionWarnings
+from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
-from ..student.Student_Result import StudentResult
+from ..student.student_result import StudentResult
 
 
 def process_assignment(*,

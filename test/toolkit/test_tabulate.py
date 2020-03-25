@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from stograde.process_assignment.Assignment_Status import AssignmentStatus
-from stograde.student.Student_Result import StudentResult
+from stograde.process_assignment.assignment_status import AssignmentStatus
+from stograde.student.student_result import StudentResult
 from stograde.toolkit.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, \
     sort_by_username, tabulate
 

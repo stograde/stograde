@@ -4,8 +4,8 @@ from typing import List
 
 import yaml
 
-from .Spec_File import SpecFile, create_spec_file
-from .Supporting_File import SupportingFile, create_supporting_file
+from .spec_file import SpecFile, create_spec_file
+from .supporting_file import SupportingFile, create_supporting_file
 
 
 @dataclass

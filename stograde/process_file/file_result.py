@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from stograde.process_file.Compile_Result import CompileResult
-from stograde.process_file.Test_Result import TestResult
+from stograde.process_file.compile_result import CompileResult
+from stograde.process_file.test_result import TestResult
 
 
 @dataclass

@@ -11,7 +11,7 @@ from typing import List
 from .ci_analyze import ci_analyze
 from .download_specs import create_data_dir
 from .stogit_url import compute_stogit_url
-from ..specs.Spec import Spec
+from ..specs.spec import Spec
 from ..student import clone_student
 from ..common import chdir
 from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
@@ -21,7 +21,7 @@ from .args import process_args
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
-from ..student.Student_Result import StudentResult
+from ..student.student_result import StudentResult
 from ..webapp import server
 from ..webapp.web_cli import launch_cli, check_web_spec
 

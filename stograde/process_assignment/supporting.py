@@ -1,7 +1,7 @@
 import os
 from typing import List, Tuple
 
-from stograde.specs import Spec
+from ..specs import Spec
 
 
 def import_supporting(*,
@@ -28,3 +28,4 @@ def remove_supporting(written_files):
             os.remove(supporting_file)
     except FileNotFoundError:
         pass
+

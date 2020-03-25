@@ -4,9 +4,9 @@ from typing import List
 
 from stograde.common import chdir
 from stograde.process_assignment import process_assignment, find_unmerged_branches
-from stograde.process_assignment.Record_Result import RecordResult
+from stograde.process_assignment.record_result import RecordResult
 from stograde.specs import Spec
-from stograde.student.Student_Result import StudentResult
+from stograde.student.student_result import StudentResult
 
 
 def record(*,

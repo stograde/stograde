@@ -4,7 +4,7 @@ import sys
 from typing import List
 
 from stograde.common.run import run
-from stograde.specs.Spec import Spec
+from stograde.specs.spec import Spec
 
 
 def get_filenames(spec: Spec) -> List[str]:

@@ -6,7 +6,7 @@ import os
 import shutil
 from typing import List
 
-from .Spec import Spec, create_spec
+from .spec import Spec, create_spec
 from ..common.chdir import chdir
 from ..common.run import run
 from .cache import cache_specs

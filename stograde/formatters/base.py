@@ -1,14 +1,14 @@
 from collections import defaultdict
 from typing import List
 
-from stograde.common import group_by as group
-from stograde.student.Student_Result import StudentResult
+from ..common import group_by as group
+from ..student.student_result import StudentResult
 
 
 def format_collected_data(student_results: List[StudentResult],
                           group_by: str,
                           formatter,
-                          debug: bool):
+                          debug: bool) -> defaultdict:
     """Turn the list of recordings into a list of nicely-formatted results.
 
     `grouped_records` will be a list of pairs: (assignment, recordings), where

@@ -27,7 +27,7 @@ def test_stograde_table(datafiles, capsys):
                                   "USER      | 1 | 1 | 1\n"
                                   "----------+---+---+--\n"
                                   "rives     | - | - | -\n"
-                                  "student2  | 1 | 1 | -\n")
+                                  "student2  | 1 | 1 | -\n\n")
 
     sys.argv = argv
 

@@ -228,7 +228,7 @@ def main():
     save_recordings(results, table, debug=debug, gist=gist)
 
     if ci:
-        passing = ci_analyze(results)
+        passing: bool = ci_analyze(results)
         if not passing:
             logging.debug('Build failed')
             sys.exit(1)

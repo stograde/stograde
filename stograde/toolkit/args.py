@@ -1,18 +1,18 @@
 """Deal with argument parsing for the toolkit"""
 
 import argparse
-import logging
-import os
-import re
-import sys
 from glob import glob
+import logging
 from logging import warning, debug
 from natsort import natsorted
+import os
 from os import cpu_count, getenv
+import re
+import sys
 from typing import List
 
-from ..common import flatten, version
 from .get_students import get_students as load_students_from_file
+from ..common import flatten, version
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 

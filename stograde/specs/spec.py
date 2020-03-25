@@ -1,11 +1,10 @@
-import os
 from dataclasses import dataclass, field
+import os
 from typing import List
-
 import yaml
 
-from .spec_file import SpecFile, create_spec_file
-from .supporting_file import SupportingFile, create_supporting_file
+from .spec_file import create_spec_file, SpecFile
+from .supporting_file import create_supporting_file, SupportingFile
 
 
 @dataclass

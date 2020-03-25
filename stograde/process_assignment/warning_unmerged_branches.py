@@ -1,5 +1,4 @@
-from stograde.common import find_unmerged_branches_in_cwd
-from . import record_result
+from ..common import find_unmerged_branches_in_cwd
 from ..student.student_result import StudentResult
 
 

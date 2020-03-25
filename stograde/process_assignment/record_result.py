@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from ..process_file import FileResult
 from .submission_warnings import SubmissionWarnings
+from ..process_file.file_result import FileResult
 
 
 @dataclass

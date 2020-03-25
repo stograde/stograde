@@ -4,8 +4,8 @@ from typing import List
 
 from ..process_assignment.record_result import RecordResult
 from ..process_assignment.submission_warnings import SubmissionWarnings
-from ..process_file.file_result import FileResult
 from ..process_file.compile_result import CompileResult
+from ..process_file.file_result import FileResult
 from ..process_file.test_result import TestResult
 
 

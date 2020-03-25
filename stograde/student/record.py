@@ -2,11 +2,11 @@ import logging
 from os import path
 from typing import List
 
-from stograde.common import chdir
-from stograde.process_assignment import process_assignment, find_unmerged_branches
-from stograde.process_assignment.record_result import RecordResult
-from stograde.specs import Spec
-from stograde.student.student_result import StudentResult
+from ..common import chdir
+from ..process_assignment import process_assignment, find_unmerged_branches
+from ..process_assignment.record_result import RecordResult
+from ..specs.spec import Spec
+from ..student.student_result import StudentResult
 
 
 def record(*,

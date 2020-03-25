@@ -6,4 +6,3 @@ from .record import record
 from .remove import remove
 from .reset import reset
 from .stash import stash
-from .student_result import StudentResult

@@ -1,11 +1,11 @@
 import os
 
 from .compile_result import CompileResult
-from ..common import run, cat, pipe
-from ..formatters import truncate
-from ..specs import SpecFile
 from .file_result import FileResult
 from .test_result import TestResult
+from ..common import cat, run, pipe
+from ..formatters import truncate
+from ..specs.spec import SpecFile
 
 
 def get_file(file_spec: SpecFile, file_result: FileResult) -> bool:

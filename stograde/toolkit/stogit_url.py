@@ -3,8 +3,8 @@ import os
 import re
 import sys
 
-from stograde.common import run, chdir
-from stograde.toolkit.download_specs import SPEC_URLS
+from ..common import chdir, run
+from ..toolkit.download_specs import SPEC_URLS
 
 COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 

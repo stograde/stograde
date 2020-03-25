@@ -1,5 +1,5 @@
+from enum import auto, Enum
 import re
-from enum import Enum, auto
 from typing import Tuple
 
 

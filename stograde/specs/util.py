@@ -3,8 +3,8 @@ import logging
 import sys
 from typing import List
 
-from stograde.common.run import run
-from stograde.specs.spec import Spec
+from ..common import run
+from ..specs.spec import Spec
 
 
 def get_filenames(spec: Spec) -> List[str]:

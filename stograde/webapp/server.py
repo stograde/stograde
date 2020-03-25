@@ -5,11 +5,12 @@ Simple HTTP server in python, that invokes an executable to handle requests.
 Send a POST request::
     curl -d "3ok" http://localhost:25199
 """
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 import os
-import sys
-from http.server import BaseHTTPRequestHandler, HTTPServer
 from subprocess import *
+import sys
+
 from ..common import chdir
 
 exe_name = "a.out"

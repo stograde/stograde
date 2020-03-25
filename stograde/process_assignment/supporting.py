@@ -1,7 +1,7 @@
 import os
 from typing import List, Tuple
 
-from ..specs import Spec
+from ..specs.spec import Spec
 
 
 def import_supporting(*,

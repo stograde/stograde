@@ -2,7 +2,7 @@ import logging
 import re
 from typing import List
 
-from stograde.student.student_result import StudentResult
+from ..student.student_result import StudentResult
 
 LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 

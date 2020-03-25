@@ -1,10 +1,10 @@
-import os
 import logging
+import os
 from typing import List
 
-from stograde.formatters import format_collected_data, markdown
 from .gist import post_gist
 from .tabulate import asciiify
+from ..formatters import format_collected_data, markdown
 from ..student.student_result import StudentResult
 
 

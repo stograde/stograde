@@ -1,5 +1,4 @@
-from stograde.common import chdir
-from stograde.common import run
+from ..common import chdir, run
 
 
 def reset(student: str):

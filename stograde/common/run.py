@@ -1,8 +1,8 @@
-import subprocess
 import copy
-import pty
 import io
 import os
+import pty
+import subprocess
 from typing import Tuple
 
 

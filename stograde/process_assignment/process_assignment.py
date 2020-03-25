@@ -2,12 +2,12 @@
 
 import os
 
-from ..common import check_dates
-from ..process_file import process_file
 from .record_result import RecordResult
-from ..specs import Spec
 from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
+from ..common import check_dates
+from ..process_file import process_file
+from ..specs.spec import Spec
 from ..student.student_result import StudentResult
 
 

@@ -1,14 +1,15 @@
 import os
+from PyInquirer import prompt, style_from_dict, Token
 from typing import List
 
 from . import server
 from ..common import chdir
 from ..process_assignment import import_supporting, remove_supporting
-from ..process_file import process_file, FileResult
+from ..process_file import process_file
+from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
-from ..specs import Spec
+from ..specs.spec import Spec
 from ..student import stash, pull, checkout_date
-from PyInquirer import style_from_dict, Token, prompt
 
 
 def launch_cli(basedir: str,

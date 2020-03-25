@@ -1,8 +1,9 @@
+from dateutil.parser import parse
 import os
 import logging
-from dateutil.parser import parse
+
 from .run import run
-from ..specs import Spec
+from ..specs.spec import Spec
 
 
 def check_dates(spec: Spec, cwd: str) -> str:

@@ -1,29 +1,29 @@
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import datetime
 import functools
-import sys
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from threading import Thread
-from os import makedirs, getcwd
-import os.path
 import logging
+from os import getcwd, makedirs
+import os.path
+import sys
+from threading import Thread
 from typing import List
 
+from .args import process_args
 from .ci_analyze import ci_analyze
 from .download_specs import create_data_dir
-from .stogit_url import compute_stogit_url
-from ..specs.spec import Spec
-from ..student import clone_student
-from ..common import chdir
-from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
 from .find_update import update_available
 from .process_student import process_student
-from .args import process_args
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings
+from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
+from ..common import chdir
+from ..specs import check_architecture, check_dependencies, delete_cache, load_all_specs
+from ..specs.spec import Spec
+from ..student import clone_student
 from ..student.student_result import StudentResult
 from ..webapp import server
-from ..webapp.web_cli import launch_cli, check_web_spec
+from ..webapp.web_cli import check_web_spec, launch_cli
 
 
 def make_progress_bar(students, no_progress=False):

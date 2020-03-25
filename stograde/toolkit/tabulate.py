@@ -1,12 +1,11 @@
 """Make a nice table from the student results"""
 import re
-from typing import List, Tuple, Dict
-
+from typing import Dict, List, Tuple
 from termcolor import colored
 
-from stograde.process_assignment.assignment_status import AssignmentStatus
-from stograde.process_assignment.assignment_type import get_assignment_number, AssignmentType
-from stograde.student.student_result import StudentResult
+from ..process_assignment.assignment_status import AssignmentStatus
+from ..process_assignment.assignment_type import get_assignment_number
+from ..student.student_result import StudentResult
 
 COL = '|'
 ROW = '-'

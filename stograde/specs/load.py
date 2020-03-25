@@ -1,16 +1,15 @@
-import sys
-from logging import warning
 from glob import iglob
 import json
+from logging import warning
 import os
 import shutil
+import sys
 from typing import List
 
-from .spec import Spec, create_spec
-from ..common.chdir import chdir
-from ..common.run import run
 from .cache import cache_specs
 from .dirs import get_specs_dir
+from .spec import create_spec, Spec
+from ..common import chdir, run
 
 
 def load_all_specs(*, basedir: str = get_specs_dir(), skip_update_check: bool = True) -> List[Spec]:

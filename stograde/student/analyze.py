@@ -2,12 +2,12 @@ import logging
 import os
 from typing import List
 
-from stograde.common import chdir
-from stograde.common import find_unmerged_branches_in_cwd
-from stograde.process_assignment.assignment_status import AssignmentStatus
-from stograde.process_assignment.assignment_type import AssignmentType, get_assignment_type
-from stograde.specs import get_filenames, Spec
-from stograde.student.student_result import StudentResult
+from ..common import chdir, find_unmerged_branches_in_cwd
+from ..process_assignment.assignment_status import AssignmentStatus
+from ..process_assignment.assignment_type import AssignmentType, get_assignment_type
+from ..specs import get_filenames
+from ..specs.spec import Spec
+from ..student.student_result import StudentResult
 
 
 def analyze(student: StudentResult, specs: List[Spec], check_for_branches: bool, ci: bool):

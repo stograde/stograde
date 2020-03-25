@@ -1,7 +1,6 @@
 import logging
 
-from stograde.common import chdir
-from stograde.common import run
+from ..common import chdir, run
 
 
 def checkout_date(student: str, date: str = None):

@@ -1,8 +1,9 @@
-import requests
 import natsort
 import re
-from stograde.common import version
+import requests
+
 from .config import conf
+from ..common import version
 
 
 def get_all_versions(pkg='stograde'):

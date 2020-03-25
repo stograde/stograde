@@ -1,8 +1,7 @@
+from bidict import bidict
 import sys
 
-from bidict import bidict
-
-from stograde.common import run, chdir
+from ..common import chdir, run
 
 SPEC_URLS = bidict({
     'sd': 'https://github.com/StoDevX/cs251-specs.git',

@@ -30,8 +30,8 @@ def record(*,
             for _, spec in specs.items():
                 if spec.id in assignments:
                     logging.debug("Recording {}'s {}".format(student.name, spec.id))
-                    if path.exists(spec.id):
-                        with chdir(spec.id):
+                    if path.exists(spec.folder):
+                        with chdir(spec.folder):
                             assignment_result = process_assignment(student=student,
                                                                    spec=spec,
                                                                    basedir=basedir,

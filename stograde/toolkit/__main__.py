@@ -17,7 +17,7 @@ from .save_recordings import save_recordings
 from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
 from ..common import chdir
-from ..specs import delete_cache, load_all_specs, load_specs
+from ..specs import load_all_specs, load_specs
 from ..student import clone_student
 from ..student.ci_analyze import ci_analyze
 from ..student.process_student import process_student
@@ -86,16 +86,15 @@ def main():
     ci: bool = args['ci']
     clean: bool = args['clean']
     course: str = args['course']
-    date = args['date']
+    date: str = args['date']
     debug: bool = args['debug']
-    gist = args['gist']
+    gist: bool = args['gist']
     highlight_partials: bool = args['highlight_partials']
     interact: bool = args['interact']
     no_branch_check: bool = args['no_check']
     no_update: bool = args['no_update']
     no_progress: bool = args['no_progress']
     port: int = args['server_port']
-    re_cache_specs: bool = args['re_cache']
     quiet: bool = args['quiet']
     skip_update_check: bool = args['skip_update_check']
     skip_web_compile: bool = args['skip_web_compile']
@@ -120,9 +119,6 @@ def main():
         create_data_dir(ci, course, basedir)
 
     stogit_url = compute_stogit_url(stogit=stogit, course=course, _now=datetime.date.today())
-
-    if re_cache_specs:
-        delete_cache(basedir)
 
     assignments = filter_assignments(assignments, ci)
 

@@ -3,17 +3,24 @@ import io
 import os
 import pty
 import subprocess
-from typing import Tuple
+from typing import List, Optional, Tuple
+
+from ..common.run_status import RunStatus
 
 
-def run(cmd, *, interact=False, **kwargs) -> Tuple[str, str, bool]:
+def run(cmd: List[str],
+        *,
+        interact: bool = False,
+        input_data: Optional[str] = None,
+        timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
     if interact:
         return run_interactive(cmd)
-    return run_static(cmd, **kwargs)
+    else:
+        return run_static(cmd, input_data, timeout)
 
 
-def run_interactive(cmd):
-    status = 'success'
+def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
+    status = RunStatus.SUCCESS
     result = None
 
     print('Recording {}. Send EOF (^D) to end.'.format(cmd), end='\n\n')
@@ -41,7 +48,9 @@ def run_interactive(cmd):
     return status, result, again
 
 
-def run_static(cmd, input_data=None, timeout=None):
+def run_static(cmd: List[str],
+               input_data: Optional[str] = None,
+               timeout: Optional[int] = None):
     status = 'success'
     try:
         result = subprocess.run(

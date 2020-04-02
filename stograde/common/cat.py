@@ -1,7 +1,9 @@
 from typing import Tuple
 
+from ..common.run_status import RunStatus
 
-def cat(filename: str) -> Tuple[str, str]:
+
+def cat(filename: str) -> Tuple[RunStatus, str]:
     """Return the contents of a file. Replaces the `cat` command.
 
     This function took about ~148 time units per call, while
@@ -9,6 +11,8 @@ def cat(filename: str) -> Tuple[str, str]:
     """
     try:
         with open(filename, 'r', encoding='utf-8') as infile:
-            return 'success', infile.read()
-    except Exception:
-        return 'failure', ''
+            return RunStatus.SUCCESS, infile.read()
+    except FileNotFoundError:
+        return RunStatus.FILE_NOT_FOUND, ''
+    except:
+        return RunStatus.FAILURE, ''

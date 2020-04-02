@@ -4,13 +4,14 @@ from .compile_result import CompileResult
 from .file_result import FileResult
 from .test_result import TestResult
 from ..common import cat, run, pipe
+from ..common.run_status import RunStatus
 from ..formatters import truncate
 from ..specs.spec import SpecFile
 
 
 def get_file(file_spec: SpecFile, file_result: FileResult) -> bool:
     file_status, file_contents = cat(file_spec.file_name)
-    if file_status == 'success':
+    if file_status == RunStatus.SUCCESS:
         _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', file_spec.file_name])
         file_result.last_modified = last_edit
 
@@ -19,15 +20,15 @@ def get_file(file_spec: SpecFile, file_result: FileResult) -> bool:
     elif file_spec.options.truncate_contents:
         file_contents = truncate(file_contents, file_spec.options.truncate_contents)
 
-    if file_status != 'success':
+    if file_status != RunStatus.SUCCESS:
         file_result.file_missing = True
         file_result.other_files = os.listdir('.')
         file_result.optional = file_spec.options.optional
         return False
-
-    file_result.compile_optional = file_spec.options.compile_optional
-    file_result.contents = file_contents
-    return True
+    else:
+        file_result.compile_optional = file_spec.options.compile_optional
+        file_result.contents = file_contents
+        return True
 
 
 def compile_file(*, file_spec: SpecFile, results: FileResult, supporting_dir: str) -> bool:
@@ -80,7 +81,7 @@ def test_file(*,
                     command=test_cmd,
                     output=result,
                     status=status,
-                    error=status != 'success',
+                    error=status != RunStatus.SUCCESS,
                     truncated=was_truncated,
                     truncated_after=file_spec.options.truncate_output,
                 ))
@@ -89,7 +90,7 @@ def test_file(*,
             file_results.test_results.append(TestResult(
                 command=test_cmd,
                 output='{} could not be found.'.format(file_spec.file_name),
-                status='not found',
+                status=RunStatus.FILE_NOT_FOUND,
                 error=True,
             ))
 

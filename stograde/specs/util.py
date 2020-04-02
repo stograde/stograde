@@ -3,7 +3,7 @@ import logging
 import sys
 from typing import List
 
-from ..common import run
+from ..common.run import run
 from ..specs.spec import Spec
 
 

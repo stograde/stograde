@@ -1,17 +1,18 @@
 import logging
 from os import path
-from typing import List
+from typing import List, Dict
 
 from ..common import chdir
-from ..process_assignment import process_assignment, find_unmerged_branches
+from ..process_assignment.process_assignment import process_assignment
 from ..process_assignment.record_result import RecordResult
+from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
 from ..specs.spec import Spec
 from ..student.student_result import StudentResult
 
 
 def record(*,
            student: StudentResult,
-           specs: List[Spec],
+           specs: Dict[str, Spec],
            assignments: List[str],
            basedir: str,
            debug: bool,
@@ -24,7 +25,7 @@ def record(*,
         with chdir(directory):
             find_unmerged_branches(student)
 
-            for spec in specs:
+            for _, spec in specs.items():
                 if spec.id in assignments:
                     logging.debug("Recording {}'s {}".format(student.name, spec.id))
                     if path.exists(spec.id):

@@ -9,11 +9,9 @@ from threading import Thread
 from typing import List, Dict
 
 from .args import process_args
-from stograde.student.ci_analyze import ci_analyze
 from .download_specs import create_data_dir
 from .filter_specs import filter_assignments, filter_specs
 from .find_update import update_available
-from stograde.student.process_student import process_student
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings
 from .stogit_url import compute_stogit_url
@@ -22,6 +20,8 @@ from ..common import chdir
 from ..specs import delete_cache, load_all_specs, load_specs
 from ..specs.spec import Spec
 from ..student import clone_student
+from ..student.ci_analyze import ci_analyze
+from ..student.process_student import process_student
 from ..student.student_result import StudentResult
 from ..webapp import server
 from ..webapp.web_cli import is_web_spec, launch_cli
@@ -124,7 +124,7 @@ def main():
 
     assignments = filter_assignments(assignments, ci)
 
-    if ci or quiet:
+    if ci:
         # load specified specs
         loaded_specs: Dict[str, Spec] = load_specs(assignments,
                                                    data_dir=os.path.join(basedir, 'data'),

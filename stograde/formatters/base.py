@@ -1,11 +1,13 @@
 from collections import defaultdict
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from ..common import group_by as group
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 
-def format_collected_data(student_results: List[StudentResult],
+def format_collected_data(student_results: List['StudentResult'],
                           group_by: str,
                           formatter,
                           debug: bool) -> defaultdict:

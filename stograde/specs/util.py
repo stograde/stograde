@@ -1,18 +1,20 @@
 import os
 import logging
 import sys
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from ..common.run import run
-from ..specs.spec import Spec
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
-def get_filenames(spec: Spec) -> List[str]:
+def get_filenames(spec: 'Spec') -> List[str]:
     """returns the list of files from an assignment spec"""
     return [file.file_name for file in spec.files if not file.options.optional]
 
 
-def check_dependencies(spec: Spec):
+def check_dependencies(spec: 'Spec'):
     for filepath in spec.dependencies:
         try:
             os.stat(filepath)
@@ -20,7 +22,7 @@ def check_dependencies(spec: Spec):
             logging.warning('spec {}: required file "{}" could not be found'.format(spec.id, filepath))
 
 
-def check_architecture(spec: Spec, ci: bool) -> bool:
+def check_architecture(spec: 'Spec', ci: bool) -> bool:
     # get check_architecture()
     _, user_arch, _ = run(['uname', '-m'])
     user_arch = user_arch.rstrip()

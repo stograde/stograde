@@ -1,11 +1,12 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, TYPE_CHECKING
 
-from ..specs.spec import Spec
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
 def import_supporting(*,
-                      spec: Spec,
+                      spec: 'Spec',
                       basedir: str) -> Tuple[str, List[str]]:
     """Copy supporting and input files into student's homework directory"""
     cwd = os.getcwd()

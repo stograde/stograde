@@ -1,8 +1,10 @@
-from typing import List
+from typing import Dict, List, TYPE_CHECKING
 
-from ..specs.spec import Spec
 from ..student import analyze, checkout_date, clone_student, pull, record, remove, reset, stash
 from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
 def process_student(
@@ -17,7 +19,7 @@ def process_student(
         interact: bool,
         no_branch_check: bool,
         no_repo_update: bool,
-        specs: List[Spec],
+        specs: Dict[str, 'Spec'],
         skip_web_compile: bool,
         stogit_url: str
 ) -> StudentResult:
@@ -52,4 +54,4 @@ def process_student(
         if debug:
             raise err
         else:
-            return StudentResult(name=student, error=err)
+            return StudentResult(name=student, error=str(err))

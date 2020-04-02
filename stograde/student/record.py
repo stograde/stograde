@@ -1,18 +1,20 @@
 import logging
 from os import path
-from typing import List, Dict
+from typing import Dict, List, TYPE_CHECKING
 
 from ..common import chdir
 from ..process_assignment.process_assignment import process_assignment
 from ..process_assignment.record_result import RecordResult
 from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
-from ..specs.spec import Spec
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
+    from ..student.student_result import StudentResult
 
 
 def record(*,
-           student: StudentResult,
-           specs: Dict[str, Spec],
+           student: 'StudentResult',
+           specs: Dict[str, 'Spec'],
            assignments: List[str],
            basedir: str,
            debug: bool,

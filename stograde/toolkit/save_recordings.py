@@ -1,11 +1,13 @@
 import logging
 import os
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from .gist import post_gist
 from .tabulate import asciiify
 from ..formatters import format_collected_data, markdown
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 
 def record_recording_to_disk(results, file_identifier):
@@ -39,7 +41,7 @@ def send_recording_to_gist(table, results, assignment):
     return post_gist('log for ' + assignment, files)
 
 
-def save_recordings(results: List[StudentResult],
+def save_recordings(results: List['StudentResult'],
                     table: str,
                     debug: bool = False,
                     gist: bool = False):

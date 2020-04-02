@@ -1,19 +1,22 @@
 """Given a spec, assuming we're in the homework folder, run the spec against the folder"""
 
 import os
+from typing import TYPE_CHECKING
 
 from .record_result import RecordResult
 from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
 from ..common import check_dates
 from ..process_file import process_file
-from ..specs.spec import Spec
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
+    from ..student.student_result import StudentResult
 
 
 def process_assignment(*,
-                       student: StudentResult,
-                       spec: Spec,
+                       student: 'StudentResult',
+                       spec: 'Spec',
                        basedir: str,
                        debug: bool,
                        interact: bool,
@@ -59,7 +62,7 @@ def process_assignment(*,
                                 warnings=SubmissionWarnings(recording_err=str(err)))
 
 
-def remove_execs(spec: Spec):
+def remove_execs(spec: 'Spec'):
     """Remove executable files (identified by a .exec extension)"""
     try:
         for file in spec.files:

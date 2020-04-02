@@ -1,8 +1,10 @@
-from typing import List, Dict
+from typing import Dict, List, TYPE_CHECKING
 
-from stograde.specs import check_dependencies, check_architecture
-from stograde.specs.spec import Spec
-from stograde.toolkit.stogradeignore import load_stogradeignore
+from ..specs import check_architecture, check_dependencies
+from ..toolkit.stogradeignore import load_stogradeignore
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
 def filter_assignments(assignments: List[str],
@@ -17,9 +19,10 @@ def filter_assignments(assignments: List[str],
 
 
 def filter_specs(specs_to_record: List[str],
-                 specs: Dict[str, Spec],
+                 specs: Dict[str, 'Spec'],
                  ci: bool) -> List[str]:
     remaining_specs = set(specs_to_record)
+
     for spec_id in specs_to_record:
         spec_to_use = specs[spec_id]
         try:

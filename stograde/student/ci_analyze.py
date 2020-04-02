@@ -1,13 +1,14 @@
 import logging
 import re
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from ..student.student_result import StudentResult
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 
 
-def ci_analyze(student_results: List[StudentResult]) -> bool:
+def ci_analyze(student_results: List['StudentResult']) -> bool:
     passing = True
     for student_result in student_results:
         for result in student_result.results:

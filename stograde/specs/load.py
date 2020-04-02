@@ -2,20 +2,23 @@ from glob import iglob
 import logging
 import os
 import sys
-from typing import List, Dict
+from typing import Dict, List, TYPE_CHECKING
 
-from .spec import create_spec, Spec
+from .spec import create_spec
 from ..common import chdir
 from ..common.run import run
 
+if TYPE_CHECKING:
+    from .spec import Spec
 
-def load_all_specs(data_dir: str, skip_update_check: bool = True) -> Dict[str, Spec]:
+
+def load_all_specs(data_dir: str, skip_update_check: bool = True) -> Dict[str, 'Spec']:
     return load_specs(find_all_specs(spec_dir=os.path.join(data_dir, 'specs')),
                       data_dir=data_dir,
                       skip_update_check=skip_update_check)
 
 
-def load_specs(wanted_spec_files: List[str], data_dir: str, skip_update_check: bool = True) -> Dict[str, Spec]:
+def load_specs(wanted_spec_files: List[str], data_dir: str, skip_update_check: bool = True) -> Dict[str, 'Spec']:
     os.makedirs(data_dir, exist_ok=True)
 
     if not skip_update_check:

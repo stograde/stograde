@@ -6,7 +6,7 @@ from os import getcwd, makedirs
 import os.path
 import sys
 from threading import Thread
-from typing import List, Dict
+from typing import List, Dict, TYPE_CHECKING
 
 from .args import process_args
 from .download_specs import create_data_dir
@@ -18,13 +18,15 @@ from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
 from ..common import chdir
 from ..specs import delete_cache, load_all_specs, load_specs
-from ..specs.spec import Spec
 from ..student import clone_student
 from ..student.ci_analyze import ci_analyze
 from ..student.process_student import process_student
-from ..student.student_result import StudentResult
 from ..webapp import server
 from ..webapp.web_cli import is_web_spec, launch_cli
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
+    from ..student.student_result import StudentResult
 
 
 def make_progress_bar(students, no_progress=False):
@@ -58,21 +60,21 @@ def run_analysis(*,
                  parallel: bool,
                  single_analysis: functools.partial,
                  usernames: List[str],
-                 workers: int = 1) -> List[StudentResult]:
-    results: List[StudentResult] = []
+                 workers: int = 1) -> List['StudentResult']:
+    results: List['StudentResult'] = []
 
     if parallel:
         print_progress = make_progress_bar(usernames, no_progress=no_progress)
         with ProcessPoolExecutor(max_workers=workers) as pool:
             futures = [pool.submit(single_analysis, name) for name in usernames]
             for future in as_completed(futures):
-                result: StudentResult = future.result()
+                result: 'StudentResult' = future.result()
                 print_progress(result.name)
                 results.append(result)
     else:
         for student in usernames:
             logging.debug('Processing {}'.format(student))
-            result: StudentResult = single_analysis(student)
+            result: 'StudentResult' = single_analysis(student)
             results.append(result)
 
     return results
@@ -126,13 +128,13 @@ def main():
 
     if ci:
         # load specified specs
-        loaded_specs: Dict[str, Spec] = load_specs(assignments,
-                                                   data_dir=os.path.join(basedir, 'data'),
-                                                   skip_update_check=skip_update_check)
+        loaded_specs: Dict[str, 'Spec'] = load_specs(assignments,
+                                                     data_dir=os.path.join(basedir, 'data'),
+                                                     skip_update_check=skip_update_check)
     else:
         # load all
-        loaded_specs: Dict[str, Spec] = load_all_specs(data_dir=os.path.join(basedir, 'data'),
-                                                       skip_update_check=skip_update_check)
+        loaded_specs: Dict[str, 'Spec'] = load_all_specs(data_dir=os.path.join(basedir, 'data'),
+                                                         skip_update_check=skip_update_check)
 
     if not loaded_specs:
         print('No specs loaded!')
@@ -193,11 +195,11 @@ def main():
                 quiet = True
 
         if do_record:
-            results: List[StudentResult] = run_analysis(no_progress=no_progress,
-                                                        parallel=workers > 1,
-                                                        single_analysis=single_analysis,
-                                                        usernames=usernames,
-                                                        workers=workers)
+            results: List['StudentResult'] = run_analysis(no_progress=no_progress,
+                                                          parallel=workers > 1,
+                                                          single_analysis=single_analysis,
+                                                          usernames=usernames,
+                                                          workers=workers)
 
     table = ''
     if ci or gist or not quiet:

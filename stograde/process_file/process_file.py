@@ -6,7 +6,7 @@ from .file_result import FileResult
 from .test_result import TestResult
 from ..common import cat, run, pipe
 from ..common.run_status import RunStatus
-from ..formatters import truncate
+from ..formatters.truncate import truncate
 
 if TYPE_CHECKING:
     from ..specs.spec import SpecFile

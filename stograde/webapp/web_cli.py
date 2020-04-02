@@ -1,6 +1,6 @@
 import os
 from PyInquirer import prompt, style_from_dict, Token
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from . import server
 from ..common import chdir
@@ -8,14 +8,16 @@ from ..process_assignment import import_supporting, remove_supporting
 from ..process_file import process_file
 from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
-from ..specs.spec import Spec
 from ..student import stash, pull, checkout_date
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
 def launch_cli(basedir: str,
                date: str,
                no_repo_update: bool,
-               spec: Spec,
+               spec: 'Spec',
                usernames: List[str]) -> bool:
     """Start the web grading CLI"""
     usernames = [
@@ -72,7 +74,7 @@ def ask_student(usernames: List[str]) -> str:
 
 
 def check_student(student: str,
-                  spec: Spec,
+                  spec: 'Spec',
                   basedir: str):
     """Process student's files and populate file list"""
     files = []
@@ -108,7 +110,7 @@ def check_student(student: str,
 
 def ask_file(files: List[str],
              student: str,
-             spec: Spec,
+             spec: 'Spec',
              basedir: str):
     """Ask user to select a file to view"""
     style = style_from_dict({
@@ -156,7 +158,7 @@ def ask_file(files: List[str],
             return
 
 
-def is_web_spec(spec: Spec) -> bool:
+def is_web_spec(spec: 'Spec') -> bool:
     """Check if the spec contains any web files"""
     web_spec = False
     for file in spec.files:

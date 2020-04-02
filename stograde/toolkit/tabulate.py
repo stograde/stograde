@@ -1,11 +1,13 @@
 """Make a nice table from the student results"""
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, TYPE_CHECKING
 from termcolor import colored
 
 from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import get_assignment_number
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 COL = '|'
 ROW = '-'
@@ -14,12 +16,12 @@ MISSING = '-'
 ANSI_ESCAPE = re.compile(r'\x1b[^m]*m')
 
 
-def sort_by_hw_count(user: StudentResult) -> int:
+def sort_by_hw_count(user: 'StudentResult') -> int:
     """Sort students by the number of completed homeworks"""
     return sum([1 if stat is AssignmentStatus.SUCCESS else 0 for _, stat in user.assignments().items()])
 
 
-def sort_by_username(user: StudentResult) -> str:
+def sort_by_username(user: 'StudentResult') -> str:
     """Sort students by their username"""
     return user.name
 
@@ -70,7 +72,7 @@ def find_columns(num: int) -> str:
     return ' '.join([str(i) for i in range(1, num + 1)])
 
 
-def columnize(student: StudentResult,
+def columnize(student: 'StudentResult',
               longest_user: str,
               max_hwk_num: int,
               max_lab_num: int,
@@ -100,7 +102,7 @@ def columnize(student: StudentResult,
             sep=COL)
 
 
-def get_nums(students: List[StudentResult]) -> Tuple[int, int, int]:
+def get_nums(students: List['StudentResult']) -> Tuple[int, int, int]:
     """Given a list of students, return the highest hw and lab number among them"""
     homework_nums = [get_assignment_number(hw) for s in students for hw in s.homeworks.keys()]
     lab_nums = [get_assignment_number(lab) for s in students for lab in s.labs.keys()]
@@ -113,7 +115,7 @@ def get_nums(students: List[StudentResult]) -> Tuple[int, int, int]:
     return max_hwk_num, max_lab_num, max_worksheet_num
 
 
-def tabulate(student_results: List[StudentResult],
+def tabulate(student_results: List['StudentResult'],
              sort_by: str = 'name',
              highlight_partials: bool = False) -> str:
     """Actually build the table"""

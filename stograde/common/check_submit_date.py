@@ -1,12 +1,16 @@
+from typing import TYPE_CHECKING
+
 from dateutil.parser import parse
 import os
 import logging
 
 from .run import run
-from ..specs.spec import Spec
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
-def check_dates(spec: Spec, cwd: str) -> str:
+def check_dates(spec: 'Spec', cwd: str) -> str:
     """ Port of the CheckDates program from C++
     Finds the first submission date for an assignment
     by comparing first commits for all files in the spec

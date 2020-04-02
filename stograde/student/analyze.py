@@ -1,16 +1,18 @@
 import logging
 import os
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 from ..common import chdir, find_unmerged_branches_in_cwd
 from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import AssignmentType, get_assignment_type
 from ..specs import get_filenames
-from ..specs.spec import Spec
-from ..student.student_result import StudentResult
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
+    from ..student.student_result import StudentResult
 
 
-def analyze(student: StudentResult, specs: Dict[str, Spec], check_for_branches: bool, ci: bool):
+def analyze(student: 'StudentResult', specs: Dict[str, 'Spec'], check_for_branches: bool, ci: bool):
     logging.debug("Analyzing {}'s assignments".format(student.name))
 
     if check_for_branches and not ci:
@@ -32,7 +34,7 @@ def analyze(student: StudentResult, specs: Dict[str, Spec], check_for_branches: 
             student.worksheets[name] = analysis
 
 
-def analyze_assignment(spec: Spec) -> AssignmentStatus:
+def analyze_assignment(spec: 'Spec') -> AssignmentStatus:
     if not os.path.exists(spec.folder):
         return AssignmentStatus.MISSING
 

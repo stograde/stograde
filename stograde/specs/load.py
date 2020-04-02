@@ -1,79 +1,54 @@
 from glob import iglob
-import json
-from logging import warning
+import logging
 import os
-import shutil
 import sys
-from typing import List
+from typing import List, Dict
 
-from .cache import cache_specs
-from .dirs import get_specs_dir
 from .spec import create_spec, Spec
 from ..common import chdir, run
 
 
-def load_all_specs(*, basedir: str = get_specs_dir(), skip_update_check: bool = True) -> List[Spec]:
-    os.makedirs(basedir, exist_ok=True)
+def load_all_specs(data_dir: str, skip_update_check: bool = True) -> Dict[str, Spec]:
+    return load_specs(find_all_specs(spec_dir=os.path.join(data_dir, 'specs')),
+                      data_dir=data_dir,
+                      skip_update_check=skip_update_check)
+
+
+def load_specs(wanted_spec_files: List[str], data_dir: str, skip_update_check: bool = True) -> Dict[str, Spec]:
+    os.makedirs(data_dir, exist_ok=True)
 
     if not skip_update_check:
-        with chdir(basedir):
-            res, _, _ = run(['git', 'fetch', 'origin'])
-
-            if res != 'success':
-                print("Error fetching specs", file=sys.stderr)
-
-            _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
-
-        if res != '':
-            print("Spec updates found - Updating", file=sys.stderr)
-            with chdir(basedir):
-                run(['git', 'pull', 'origin', 'master'])
+        check_for_spec_updates(data_dir)
 
     # the repo has a /specs folder
-    basedir = os.path.join(basedir, 'specs')
+    spec_dir = os.path.join(data_dir, 'specs')
 
-    # cache_specs(basedir)
-
-    spec_files = iglob(os.path.join(basedir, '*.yaml'))
-
-    # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
-    # turn that into the {name: spec} pairs of a dictionary for us
-    # return dict([load_spec(filename, basedir) for filename in spec_files])
-
-    return [create_spec(filename, basedir) for filename in spec_files]
-
-
-# unused
-def load_some_specs(idents, *, basedir=get_specs_dir()):
-    # the repo has a /specs folder
-    basedir = os.path.join(basedir, 'specs')
-
-    cache_specs(basedir)
-
-    wanted_spec_files = [os.path.join(basedir, '_cache', '{}.json'.format(ident)) for ident in idents]
-    all_spec_files = iglob(os.path.join(basedir, '_cache', '*.json'))
+    all_spec_files = find_all_specs(spec_dir)
     loadable_spec_files = set(all_spec_files).intersection(wanted_spec_files)
+    missing_spec_files = set(wanted_spec_files).difference(all_spec_files)
 
-    # load_spec returns a (name, spec) tuple, so we just let the dict() constructor
-    # turn that into the {name: spec} pairs of a dictionary for us
-    return dict([load_spec(filename, basedir) for filename in loadable_spec_files])
+    for spec in missing_spec_files:
+        logging.warning("No spec for {}".format(spec))
+
+    loaded_specs = [create_spec(filename, spec_dir) for filename in loadable_spec_files]
+
+    return {spec.id: spec for spec in loaded_specs}
 
 
-# unused
-def load_spec(filename, basedir):
-    create_spec()
-    with open(filename, 'r', encoding='utf-8') as specfile:
-        loaded_spec = json.load(specfile)
+def find_all_specs(spec_dir: str) -> List[str]:
+    return iglob(os.path.join(spec_dir, '*.yaml'))
 
-    name = os.path.splitext(os.path.basename(filename))[0]
-    assignment = loaded_spec['assignment']
 
-    # Ask if user wants to re-cache specs to fix discrepancy
-    if name != assignment:
-        warning('assignment "{}" does not match the filename {}'.format(assignment, filename))
-        recache = input("Re-cache specs? (Y/N)")
-        if recache and recache.lower()[0] == "y":
-            shutil.rmtree(os.path.join(basedir, '_cache'))
-            cache_specs(basedir)
+def check_for_spec_updates(data_dir: str):
+    with chdir(data_dir):
+        res, _, _ = run(['git', 'fetch', 'origin'])
 
-    return loaded_spec
+        if res != 'success':
+            print("Error fetching specs", file=sys.stderr)
+
+        _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
+
+    if res != '':
+        print("Spec updates found - Updating", file=sys.stderr)
+        with chdir(data_dir):
+            run(['git', 'pull', 'origin', 'master'])

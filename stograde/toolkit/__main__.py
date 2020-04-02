@@ -6,24 +6,26 @@ from os import getcwd, makedirs
 import os.path
 import sys
 from threading import Thread
-from typing import List
+from typing import List, Dict
 
 from .args import process_args
-from .ci_analyze import ci_analyze
+from stograde.student.ci_analyze import ci_analyze
 from .download_specs import create_data_dir
+from .filter_specs import filter_assignments, filter_specs
 from .find_update import update_available
-from .process_student import process_student
+from stograde.student.process_student import process_student
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings
 from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
 from ..common import chdir
-from ..specs import check_architecture, check_dependencies, delete_cache, load_all_specs
+from ..specs import delete_cache, load_all_specs
+from ..specs.load import load_specs
 from ..specs.spec import Spec
 from ..student import clone_student
 from ..student.student_result import StudentResult
 from ..webapp import server
-from ..webapp.web_cli import check_web_spec, launch_cli
+from ..webapp.web_cli import is_web_spec, launch_cli
 
 
 def make_progress_bar(students, no_progress=False):
@@ -80,26 +82,26 @@ def run_analysis(*,
 def main():
     basedir = getcwd()
     args, usernames, assignments = process_args()
-    ci = args['ci']
-    clean = args['clean']
-    course = args['course']
+    ci: bool = args['ci']
+    clean: bool = args['clean']
+    course: str = args['course']
     date = args['date']
-    debug = args['debug']
+    debug: bool = args['debug']
     gist = args['gist']
-    highlight_partials = args['highlight_partials']
-    interact = args['interact']
-    no_branch_check = args['no_check']
-    no_update = args['no_update']
-    no_progress = args['no_progress']
-    port = args['server_port']
-    re_cache_specs = args['re_cache']
-    quiet = args['quiet']
-    skip_update_check = args['skip_update_check']
-    skip_web_compile = args['skip_web_compile']
-    sort_by = args['sort_by']
-    stogit = args['stogit']
-    web = args['web']
-    workers = args['workers']
+    highlight_partials: bool = args['highlight_partials']
+    interact: bool = args['interact']
+    no_branch_check: bool = args['no_check']
+    no_update: bool = args['no_update']
+    no_progress: bool = args['no_progress']
+    port: int = args['server_port']
+    re_cache_specs: bool = args['re_cache']
+    quiet: bool = args['quiet']
+    skip_update_check: bool = args['skip_update_check']
+    skip_web_compile: bool = args['skip_web_compile']
+    sort_by: str = args['sort_by']
+    stogit: str = args['stogit']
+    web: bool = args['web']
+    workers: int = args['workers']
 
     if debug or interact:
         workers = 1
@@ -121,38 +123,24 @@ def main():
     if re_cache_specs:
         delete_cache(basedir)
 
-    specs: List[Spec] = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
-    loaded_specs = {spec.id: spec for spec in specs}
+    assignments = filter_assignments(assignments, ci)
 
-    if not specs:
+    if ci or quiet:
+        # load specified specs
+        loaded_specs: Dict[str, Spec] = load_specs(assignments,
+                                                   data_dir=os.path.join(basedir, 'data'),
+                                                   skip_update_check=skip_update_check)
+    else:
+        # load all
+        loaded_specs: Dict[str, Spec] = load_all_specs(data_dir=os.path.join(basedir, 'data'),
+                                                       skip_update_check=skip_update_check)
+
+    if not loaded_specs:
         print('No specs loaded!')
         sys.exit(1)
 
     if assignments:
-        available_specs = set(assignments)
-
-        if ci:
-            try:
-                with open('.stogradeignore', encoding='utf-8') as infile:
-                    ignored_specs = [line.strip() for line in infile.read().splitlines()]
-                    logging.debug("Ignored specs: {}".format(ignored_specs))
-                available_specs = available_specs.difference(ignored_specs)
-            except FileNotFoundError:
-                logging.debug("No .stogradeignore file found")
-
-        for spec_id in assignments:
-            spec_to_use = loaded_specs[spec_id]
-            try:
-                check_dependencies(spec_to_use)
-                if not check_architecture(spec_to_use, ci):
-                    available_specs.remove(spec_to_use.id)
-            except KeyError:
-                # Prevent lab0 directory from causing an extraneous output
-                if spec_to_use.id != 'lab0':
-                    print('Spec {} does not exist'.format(spec_to_use.id), file=sys.stderr)
-                available_specs.remove(spec_to_use.id)
-
-        assignments = available_specs
+        assignments = filter_specs(assignments, loaded_specs, ci)
 
         if not assignments:
             print('No valid specs remaining', file=sys.stderr)
@@ -177,7 +165,7 @@ def main():
             interact=interact,
             no_branch_check=no_branch_check,
             no_repo_update=no_update,
-            specs=specs,
+            specs=loaded_specs,
             skip_web_compile=skip_web_compile,
             stogit_url=stogit_url
         )
@@ -187,8 +175,8 @@ def main():
         if web:
             spec_id = list(assignments)[0]
             spec = loaded_specs[spec_id]
-            web_spec = check_web_spec(spec)
-            if not web_spec:
+
+            if not is_web_spec(spec):
                 print("No web files in assignment {}".format(spec_id))
                 sys.exit(1)
 
@@ -206,17 +194,11 @@ def main():
                 quiet = True
 
         if do_record:
-            if workers > 1:
-                results: List[StudentResult] = run_analysis(no_progress=no_progress,
-                                                            parallel=True,
-                                                            single_analysis=single_analysis,
-                                                            usernames=usernames,
-                                                            workers=workers)
-            else:
-                results: List[StudentResult] = run_analysis(no_progress=no_progress,
-                                                            parallel=False,
-                                                            single_analysis=single_analysis,
-                                                            usernames=usernames)
+            results: List[StudentResult] = run_analysis(no_progress=no_progress,
+                                                        parallel=workers > 1,
+                                                        single_analysis=single_analysis,
+                                                        usernames=usernames,
+                                                        workers=workers)
 
     table = ''
     if ci or gist or not quiet:

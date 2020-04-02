@@ -156,7 +156,7 @@ def ask_file(files: List[str],
             return
 
 
-def check_web_spec(spec: Spec) -> bool:
+def is_web_spec(spec: Spec) -> bool:
     """Check if the spec contains any web files"""
     web_spec = False
     for file in spec.files:

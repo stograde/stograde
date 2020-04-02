@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from .assignment_status import AssignmentStatus
+if TYPE_CHECKING:
+    from .assignment_status import AssignmentStatus
 
 
 @dataclass

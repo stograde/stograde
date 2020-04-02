@@ -1,4 +1,5 @@
 import os
+from typing import TYPE_CHECKING
 
 from .compile_result import CompileResult
 from .file_result import FileResult
@@ -6,10 +7,12 @@ from .test_result import TestResult
 from ..common import cat, run, pipe
 from ..common.run_status import RunStatus
 from ..formatters import truncate
-from ..specs.spec import SpecFile
+
+if TYPE_CHECKING:
+    from ..specs.spec import SpecFile
 
 
-def get_file(file_spec: SpecFile, file_result: FileResult) -> bool:
+def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     file_status, file_contents = cat(file_spec.file_name)
     if file_status == RunStatus.SUCCESS:
         _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', file_spec.file_name])
@@ -31,7 +34,7 @@ def get_file(file_spec: SpecFile, file_result: FileResult) -> bool:
         return True
 
 
-def compile_file(*, file_spec: SpecFile, results: FileResult, supporting_dir: str) -> bool:
+def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: str) -> bool:
     for command in file_spec.compile_commands:
         command = command \
             .replace('$@', './' + file_spec.file_name) \
@@ -51,7 +54,7 @@ def compile_file(*, file_spec: SpecFile, results: FileResult, supporting_dir: st
 
 
 def test_file(*,
-              file_spec: SpecFile,
+              file_spec: 'SpecFile',
               file_results: FileResult,
               cwd: str,
               supporting_dir: str,
@@ -96,7 +99,7 @@ def test_file(*,
 
 
 def process_file(*,
-                 file_spec: SpecFile,
+                 file_spec: 'SpecFile',
                  cwd: str,
                  supporting_dir: str,
                  interact: bool,

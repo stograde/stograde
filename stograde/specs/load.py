@@ -5,7 +5,8 @@ import sys
 from typing import List, Dict
 
 from .spec import create_spec, Spec
-from ..common import chdir, run
+from ..common import chdir
+from ..common.run import run
 
 
 def load_all_specs(data_dir: str, skip_update_check: bool = True) -> Dict[str, Spec]:

@@ -1,10 +1,14 @@
 from dataclasses import dataclass, field
 import os
-from typing import List
+from typing import List, TYPE_CHECKING
 import yaml
 
-from .spec_file import create_spec_file, SpecFile
-from .supporting_file import create_supporting_file, SupportingFile
+from .spec_file import create_spec_file
+from .supporting_file import create_supporting_file
+
+if TYPE_CHECKING:
+    from .spec_file import SpecFile
+    from .supporting_file import SupportingFile
 
 
 @dataclass
@@ -13,8 +17,8 @@ class Spec:
     folder: str
     architecture: str = None
     dependencies: List[str] = field(default_factory=list)
-    files: List[SpecFile] = field(default_factory=list)
-    supporting_files: List[SupportingFile] = field(default_factory=list)
+    files: List['SpecFile'] = field(default_factory=list)
+    supporting_files: List['SupportingFile'] = field(default_factory=list)
 
 
 def create_spec(yaml_path: str, basedir: str) -> Spec:

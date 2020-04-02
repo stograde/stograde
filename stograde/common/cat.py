@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from ..common.run_status import RunStatus
+from .run_status import RunStatus
 
 
 def cat(filename: str) -> Tuple[RunStatus, str]:

@@ -5,6 +5,7 @@ from typing import Dict, TYPE_CHECKING
 from ..common import chdir, find_unmerged_branches_in_cwd
 from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import AssignmentType, get_assignment_type
+from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
 from ..specs import get_filenames
 
 if TYPE_CHECKING:
@@ -15,12 +16,11 @@ if TYPE_CHECKING:
 def analyze(student: 'StudentResult', specs: Dict[str, 'Spec'], check_for_branches: bool, ci: bool):
     logging.debug("Analyzing {}'s assignments".format(student.name))
 
-    if check_for_branches and not ci:
-        student.unmerged_branches = find_unmerged_branches_in_cwd()
-
     directory = student.name if not ci else '.'
     analyses = {}
     with chdir(directory):
+        if check_for_branches and not ci:
+            find_unmerged_branches(student)
         for _, spec in specs.items():
             analyses[spec.id] = analyze_assignment(spec)
 

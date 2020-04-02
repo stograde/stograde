@@ -64,7 +64,7 @@ def format_warnings(warnings: SubmissionWarnings) -> str:
 
     elif warnings.unmerged_branches:
         branches = ['  - ' + b for b in warnings.unmerged_branches]
-        return '**Repository has unmerged branches:\n{}**'.format('\n'.join(branches))
+        return '### *Repository has unmerged branches:*\n{}'.format('\n'.join(branches))
 
     elif warnings.recording_err:
         return '**Warning: ' + warnings.recording_err + '**'

@@ -1,9 +1,10 @@
 import logging
+from typing import Optional
 
 from ..common import chdir, run
 
 
-def checkout_date(student: str, date: str = None):
+def checkout_date(student: str, date: Optional[str] = None):
     if date:
         logging.debug("Checking out commits in {}'s repository before {}".format(student, date))
         with chdir(student):

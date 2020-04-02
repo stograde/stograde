@@ -31,8 +31,7 @@ def asciiify(table: str) -> str:
     return ANSI_ESCAPE.sub('', table)
 
 
-def pad(string: str,
-        index: int) -> str:
+def pad(string: str, index: int) -> str:
     """Pad a string to the width of the stringified number"""
     padding_char = string if string == MISSING else ' '
     return string.ljust(len(str(index)), padding_char)

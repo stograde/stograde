@@ -19,8 +19,7 @@ from .save_recordings import save_recordings
 from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
 from ..common import chdir
-from ..specs import delete_cache, load_all_specs
-from ..specs.load import load_specs
+from ..specs import delete_cache, load_all_specs, load_specs
 from ..specs.spec import Spec
 from ..student import clone_student
 from ..student.student_result import StudentResult

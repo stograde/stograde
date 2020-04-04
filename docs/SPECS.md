@@ -82,7 +82,7 @@ files:
     commands: g++ --std=c++11 $@ -o $@.exec
 ```
 
-When the compile command is parsed before being run, it becomes `gcc --std=c++11 options.cpp -o options.cpp.exec`.
+When the compile command is parsed before being run, it becomes `gcc --std=c++11 options.cpp -o options.cpp.exec` (explained above under Variables in Commands).
 
 #### Test Steps
 

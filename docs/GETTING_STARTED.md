@@ -70,7 +70,7 @@ Download specs? (Y/N)
 
 After answering with `Y`, it will then ask which class to download for:
 
-```yaml
+```
 Which class? (SD/HD/ADS/OS)
 ``` 
 
@@ -82,8 +82,10 @@ When the toolkit is done cloning the repos, it will output a chart showing who h
 
 ### SSH Key
 
-The terminal you are using must have the SSH key at ~/.ssh/id_rsa.pub registered with StoGit.
+The terminal you are using must have the SSH key at `~/.ssh/id_rsa.pub` registered with StoGit.
 Otherwise you will get `[Errno 2] No such file or directory: '...'` in each line of the chart.
+If your terminal doesn't have an SSH key yet, you can create one with `ssh-keygen`.
+Leave the prompts blank to add a SSH key in the default location (`~/.ssh/id_rsa.pub`) and with no password.
 
 ### Trusted Source
 

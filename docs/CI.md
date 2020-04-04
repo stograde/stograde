@@ -2,6 +2,7 @@
 
 The toolkit has built-in support for automated testing of a student's code with GitLab CI.
 A `.gitlab-ci.yml` file has to be added to the root of their repository.
+Example `.gitlab-ci.yml` files for various classes are listed under Configuration.
 
 ## Functionality
 
@@ -21,8 +22,8 @@ Thus it uses the `-gcc` version of the docker images, which are based off of the
 
 ```yaml
 image: stodevx/stograde:latest-gcc
-build:
-    stage: build
+stograde:
+    stage: stograde
     script:
         - stograde --ci
 ```
@@ -57,8 +58,8 @@ Thus, we add the `rasperrypi` label which tells it to use a runner with the `ras
 
 ```yaml
 image: stodevx/stograde:latest
-build:
-    stage: build
+stograde:
+    stage: stograde
     labels:
         - raspberrypi 
     script:
@@ -71,8 +72,8 @@ Any other course that doesn't require special accommodations can use this config
 
 ```yaml
 image: stodevx/stograde:latest
-build:
-    stage: build
+stograde:
+    stage: stograde
     script:
         - stograde --ci
 ```

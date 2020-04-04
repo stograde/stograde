@@ -35,15 +35,15 @@ def markdownify(spec_id, *, username, spec, basedir, debug, interact, ci, skip_w
             filename = file['filename']
             steps = file['commands']
             options = file['options']
+            tests = file['tests']
             result = process_file(filename,
                                   steps=steps,
+                                  tests=tests,
                                   options=options,
                                   spec=spec,
                                   cwd=cwd,
                                   supporting_dir=supporting_dir,
                                   interact=interact,
-                                  basedir=basedir,
-                                  spec_id=spec_id,
                                   skip_web_compile=skip_web_compile)
             results['files'][filename] = result
 

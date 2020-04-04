@@ -168,10 +168,9 @@ compilers:
   - &cpp 'g++ --std=c++11 $@ -o $@.exec'
 
 files:
-  - [ types.cpp, *cpp ]
-
-tests:
-  - [ types.cpp, $@.exec ]
+  - file: types.cpp
+    commands: *cpp
+    tests: $@.exec
 ```
 
 This spec will go into the `hw2` folder and look for the `types.cpp` file. If it's not found, it'll print a warning to
@@ -287,6 +286,7 @@ optional arguments:
   --skip-web-compile    Skip compilation and testing of files marked with web:
                         true
   --port SERVER_PORT    Set the port for the server to use
+  --re-cache            Force re-caching of specs
 
 student management arguments:
   --clean               Remove student folders and re-clone them
@@ -312,7 +312,7 @@ grading arguments:
 
 
 ## Advanced Usage
-`--course {sd|hd|ads}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for
+`--course {sd|hd|ads|os}` affects the calculation of the base Stogit URL, allowing you to use the toolkit for
 Hardware Design or Algorithms and Data Structures as well.
 
 `--stogit URL` lets you force the base url where the repositories are cloned from. It's passed to `git` in the form

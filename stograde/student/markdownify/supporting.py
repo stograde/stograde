@@ -3,12 +3,12 @@ import os
 
 def import_supporting(*, spec, spec_id, basedir):
     cwd = os.getcwd()
-    inputs = spec.get('inputs', [])
+    supporting_files = spec.get('inputs', []) + spec.get('supporting', [])
     supporting_dir = os.path.join(basedir, 'data', 'supporting')
     written_files = []
 
     # write the supporting files into the folder
-    for filename in inputs:
+    for filename in supporting_files:
         if isinstance(filename, list):
             if len(filename) == 1:
                 in_name = filename[0]
@@ -16,9 +16,14 @@ def import_supporting(*, spec, spec_id, basedir):
             else:
                 in_name = filename[0]
                 out_name = filename[1]
-        else:
+        elif isinstance(filename, dict):
+            in_name = filename['file']
+            out_name = filename.get('destination', in_name)
+        elif isinstance(filename, str):
             in_name = filename
             out_name = filename
+        else:
+            raise TypeError("A supporting file in {} cannot be parsed".format(spec_id))
 
         with open(os.path.join(supporting_dir, spec_id, in_name), 'rb') as infile:
             contents = infile.read()
@@ -31,7 +36,7 @@ def import_supporting(*, spec, spec_id, basedir):
 
 def remove_supporting(written_files):
     try:
-        for inputfile in written_files:
-            os.remove(inputfile)
+        for supporting_file in written_files:
+            os.remove(supporting_file)
     except FileNotFoundError:
         pass

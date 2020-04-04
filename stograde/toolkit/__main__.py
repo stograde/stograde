@@ -1,6 +1,5 @@
 import datetime
 import functools
-import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from threading import Thread
@@ -9,12 +8,14 @@ import os.path
 import logging
 
 from .ci_analyze import ci_analyze
+from .download_specs import create_data_dir
+from .stogit_url import compute_stogit_url
 from ..student import clone_student
-from ..common import chdir, run
-from ..specs import load_all_specs, check_dependencies, check_architecture
+from ..common import chdir
+from ..specs import load_all_specs, check_dependencies, check_architecture, delete_cache
 from .find_update import update_available
 from .process_student import process_student
-from .args import process_args, compute_stogit_url
+from .args import process_args
 from .progress_bar import progress_bar
 from .save_recordings import save_recordings, gist_recordings
 from .tabulate import tabulate
@@ -43,29 +44,9 @@ def make_progress_bar(students, no_progress=False):
     return increment
 
 
-def run_server(basedir, port):
-    server.exe_name = '{}/server/server_file'.format(basedir)
+def run_server(port):
     server.run_server(port=port)
     return
-
-
-def download_specs(course, basedir, stogit):
-    spec_urls = {
-        'sd': 'https://github.com/StoDevX/cs251-specs.git',
-        'hd': 'https://github.com/StoDevX/cs241-specs.git',
-        'ads': 'https://github.com/StoDevX/cs253-specs.git',
-        'os': 'https://github.com/StoDevX/cs273-specs.git'
-    }
-    course = course.split("/")[0].lower()
-    try:
-        url = spec_urls[course]
-    except KeyError:
-        print("Course {} not recognized".format(course))
-        sys.exit(1)
-    with chdir(basedir):
-        run(['git', 'clone', url, 'data'])
-        if not stogit:
-            return compute_stogit_url(course=course, stogit=None, _now=datetime.date.today())
 
 
 def run_analysis(*, no_progress=False, parallel, single_analysis, usernames, workers=1):
@@ -93,7 +74,7 @@ def run_analysis(*, no_progress=False, parallel, single_analysis, usernames, wor
 
 def main():
     basedir = getcwd()
-    args, usernames, assignments, stogit_url = process_args()
+    args, usernames, assignments = process_args()
     ci = args['ci']
     clean = args['clean']
     course = args['course']
@@ -128,43 +109,16 @@ def main():
         logging.debug('Checking out {}'.format(date))
 
     if not os.path.exists("data"):
-        if ci:
-            if course:
-                url = download_specs(course, basedir, stogit)
-                if not stogit:
-                    stogit_url = url
-            else:
-                print("data directory not found and no course specified")
-                sys.exit(1)
+        create_data_dir(ci, course, basedir)
 
-        else:
-            print('data directory not found', file=sys.stderr)
-            if course:
-                url = download_specs(course, basedir, stogit)
-                if not stogit:
-                    stogit_url = url
-            else:
-                download = input("Download specs? (Y/N)")
-                if download and download.lower()[0] == "y":
-                    repo = input("Which class? (SD/HD/ADS/OS)")
-                    if repo:
-                        url = download_specs(repo, basedir, stogit)
-                        if not stogit:
-                            stogit_url = url
-                    else:
-                        sys.exit(1)
-                else:
-                    sys.exit(1)
+    stogit_url = compute_stogit_url(stogit=stogit, course=course, _now=datetime.date.today())
 
     if re_cache_specs:
-        try:
-            shutil.rmtree(os.path.join(basedir, 'data', 'specs', '_cache'))
-        except OSError:
-            print('Could not remove cached specs', file=sys.stderr)
+        delete_cache(basedir)
 
     specs = load_all_specs(basedir=os.path.join(basedir, 'data'), skip_update_check=skip_update_check)
     if not specs:
-        print('no specs loaded!')
+        print('No specs loaded!')
         sys.exit(1)
 
     if assignments:
@@ -203,9 +157,6 @@ def main():
     if not ci:
         makedirs('./students', exist_ok=True)
 
-    if ci or web:
-        makedirs('./server', exist_ok=True)
-
     directory = './students' if not ci else '.'
     with chdir(directory):
         single_analysis = functools.partial(
@@ -234,7 +185,7 @@ def main():
                 print("No web files in assignment {}".format(list(assignments)[0]))
                 sys.exit(1)
 
-            Thread(target=run_server, args=(basedir, port,), daemon=True).start()
+            Thread(target=run_server, args=(port,), daemon=True).start()
 
             for user in usernames:
                 clone_student(user, baseurl=stogit_url)

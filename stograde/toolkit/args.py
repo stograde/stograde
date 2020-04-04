@@ -1,22 +1,20 @@
 """Deal with argument parsing for the toolkit"""
 
-import datetime
 import argparse
-import os
-import sys
-import re
 import logging
+import os
+import re
+import sys
 from glob import glob
-from os import cpu_count, getenv
 from logging import warning, debug
 from natsort import natsorted
+from os import cpu_count, getenv
 from typing import List
 
-from stograde.common import flatten, version, run
+from ..common import flatten, version
 from .get_students import get_students as load_students_from_file
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
-COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 
 
 def build_argparser():
@@ -93,7 +91,7 @@ def build_argparser():
 
 
 def get_students_from_args(*, input_items, all_sections, sections, students, _all_students, **kwargs) -> List[str]:
-    people = [l for l in input_items if not re.match(ASSIGNMENT_REGEX, l)]
+    people = [arg for arg in input_items if not re.match(ASSIGNMENT_REGEX, arg)]
 
     # argparser puts it into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -130,7 +128,8 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
             elif prefixed in _all_students:
                 student_set = _all_students[prefixed]
             else:
-                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'.format(section_name))
+                warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'
+                        .format(section_name))
 
             collected.append(student_set)
         people = [student for group in collected for student in group]
@@ -141,7 +140,7 @@ def get_students_from_args(*, input_items, all_sections, sections, students, _al
 
 def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
     # grab the assignments given on the plain args list
-    assignments = [l for l in input_items if re.match(ASSIGNMENT_REGEX, l)]
+    assignments = [arg for arg in input_items if re.match(ASSIGNMENT_REGEX, arg)]
 
     # argparser puts --record into a nested list because you could have two
     # occurrences of the arg, each with a variable number of arguments.
@@ -150,18 +149,6 @@ def get_assignments_from_args(*, input_items, to_record, **kwargs) -> List[str]:
 
     # sort the assignments and remove duplicates
     return natsorted(set(assignments))
-
-
-def compute_stogit_url(*, stogit, course, _now, **kwargs) -> str:
-    """calculate a default stogit URL, or use the specified one"""
-    if stogit:
-        return stogit
-    if re.match(COURSE_REGEX, course):
-        return 'git@stogit.cs.stolaf.edu:{}'.format(course)
-
-    semester = 's' if _now.month < 7 else 'f'
-    year = str(_now.year)[2:]
-    return 'git@stogit.cs.stolaf.edu:{}/{}{}'.format(course, semester, year)
 
 
 def process_args():
@@ -194,14 +181,12 @@ def process_args():
 
     students = get_students_from_args(**args, _all_students=load_students_from_file())
     assignments = get_assignments_from_args(**args)
-    stogit = compute_stogit_url(**args, _now=datetime.date.today())
 
     print_args(args)
     print_students(students)
     print_assignments(assignments)
-    debug("stogit URL: " + stogit)
 
-    return args, students, assignments, stogit
+    return args, students, assignments
 
 
 def print_args(args):

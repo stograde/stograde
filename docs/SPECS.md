@@ -1,6 +1,6 @@
 # Specification (Spec) Files
 
-A homework is defined using a specification, or spec, file.
+How each homework gets checked is defined using a specification (or spec) file.
 These are located in the `data/specs` directory.
 
 ## Naming
@@ -9,7 +9,6 @@ Spec files are `.yaml` files, named after the assignment they represent.
 A homework has a `hw` prefix, lab has a `lab` prefix and worksheet has a `ws` prefix.
 For example, homework 1 would be specified in `hw1.yaml`, homework 15 in `hw15.yaml`, lab 5 in `lab5.yaml`, worksheet 3 in `ws3.yaml`, etc.
 
-
 ## Creating a Spec File
 
 A spec file is made up of the following parts: 
@@ -17,6 +16,12 @@ A spec file is made up of the following parts:
 - An `assignment:` tag that specifies the name of the assignment (this should be the same as the filename, without the `.yaml`)
 - The `compilers:` array, a list of commands that can be used to compile files (if applicable)
 - The `files:` array, listing all files in the assignment, along with how to compile and test them
+
+#### Testing a Different Directory
+
+If you want to test a directory other than the one that would be used by default (named after the assignment), you can add a `folder:` flag.
+The value will be used in place of the assignment's name when `cd`ing into the student's directory.
+For example, a `folder: images` line in homework 15 will have the toolkit `cd` into `images` instead of `hw15` when checking a student's assignment.
 
 ### Compilers
 
@@ -32,8 +37,9 @@ Whenever a `$@` is encountered, the `$@` is replaced with the filename.
 For example, if the command is `cat $@` and the filename is `test.txt`, the command will become `cat test.txt`.
 
 #### Common Compilers
-- C++ file: `gcc --std=c++11 $@ -o $@.exec`
 
+- C++ file: `gcc --std=c++11 $@ -o $@.exec`
+- React App file: `gcc --std=c++11 $@ react.o -lcurl`
 
 ### Files
 

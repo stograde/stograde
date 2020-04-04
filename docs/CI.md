@@ -3,6 +3,15 @@
 The toolkit has built-in support for automated testing of a student's code with GitLab CI.
 A `.gitlab-ci.yml` file has to be added to the root of their repository.
 
+## Functionality
+
+When running a CI job, the toolkit will first determine which assignments to check based on the directories in the student's repository.
+The toolkit will then check that all the files are present as well as try compiling them.
+*It will not run any tests on them, only compile them.*
+If anything is amiss, it will print out warnings letting the student know what's wrong with their assignment, then fail the build.
+
+If a file is not required, or it doesn't have to compile (though it could), then the `optional` or `optional_compile` tags can be added to the file in the spec, respectively.
+
 ## Configuration
 
 ### Software Design

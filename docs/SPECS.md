@@ -103,7 +103,7 @@ files:
 If missing, the file will have  (**optional submission**) in the log file and will not fail any CI jobs. (default: *false*)
 - `optional_compile:` - The file doesn't have to compile for the CI job to pass. (default: *false*)
 - `timeout:` - Limit how long the executable can run (in seconds) before being stopped. (default: *4*)
-- `truncate_contents:` - Limit how many lines of the file will be included in the log file.
+- `truncate_contents:` - Limit how many lines of the file will be included in the log file. (default: *10000*)
 - `truncate_output:` - Limit how many lines of the output will be included in the log file. (default: *10000*)
 - `web:` - This file requires the SD_App React app for testing (default: *false*)
 

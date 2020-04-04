@@ -70,7 +70,7 @@ You'll want to make sure that you have everything needed for testing installed o
 This may include g++, libcurl, etc. depending on the course.
 
 ### In More Detail
-`--record`'s actions are controlled by the [homework specs](https://github.com/stodevx/cs251-specs) in the `data/specs`
+`--record`'s actions are controlled by the specs in the `data/specs`
 folder.
 
 ```yaml
@@ -88,6 +88,7 @@ files:
 
 This spec will go into the `hw2` folder and look for the `types.cpp` file.
 If it's not found, it'll print a warning to the log, and exit.
+See the SPECS.md documentation for more details.
 
 If it exists, it's compiled with the `cpp` compiler command, as listed under `compilers`.
 The syntax for variables takes after `make` a bit here; `$@` is the "target" of the command, so it'll compile `types.cpp` into `types.cpp.exec`.
@@ -110,7 +111,7 @@ Repository has unmerged branches:
 
 
 ## types.cpp (Thu Feb 11 17:00:44 2016 -0600)
-
+    ```cpp
     #include <iostream>
     #include <string>
     using namespace std;
@@ -140,14 +141,16 @@ Repository has unmerged branches:
 
       return 0;
     }
+    ```
 
 
 **no warnings: `g++ --std=c++11 ./types.cpp -o ./types.cpp.exec`**
 
 
 **results of `./types.cpp.exec`** (status: success)
-
+    ```
     4294967246
+    ```
 ```
 
 Then, you can just scroll through the file, seeing what people submitted, and saving you from needing to `cd` between every folder and make each part of the assignment manually.
@@ -169,7 +172,7 @@ Powerful, but not used much.
 See `man git-rev-parse` for more information on what a GIT\_DATE is.
 
 `--workers` controls the amount of parallelization.
-It defaults to the number of cores in your machine.
+It defaults to the number of logical processors in your machine.
 `-w1` will disable the process pool entirely, which is helpful for debugging.
 
 `--web` starts a web server to view programs created for the SD_app React app
@@ -224,5 +227,4 @@ Processing...
 ```
 
 Select the file using the arrow keys and enter.
-This will compile it and put it in the ./server directory for the server to send to the app.
-
+This will compile it and redirect the server to deliver the new executable when the client asks.

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     file_status, file_contents = cat(file_spec.file_name)
-    if file_status == RunStatus.SUCCESS:
+    if file_status is RunStatus.SUCCESS:
         _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', file_spec.file_name])
         file_result.last_modified = last_edit
 
@@ -23,7 +23,7 @@ def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     elif file_spec.options.truncate_contents:
         file_contents = truncate(file_contents, file_spec.options.truncate_contents)
 
-    if file_status != RunStatus.SUCCESS:
+    if file_status is not RunStatus.SUCCESS:
         file_result.file_missing = True
         file_result.other_files = os.listdir('.')
         file_result.optional = file_spec.options.optional

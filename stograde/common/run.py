@@ -50,7 +50,7 @@ def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
 
 def run_static(cmd: List[str],
                input_data: Optional[str] = None,
-               timeout: Optional[int] = None):
+               timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
     status = 'success'
     try:
         result = subprocess.run(

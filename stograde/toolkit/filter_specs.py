@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, List, TYPE_CHECKING
 
 from ..specs import check_architecture, check_dependencies

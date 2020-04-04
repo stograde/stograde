@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Dict, TYPE_CHECKING
 
-from ..common import chdir, find_unmerged_branches_in_cwd
+from ..common import chdir
 from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import AssignmentType, get_assignment_type
 from ..process_assignment.warning_unmerged_branches import find_unmerged_branches

@@ -9,7 +9,7 @@ def test_run():
 
 
 def test_run_stdin():
-    status, result, again = run(['cat'], input_data=b'hello')
+    status, result, again = run(['cat'], input_data='hello')
     assert status == 'success'
     assert result == 'hello'
     assert again == False

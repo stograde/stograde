@@ -58,7 +58,8 @@ def process_assignment(*,
         if debug:
             raise err
         else:
-            return RecordResult(spec_id=spec.id,
+            return RecordResult(student=student.name,
+                                spec_id=spec.id,
                                 warnings=SubmissionWarnings(recording_err=str(err)))
 
 

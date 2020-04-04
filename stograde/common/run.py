@@ -12,7 +12,7 @@ def run(cmd: List[str],
         *,
         interact: bool = False,
         input_data: Optional[str] = None,
-        timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
+        timeout: Optional[float] = None) -> Tuple[RunStatus, str, bool]:
     if interact:
         return run_interactive(cmd)
     else:

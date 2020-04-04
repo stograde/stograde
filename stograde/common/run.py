@@ -11,7 +11,7 @@ from ..common.run_status import RunStatus
 def run(cmd: List[str],
         *,
         interact: bool = False,
-        input_data: Optional[str] = None,
+        input_data: Optional[bytes] = None,
         timeout: Optional[float] = None) -> Tuple[RunStatus, str, bool]:
     if interact:
         return run_interactive(cmd)
@@ -49,7 +49,7 @@ def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
 
 
 def run_static(cmd: List[str],
-               input_data: Optional[str] = None,
+               input_data: Optional[bytes] = None,
                timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
     status = 'success'
     try:

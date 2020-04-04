@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import List, TYPE_CHECKING
 
-from ..common import group_by as group
+from ..common.group_by import group_by as group
 
 if TYPE_CHECKING:
     from ..student.student_result import StudentResult
@@ -27,9 +27,9 @@ def format_collected_data(student_results: List['StudentResult'],
         results.extend(student.results)
 
     if group_by == 'assignment':
-        grouped_records = group.group_by(results, lambda rec: rec.spec_id)
+        grouped_records = group(results, lambda rec: rec.spec_id)
     elif group_by == 'student':
-        grouped_records = group.group_by(results, lambda rec: rec.student)
+        grouped_records = group(results, lambda rec: rec.student)
     else:
         # not entirely sure what this'll do
         grouped_records = results

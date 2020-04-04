@@ -1,6 +1,6 @@
 from textwrap import indent
 import traceback
-from typing import List
+from typing import Dict, List
 
 from ..process_assignment.record_result import RecordResult
 from ..process_assignment.submission_warnings import SubmissionWarnings
@@ -9,8 +9,7 @@ from ..process_file.file_result import FileResult
 from ..process_file.test_result import TestResult
 
 
-def format_assignment_markdown(result: RecordResult,
-                               debug=False):
+def format_assignment_markdown(result: RecordResult, debug: bool = False) -> Dict:
     """Given a single recording, format it into a markdown file.
 
     Each recording will only have one student.
@@ -37,11 +36,11 @@ def format_assignment_markdown(result: RecordResult,
     }
 
 
-def format_files_list(files):
+def format_files_list(files) -> str:
     return '\n\n' + '\n\n'.join([format_file(info) for info in files])
 
 
-def format_header(result: RecordResult, warnings: str):
+def format_header(result: RecordResult, warnings: str) -> str:
     """Format the header for the section of the log file"""
 
     try:

@@ -18,10 +18,10 @@ def process_students(specs: Dict[str, 'Spec'],
                      clean: bool,
                      date: str,
                      interact: bool,
-                     no_branch_check: bool,
                      no_progress_bar: bool,
-                     no_repo_update: bool,
                      record: bool,
+                     skip_branch_check: bool,
+                     skip_repo_update: bool,
                      skip_web_compile: bool,
                      stogit_url: str,
                      workers: int,
@@ -34,28 +34,28 @@ def process_students(specs: Dict[str, 'Spec'],
             clean=clean,
             date=date,
             interact=interact,
-            no_branch_check=no_branch_check,
-            no_repo_update=no_repo_update,
+            skip_branch_check=skip_branch_check,
+            skip_repo_update=skip_repo_update,
             record=record,
             specs=specs,
             skip_web_compile=skip_web_compile,
             stogit_url=stogit_url
         )
 
-    results: List['StudentResult'] = []
+        results: List['StudentResult'] = []
 
-    if workers > 1:
-        print_progress = make_progress_bar(students, no_progress_bar=no_progress_bar)
-        with ProcessPoolExecutor(max_workers=workers) as pool:
-            futures = [pool.submit(single_analysis, name) for name in students]
-            for future in as_completed(futures):
-                result: 'StudentResult' = future.result()
-                print_progress(result.name)
+        if workers > 1:
+            print_progress = make_progress_bar(students, no_progress_bar=no_progress_bar)
+            with ProcessPoolExecutor(max_workers=workers) as pool:
+                futures = [pool.submit(single_analysis, name) for name in students]
+                for future in as_completed(futures):
+                    result: 'StudentResult' = future.result()
+                    print_progress(result.name)
+                    results.append(result)
+        else:
+            for student in students:
+                logging.debug('Processing {}'.format(student))
+                result: 'StudentResult' = single_analysis(student)
                 results.append(result)
-    else:
-        for student in students:
-            logging.debug('Processing {}'.format(student))
-            result: 'StudentResult' = single_analysis(student)
-            results.append(result)
 
     return results

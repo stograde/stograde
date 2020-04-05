@@ -9,8 +9,7 @@ if TYPE_CHECKING:
 
 def format_collected_data(student_results: List['StudentResult'],
                           group_by: str,
-                          formatter,
-                          debug: bool) -> defaultdict:
+                          formatter) -> defaultdict:
     """Turn the list of recordings into a list of nicely-formatted results.
 
     `grouped_records` will be a list of pairs: (assignment, recordings), where
@@ -37,6 +36,6 @@ def format_collected_data(student_results: List['StudentResult'],
     student_results = defaultdict(list)
     for key, recordings in grouped_records:
         for content in recordings:
-            student_results[key].append(formatter(content, debug=debug))
+            student_results[key].append(formatter(content))
 
     return student_results

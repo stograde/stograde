@@ -8,7 +8,7 @@ from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
 from ..common import check_dates
 from ..process_file import process_file
-from ..toolkit.args import DEBUG
+from ..toolkit.global_vars import DEBUG, CI
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec

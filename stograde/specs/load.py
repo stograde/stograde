@@ -1,9 +1,8 @@
-from glob import iglob
-import logging
 import os
 import sys
 from typing import Dict, List, TYPE_CHECKING
 
+from .filter_specs import filter_loaded_specs, get_spec_paths
 from .spec import create_spec
 from ..common import chdir
 from ..common.run import run
@@ -12,38 +11,28 @@ if TYPE_CHECKING:
     from .spec import Spec
 
 
-def load_all_specs(data_dir: str, skip_update_check: bool = True) -> Dict[str, 'Spec']:
-    return load_specs(find_all_specs(spec_dir=os.path.join(data_dir, 'specs')),
-                      data_dir=data_dir,
-                      skip_update_check=skip_update_check)
+def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = True) -> Dict[str, 'Spec']:
+    """Load the desired specs from the specs/ directory, filtering out any that are missing
 
-
-def load_specs(wanted_spec_files: List[str], data_dir: str, skip_update_check: bool = True) -> Dict[str, 'Spec']:
-    os.makedirs(data_dir, exist_ok=True)
-
-    if not skip_update_check:
+    data/ directory should exist by this point with a repository
+    """
+    if not skip_spec_update:
         check_for_spec_updates(data_dir)
 
-    # the repo has a /specs folder
+    # the repo has a /specs directory
     spec_dir = os.path.join(data_dir, 'specs')
 
-    all_spec_files = find_all_specs(spec_dir)
-    loadable_spec_files = set(all_spec_files).intersection(wanted_spec_files)
-    missing_spec_files = set(wanted_spec_files).difference(all_spec_files)
+    specs_to_load = get_spec_paths(wanted_specs, spec_dir)
 
-    for spec in missing_spec_files:
-        logging.warning("No spec for {}".format(spec))
+    loaded_specs = [create_spec(filename, spec_dir) for filename in specs_to_load]  # Create list of Specs
+    loaded_specs = {spec.id: spec for spec in loaded_specs}  # Convert to dict (id to Spec)
+    loaded_specs = filter_loaded_specs(loaded_specs)
 
-    loaded_specs = [create_spec(filename, spec_dir) for filename in loadable_spec_files]
-
-    return {spec.id: spec for spec in loaded_specs}
-
-
-def find_all_specs(spec_dir: str) -> List[str]:
-    return iglob(os.path.join(spec_dir, '*.yaml'))
+    return loaded_specs
 
 
 def check_for_spec_updates(data_dir: str):
+    """Check if the specs have any updates using git fetch"""
     with chdir(data_dir):
         res, _, _ = run(['git', 'fetch', 'origin'])
 

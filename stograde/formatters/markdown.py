@@ -7,7 +7,7 @@ from ..process_assignment.submission_warnings import SubmissionWarnings
 from ..process_file.compile_result import CompileResult
 from ..process_file.file_result import FileResult
 from ..process_file.test_result import TestResult
-from ..toolkit.args import DEBUG
+from ..toolkit.global_vars import DEBUG
 
 
 def format_assignment_markdown(result: RecordResult) -> Dict:

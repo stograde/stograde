@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def launch_cli(base_dir: str,
                clean: bool,
                date: str,
-               no_repo_update: bool,
+               skip_repo_update: bool,
                spec: 'Spec',
                stogit_url: str,
                students: List[str]) -> bool:
@@ -33,8 +33,8 @@ def launch_cli(base_dir: str,
         prepare_student(student,
                         stogit_url=stogit_url,
                         do_clean=clean,
-                        do_clone=not no_repo_update,
-                        do_pull=not no_repo_update,
+                        do_clone=not skip_repo_update,
+                        do_pull=not skip_repo_update,
                         do_checkout=True,
                         date=date)
 

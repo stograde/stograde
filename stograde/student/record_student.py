@@ -6,20 +6,20 @@ from ..common import chdir
 from ..process_assignment.process_assignment import process_assignment
 from ..process_assignment.record_result import RecordResult
 from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
-from ..toolkit.args import CI
+from ..toolkit.global_vars import CI
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
     from ..student.student_result import StudentResult
 
 
-def record(*,
-           student: 'StudentResult',
-           specs: Dict[str, 'Spec'],
-           assignments: List[str],
-           basedir: str,
-           interact: bool,
-           skip_web_compile: bool):
+def record_student(*,
+                   student: 'StudentResult',
+                   specs: Dict[str, 'Spec'],
+                   assignments: List[str],
+                   basedir: str,
+                   interact: bool,
+                   skip_web_compile: bool):
     results = []
     if assignments:
         directory = student.name if not CI else '.'

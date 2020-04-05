@@ -49,8 +49,7 @@ def save_recordings(results: List['StudentResult'],
 
     result_dict = format_collected_data(results,
                                         group_by='assignment',
-                                        formatter=markdown,
-                                        debug=debug)
+                                        formatter=markdown)
 
     for assignment, content in result_dict.items():
         logging.debug("Saving recording for {}".format(assignment))

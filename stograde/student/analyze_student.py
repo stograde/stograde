@@ -7,14 +7,14 @@ from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import AssignmentType, get_assignment_type
 from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
 from ..specs import get_filenames
-from ..toolkit.args import CI
+from ..toolkit.global_vars import CI
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
     from ..student.student_result import StudentResult
 
 
-def analyze(student: 'StudentResult', specs: Dict[str, 'Spec'], check_for_branches: bool):
+def analyze_student(student: 'StudentResult', specs: Dict[str, 'Spec'], check_for_branches: bool):
     logging.debug("Analyzing {}'s assignments".format(student.name))
 
     directory = student.name if not CI else '.'

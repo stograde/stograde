@@ -4,7 +4,7 @@ import sys
 from typing import List, TYPE_CHECKING
 
 from ..common.run import run
-from ..toolkit.__main__ import CI
+from ..toolkit.global_vars import CI
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -24,7 +24,6 @@ def check_dependencies(spec: 'Spec'):
 
 
 def check_architecture(spec: 'Spec') -> bool:
-    # get check_architecture()
     _, user_arch, _ = run(['uname', '-m'])
     user_arch = user_arch.rstrip()
     spec_arch = spec.architecture

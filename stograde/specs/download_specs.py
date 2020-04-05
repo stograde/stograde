@@ -1,8 +1,8 @@
 from bidict import bidict
 import sys
 
-from .__main__ import CI
 from ..common import chdir, run
+from ..toolkit.global_vars import CI
 
 SPEC_URLS = bidict({
     'sd': 'https://github.com/StoDevX/cs251-specs.git',

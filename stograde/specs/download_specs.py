@@ -48,3 +48,12 @@ def create_data_dir(course: str, basedir: str):
                     sys.exit(1)
             else:
                 sys.exit(1)
+
+
+def get_supported_courses() -> str:
+    course_list = [course for course in SPEC_URLS.keys()]
+    courses = ''
+    for course in course_list:
+        courses += course + ', '
+    courses = courses[:-2]
+    return courses

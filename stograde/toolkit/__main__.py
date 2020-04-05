@@ -42,6 +42,7 @@ def main():
                      no_progress_bar=args['no_progress_bar'],
                      workers=args['workers'])
         sys.exit(0)
+
     elif args['command'] == 'table':
         assignments = [path.split('/')[-1].split('.')[0]
                        for path in find_all_specs(os.path.join(base_dir, 'data', 'specs'))]
@@ -62,7 +63,7 @@ def main():
         print('No specs loaded!')
         sys.exit(1)
 
-    # Call function to handle subcommand
+    # Call function to handle SubCommand
     command_func(specs=loaded_specs,
                  students=students,
                  base_dir=base_dir,

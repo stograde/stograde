@@ -13,10 +13,9 @@ from typing import List, Tuple, Dict, Any
 
 from . import global_vars
 from .subcommands import do_ci, do_record, do_table, do_web, do_clean, do_update
-from stograde.specs.download_specs import SPEC_URLS
+from stograde.specs.download_specs import SPEC_URLS, get_supported_courses
 from .get_students import get_students as load_students_from_file
 from ..common import flatten, version
-from ..specs.filter_specs import find_all_specs
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 
@@ -40,15 +39,17 @@ def build_argparser():
     base_options.add_argument('--workers', '-w', type=int, default=cpu_count(), metavar='N',
                               help='The number of operations to perform in parallel')
 
+    # Repository url modifiers
     repo_selection = argparse.ArgumentParser(add_help=False)
     repo_selection.add_argument('--course', default='', metavar='ID',
                                 help='Which course to evaluate '
                                      '(this sets a default stogit url and downloads the correct specs). '
                                      'Can be {} or one of the previous with /f## or /s## (i.e. sd/s19)'
-                                .format(SPEC_URLS.keys()))  # TODO: Create function to get currently supported courses
+                                .format(get_supported_courses()))
     repo_selection.add_argument('--stogit', metavar='URL',
                                 help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
 
+    # Recording options
     record_options = argparse.ArgumentParser(add_help=False)
     record_options.add_argument('--clean', action='store_true',
                                 help='Remove student folders and re-clone them')
@@ -60,14 +61,13 @@ def build_argparser():
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
 
+    # Student selection
     student_selection = argparse.ArgumentParser(add_help=False)
     selection_args = student_selection.add_argument_group('student selection')
     selection_args.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
                                 help='Only iterate over these students.')
     selection_args.add_argument('--section', action='append', dest='sections', nargs='+', metavar='SECTION', default=[],
                                 help='Only check these sections: my, all, a, b, etc.')
-
-    # Assignment Analysis Parent Parser
 
     # Table Printout Parent Parser
     table_options = argparse.ArgumentParser(add_help=False)
@@ -186,7 +186,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     command: str = args['command']
 
-    # ci subCommand
+    # ci SubCommand
     if command == 'ci':
         assignments = get_ci_assignments()
         students = [os.environ['CI_PROJECT_NAME']]
@@ -214,9 +214,12 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
             sys.exit(1)
 
         students = get_students(args)
+
+    # repo SubCommand
     elif command == 'repo':
         assignments = []
         students = get_students(args)
+
     else:
         print('Sub-command must be specified')
         sys.exit(1)

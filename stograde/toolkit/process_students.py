@@ -1,13 +1,13 @@
 import functools
 import logging
 from concurrent.futures import as_completed, ProcessPoolExecutor
-from typing import List, Dict
+from typing import Dict, List
 
-from stograde.common import chdir
-from stograde.specs.spec import Spec
-from stograde.student.process_student import process_student
-from stograde.student.student_result import StudentResult
-from stograde.toolkit.progress_bar import make_progress_bar
+from ..common import chdir
+from ..specs.spec import Spec
+from ..student import process_student
+from ..student.student_result import StudentResult
+from ..toolkit.progress_bar import make_progress_bar
 
 
 def process_students(specs: Dict[str, 'Spec'],

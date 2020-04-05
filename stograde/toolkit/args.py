@@ -13,9 +13,9 @@ from typing import List, Tuple, Dict, Any
 
 from . import global_vars
 from .subcommands import do_ci, do_record, do_table, do_web, do_clean, do_update
-from stograde.specs.download_specs import SPEC_URLS, get_supported_courses
 from .get_students import get_students as load_students_from_file
 from ..common import flatten, version
+from ..specs import get_supported_courses
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 
@@ -129,7 +129,7 @@ def build_argparser():
     parser_web.set_defaults(func=do_web)
     parser_web.add_argument('assignments', nargs=1, metavar='HW',
                             help='An assignment to process')
-    parser_web.add_argument('--port', type=int, dest='server_port', default=25100,
+    parser_web.add_argument('--port', type=int, required=True,
                             help='Set the port for the server to use')
 
     return parser
@@ -208,7 +208,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # web SubCommand
     elif command == 'web':
-        assignments = args['assignments']
+        assignments = natsorted(set(args['assignments']))
         if len(assignments) != 1:
             print('stograde web can only be used with one assignment at a time')
             sys.exit(1)

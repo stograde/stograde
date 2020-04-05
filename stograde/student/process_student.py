@@ -1,9 +1,12 @@
 from typing import Dict, List, TYPE_CHECKING
 
-from . import record_student, analyze_student
-from ..student import checkout_date, clone_student, pull, remove, reset, stash
+from .analyze_student import analyze_student
+from .record_student import record_student
+from ..student import checkout_date, clone_student, remove, reset
+from ..student.pull import pull
+from ..student.stash import stash
 from ..student.student_result import StudentResult
-from ..toolkit.global_vars import CI, DEBUG
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -30,9 +33,9 @@ def process_student(
         prepare_student(student,
                         stogit_url,
                         do_clean=clean,
-                        do_clone=not CI and not skip_repo_update,
-                        do_pull=not CI and not skip_repo_update,
-                        do_checkout=not CI,
+                        do_clone=not global_vars.CI and not skip_repo_update,
+                        do_pull=not global_vars.CI and not skip_repo_update,
+                        do_checkout=not global_vars.CI,
                         date=date)
 
         student_result = StudentResult(name=student)
@@ -54,7 +57,7 @@ def process_student(
         return student_result
 
     except Exception as err:
-        if DEBUG:
+        if global_vars.DEBUG:
             raise err
         else:
             return StudentResult(name=student, error=str(err))

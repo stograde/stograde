@@ -6,11 +6,9 @@ from os import getcwd
 from typing import Dict, TYPE_CHECKING
 
 from .args import process_args
-from stograde.specs.download_specs import create_data_dir
-from stograde.specs.filter_specs import filter_assignments, find_all_specs
 from .find_update import update_available
 from .stogit_url import compute_stogit_url
-from ..specs import load_specs
+from ..specs import create_data_dir, filter_assignments, find_all_specs, load_specs
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec

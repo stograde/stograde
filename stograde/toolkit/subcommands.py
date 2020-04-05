@@ -1,26 +1,20 @@
-import datetime
+from concurrent.futures import as_completed, ProcessPoolExecutor
 import functools
 import logging
 import os
-import sys
-from concurrent.futures._base import as_completed
-from concurrent.futures.process import ProcessPoolExecutor
 from os import makedirs
+import sys
 from threading import Thread
-from typing import Dict, List, Any, TYPE_CHECKING
+from typing import Any, Dict, List, TYPE_CHECKING
 
 from . import global_vars
 from .process_students import process_students
-from .global_vars import DEBUG
 from .progress_bar import make_progress_bar
 from .save_recordings import save_recordings
-from .stogit_url import compute_stogit_url
 from .tabulate import tabulate
 from ..common import chdir
-from ..student.ci_analyze import ci_analyze
-from ..student.process_student import prepare_student, prepare_student_repo
-from ..webapp import server
-from ..webapp.web_cli import is_web_spec, launch_cli
+from ..student import ci_analyze, prepare_student_repo
+from ..webapp import is_web_spec, launch_cli, server
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -74,7 +68,7 @@ def do_record(specs: Dict[str, 'Spec'],
     skip_repo_update: bool = args['skip_repo_update']
     skip_web_compile: bool = args['skip_web_compile']
     sort_by: str = args['sort_by']
-    workers: int = args['workers'] if not DEBUG and not interact else 1
+    workers: int = args['workers'] if not global_vars.DEBUG and not interact else 1
 
     makedirs('./students', exist_ok=True)
 
@@ -113,7 +107,7 @@ def do_table(specs: Dict[str, 'Spec'],
     no_progress_bar: bool = args['no_progress_bar']
     skip_repo_update: bool = args['skip_repo_update']
     sort_by: str = args['sort_by']
-    workers: int = args['workers'] if not DEBUG else 1
+    workers: int = args['workers'] if not global_vars.DEBUG else 1
 
     results: List['StudentResult'] = process_students(specs=specs,
                                                       students=students,

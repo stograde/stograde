@@ -4,7 +4,7 @@ import re
 import sys
 
 from ..common import chdir, run
-from stograde.specs.download_specs import SPEC_URLS
+from ..specs import SPEC_URLS
 
 COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 

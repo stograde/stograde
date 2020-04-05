@@ -3,7 +3,7 @@ import logging
 from ..common import chdir, run
 
 
-def pull(student: str, no_repo_update: bool):
+def pull(student: str, no_repo_update: bool = False):
     logging.debug("Pulling {}'s repository".format(student))
     with chdir(student):
         if not no_repo_update:

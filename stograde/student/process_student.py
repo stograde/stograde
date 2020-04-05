@@ -2,6 +2,7 @@ from typing import Dict, List, TYPE_CHECKING
 
 from ..student import analyze, checkout_date, clone_student, pull, record, remove, reset, stash
 from ..student.student_result import StudentResult
+from ..toolkit.args import CI, DEBUG
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -10,12 +11,9 @@ if TYPE_CHECKING:
 def process_student(
         student: str,
         *,
-        assignments: List[str],
         basedir: str,
-        ci: bool,
         clean: bool,
         date: str,
-        debug: bool,
         interact: bool,
         no_branch_check: bool,
         no_repo_update: bool,
@@ -23,23 +21,24 @@ def process_student(
         skip_web_compile: bool,
         stogit_url: str
 ) -> StudentResult:
-    if clean:
-        remove(student)
-    if not ci:
-        clone_student(student, base_url=stogit_url)
+    assignments: List[str] = list(specs.keys())
 
     try:
-        if not ci:
-            stash(student, no_repo_update=no_repo_update)
-            pull(student, no_repo_update=no_repo_update)
-
-            checkout_date(student, date=date)
+        prepare_student(student,
+                        stogit_url,
+                        do_clean=clean,
+                        do_clone=not CI and not no_repo_update,
+                        do_pull=not CI and not no_repo_update,
+                        do_checkout=not CI,
+                        date=date)
 
         student_result = StudentResult(name=student)
 
-        record(student=student_result, specs=specs, assignments=assignments, basedir=basedir, debug=debug,
-               interact=interact, ci=ci, skip_web_compile=skip_web_compile)
-        analyze(student=student_result, specs=specs, check_for_branches=not no_branch_check, ci=ci)
+        if record:
+            record(student=student_result, specs=specs, assignments=assignments, basedir=basedir, interact=interact, skip_web_compile=skip_web_compile)
+
+        if analyze:
+            analyze(student=student_result, specs=specs, check_for_branches=not no_branch_check)
 
         if student_result.unmerged_branches:
             for result in student_result.results:
@@ -51,7 +50,25 @@ def process_student(
         return student_result
 
     except Exception as err:
-        if debug:
+        if DEBUG:
             raise err
         else:
             return StudentResult(name=student, error=str(err))
+
+
+def prepare_student(student: str,
+                    stogit_url: str,
+                    do_clean: bool,
+                    do_clone: bool,
+                    do_pull: bool,
+                    do_checkout: bool,
+                    date: str = ''):
+    if do_clean:
+        remove(student)
+    if do_clone:
+        clone_student(student, base_url=stogit_url)
+    if do_pull:
+        stash(student)
+        pull(student)
+    if do_checkout:
+        checkout_date(student, date=date)

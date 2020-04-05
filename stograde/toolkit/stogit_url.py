@@ -9,7 +9,7 @@ from ..toolkit.download_specs import SPEC_URLS
 COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 
 
-def compute_stogit_url(*, stogit: str, course: str, _now: datetime.date, **kwargs) -> str:
+def compute_stogit_url(*, stogit: str, course: str, _now: datetime.date) -> str:
     """calculate a default stogit URL, or use the specified one"""
     if stogit:
         return stogit

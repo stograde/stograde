@@ -11,31 +11,45 @@ import re
 import sys
 from typing import List
 
+from .download_specs import SPEC_URLS
 from .get_students import get_students as load_students_from_file
 from ..common import flatten, version
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 
+CI = False
+DEBUG = False
+
 
 def build_argparser():
     """Construct the argument list and parse the passed arguments"""
     parser = argparse.ArgumentParser(description='The core of the StoGrade toolkit')
+    # Common arguments
     parser.add_argument('input_items', nargs='*', metavar='ITEM',
-                        help='A mixed list of students and assignments')
-    parser.add_argument('-v', '--version', action='store_true',
-                        help='print the version of the toolkit')
+                        help='A list of assignments to process')
+    parser.add_argument('--course', default='',
+                        help='Which course to evaluate (this sets a default stogit url). '
+                             'Can be {} or one of the previous with /f## or /s## (i.e. sd/s19)'.format(SPEC_URLS.keys()))   # TODO: Create function to get currently supported courses
+    parser.add_argument('--skip-version-check', action='store_true',
+                        default=getenv('STOGRADE_SKIP_VERSION_CHECK', False) is not False,
+                        help='skips the pypi update check')
     parser.add_argument('--debug', action='store_true',
                         help='enable debugging mode (throw errors, implies -w1)')
-    parser.add_argument('--skip-update-check', action='store_true',
-                        default=getenv('STOGRADE_SKIP_UPDATE_CHECK', False) is not False,
-                        help='skips the pypi update check')
-    parser.add_argument('--ci', action='store_true',
-                        help='Configure for gitlab-ci usage')
+    parser.add_argument('-v', '--version', action='store_true',
+                        help='print the version of the toolkit')
 
-    specs = parser.add_argument_group('control the homework specs')
-    specs.add_argument('--course', default='',
-                       help='Which course to evaluate (this sets a default stogit url). '
-                            'Can be sd, hd, ads, os or one of the previous with /f## or /s## (i.e. sd/s19)')
+    sub_parsers = parser.add_subparsers()
+
+    parser_record = sub_parsers.add_parser('record', help="Record students' work")
+
+    parser_web = sub_parsers.add_parser('web', help='Run the CLI for grading React App files')
+    parser_web.add_argument('--port', type=int, dest='server_port', default=25100,
+                            help='Set the port for the server to use')
+
+    parser_table = sub_parsers.add_parser('table', help='Print an table of the assignments submitted by students')
+
+    parser_ci = sub_parsers.add_parser('ci', help='Check a single student\'s assignment as part of a CI job')
+
 
     selection = parser.add_argument_group('student-selection arguments')
     selection.add_argument('--students', '--student', action='append', nargs='+', metavar='USERNAME', default=[],
@@ -59,8 +73,8 @@ def build_argparser():
                           help='Highlight partial submissions')
     optional.add_argument('--skip-web-compile', action='store_true',
                           help='Skip compilation and testing of files marked with web: true')
-    optional.add_argument('--port', type=int, dest='server_port', default=25100,
-                          help='Set the port for the server to use')
+    # optional.add_argument('--port', type=int, dest='server_port', default=25100,
+    #                       help='Set the port for the server to use')
 
     folder = parser.add_argument_group('student management arguments')
     folder.add_argument('--clean', action='store_true',

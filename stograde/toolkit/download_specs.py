@@ -1,6 +1,7 @@
 from bidict import bidict
 import sys
 
+from .__main__ import CI
 from ..common import chdir, run
 
 SPEC_URLS = bidict({
@@ -25,8 +26,8 @@ def download_specs(course: str, basedir: str) -> str:
         return course
 
 
-def create_data_dir(ci: bool, course: str, basedir: str):
-    if ci:
+def create_data_dir(course: str, basedir: str):
+    if CI:
         if course:
             download_specs(course, basedir)
         else:

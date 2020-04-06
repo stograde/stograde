@@ -7,6 +7,7 @@ from typing import Dict, TYPE_CHECKING
 
 from .args import process_args
 from .find_update import update_available
+from .process_repos import create_students_dir
 from .stogit_url import compute_stogit_url
 from ..specs import create_data_dir, filter_assignments, find_all_specs, load_specs
 
@@ -17,8 +18,9 @@ if TYPE_CHECKING:
 def main():
     base_dir = getcwd()
     args, students, assignments = process_args()
-    course: str = args['course']
+    command: str = args['command']
     command_func = args['func']
+    course: str = args['course']
     skip_version_check: bool = args['skip_version_check']
     stogit: str = args['stogit']
 
@@ -29,12 +31,15 @@ def main():
                    'Try "pip3 install --no-cache --user --upgrade stograde" '
                    'to update.').format(new_version, current_version), file=sys.stderr)
 
-    if not os.path.exists("data"):
+    if not os.path.exists('data'):
         create_data_dir(course, base_dir)
 
     stogit_url = compute_stogit_url(stogit=stogit, course=course, _now=datetime.date.today())
 
-    if args['command'] == 'repo':
+    if not os.path.exists('students') and command != 'ci':
+        create_students_dir(base_dir=base_dir)
+
+    if command == 'repo':
         command_func(students=students,
                      stogit_url=stogit_url,
                      base_dir=base_dir,
@@ -42,7 +47,7 @@ def main():
                      workers=args['workers'])
         sys.exit(0)
 
-    elif args['command'] == 'table':
+    elif command == 'table':
         assignments = [path.split('/')[-1].split('.')[0]
                        for path in find_all_specs(os.path.join(base_dir, 'data', 'specs'))]
 

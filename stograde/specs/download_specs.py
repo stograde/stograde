@@ -39,9 +39,9 @@ def create_data_dir(course: str, basedir: str):
         if course:
             download_specs(course, basedir)
         else:
-            download = input("Download specs? (Y/N)")
+            download = input("Download specs? (Y/N) ")
             if download and download.lower()[0] == "y":
-                repo = input("Which class? (SD/HD/ADS/OS)")
+                repo = input("Which class? (SD/HD/ADS/OS) ")
                 if repo:
                     download_specs(repo, basedir)
                 else:

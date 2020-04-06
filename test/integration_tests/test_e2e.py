@@ -14,7 +14,7 @@ def test_stograde_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['--no-update', '--no-check', '--skip-update-check']
+    sys.argv = [argv[0]] + ['table', '--skip-repo-update', '--skip-spec-update', '--skip-version-check', '--no-partials']
 
     try:
         main()
@@ -37,7 +37,7 @@ def test_stograde_hidden_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['--no-update', '--no-check', '--skip-update-check', '--quiet']
+    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check']
 
     try:
         main()
@@ -56,7 +56,7 @@ def test_stograde_record(datafiles):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['--record=hw1', '--no-update', '--no-check', '--skip-update-check']
+    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check']
 
     try:
         main()

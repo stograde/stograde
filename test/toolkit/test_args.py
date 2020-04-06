@@ -1,50 +1,11 @@
 import datetime
-from stograde.toolkit.args import (
-    build_argparser,
-    get_students_from_args,
-    get_assignments_from_args,
-)
+from stograde.toolkit.args import build_argparser
 
 from stograde.toolkit.stogit_url import compute_stogit_url
 
 
 def args(arglist):
     return vars(build_argparser().parse_args(args=arglist))
-
-
-students = {
-    'my': ['rives'],
-    'section-a': ['student-a'],
-    'section-b': ['student-b'],
-}
-
-
-def test_all():
-    # check that --all includes all students
-    assert get_students_from_args(_all_students=students) == students['my'] + students['section-a'] + students['section-b']
-
-
-def test_students():
-    # multiple sets of --students should wind up as one flattened list
-    assert get_students_from_args(_all_students=students) == ['a', 'b', 'c']
-
-    # it should return a sorted list of student names
-    assert get_students_from_args(_all_students=students) == ['a', 'b', 'c']
-
-    # multiple occurences of the same student should be removed
-    assert get_students_from_args(_all_students=students) == ['a']
-
-    # if no students are given, it should default to the "my" section
-    assert get_students_from_args(_all_students=students) == students['my']
-
-
-def test_section():
-    # "--section $name" should return the students for that section
-    assert get_students_from_args(_all_students=students) == students['section-a']
-
-
-def test_record():
-    assert get_assignments_from_args(**args(['--record', 'hw4'])) == ['hw4']
 
 
 def test_stogit_url_computation():

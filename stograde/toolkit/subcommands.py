@@ -1,4 +1,3 @@
-from concurrent.futures import as_completed, ProcessPoolExecutor
 import functools
 import logging
 import os
@@ -8,8 +7,8 @@ from threading import Thread
 from typing import Any, Dict, List, TYPE_CHECKING
 
 from . import global_vars
+from .process_repos import process_parallel_repos
 from .process_students import process_students
-from .progress_bar import make_progress_bar
 from .save_recordings import save_recordings
 from .tabulate import tabulate
 from ..common import chdir
@@ -135,7 +134,9 @@ def do_web(specs: Dict[str, 'Spec'],
            args: Dict[str, Any]):
     clean: bool = args['clean']
     date: str = args['date']
+    no_progress_bar: bool = args['no_progress_bar']
     skip_repo_update: bool = args['skip_repo_update']
+    workers: int = args['workers'] if not global_vars.DEBUG else 1
     port: int = args['port']
     spec: 'Spec' = list(specs.values())[0]
 
@@ -148,17 +149,20 @@ def do_web(specs: Dict[str, 'Spec'],
     launch_cli(base_dir=base_dir,
                clean=clean,
                date=date,
+               no_progress_bar=no_progress_bar,
                skip_repo_update=skip_repo_update,
                spec=spec,
                stogit_url=stogit_url,
-               students=students)
+               students=students,
+               workers=workers)
 
 
 def do_clean(students: List[str],
              stogit_url: str,
+             base_dir: str,
              no_progress_bar: bool,
              workers: int):
-    with chdir(os.path.join('.', 'students')):
+    with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
             prepare_student_repo,
             stogit_url=stogit_url,
@@ -176,9 +180,10 @@ def do_clean(students: List[str],
 
 def do_update(students: List[str],
               stogit_url: str,
+              base_dir: str,
               no_progress_bar: bool,
               workers: int):
-    with chdir(os.path.join('.', 'students')):
+    with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
             prepare_student_repo,
             stogit_url=stogit_url,
@@ -192,20 +197,3 @@ def do_update(students: List[str],
                                no_progress_bar=no_progress_bar,
                                workers=workers,
                                operation=single_repo)
-
-
-def process_parallel_repos(students: List[str],
-                           no_progress_bar: bool,
-                           workers: int,
-                           operation: functools.partial):
-    if workers > 1:
-        print_progress = make_progress_bar(students, no_progress_bar=no_progress_bar)
-        with ProcessPoolExecutor(max_workers=workers) as pool:
-            futures = [pool.submit(operation, name) for name in students]
-            for future in as_completed(futures):
-                completed_student = future.result()
-                print_progress(completed_student)
-    else:
-        for student in students:
-            logging.debug('Processing {}'.format(student))
-            operation(student)

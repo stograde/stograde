@@ -201,7 +201,7 @@ class S(BaseHTTPRequestHandler):
         pass
 
 
-def run_server(server_class=HTTPServer, handler_class=S, port=25199):
+def run_server(port=25199):
     server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
+    httpd = HTTPServer(server_address, S)
     httpd.serve_forever()

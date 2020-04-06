@@ -2,8 +2,10 @@ from typing import Dict, List, TYPE_CHECKING
 
 from .analyze_student import analyze_student
 from .record_student import record_student
-from ..student import checkout_date, clone_student, remove, reset
+from ..student import checkout_date, clone_student
 from ..student.pull import pull
+from ..student.remove import remove
+from ..student.reset import reset
 from ..student.stash import stash
 from ..student.student_result import StudentResult
 from ..toolkit import global_vars

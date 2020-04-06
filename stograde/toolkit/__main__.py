@@ -37,6 +37,7 @@ def main():
     if args['command'] == 'repo':
         command_func(students=students,
                      stogit_url=stogit_url,
+                     base_dir=base_dir,
                      no_progress_bar=args['no_progress_bar'],
                      workers=args['workers'])
         sys.exit(0)

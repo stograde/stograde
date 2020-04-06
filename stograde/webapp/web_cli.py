@@ -45,10 +45,10 @@ def launch_cli(base_dir: str,
             do_checkout=True,
             date=date)
 
-    process_parallel_repos(students=students,
-                           no_progress_bar=no_progress_bar,
-                           workers=workers,
-                           operation=single_repo)
+        process_parallel_repos(students=students,
+                               no_progress_bar=no_progress_bar,
+                               workers=workers,
+                               operation=single_repo)
 
     while True:
         student = ask_student(usernames)

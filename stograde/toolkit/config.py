@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
-from configparser import ConfigParser
 from appdirs import AppDirs
+from configparser import ConfigParser
+from datetime import datetime, timedelta
 import os
 
 _dirs = AppDirs('stograde', 'StoDevX')

@@ -1,8 +1,16 @@
 from collections import defaultdict
-from stograde.common import group_by as group
+from typing import List, TYPE_CHECKING
+
+from ..common.group_by import group_by as group
+
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 
-def format_collected_data(records, group_by: str, formatter, debug):
+def format_collected_data(student_results: List['StudentResult'],
+                          group_by: str,
+                          formatter,
+                          debug: bool) -> defaultdict:
     """Turn the list of recordings into a list of nicely-formatted results.
 
     `grouped_records` will be a list of pairs: (assignment, recordings), where
@@ -14,17 +22,21 @@ def format_collected_data(records, group_by: str, formatter, debug):
     recording.
     """
 
+    results = []
+    for student in student_results:
+        results.extend(student.results)
+
     if group_by == 'assignment':
-        grouped_records = group(records, lambda rec: rec.get('spec', None))
+        grouped_records = group(results, lambda rec: rec.spec_id)
     elif group_by == 'student':
-        grouped_records = group(records, lambda rec: rec.get('student', None))
+        grouped_records = group(results, lambda rec: rec.student)
     else:
         # not entirely sure what this'll do
-        grouped_records = records
+        grouped_records = results
 
-    results = defaultdict(list)
+    student_results = defaultdict(list)
     for key, recordings in grouped_records:
         for content in recordings:
-            results[key].append(formatter(content, debug=debug))
+            student_results[key].append(formatter(content, debug=debug))
 
-    return results
+    return student_results

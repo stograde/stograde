@@ -1,8 +1,7 @@
+from bidict import bidict
 import sys
 
-from bidict import bidict
-
-from stograde.common import run, chdir
+from ..common import chdir, run
 
 SPEC_URLS = bidict({
     'sd': 'https://github.com/StoDevX/cs251-specs.git',
@@ -12,7 +11,7 @@ SPEC_URLS = bidict({
 })
 
 
-def download_specs(course, basedir):
+def download_specs(course: str, basedir: str) -> str:
     course = course.split("/")[0].lower()
     try:
         url = SPEC_URLS[course]
@@ -26,7 +25,7 @@ def download_specs(course, basedir):
         return course
 
 
-def create_data_dir(ci, course, basedir):
+def create_data_dir(ci: bool, course: str, basedir: str):
     if ci:
         if course:
             download_specs(course, basedir)

@@ -1,4 +1,5 @@
-from stograde.student.markdownify.cat import cat
+from stograde.common.cat import cat
+from stograde.common.run_status import RunStatus
 
 
 def test_cat(fs):
@@ -7,11 +8,11 @@ def test_cat(fs):
     fs.create_file(filename, contents=contents)
 
     result = cat(filename)
-    assert result[0] == 'success'
+    assert result[0] == RunStatus.SUCCESS
     assert result[1] == contents
 
 
 def test_cat_missing(fs):
     result = cat('file.txt')
-    assert result[0] == 'failure'
-    assert result[1] is None
+    assert result[0] == RunStatus.FILE_NOT_FOUND
+    assert result[1] == ''

@@ -1,7 +1,7 @@
 import os
 
 
-def dirsize(path='.'):
+def dirsize(path: str = '.') -> int:
     """Get the size of a folder (including descendants)"""
     total_size = 0
     for dirpath, _, filenames in os.walk(path):

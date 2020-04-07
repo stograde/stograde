@@ -1,18 +1,26 @@
-import subprocess
 import copy
-import pty
 import io
 import os
+import pty
+import subprocess
+from typing import List, Optional, Tuple
+
+from ..common.run_status import RunStatus
 
 
-def run(cmd, *, interact=False, **kwargs):
+def run(cmd: List[str],
+        *,
+        interact: bool = False,
+        input_data: Optional[bytes] = None,
+        timeout: Optional[float] = None) -> Tuple[RunStatus, str, bool]:
     if interact:
         return run_interactive(cmd)
-    return run_static(cmd, **kwargs)
+    else:
+        return run_static(cmd, input_data, timeout)
 
 
-def run_interactive(cmd):
-    status = 'success'
+def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
+    status = RunStatus.SUCCESS
     result = None
 
     print('Recording {}. Send EOF (^D) to end.'.format(cmd), end='\n\n')
@@ -37,10 +45,12 @@ def run_interactive(cmd):
     runagain = input('Do you want to run the submission again? [y/N]: ')
     again = runagain.lower().startswith('y')
 
-    return (status, result, again)
+    return status, result, again
 
 
-def run_static(cmd, input_data=None, timeout=None):
+def run_static(cmd: List[str],
+               input_data: Optional[bytes] = None,
+               timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
     status = 'success'
     try:
         result = subprocess.run(
@@ -66,7 +76,7 @@ def run_static(cmd, input_data=None, timeout=None):
 
     except ProcessLookupError as err:
         try:
-            status, result = run(cmd, input_data=input_data, timeout=timeout)
+            status, result, _ = run(cmd, input_data=input_data, timeout=timeout)
         except:
             status = 'process lookup error'
             result = str(err)
@@ -80,7 +90,7 @@ def run_static(cmd, input_data=None, timeout=None):
     except UnicodeDecodeError:
         result = str(result, 'cp437')
 
-    return (status, result, False)
+    return status, result, False
 
 
 # This is to catch glibc errors, because it prints to /dev/tty

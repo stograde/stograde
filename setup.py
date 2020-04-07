@@ -4,6 +4,20 @@ from setuptools import setup, find_packages
 if sys.version_info < (3, 5):
     sys.exit("The toolkit requires Python 3.5 or greater.\nYou have {}".format(sys.version_info))
 
+install_requires = [
+    'PyYAML==5.*',
+    'requests >= 2.20.*',
+    'termcolor == 1.*',
+    'natsort==7.0.*',
+    'appdirs == 1.4.*',
+    'python-dateutil == 2.7.*',
+    'PyInquirer == 1.0.*',
+    'bidict == 0.19.*',
+]
+
+if sys.version_info < (3, 7):
+    install_requires.append('dataclasses >= 0.6')
+
 setup(
     name='stograde',
     version='3.2.0',
@@ -35,16 +49,7 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     keywords='stolaf course-tooling',
-    install_requires=[
-        'PyYAML==5.*',
-        'requests >= 2.20.*',
-        'termcolor == 1.*',
-        'natsort==7.0.*',
-        'appdirs == 1.4.*',
-        'python-dateutil == 2.7.*',
-        'PyInquirer == 1.0.*',
-        'bidict == 0.19.*',
-    ],
+    install_requires=install_requires,
     tests_require=['tox'],
     packages=find_packages(exclude=['tests', 'docs']),
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html

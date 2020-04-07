@@ -1,9 +1,13 @@
-import os
 import logging
+import os
+from typing import List, TYPE_CHECKING
 
-from stograde.formatters import format_collected_data, markdown, gist
 from .gist import post_gist
 from .tabulate import asciiify
+from ..formatters import format_collected_data, markdown
+
+if TYPE_CHECKING:
+    from ..student.student_result import StudentResult
 
 
 def record_recording_to_disk(results, file_identifier):
@@ -37,31 +41,22 @@ def send_recording_to_gist(table, results, assignment):
     return post_gist('log for ' + assignment, files)
 
 
-def save_recordings(records, debug=False):
+def save_recordings(results: List['StudentResult'],
+                    table: str,
+                    debug: bool = False,
+                    gist: bool = False):
     """Take the list of recordings, group by assignment, then save to disk"""
 
-    results = format_collected_data(records,
-                                    group_by='assignment',
-                                    formatter=markdown,
-                                    debug=debug)
+    result_dict = format_collected_data(results,
+                                        group_by='assignment',
+                                        formatter=markdown,
+                                        debug=debug)
 
-    for assignment, content in results.items():
+    for assignment, content in result_dict.items():
         logging.debug("Saving recording for {}".format(assignment))
-        record_recording_to_disk(content, assignment)
-
-
-def gist_recordings(records, table, debug=False):
-    """Take the list of recordings, group by assignment, then post to a private gist"""
-
-    results = format_collected_data(records,
-                                    group_by='assignment',
-                                    formatter=gist,
-                                    debug=debug)
-
-    for assignment, content in results.items():
-        logging.debug("Saving recording for {}".format(assignment))
-
-        # clean up the table and make it plain ascii
-        table = asciiify(table)
-        url = send_recording_to_gist(table, content, assignment)
-        print(assignment, 'results are available at', url)
+        if gist:
+            table = asciiify(table)
+            url = send_recording_to_gist(table, content, assignment)
+            print(assignment, 'results are available at', url)
+        else:
+            record_recording_to_disk(content, assignment)

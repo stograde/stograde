@@ -12,7 +12,7 @@ SPEC_URLS = bidict({
 })
 
 
-def download_specs(course: str, basedir: str) -> str:
+def download_specs(course: str, basedir: str):
     course = course.split("/")[0].lower()
     try:
         url = SPEC_URLS[course]
@@ -23,7 +23,6 @@ def download_specs(course: str, basedir: str) -> str:
         print('Downloading specs for {}'.format(course.upper()))
         run(['git', 'clone', url, 'data'])
         print('Download complete')
-        return course
 
 
 def create_data_dir(course: str, basedir: str):
@@ -39,7 +38,7 @@ def create_data_dir(course: str, basedir: str):
         if course:
             download_specs(course, basedir)
         else:
-            download = input("Download specs? (Y/N) ")
+            download = input("Download specs? (y/N) ")
             if download and download.lower()[0] == "y":
                 repo = input("Which class? (SD/HD/ADS/OS) ")
                 if repo:
@@ -47,6 +46,7 @@ def create_data_dir(course: str, basedir: str):
                 else:
                     sys.exit(1)
             else:
+                print('Not downloading specs')
                 sys.exit(1)
 
 

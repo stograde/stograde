@@ -1,36 +1,49 @@
 import logging
 from os import path
-from stograde.common import chdir
-from stograde.student.markdownify import markdownify
+from typing import Dict, List, TYPE_CHECKING
+
+from ..common import chdir
+from ..process_assignment.process_assignment import process_assignment
+from ..process_assignment.record_result import RecordResult
+from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
+    from ..student.student_result import StudentResult
 
 
-def record(student, *, specs, to_record, basedir, debug, interact, ci, skip_web_compile):
-    recordings = []
-    if not to_record:
-        return recordings
+def record(*,
+           student: 'StudentResult',
+           specs: Dict[str, 'Spec'],
+           assignments: List[str],
+           basedir: str,
+           debug: bool,
+           interact: bool,
+           ci: bool,
+           skip_web_compile: bool):
+    results = []
+    if assignments:
+        directory = student.name if not ci else '.'
+        with chdir(directory):
+            find_unmerged_branches(student)
 
-    directory = student if not ci else '.'
-    with chdir(directory):
-        for one_to_record in to_record:
-            logging.debug("Recording {}'s {}".format(student, one_to_record))
-            if path.exists(one_to_record):
-                with chdir(one_to_record):
-                    recording = markdownify(one_to_record,
-                                            username=student,
-                                            spec=specs[one_to_record],
-                                            basedir=basedir,
-                                            debug=debug,
-                                            interact=interact,
-                                            ci=ci,
-                                            skip_web_compile=skip_web_compile)
-            else:
-                recording = {
-                    'spec': one_to_record,
-                    'student': student,
-                    'first_submit': "",
-                    'warnings': {'no submission': True},
-                }
+            for _, spec in specs.items():
+                if spec.id in assignments:
+                    logging.debug("Recording {}'s {}".format(student.name, spec.id))
+                    if path.exists(spec.folder):
+                        with chdir(spec.folder):
+                            assignment_result = process_assignment(student=student,
+                                                                   spec=spec,
+                                                                   basedir=basedir,
+                                                                   debug=debug,
+                                                                   interact=interact,
+                                                                   ci=ci,
+                                                                   skip_web_compile=skip_web_compile)
+                    else:
+                        assignment_result = RecordResult(spec_id=spec.id,
+                                                         student=student.name)
+                        assignment_result.warnings.assignment_missing = True
 
-            recordings.append(recording)
+                    results.append(assignment_result)
 
-    return recordings
+    student.results = results

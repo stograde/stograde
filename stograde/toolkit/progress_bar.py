@@ -1,5 +1,5 @@
-import sys
 from shutil import get_terminal_size
+import sys
 
 CHAR = '·' if sys.stderr.encoding == 'UTF-8' else '='
 

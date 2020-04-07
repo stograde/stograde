@@ -1,7 +1,6 @@
-from stograde.common import chdir
-from stograde.common import run
+from ..common import chdir, run
 
 
-def reset(student):
+def reset(student: str):
     with chdir(student):
         run(['git', 'checkout', 'master', '--quiet', '--force'])

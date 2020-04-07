@@ -27,7 +27,7 @@ def test_stograde_table(datafiles, capsys):
                                   "USER      | 1 | 1 | 1\n"
                                   "----------+---+---+--\n"
                                   "rives     | - | - | -\n"
-                                  "student2  | 1 | 1 | -\n")
+                                  "student2  | 1 | 1 | -\n\n")
 
     sys.argv = argv
 
@@ -52,7 +52,7 @@ def test_stograde_hidden_table(datafiles, capsys):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
-def test_stograde_record(datafiles, capsys):
+def test_stograde_record(datafiles):
     os.chdir(str(datafiles))
 
     argv = sys.argv
@@ -62,14 +62,6 @@ def test_stograde_record(datafiles, capsys):
         main()
     except SystemExit:
         pass
-
-    out, err = capsys.readouterr()
-
-    assert out == textwrap.dedent("\n"
-                                  "USER      | 1 | 1 | 1\n"
-                                  "----------+---+---+--\n"
-                                  "rives     | - | - | -\n"
-                                  "student2  | 1 | 1 | -\n")
 
     assert (datafiles / 'logs' / 'log-hw1.md').isfile()
 

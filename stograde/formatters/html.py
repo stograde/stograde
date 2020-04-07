@@ -1,5 +1,5 @@
-import traceback
 import html
+import traceback
 
 
 def format_assignment_html(recording, debug=False):

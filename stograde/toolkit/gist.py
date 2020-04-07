@@ -1,6 +1,6 @@
 """Post a private gist of the analysis to github's gist service"""
-import json
 import getpass
+import json
 import requests
 __all__ = ['post_gist']
 

@@ -1,10 +1,10 @@
 import logging
+from typing import Optional
 
-from stograde.common import chdir
-from stograde.common import run
+from ..common import chdir, run
 
 
-def checkout_date(student, date=None):
+def checkout_date(student: str, date: Optional[str] = None):
     if date:
         logging.debug("Checking out commits in {}'s repository before {}".format(student, date))
         with chdir(student):
@@ -12,6 +12,6 @@ def checkout_date(student, date=None):
             run(['git', 'checkout', rev, '--force', '--quiet'])
 
 
-def checkout_ref(student, ref):
+def checkout_ref(student: str, ref: str):
     with chdir(student):
         run(['git', 'checkout', ref, '--force', '--quiet'])

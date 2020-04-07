@@ -1,35 +1,40 @@
 import os
 import logging
 import sys
+from typing import List, TYPE_CHECKING
 
-from stograde.common import run
+from ..common.run import run
+
+if TYPE_CHECKING:
+    from ..specs.spec import Spec
 
 
-def get_filenames(spec):
+def get_filenames(spec: 'Spec') -> List[str]:
     """returns the list of files from an assignment spec"""
-    return [file['filename'] for file in spec['files'] if not file['options'].get('optional', False)]
+    return [file.file_name for file in spec.files if not file.options.optional]
 
 
-def check_dependencies(spec):
-    for filepath in spec.get('dependencies', []):
+def check_dependencies(spec: 'Spec'):
+    for filepath in spec.dependencies:
         try:
             os.stat(filepath)
         except FileNotFoundError:
-            logging.warning('spec {}: required file "{}" could not be found'.format(spec['assignment'], filepath))
+            logging.warning('spec {}: required file "{}" could not be found'.format(spec.id, filepath))
 
 
-def check_architecture(assignment, spec, ci):
+def check_architecture(spec: 'Spec', ci: bool) -> bool:
     # get check_architecture()
-    _, arch, _ = run(['uname', '-m'])
-    arch = arch.rstrip()
-    spec_arch = spec.get('architecture', None)
-    if spec_arch is None or spec_arch == arch:
+    _, user_arch, _ = run(['uname', '-m'])
+    user_arch = user_arch.rstrip()
+    spec_arch = spec.architecture
+
+    if spec_arch is None or spec_arch == user_arch:
         return True
     else:
         if ci:
-            logging.info('Skipping {}: wrong architecture'.format(assignment))
+            logging.info('Skipping {}: wrong architecture'.format(spec.id))
         else:
             print('{} requires {} architecture. You have {}'
-                  .format(assignment, spec['architecture'], arch),
+                  .format(spec.id, spec.architecture, user_arch),
                   file=sys.stderr)
         return False

@@ -14,13 +14,20 @@ if TYPE_CHECKING:
 
 def filter_assignments(assignments: List[str]) -> List[str]:
     """Removes any assignments ignored by a .stogradeignore file"""
-    filtered_assignments = set(assignments)
+    if not global_vars.CI:
+        return assignments
+    else:
+        filtered_assignments = set(assignments)
 
-    if global_vars.CI:
         ignored_assignments = load_stogradeignore()
+
+        for assignment in ignored_assignments:
+            if assignment in filtered_assignments:
+                logging.info('Skipping {}: ignored by stogradeignore'.format(assignment))
+
         filtered_assignments = filtered_assignments.difference(ignored_assignments)
 
-    return list(filtered_assignments)
+        return list(filtered_assignments)
 
 
 def get_spec_paths(wanted_specs: List[str], spec_dir: str) -> List[str]:

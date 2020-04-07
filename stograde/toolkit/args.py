@@ -8,7 +8,7 @@ from natsort import natsorted
 import os
 import re
 import sys
-from typing import List, Tuple, Dict, Any
+from typing import Any, Dict, List, Tuple
 
 from . import global_vars
 from .get_students import get_students as load_students_from_file
@@ -183,7 +183,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         print('version', version)
         sys.exit(0)
 
-    global_vars.DEBUG = args.get('debug', default=False)
+    global_vars.DEBUG = args.get('debug', False)
     logging.basicConfig(level=logging.DEBUG if global_vars.DEBUG else logging.WARNING)
 
     command: str = args['command']

@@ -126,7 +126,7 @@ def format_file_compilation(compilations: List[CompileResult]) -> str:
         command = '`{command}`'.format(command=compile_result.command)
 
         if not output:
-            result.append('**no warnings: {}**\n'.format(command))
+            result.append('**no warnings: {}**\n\n'.format(command))
         else:
             result.append('**warnings: {}**\n'.format(command))
             result.append('```\n' + output + '\n```\n')
@@ -137,12 +137,15 @@ def format_file_compilation(compilations: List[CompileResult]) -> str:
 def format_file_results(test_results: List[TestResult]) -> str:
     """Add header and markdown code block to test outputs"""
 
-    result = ''
+    result = []
     for test in test_results:
         header = '**results of `{command}`** (status: {status})\n'.format(command=test.command,
                                                                           status=test.status)
-        result += header + '\n```\n' + test.output + '\n```'
-        if test.truncated:
-            result += '\n' + '(truncated after {})'.format(test.truncated_after)
+        if test.output:
+            result.append(header + '\n```\n' + test.output + '\n```\n')
+            if test.truncated:
+                result[-1] += '\n' + '(truncated after {})'.format(test.truncated_after)
+        else:
+            result.append(header)
 
-    return result
+    return '\n'.join(result)

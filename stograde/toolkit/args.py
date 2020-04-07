@@ -139,10 +139,10 @@ def get_students(args: Dict[str, Any]) -> List[str]:
     Anything on the command line will override using the file"""
     sections = args['sections']
     students = args['students']
-    _all_students = load_students_from_file()
 
     people = [student for group in students for student in group]
     if not people:
+        _all_students = load_students_from_file()
         if sections:
             collected = []
             for section_name in sections:
@@ -224,6 +224,11 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     else:
         print('Sub-command must be specified')
+        sys.exit(1)
+
+    if not students:
+        print('No students selected\n'
+              'Is your students.txt missing?')
         sys.exit(1)
 
     debug_print_args(args)

@@ -2,7 +2,6 @@ from concurrent.futures import as_completed, ProcessPoolExecutor
 import functools
 import logging
 import os
-from os import makedirs
 from typing import List
 
 from ..toolkit.progress_bar import make_progress_bar
@@ -26,4 +25,4 @@ def process_parallel_repos(students: List[str],
 
 
 def create_students_dir(base_dir: str):
-    makedirs(os.path.join(base_dir, 'students'), exist_ok=True)
+    os.makedirs(os.path.join(base_dir, 'students'), exist_ok=True)

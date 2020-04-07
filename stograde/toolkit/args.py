@@ -6,14 +6,13 @@ import logging
 from logging import warning, debug
 from natsort import natsorted
 import os
-from os import cpu_count, getenv
 import re
 import sys
 from typing import List, Tuple, Dict, Any
 
 from . import global_vars
-from .subcommands import do_ci, do_record, do_table, do_web, do_clean, do_update
 from .get_students import get_students as load_students_from_file
+from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
 from ..common import flatten, version
 from ..specs import get_supported_courses
 
@@ -30,13 +29,13 @@ def build_argparser():
 
     base_options = argparse.ArgumentParser(description='common options')
     base_options.add_argument('--skip-version-check', '-V', action='store_true',
-                              default=getenv('STOGRADE_SKIP_VERSION_CHECK', False) is not False,
+                              default=os.getenv('STOGRADE_SKIP_VERSION_CHECK', False) is not False,
                               help='skips the pypi update check')
     base_options.add_argument('--debug', action='store_true',
                               help='enable debugging mode (throw errors, implies -w1)')
     base_options.add_argument('--no-progress-bar', action='store_true',
                               help='Hide the progress bar')
-    base_options.add_argument('--workers', '-w', type=int, default=cpu_count(), metavar='N',
+    base_options.add_argument('--workers', '-w', type=int, default=os.cpu_count(), metavar='N',
                               help='The number of operations to perform in parallel')
 
     # Repository url modifiers
@@ -167,7 +166,7 @@ def get_students(args: Dict[str, Any]) -> List[str]:
 
 
 def get_ci_assignments() -> List[str]:
-    """Add assignments found in the student's repository during a CI job"""
+    """Find assignments in the student's repository during a CI job"""
     all_assignments: List[str] = []
     dirs = glob('hw*') + glob('lab*') + glob('ws*')
     for line in dirs:
@@ -183,6 +182,9 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     if args['version']:
         print('version', version)
         sys.exit(0)
+
+    global_vars.DEBUG = args.get('debug', default=False)
+    logging.basicConfig(level=logging.DEBUG if global_vars.DEBUG else logging.WARNING)
 
     command: str = args['command']
 
@@ -223,9 +225,6 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     else:
         print('Sub-command must be specified')
         sys.exit(1)
-
-    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING)
-    global_vars.DEBUG = args['debug']
 
     debug_print_args(args)
     debug_print_students(students)

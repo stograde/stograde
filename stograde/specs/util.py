@@ -4,7 +4,7 @@ import sys
 from typing import List, TYPE_CHECKING
 
 from ..common.run import run
-from ..toolkit.global_vars import CI
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -31,7 +31,7 @@ def check_architecture(spec: 'Spec') -> bool:
     if spec_arch is None or spec_arch == user_arch:
         return True
     else:
-        if CI:
+        if global_vars.CI:
             logging.info('Skipping {}: wrong architecture'.format(spec.id))
         else:
             print('{} requires {} architecture. You have {}'

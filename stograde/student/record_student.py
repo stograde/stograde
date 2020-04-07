@@ -6,7 +6,7 @@ from ..common import chdir
 from ..process_assignment.process_assignment import process_assignment
 from ..process_assignment.record_result import RecordResult
 from ..process_assignment.warning_unmerged_branches import find_unmerged_branches
-from ..toolkit.global_vars import CI
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -22,7 +22,7 @@ def record_student(*,
                    skip_web_compile: bool):
     results = []
     if assignments:
-        directory = student.name if not CI else '.'
+        directory = student.name if not global_vars.CI else '.'
         with chdir(directory):
             find_unmerged_branches(student)
 

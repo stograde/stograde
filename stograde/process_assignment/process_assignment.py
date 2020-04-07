@@ -8,7 +8,7 @@ from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
 from ..common import check_dates
 from ..process_file import process_file
-from ..toolkit.global_vars import CI, DEBUG
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -26,7 +26,7 @@ def process_assignment(*,
     try:
         first_submit = ''
 
-        if not CI:
+        if not global_vars.CI:
             first_date = check_dates(spec, cwd)
             first_submit = "First Submission for {}: {}".format(spec.id, first_date)
 
@@ -54,7 +54,7 @@ def process_assignment(*,
         return result
 
     except Exception as err:
-        if DEBUG:
+        if global_vars.DEBUG:
             raise err
         else:
             return RecordResult(student=student.name,

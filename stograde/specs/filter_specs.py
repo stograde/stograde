@@ -4,9 +4,9 @@ import sys
 from glob import iglob
 from typing import Dict, List, TYPE_CHECKING
 
+from .stogradeignore import load_stogradeignore
 from ..specs.util import check_architecture, check_dependencies
-from ..toolkit.global_vars import CI
-from ..toolkit.stogradeignore import load_stogradeignore
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from stograde.specs.spec import Spec
@@ -16,7 +16,7 @@ def filter_assignments(assignments: List[str]) -> List[str]:
     """Removes any assignments ignored by a .stogradeignore file"""
     filtered_assignments = set(assignments)
 
-    if CI:
+    if global_vars.CI:
         ignored_assignments = load_stogradeignore()
         filtered_assignments = filtered_assignments.difference(ignored_assignments)
 

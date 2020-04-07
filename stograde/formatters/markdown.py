@@ -7,7 +7,7 @@ from ..process_assignment.submission_warnings import SubmissionWarnings
 from ..process_file.compile_result import CompileResult
 from ..process_file.file_result import FileResult
 from ..process_file.test_result import TestResult
-from ..toolkit.global_vars import DEBUG
+from ..toolkit import global_vars
 
 
 def format_assignment_markdown(result: RecordResult) -> Dict:
@@ -25,7 +25,7 @@ def format_assignment_markdown(result: RecordResult) -> Dict:
         output = (header + files) + '\n\n'
 
     except Exception as err:
-        if DEBUG:
+        if global_vars.DEBUG:
             raise err
         output = indent(traceback.format_exc(), ' ' * 4) + '\n\n'
 

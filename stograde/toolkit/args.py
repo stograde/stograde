@@ -192,7 +192,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     if command == 'ci':
         assignments = get_ci_assignments()
         students = [os.environ['CI_PROJECT_NAME']]
-        args['course'] = args.get('course', default=os.environ['CI_PROJECT_NAMESPACE'])
+        args['course'] = os.environ['CI_PROJECT_NAMESPACE']
 
     # record SubCommand
     elif command == 'record':

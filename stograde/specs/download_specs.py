@@ -2,7 +2,7 @@ from bidict import bidict
 import sys
 
 from ..common import chdir, run
-from ..toolkit.global_vars import CI
+from ..toolkit import global_vars
 
 SPEC_URLS = bidict({
     'sd': 'https://github.com/StoDevX/cs251-specs.git',
@@ -27,7 +27,7 @@ def download_specs(course: str, basedir: str) -> str:
 
 
 def create_data_dir(course: str, basedir: str):
-    if CI:
+    if global_vars.CI:
         if course:
             download_specs(course, basedir)
         else:

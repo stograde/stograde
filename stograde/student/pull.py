@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from ..common import chdir, run
 from ..common.run_status import RunStatus
@@ -11,4 +12,5 @@ def pull(student: str):
 
     if status is RunStatus.CALLED_PROCESS_ERROR and 'not a git repository' in output:
         print('Student directory {} not a git repository\n'
-              'Try running "stograde repo reclone"'.format(student))
+              'Try running "stograde repo reclone"'.format(student),
+              file=sys.stderr)

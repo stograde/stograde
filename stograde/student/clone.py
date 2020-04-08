@@ -22,5 +22,6 @@ def clone_url(url: str, into: str = None):
     logging.debug(output)
     if status is RunStatus.CALLED_PROCESS_ERROR and 'Permission denied' in output:
         print('Permission denied when cloning from {}.\n'
-              'Make sure the SSH key for this terminal is registered with StoGit.'.format(url))
+              'Make sure that this SSH key is registered with StoGit.'.format(url),
+              file=sys.stderr)
         sys.exit(1)

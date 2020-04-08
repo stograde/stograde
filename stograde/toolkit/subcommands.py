@@ -25,7 +25,6 @@ def do_ci(specs: Dict[str, 'Spec'],
           base_dir: str,
           stogit_url: str,
           args: Dict[str, Any]):
-    global_vars.CI = True
     skip_web_compile: bool = args['skip_web_compile']
 
     results: List['StudentResult'] = process_students(specs=specs,

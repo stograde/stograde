@@ -31,7 +31,7 @@ def build_argparser():
     base_options.add_argument('--skip-version-check', '-V', action='store_true',
                               default=os.getenv('STOGRADE_SKIP_VERSION_CHECK', False) is not False,
                               help='Skips the pypi update check')
-    base_options.add_argument('--skip-dependency-check',
+    base_options.add_argument('--skip-dependency-check', action='store_true',
                               help='Skip checking for dependencies')
     base_options.add_argument('--debug', action='store_true',
                               help='Enable debugging mode (throw errors, implies -w1)')

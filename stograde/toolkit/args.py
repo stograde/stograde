@@ -25,14 +25,16 @@ def build_argparser():
 
     # Common arguments
     parser.add_argument('-v', '--version', action='store_true',
-                        help='print the version of the toolkit and exit')
+                        help='Print the version of the toolkit and exit')
 
     base_options = argparse.ArgumentParser(description='common options')
     base_options.add_argument('--skip-version-check', '-V', action='store_true',
                               default=os.getenv('STOGRADE_SKIP_VERSION_CHECK', False) is not False,
-                              help='skips the pypi update check')
+                              help='Skips the pypi update check')
+    base_options.add_argument('--skip-dependency-check', action='store_true',
+                              help='Skip checking for dependencies')
     base_options.add_argument('--debug', action='store_true',
-                              help='enable debugging mode (throw errors, implies -w1)')
+                              help='Enable debugging mode (throw errors, implies -w1)')
     base_options.add_argument('--no-progress-bar', action='store_true',
                               help='Hide the progress bar')
     base_options.add_argument('--workers', '-w', type=int, default=os.cpu_count(), metavar='N',
@@ -55,7 +57,7 @@ def build_argparser():
     record_options.add_argument('--skip-repo-update', '-R', action='store_true',
                                 help='Do not update the student folders when checking')
     record_options.add_argument('--skip-spec-update', '-S', action='store_true',
-                                help='skip checking for spec updates')
+                                help='Skip checking for spec updates')
     record_options.add_argument('--date', action='store', metavar='GIT_DATE',
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
@@ -75,17 +77,17 @@ def build_argparser():
                                     choices=['name', 'count'],
                                     help='Sort the students table')
     table_options_args.add_argument('--no-partials', '-P', action='store_true',
-                                    help='Don\'t highlight partial submissions')
+                                    help="Don't highlight partial submissions")
 
     # SubParsers
     sub_parsers = parser.add_subparsers(dest='command')
 
     # CI SubParser
-    parser_ci = sub_parsers.add_parser('ci', help='Check a single student\'s assignment as part of a CI job')
+    parser_ci = sub_parsers.add_parser('ci', help="Check a single student's assignment as part of a CI job")
     parser_ci.set_defaults(func=do_ci)
 
     # Record SubParser
-    parser_record = sub_parsers.add_parser('record', help='Record students\' work',
+    parser_record = sub_parsers.add_parser('record', help="Record students' work",
                                            parents=[base_options, record_options, repo_selection, table_options,
                                                     student_selection],
                                            conflict_handler='resolve')

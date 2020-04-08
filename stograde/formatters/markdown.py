@@ -44,13 +44,9 @@ def format_files_list(files) -> str:
 def format_header(result: RecordResult, warnings: str) -> str:
     """Format the header for the section of the log file"""
 
-    try:
-        header = '# {spec} – {student}\n{first_submit}\n'.format(spec=result.spec_id,
-                                                                 student=result.student,
-                                                                 first_submit=result.first_submission)
-    except KeyError:
-        header = '# {spec} – {student}\n'.format(spec=result.spec_id,
-                                                 student=result.student)
+    header = '# {spec} – {student}\n{first_submit}\n'.format(spec=result.spec_id,
+                                                             student=result.student,
+                                                             first_submit=result.first_submission)
 
     if warnings:
         header += '\n' + warnings + '\n'

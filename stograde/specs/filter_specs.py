@@ -5,7 +5,7 @@ from glob import iglob
 from typing import Dict, List, TYPE_CHECKING
 
 from .stogradeignore import load_stogradeignore
-from ..specs.util import check_architecture, check_dependencies
+from ..specs.util import check_architecture, check_spec_dependencies
 from ..toolkit import global_vars
 
 if TYPE_CHECKING:
@@ -56,7 +56,7 @@ def filter_loaded_specs(specs: Dict[str, 'Spec']) -> Dict[str, 'Spec']:
     for spec_id in specs.keys():
         spec_to_use = specs[spec_id]
         try:
-            check_dependencies(spec_to_use)
+            check_spec_dependencies(spec_to_use)
             if not check_architecture(spec_to_use):
                 continue
         except KeyError:

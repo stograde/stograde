@@ -6,6 +6,7 @@ from os import getcwd
 from typing import Dict, TYPE_CHECKING
 
 from .args import process_args
+from .check_dependencies import check_dependencies
 from .find_update import update_available
 from .process_repos import create_students_dir
 from .stogit_url import compute_stogit_url
@@ -21,6 +22,7 @@ def main():
     command: str = args['command']
     command_func = args['func']
     course: str = args['course']
+    skip_dependency_check: bool = args['skip_dependency_check']
     skip_version_check: bool = args['skip_version_check']
     stogit: str = args['stogit']
 
@@ -30,6 +32,9 @@ def main():
             print(('v{} is available: you have v{}. '
                    'Try "pip3 install --no-cache --user --upgrade stograde" '
                    'to update.').format(new_version, current_version), file=sys.stderr)
+
+    if not skip_dependency_check:
+        check_dependencies()
 
     if not os.path.exists('data'):
         create_data_dir(course, base_dir)

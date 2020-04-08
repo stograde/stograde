@@ -86,18 +86,3 @@ Which class? (SD/HD/ADS/OS)
 ``` 
 
 Once you have selected a class, it will download the specs and start to clone the student repos.
-
-## Common Pitfalls
-
-### SSH Key
-
-The terminal you are using must have the SSH key at `~/.ssh/id_rsa.pub` registered with StoGit.
-Otherwise you will get `[Errno 2] No such file or directory: '...'` in each line of the chart.
-If your terminal doesn't have an SSH key yet, you can create one with `ssh-keygen`.
-Leave the prompts blank to add a SSH key in the default location (`~/.ssh/id_rsa.pub`) and with no password.
-
-### Trusted Source
-
-If this is the first time you are cloning a repo from StoGit, git/ssh will try to ask you if you want to trust the source (which kinda messes up the toolkit).
-Try downloading one of your own repos separately and respond with `yes` to the prompt.
-This should then register StoGit as a trusted source and it won't ask again, allowing the toolkit to work properly.

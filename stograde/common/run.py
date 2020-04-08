@@ -52,8 +52,10 @@ def run_static(cmd: List[str],
                input_data: Optional[bytes] = None,
                timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
     status = RunStatus.SUCCESS
+    result = ''
+
     try:
-        result = subprocess.run(
+        proc_result = subprocess.run(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -61,6 +63,12 @@ def run_static(cmd: List[str],
             input=input_data,
             env=copy_env(),
             check=True)
+
+        if hasattr(proc_result, 'stdout'):
+            result = proc_result.stdout
+
+        # if hasattr(proc_result, 'stderr'):
+        #     if str(proc_result.stderr)
 
     except subprocess.CalledProcessError as err:
         status = RunStatus.CALLED_PROCESS_ERROR
@@ -80,9 +88,6 @@ def run_static(cmd: List[str],
         except:
             status = RunStatus.PROCESS_LOOKUP_ERROR
             result = str(err)
-
-    if hasattr(result, 'stdout'):
-        result = result.stdout
 
     try:
         if not isinstance(result, str):

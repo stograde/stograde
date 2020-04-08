@@ -23,7 +23,7 @@ For more details, take a look at the documentation pages for:
 - [Grading React App Files with `stograde web`](docs/WEB.md)
 - [Managing Student Repositories with `stograde repo`](docs/REPO.md)
 - [Using StoGrade in a GitLab CI Job with `stograde ci`](docs/CI.md)
-- [Spec Files](docs/SPECS.md)
+- [Creating and Understanding Spec Files](docs/SPECS.md)
 
 ## Docker Info
 

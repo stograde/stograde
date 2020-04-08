@@ -22,6 +22,7 @@ def main():
     command: str = args['command']
     command_func = args['func']
     course: str = args['course']
+    skip_dependency_check: bool = args['skip_dependency_check']
     skip_version_check: bool = args['skip_version_check']
     stogit: str = args['stogit']
 
@@ -32,7 +33,8 @@ def main():
                    'Try "pip3 install --no-cache --user --upgrade stograde" '
                    'to update.').format(new_version, current_version), file=sys.stderr)
 
-    check_dependencies()
+    if not skip_dependency_check:
+        check_dependencies()
 
     if not os.path.exists('data'):
         create_data_dir(course, base_dir)

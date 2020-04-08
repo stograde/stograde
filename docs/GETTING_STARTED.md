@@ -2,12 +2,14 @@
 
 ## Installation
 
-**Requires: Python 3.5+, git**
+**Requires: Python 3.6+, git**
 
 The toolkit *should* work on macOS, Linux and the Windows Subsystem for Linux.
 
 The toolkit is installed using `pip`.
-`pip3 install` will install something globally, but since we don't have global access on the lab machines we'll give it the `--user` flag, which installs into your home folder instead.
+`pip3 install` will install something globally.
+Because we may not have global access on the device, such as the lab machines, we'll give it the `--user` flag.
+This installs into your home folder instead.
 
 To install the toolkit, run `pip3 install --user stograde`.
 
@@ -26,11 +28,10 @@ Consult Google or your local unix guru for help.
 
 ## `students.txt`
 
-The toolkit uses a file called `students.txt` to know who's repos to download.
+The toolkit uses a file called `students.txt` to know whose repos to download.
 The file is a newline-separated list of their usernames.
 
 The students file can also include delimited sections of students using INI format, which allows the `--section section-a` arguments to work.
-If no sections are provided, all students are assumed to be in the `[my]` section.
 
 ##### Basic Sample
 
@@ -56,10 +57,10 @@ magnusow
 ## First Run
 
 The toolkit expects to have a `students.txt` file and a `data` directory where it is run from.
-If you don't have the `data` directory, don't worry because the toolkit will clone it for you.
+If you don't have the `data` directory, don't worry.
+The toolkit can clone it for you.
 
-Run `stograde`.
-If there are multiple sections in your `students.txt`, use `stograde -a` (`-a` indicates all sections).
+Run `stograde repo clone`.
 
 If you don't have a `data` directory yet, you will be asked if you want to download specs:
 
@@ -75,8 +76,6 @@ Which class? (SD/HD/ADS/OS)
 ``` 
 
 Once you have selected a class, it will download the specs and start to clone the student repos.
-
-When the toolkit is done cloning the repos, it will output a chart showing who has turned in at least something for each assignment.
 
 ## Common Pitfalls
 

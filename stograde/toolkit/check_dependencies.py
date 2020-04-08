@@ -13,7 +13,7 @@ def check_stogit_known_host():
     status, output, _ = run(['ssh-keygen', '-F', 'stogit.cs.stolaf.edu'])
     if status is RunStatus.CALLED_PROCESS_ERROR and 'exit status 1' in output:
         print('stogit.cs.stolaf.edu not in known hosts\n'
-              'Run ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts')
+              'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix')
         sys.exit(1)
 
 

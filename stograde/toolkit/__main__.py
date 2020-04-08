@@ -22,7 +22,7 @@ def main():
     command: str = args['command']
     command_func = args['func']
     course: str = args['course']
-    skip_dependency_check: bool = args['skip_dependency_check']
+    skip_dependency_check: bool = args.get('skip_dependency_check', False)
     skip_version_check: bool = args['skip_version_check']
     stogit: str = args['stogit']
 

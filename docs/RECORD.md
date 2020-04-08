@@ -1,5 +1,15 @@
 # Recording Assignments with `stograde record`
 
+## Running `stograde record`
+
+`stograde record` is run with at least one positional argument and any optional flags you add.
+For example, to record homework 2, you would run `stograde record hw2`.
+Multiple assignments can be recorded simultaneously - `stograde record hw2 lab4 hw16 ws23` is a valid command.
+
+See the [advanced usage](#advanced-usage) section for information about various flags that can be used.
+
+## What it Does
+
 In broad strokes, `stograde record` does the following:
 
 - Given a folder name, it `cd`'s into that folder for each student

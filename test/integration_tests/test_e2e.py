@@ -14,7 +14,8 @@ def test_stograde_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['table', '--skip-repo-update', '--skip-spec-update', '--skip-version-check', '--no-partials']
+    sys.argv = [argv[0]] + ['table', '--skip-repo-update', '--skip-spec-update', '--skip-version-check',
+                            '--skip-known-host-check', '--no-partials']
 
     try:
         main()
@@ -37,7 +38,8 @@ def test_stograde_hidden_table(datafiles, capsys):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check']
+    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check',
+                            '--skip-known-host-check']
 
     try:
         main()
@@ -56,7 +58,8 @@ def test_stograde_record(datafiles):
     os.chdir(str(datafiles))
 
     argv = sys.argv
-    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check']
+    sys.argv = [argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check',
+                            '--skip-known-host-check']
 
     try:
         main()

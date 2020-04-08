@@ -55,10 +55,12 @@ def build_argparser():
     record_options.add_argument('--skip-repo-update', '-R', action='store_true',
                                 help='Do not update the student folders when checking')
     record_options.add_argument('--skip-spec-update', '-S', action='store_true',
-                                help='skip checking for spec updates')
+                                help='Skip checking for spec updates')
     record_options.add_argument('--date', action='store', metavar='GIT_DATE',
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
+    record_options.add_argument('--skip-known-host-check',
+                                help='Skip checking that StoGit is registered as a known host')
 
     # Student selection
     student_selection = argparse.ArgumentParser(add_help=False)

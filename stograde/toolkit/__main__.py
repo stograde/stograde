@@ -22,9 +22,9 @@ def main():
     command: str = args['command']
     command_func = args['func']
     course: str = args['course']
-    skip_dependency_check: bool = args.get('skip_dependency_check', False)
+    skip_dependency_check: bool = args['skip_dependency_check']
     skip_version_check: bool = args['skip_version_check']
-    stogit: str = args['stogit']
+    stogit: str = args.get('stogit', '')
 
     if not skip_version_check:
         current_version, new_version = update_available()
@@ -56,8 +56,8 @@ def main():
         assignments = [path.split('/')[-1].split('.')[0]
                        for path in find_all_specs(os.path.join(base_dir, 'data', 'specs'))]
 
-    date: str = args['date']
-    skip_spec_update: bool = args['skip_spec_update']
+    date: str = args.get('date', '')
+    skip_spec_update: bool = args.get('skip_spec_update', False)
 
     if date:
         logging.debug('Checking out {}'.format(date))

@@ -7,13 +7,13 @@ A command line interface was designed that allows you to view students' files in
 
 ### Starting the CLI
 
-The CLI requires three flags:
-- `--record HW` - telling the toolkit which homework to grade for
-- `--web` - indicating that you want to use the web CLI
+The CLI requires one flag:
 - `--port PORT` - setting the port that the server uses to communicate with the app.
 This port is different for each React app user, so you can figure it out by opening the app and looking at the network logs.
 The IP it is connecting to will be listed, along with a `:` and a number.
 That last number is your port.  
+
+To start the CLI, run `stograde web HW --port #`.
 
 A web server like the `~/bridge.py` used by students is started in a separate thread.
 Then a command line interface is started that allows you to choose what file to render.

@@ -62,6 +62,10 @@ def build_argparser():
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
 
+    compile_options = argparse.ArgumentParser(add_help=False)
+    compile_options.add_argument('--skip-web-compile', action='store_true',
+                                 help='Skip compilation and testing of files marked with web: true')
+
     # Student selection
     student_selection = argparse.ArgumentParser(add_help=False)
     selection_args = student_selection.add_argument_group('student selection')
@@ -83,13 +87,14 @@ def build_argparser():
     sub_parsers = parser.add_subparsers(dest='command')
 
     # CI SubParser
-    parser_ci = sub_parsers.add_parser('ci', help="Check a single student's assignment as part of a CI job")
+    parser_ci = sub_parsers.add_parser('ci', parents=[base_options, compile_options], conflict_handler='resolve',
+                                       help="Check a single student's assignment as part of a CI job")
     parser_ci.set_defaults(func=do_ci)
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",
-                                           parents=[base_options, record_options, repo_selection, table_options,
-                                                    student_selection],
+                                           parents=[base_options, record_options, compile_options,
+                                                    repo_selection, table_options, student_selection],
                                            conflict_handler='resolve')
     parser_record.set_defaults(func=do_record)
     parser_record.add_argument('assignments', nargs='+', metavar='HW',
@@ -102,8 +107,6 @@ def build_argparser():
                                help="Interact with each student's submission individually")
     parser_record.add_argument('--skip-branch-check', '-B', action='store_true',
                                help='Do not check for unmerged branches')
-    parser_record.add_argument('--skip-web-compile', action='store_true',
-                               help='Skip compilation and testing of files marked with web: true')
 
     # Repo SubParser
     parser_repo = sub_parsers.add_parser('repo', help='Tools for cloning and updating student repositories',
@@ -118,14 +121,15 @@ def build_argparser():
 
     # Table SubParser
     parser_table = sub_parsers.add_parser('table', help='Print an table of the assignments submitted by students',
-                                          parents=[base_options, record_options, repo_selection, table_options,
-                                                   student_selection],
+                                          parents=[base_options, record_options, compile_options, repo_selection,
+                                                   table_options, student_selection],
                                           conflict_handler='resolve')
     parser_table.set_defaults(func=do_table)
 
     # Web SubParser
     parser_web = sub_parsers.add_parser('web', help='Run the CLI for grading React App files',
-                                        parents=[base_options, record_options, repo_selection, student_selection],
+                                        parents=[base_options, record_options, compile_options,
+                                                 repo_selection, student_selection],
                                         conflict_handler='resolve')
     parser_web.set_defaults(func=do_web)
     parser_web.add_argument('assignments', nargs=1, metavar='HW',

@@ -42,9 +42,11 @@ def do_ci(specs: Dict[str, 'Spec'],
                                                       skip_web_compile=skip_web_compile,
                                                       stogit_url=stogit_url,
                                                       workers=1,
-                                                      work_dir='./students')
+                                                      work_dir='.')
 
     passing: bool = ci_analyze(results)
+    table = tabulate(results)
+    print('\n' + table + '\n')
     if not passing:
         logging.debug('Build failed')
         sys.exit(1)

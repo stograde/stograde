@@ -11,6 +11,5 @@ def pull(student: str):
         status, output, _ = run(['git', 'pull', '--quiet', 'origin', 'master'])
 
     if status is RunStatus.CALLED_PROCESS_ERROR and 'not a git repository' in output:
-        print('Student directory {} not a git repository\n'
-              'Try running "stograde repo reclone"'.format(student),
-              file=sys.stderr)
+        print('Student directory {} not a git repository', file=sys.stderr)
+        print('Try running "stograde repo reclone"'.format(student), file=sys.stderr)

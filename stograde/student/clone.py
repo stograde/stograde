@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import path
 
 from ..common import run
@@ -18,3 +19,6 @@ def clone_url(url: str, into: str = None):
         logging.info('cloning {}'.format(url))
         _, output, _ = run(['git', 'clone', '--quiet', url])
     logging.debug(output)
+    if 'Permission denied' in output:
+        print('Permission denied when cloning from {}. Aborting'.format(url))
+        sys.exit(1)

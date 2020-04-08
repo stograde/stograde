@@ -8,6 +8,7 @@ from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
 from ..common import check_dates
 from ..process_file import process_file
+from ..toolkit import global_vars
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -18,16 +19,14 @@ def process_assignment(*,
                        student: 'StudentResult',
                        spec: 'Spec',
                        basedir: str,
-                       debug: bool,
                        interact: bool,
-                       ci: bool,
                        skip_web_compile: bool) -> RecordResult:
     """Run a spec against the current folder"""
     cwd = os.getcwd()
     try:
         first_submit = ''
 
-        if not ci:
+        if not global_vars.CI:
             first_date = check_dates(spec, cwd)
             first_submit = "First Submission for {}: {}".format(spec.id, first_date)
 
@@ -55,7 +54,7 @@ def process_assignment(*,
         return result
 
     except Exception as err:
-        if debug:
+        if global_vars.DEBUG:
             raise err
         else:
             return RecordResult(student=student.name,

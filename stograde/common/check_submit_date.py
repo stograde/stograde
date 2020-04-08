@@ -1,8 +1,7 @@
-from typing import TYPE_CHECKING
-
 from dateutil.parser import parse
-import os
 import logging
+import os
+from typing import TYPE_CHECKING
 
 from .run import run
 

@@ -3,7 +3,7 @@ import logging
 from ..common import chdir, run
 
 
-def stash(student: str, no_repo_update: bool):
+def stash(student: str, no_repo_update: bool = False):
     logging.debug("Stashing {}'s repository".format(student))
     with chdir(student):
         if not no_repo_update and has_changed_files():

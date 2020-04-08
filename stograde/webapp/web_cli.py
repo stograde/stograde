@@ -1,3 +1,4 @@
+import functools
 import os
 from PyInquirer import prompt, style_from_dict, Token
 from typing import List, TYPE_CHECKING
@@ -8,44 +9,59 @@ from ..process_assignment import import_supporting, remove_supporting
 from ..process_file import process_file
 from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
-from ..student import stash, pull, checkout_date
+from ..student.process_student import prepare_student_repo
+from ..toolkit.process_repos import process_parallel_repos
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
 
 
-def launch_cli(basedir: str,
+def launch_cli(base_dir: str,
+               clean: bool,
                date: str,
-               no_repo_update: bool,
+               no_progress_bar: bool,
+               skip_repo_update: bool,
                spec: 'Spec',
-               usernames: List[str]) -> bool:
+               stogit_url: str,
+               students: List[str],
+               workers: int):
     """Start the web grading CLI"""
     usernames = [
-        '{} NO SUBMISSION'.format(user)
-        if not os.path.exists('{}/{}'.format(user, spec.id))
-        else user
-        for user in usernames
+        '{} NO SUBMISSION'.format(student)
+        if not os.path.exists('{}/{}'.format(student, spec.id))
+        else student
+        for student in students
     ]
+
+    print('Loading repos. Please wait...')
+
+    with chdir(os.path.join(base_dir, 'students')):
+        single_repo = functools.partial(
+            prepare_student_repo,
+            stogit_url=stogit_url,
+            do_clean=clean,
+            do_clone=not skip_repo_update,
+            do_pull=not skip_repo_update,
+            do_checkout=True,
+            date=date)
+
+        process_parallel_repos(students=students,
+                               no_progress_bar=no_progress_bar,
+                               workers=workers,
+                               operation=single_repo)
 
     while True:
         student = ask_student(usernames)
 
         if not student or student == 'QUIT':
-            return False
-        elif student == 'LOG and QUIT':
-            return True
+            return
         elif 'NO SUBMISSION' in student:
             continue
 
-        stash(student, no_repo_update=no_repo_update)
-        pull(student, no_repo_update=no_repo_update)
-
-        checkout_date(student, date=date)
-
-        files = check_student(student, spec, basedir)
+        files = check_student(student, spec, base_dir)
 
         if files:
-            ask_file(files, student, spec, basedir)
+            ask_file(files, student, spec, base_dir)
 
 
 def ask_student(usernames: List[str]) -> str:
@@ -61,7 +77,7 @@ def ask_student(usernames: List[str]) -> str:
             'type': 'list',
             'name': 'student',
             'message': 'Choose student',
-            'choices': ['QUIT', 'LOG and QUIT', *usernames]
+            'choices': ['QUIT', *usernames]
         }
     ]
 
@@ -75,7 +91,7 @@ def ask_student(usernames: List[str]) -> str:
 
 def check_student(student: str,
                   spec: 'Spec',
-                  basedir: str):
+                  base_dir: str):
     """Process student's files and populate file list"""
     files = []
     if os.path.exists('{}/{}'.format(student, spec.id)):
@@ -83,7 +99,7 @@ def check_student(student: str,
         with chdir('{}/{}'.format(student, spec.id)):
             # prepare the current folder
             supporting_dir, written_files = import_supporting(spec=spec,
-                                                              basedir=basedir)
+                                                              basedir=base_dir)
 
             for file in spec.files:
                 if file.options.web_file:

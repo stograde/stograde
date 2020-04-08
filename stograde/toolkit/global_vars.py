@@ -1,0 +1,2 @@
+CI = False
+DEBUG = False

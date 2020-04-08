@@ -38,7 +38,7 @@ def pad(string: str, index: int) -> str:
 
 
 def symbol(assignment: Tuple[int, AssignmentStatus],
-           highlight_partials: bool = False) -> str:
+           highlight_partials: bool = True) -> str:
     """Turn an assignment status into the symbol for the table"""
     (num, status) = assignment
 
@@ -55,7 +55,7 @@ def symbol(assignment: Tuple[int, AssignmentStatus],
 
 def concat(assignments: Dict[str, AssignmentStatus],
            to_num: int,
-           highlight_partials: bool = False) -> str:
+           highlight_partials: bool = True) -> str:
     """Create the informative row of data for a list of assignment statuses"""
     nums = {get_assignment_number(a_id): (get_assignment_number(a_id), stat)
             for a_id, stat in assignments.items()}
@@ -76,7 +76,7 @@ def columnize(student: 'StudentResult',
               max_hwk_num: int,
               max_lab_num: int,
               max_wst_num: int,
-              highlight_partials: bool = False):
+              highlight_partials: bool = True):
     """Build the data for each row of the information table"""
     name = '{0:<{1}}'.format(student.name, len(longest_user))
 
@@ -116,7 +116,7 @@ def get_nums(students: List['StudentResult']) -> Tuple[int, int, int]:
 
 def tabulate(student_results: List['StudentResult'],
              sort_by: str = 'name',
-             highlight_partials: bool = False) -> str:
+             highlight_partials: bool = True) -> str:
     """Actually build the table"""
 
     # be sure that the longest username will be at least 4 chars

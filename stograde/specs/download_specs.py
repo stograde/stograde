@@ -2,6 +2,8 @@ from bidict import bidict
 import sys
 
 from ..common import chdir, run
+from ..common.run_status import RunStatus
+from ..toolkit import global_vars
 
 SPEC_URLS = bidict({
     'sd': 'https://github.com/StoDevX/cs251-specs.git',
@@ -11,7 +13,7 @@ SPEC_URLS = bidict({
 })
 
 
-def download_specs(course: str, basedir: str) -> str:
+def download_specs(course: str, basedir: str):
     course = course.split("/")[0].lower()
     try:
         url = SPEC_URLS[course]
@@ -20,13 +22,16 @@ def download_specs(course: str, basedir: str) -> str:
         sys.exit(1)
     with chdir(basedir):
         print('Downloading specs for {}'.format(course.upper()))
-        run(['git', 'clone', url, 'data'])
-        print('Download complete')
-        return course
+        status, _, _ = run(['git', 'clone', url, 'data'])
+        if status is RunStatus.SUCCESS:
+            print('Download complete')
+        else:
+            print('Download failed: {}'.format(status.name))
+            sys.exit(1)
 
 
-def create_data_dir(ci: bool, course: str, basedir: str):
-    if ci:
+def create_data_dir(course: str, basedir: str):
+    if global_vars.CI:
         if course:
             download_specs(course, basedir)
         else:
@@ -38,12 +43,22 @@ def create_data_dir(ci: bool, course: str, basedir: str):
         if course:
             download_specs(course, basedir)
         else:
-            download = input("Download specs? (Y/N)")
+            download = input("Download specs? (y/N) ")
             if download and download.lower()[0] == "y":
-                repo = input("Which class? (SD/HD/ADS/OS)")
+                repo = input("Which class? (SD/HD/ADS/OS) ")
                 if repo:
                     download_specs(repo, basedir)
                 else:
                     sys.exit(1)
             else:
+                print('Not downloading specs')
                 sys.exit(1)
+
+
+def get_supported_courses() -> str:
+    course_list = [course for course in SPEC_URLS.keys()]
+    courses = ''
+    for course in course_list:
+        courses += course + ', '
+    courses = courses[:-2]
+    return courses

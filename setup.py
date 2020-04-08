@@ -1,8 +1,8 @@
 import sys
 from setuptools import setup, find_packages
 
-if sys.version_info < (3, 5):
-    sys.exit("The toolkit requires Python 3.5 or greater.\nYou have {}".format(sys.version_info))
+if sys.version_info < (3, 6):
+    sys.exit("The toolkit requires Python 3.6 or greater.\nYou have {}".format(sys.version_info))
 
 install_requires = [
     'PyYAML==5.*',

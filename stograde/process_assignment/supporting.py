@@ -5,9 +5,7 @@ if TYPE_CHECKING:
     from ..specs.spec import Spec
 
 
-def import_supporting(*,
-                      spec: 'Spec',
-                      basedir: str) -> Tuple[str, List[str]]:
+def import_supporting(*, spec: 'Spec', basedir: str) -> Tuple[str, List[str]]:
     """Copy supporting and input files into student's homework directory"""
     cwd = os.getcwd()
     supporting_dir = os.path.join(basedir, 'data', 'supporting')

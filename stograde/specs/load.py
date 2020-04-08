@@ -6,6 +6,7 @@ from .filter_specs import filter_loaded_specs, get_spec_paths
 from .spec import create_spec
 from ..common import chdir
 from ..common.run import run
+from ..common.run_status import RunStatus
 
 if TYPE_CHECKING:
     from .spec import Spec
@@ -36,12 +37,12 @@ def check_for_spec_updates(data_dir: str):
     with chdir(data_dir):
         res, _, _ = run(['git', 'fetch', 'origin'])
 
-        if res != 'success':
+        if res is not RunStatus.SUCCESS:
             print("Error fetching specs", file=sys.stderr)
 
-        _, res, _ = run(['git', 'log', 'HEAD..origin/master'])
+        _, out, _ = run(['git', 'log', 'HEAD..origin/master'])
 
-    if res != '':
+    if out != '':
         print("Spec updates found - Updating", file=sys.stderr)
         with chdir(data_dir):
             run(['git', 'pull', 'origin', 'master'])

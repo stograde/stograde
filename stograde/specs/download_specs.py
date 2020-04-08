@@ -2,6 +2,7 @@ from bidict import bidict
 import sys
 
 from ..common import chdir, run
+from ..common.run_status import RunStatus
 from ..toolkit import global_vars
 
 SPEC_URLS = bidict({
@@ -21,8 +22,12 @@ def download_specs(course: str, basedir: str):
         sys.exit(1)
     with chdir(basedir):
         print('Downloading specs for {}'.format(course.upper()))
-        run(['git', 'clone', url, 'data'])
-        print('Download complete')
+        status, _, _ = run(['git', 'clone', url, 'data'])
+        if status is RunStatus.SUCCESS:
+            print('Download complete')
+        else:
+            print('Download failed: {}'.format(status.name))
+            sys.exit(1)
 
 
 def create_data_dir(course: str, basedir: str):

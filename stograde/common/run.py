@@ -51,7 +51,7 @@ def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
 def run_static(cmd: List[str],
                input_data: Optional[bytes] = None,
                timeout: Optional[int] = None) -> Tuple[RunStatus, str, bool]:
-    status = 'success'
+    status = RunStatus.SUCCESS
     try:
         result = subprocess.run(
             cmd,
@@ -63,22 +63,22 @@ def run_static(cmd: List[str],
             check=True)
 
     except subprocess.CalledProcessError as err:
-        status = 'called process error'
+        status = RunStatus.CALLED_PROCESS_ERROR
         result = err.output if err.output else str(err)
 
     except subprocess.TimeoutExpired as err:
-        status = 'timed out after {} seconds'.format(timeout)
+        status = RunStatus.TIMEOUT_EXPIRED
         result = err.output if err.output else str(err)
 
     except FileNotFoundError as err:
-        status = 'not found'
+        status = RunStatus.FILE_NOT_FOUND
         result = str(err)
 
     except ProcessLookupError as err:
         try:
             status, result, _ = run(cmd, input_data=input_data, timeout=timeout)
         except:
-            status = 'process lookup error'
+            status = RunStatus.PROCESS_LOOKUP_ERROR
             result = str(err)
 
     if hasattr(result, 'stdout'):

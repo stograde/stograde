@@ -45,6 +45,8 @@ def do_ci(specs: Dict[str, 'Spec'],
                                                       work_dir='.')
 
     passing: bool = ci_analyze(results)
+    table = tabulate(results)
+    print('\n' + table + '\n')
     if not passing:
         logging.debug('Build failed')
         sys.exit(1)

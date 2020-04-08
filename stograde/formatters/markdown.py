@@ -144,7 +144,7 @@ def format_file_results(test_results: List[TestResult]) -> str:
         if test.output:
             result.append(header + '\n```\n' + test.output + '\n```\n')
             if test.truncated:
-                result[-1] += '\n' + '(truncated after {})'.format(test.truncated_after)
+                result.append('(truncated after {})'.format(test.truncated_after))
         else:
             result.append(header)
 

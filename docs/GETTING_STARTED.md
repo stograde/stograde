@@ -26,6 +26,16 @@ This directory is located at
 
 Consult Google or your local unix guru for help.
 
+## Create a Directory
+
+Make a directory for grading.
+We recommend naming the folder after the course id, i.e. `cs251` for Software Design, `cs241` for Hardware Design, `cs253` for Algorithms and Data Structures, etc.
+
+```
+mkdir dirName
+cd dirName
+```
+
 ## `students.txt`
 
 The toolkit uses a file called `students.txt` to know whose repos to download.

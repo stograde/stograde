@@ -15,7 +15,7 @@ def get_filenames(spec: 'Spec') -> List[str]:
     return [file.file_name for file in spec.files if not file.options.optional]
 
 
-def check_dependencies(spec: 'Spec'):
+def check_spec_dependencies(spec: 'Spec'):
     for filepath in spec.dependencies:
         try:
             os.stat(filepath)

@@ -47,7 +47,7 @@ def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: 
                                                      output=compile_output,
                                                      status=status))
 
-        if status != 'success':
+        if status is not RunStatus.SUCCESS:
             return False
 
     return True

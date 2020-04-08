@@ -4,6 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from .run import run
+from .run_status import RunStatus
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -28,7 +29,7 @@ def check_dates(spec: 'Spec', cwd: str) -> str:
             return "ERROR"
 
         # If we didn't get an error and got an output, add date to array
-        if status == 'success' and res:
+        if status is RunStatus.SUCCESS and res:
             # Parse the first line
             dates.append(parse(res.splitlines()[0]))
 

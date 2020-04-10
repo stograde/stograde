@@ -67,9 +67,6 @@ def run_static(cmd: List[str],
         if hasattr(proc_result, 'stdout'):
             result = proc_result.stdout
 
-        # if hasattr(proc_result, 'stderr'):
-        #     if str(proc_result.stderr)
-
     except subprocess.CalledProcessError as err:
         status = RunStatus.CALLED_PROCESS_ERROR
         result = err.output if err.output else str(err)

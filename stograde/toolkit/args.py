@@ -33,6 +33,8 @@ def build_argparser():
                               help='Skips the pypi update check')
     base_options.add_argument('--skip-dependency-check', action='store_true',
                               help='Skip checking for dependencies')
+    base_options.add_argument('--skip-spec-update', '-S', action='store_true',
+                              help='Skip checking for spec updates')
     base_options.add_argument('--debug', action='store_true',
                               help='Enable debugging mode (throw errors, implies -w1)')
     base_options.add_argument('--no-progress-bar', action='store_true',
@@ -56,8 +58,6 @@ def build_argparser():
                                 help='Remove student folders and re-clone them')
     record_options.add_argument('--skip-repo-update', '-R', action='store_true',
                                 help='Do not update the student folders when checking')
-    record_options.add_argument('--skip-spec-update', '-S', action='store_true',
-                                help='Skip checking for spec updates')
     record_options.add_argument('--date', action='store', metavar='GIT_DATE',
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))

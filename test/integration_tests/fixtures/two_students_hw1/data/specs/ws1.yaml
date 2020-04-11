@@ -5,7 +5,6 @@ compilers:
   - &c-math 'gcc $@ -o $@.exec -lm'
 
 files:
-  - [ 2column.c, *c-math ]
-
-tests:
-  - [ 2column.c, $@.exec ]
+  - file: 2column.c
+    commands: *c-math
+    tests: $@.exec

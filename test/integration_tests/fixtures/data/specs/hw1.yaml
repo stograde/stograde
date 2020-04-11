@@ -14,6 +14,8 @@ files:
   - file: secondComment.cpp
     commands: *cpp
     tests: $@.exec
+    options:
+      optional_compile: true
   - file: Makefile
   - file: Dog.h
   - file: Dog.cpp

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 def filter_assignments(assignments: List[str]) -> List[str]:
-    """Removes any assignments ignored by a .stogradeignore file"""
+    """Removes any assignments ignored by a .stogradeignore file during a CI job"""
     if not global_vars.CI:
         return assignments
     else:
@@ -23,9 +23,12 @@ def filter_assignments(assignments: List[str]) -> List[str]:
 
         for assignment in ignored_assignments:
             if assignment in filtered_assignments:
-                logging.info('Skipping {}: ignored by stogradeignore'.format(assignment))
+                logging.warning('Skipping {}: ignored by stogradeignore'.format(assignment))
 
         filtered_assignments = filtered_assignments.difference(ignored_assignments)
+
+        if not filtered_assignments:
+            logging.warning('All assignments ignored by stogradeignore')
 
         return list(filtered_assignments)
 

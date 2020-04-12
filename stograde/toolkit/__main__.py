@@ -5,6 +5,7 @@ import sys
 from os import getcwd
 from typing import Dict, TYPE_CHECKING
 
+from . import global_vars
 from .args import process_args
 from .check_dependencies import check_dependencies
 from .find_update import update_available
@@ -70,7 +71,10 @@ def main():
 
     if not loaded_specs:
         print('No specs loaded!')
-        sys.exit(1)
+        if global_vars.CI:
+            sys.exit(0)
+        else:
+            sys.exit(1)
 
     # Call function to handle SubCommand
     command_func(specs=loaded_specs,

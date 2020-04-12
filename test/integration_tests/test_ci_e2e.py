@@ -42,7 +42,7 @@ def test_stograde_ci_passing(datafiles, capsys):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student1'))
-def test_stograde_ci_passing_stogradeignore(datafiles, capsys):
+def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, caplog):
     os.chdir(str(datafiles))
 
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
@@ -60,10 +60,57 @@ def test_stograde_ci_passing_stogradeignore(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
+    log_messages = [log.msg for log in caplog.records]
+
+    assert len(log_messages) == 1
+
+    assert log_messages[0] == 'Skipping lab1: ignored by stogradeignore'
+
+    for log in caplog.records:
+        assert log.levelname == 'WARNING'
+
     assert out == textwrap.dedent("\n"
                                   "USER      | 1 |  | \n"
                                   "----------+---+--+-\n"
                                   "student1  | 1 |  | \n\n")
+
+    sys.argv = argv
+
+    shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'narvae1'))
+def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, caplog):
+    os.chdir(str(datafiles))
+
+    shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
+
+    os.environ['CI_PROJECT_NAME'] = 'narvae1'
+    os.environ['CI_PROJECT_NAMESPACE'] = 'sd/s20'
+
+    argv = sys.argv
+    sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
+
+    try:
+        main()
+    except SystemExit:
+        pass
+
+    out, err = capsys.readouterr()
+
+    log_messages = [log.msg for log in caplog.records]
+
+    assert len(log_messages) == 3
+
+    assert 'Skipping hw1: ignored by stogradeignore' in log_messages
+    assert 'Skipping lab1: ignored by stogradeignore' in log_messages
+    assert 'All assignments ignored by stogradeignore' in log_messages
+
+    for log in caplog.records:
+        assert log.levelname == 'WARNING'
+
+    assert out == textwrap.dedent('No specs loaded!\n')
 
     sys.argv = argv
 
@@ -90,12 +137,11 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
 
     out, err = capsys.readouterr()
 
-    log_messages = [bytes(log.msg, 'utf-8') for log in caplog.records]
+    log_messages = [log.msg for log in caplog.records]
 
     assert len(log_messages) == 1
 
-    assert log_messages[0] == bytes('hw1: File secondComment.cpp compile error (This did not fail the build)',
-                                    'utf-8')
+    assert log_messages[0] == 'hw1: File secondComment.cpp compile error (This did not fail the build)'
 
     for log in caplog.records:
         assert log.levelname == 'WARNING'
@@ -172,16 +218,15 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
 
     out, err = capsys.readouterr()
 
-    log_messages = [bytes(log.msg, 'utf-8') for log in caplog.records]
+    log_messages = [log.msg for log in caplog.records]
 
     assert len(log_messages) == 1
 
-    assert log_messages[0] == bytes("hw1: File hello.cpp compile error:\n\n\t"
-                                    "./hello.cpp: In function ‘int main()’:\n\t"
-                                    "./hello.cpp:11:12: error: expected ‘}’ at end of input\n\t"
-                                    "    return 0;\n\t"
-                                    "            ^\n\t",
-                                    'utf-8')
+    assert log_messages[0] == "hw1: File hello.cpp compile error:\n\n\t" \
+                              "./hello.cpp: In function ‘int main()’:\n\t" \
+                              "./hello.cpp:11:12: error: expected ‘}’ at end of input\n\t" \
+                              "    return 0;\n\t" \
+                              "            ^\n\t"
 
     for log in caplog.records:
         assert log.levelname == 'ERROR'

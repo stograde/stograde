@@ -5,6 +5,7 @@ import os
 
 import pytest
 
+from stograde.toolkit import global_vars
 from stograde.toolkit.__main__ import main
 
 _dir = os.path.dirname(os.path.realpath(__file__))
@@ -37,6 +38,7 @@ def test_stograde_ci_passing(datafiles, capsys):
     sys.argv = argv
 
     shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student1'))
@@ -66,6 +68,7 @@ def test_stograde_ci_passing_stogradeignore(datafiles, capsys):
     sys.argv = argv
 
     shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student4'))
@@ -105,6 +108,7 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
     sys.argv = argv
 
     shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'rives'))
@@ -146,6 +150,7 @@ def test_stograde_ci_failing(datafiles, capsys, caplog):
     sys.argv = argv
 
     shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student3'))
@@ -189,3 +194,4 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
     sys.argv = argv
 
     shutil.rmtree(os.path.join(datafiles, 'data'))
+    global_vars.CI = False

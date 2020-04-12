@@ -9,7 +9,7 @@ from stograde.toolkit.__main__ import main
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 
-@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_stograde_record(datafiles):
     os.chdir(str(datafiles))
 
@@ -27,7 +27,7 @@ def test_stograde_record(datafiles):
     sys.argv = argv
 
 
-@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'two_students_hw1'))
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_stograde_record_with_table(datafiles, capsys):
     os.chdir(str(datafiles))
 

@@ -37,6 +37,7 @@ def analyze_student(student: 'StudentResult', specs: Dict[str, 'Spec'], check_fo
 
 def analyze_assignment(spec: 'Spec') -> AssignmentStatus:
     if not os.path.exists(spec.folder):
+        logging.debug('Cannot analyze assignment in directory {}: Does not exist'.format(spec.folder))
         return AssignmentStatus.MISSING
 
     with chdir(spec.folder):

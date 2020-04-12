@@ -18,15 +18,15 @@ def download_specs(course: str, basedir: str):
     try:
         url = SPEC_URLS[course]
     except KeyError:
-        print("Course {} not recognized".format(course))
+        print("Course {} not recognized".format(course.upper()), file=sys.stderr)
         sys.exit(1)
     with chdir(basedir):
         print('Downloading specs for {}'.format(course.upper()))
-        status, _, _ = run(['git', 'clone', url, 'data'])
+        status, result, _ = run(['git', 'clone', url, 'data'])
         if status is RunStatus.SUCCESS:
             print('Download complete')
         else:
-            print('Download failed: {}'.format(status.name))
+            print('Download failed: {}: {}'.format(status.name, result), file=sys.stderr)
             sys.exit(1)
 
 
@@ -35,7 +35,7 @@ def create_data_dir(course: str, basedir: str):
         if course:
             download_specs(course, basedir)
         else:
-            print("data directory not found and no course specified")
+            print("data directory not found and no course specified", file=sys.stderr)
             sys.exit(1)
 
     else:
@@ -49,9 +49,10 @@ def create_data_dir(course: str, basedir: str):
                 if repo:
                     download_specs(repo, basedir)
                 else:
+                    print('Not downloading specs', file=sys.stderr)
                     sys.exit(1)
             else:
-                print('Not downloading specs')
+                print('Not downloading specs', file=sys.stderr)
                 sys.exit(1)
 
 

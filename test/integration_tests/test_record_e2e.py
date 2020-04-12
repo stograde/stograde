@@ -41,11 +41,15 @@ def test_stograde_record_with_table(datafiles, capsys):
         pass
 
     out, err = capsys.readouterr()
-    print(out)
+
     assert out == textwrap.dedent("\n"
                                   "USER      | 1 |  | \n"
                                   "----------+---+--+-\n"
                                   "rives     | - |  | \n"
-                                  "student2  | 1 |  | \n\n")
+                                  "student1  | 1 |  | \n"
+                                  "student2  | 1 |  | \n"
+                                  "student3  | 1 |  | \n"
+                                  "student4  | 1 |  | \n"
+                                  "student5  | \x1b[1m\x1b[31m1\x1b[0m |  | \n\n")
 
     sys.argv = argv

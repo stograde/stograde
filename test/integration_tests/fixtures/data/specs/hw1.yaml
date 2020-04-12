@@ -17,6 +17,8 @@ files:
     options:
       optional_compile: true
   - file: Makefile
+    options:
+      optional: true
   - file: Dog.h
   - file: Dog.cpp
   - file: tryDog.cpp

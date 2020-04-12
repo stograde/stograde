@@ -23,9 +23,8 @@ def import_supporting(*, spec: 'Spec', basedir: str) -> Tuple[str, List[str]]:
 
 def remove_supporting(written_files: List[str]):
     """Remove supporting and input files after testing is complete"""
-    try:
-        for supporting_file in written_files:
+    for supporting_file in written_files:
+        try:
             os.remove(supporting_file)
-    except FileNotFoundError:
-        pass
-
+        except FileNotFoundError:
+            pass

@@ -26,3 +26,10 @@ files:
       - rm -f tryDog tryDog.o Dog.o
       - make
     tests: ./tryDog
+
+supporting:
+  - file: example_supporting.txt
+    destination: ../example_supporting.txt
+
+inputs:
+  - file: example_input.txt

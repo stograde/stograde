@@ -58,13 +58,7 @@ def filter_loaded_specs(specs: Dict[str, 'Spec']) -> Dict[str, 'Spec']:
 
     for spec_id in specs.keys():
         spec_to_use = specs[spec_id]
-        try:
-            if not check_spec_dependencies(spec_to_use) or not check_architecture(spec_to_use):
-                continue
-        except KeyError:
-            # Prevent lab0 directory from causing an extraneous output
-            if spec_to_use.id != 'lab0':
-                print('Spec {} does not exist'.format(spec_to_use.id), file=sys.stderr)
+        if not check_spec_dependencies(spec_to_use) or not check_architecture(spec_to_use):
             continue
         remaining_specs[spec_id] = spec_to_use
 

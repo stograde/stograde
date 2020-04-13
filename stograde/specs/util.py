@@ -11,19 +11,23 @@ if TYPE_CHECKING:
 
 
 def get_filenames(spec: 'Spec') -> List[str]:
-    """returns the list of files from an assignment spec"""
+    """Returns the list of names of required files from an assignment spec"""
     return [file.file_name for file in spec.files if not file.options.optional]
 
 
 def check_spec_dependencies(spec: 'Spec'):
+    all_dependencies_present = True
     for filepath in spec.dependencies:
         try:
             os.stat(filepath)
         except FileNotFoundError:
             logging.warning('spec {}: required file "{}" could not be found'.format(spec.id, filepath))
+            all_dependencies_present = False
+    return all_dependencies_present
 
 
 def check_architecture(spec: 'Spec') -> bool:
+    """Checks that the user is running the right architecture to test this spec"""
     _, user_arch, _ = run(['uname', '-m'])
     user_arch = user_arch.rstrip()
     spec_arch = spec.architecture

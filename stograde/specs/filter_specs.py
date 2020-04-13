@@ -59,8 +59,7 @@ def filter_loaded_specs(specs: Dict[str, 'Spec']) -> Dict[str, 'Spec']:
     for spec_id in specs.keys():
         spec_to_use = specs[spec_id]
         try:
-            check_spec_dependencies(spec_to_use)
-            if not check_architecture(spec_to_use):
+            if not check_spec_dependencies(spec_to_use) or not check_architecture(spec_to_use):
                 continue
         except KeyError:
             # Prevent lab0 directory from causing an extraneous output

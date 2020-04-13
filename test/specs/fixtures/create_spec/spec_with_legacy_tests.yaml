@@ -1,0 +1,15 @@
+---
+assignment: hw10
+
+files:
+  - file: test_file1.txt
+  - file: test_file2.txt
+    tests:
+      - echo "A"
+
+
+tests:
+  - file: test_file1.txt
+    commands: echo "B"
+  - - test_file2.txt
+    - echo "C"

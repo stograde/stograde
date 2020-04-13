@@ -8,9 +8,13 @@ from stograde.toolkit import global_vars
 
 def test_download_specs(capsys):
     shutil.rmtree('data', ignore_errors=True)
+
     download_specs(course='sd', basedir='.')
+
     out, _ = capsys.readouterr()
+
     assert out == 'Downloading specs for SD\nDownload complete\n'
+
     shutil.rmtree('data')
 
 
@@ -44,8 +48,23 @@ def test_download_specs_failed_clone(capsys):
     shutil.rmtree('data')
 
 
+def test_create_data_dir(capsys):
+    shutil.rmtree('data', ignore_errors=True)
+
+    with mock.patch('builtins.input', side_effect=['y', 'sd']):
+        create_data_dir(course='sd', basedir='.')
+
+    out, err = capsys.readouterr()
+
+    assert err == 'data directory not found\n'
+    assert out == 'Downloading specs for SD\nDownload complete\n'
+
+    shutil.rmtree('data')
+
+
 def test_create_data_dir_yes(capsys):
     shutil.rmtree('data', ignore_errors=True)
+
     with mock.patch('builtins.input', side_effect=['y', 'sd']):
         create_data_dir(course='', basedir='.')
 
@@ -53,6 +72,7 @@ def test_create_data_dir_yes(capsys):
 
     assert err == 'data directory not found\n'
     assert out == 'Downloading specs for SD\nDownload complete\n'
+
     shutil.rmtree('data')
 
 
@@ -83,21 +103,29 @@ def test_create_data_dir_no(capsys):
 def test_create_data_dir_ci(capsys):
     shutil.rmtree('data', ignore_errors=True)
     global_vars.CI = True
+
     create_data_dir(course='sd', basedir='.')
+
     out, _ = capsys.readouterr()
+
     assert out == 'Downloading specs for SD\nDownload complete\n'
+
     shutil.rmtree('data')
     global_vars.CI = False
 
 
 def test_create_data_dir_ci_no_course(capsys):
     global_vars.CI = True
+
     try:
         create_data_dir(course='', basedir='.')
     except SystemExit:
         pass
+
     _, err = capsys.readouterr()
+
     assert err == 'data directory not found and no course specified\n'
+
     global_vars.CI = False
 
 

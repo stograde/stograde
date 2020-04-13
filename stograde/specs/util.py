@@ -15,28 +15,33 @@ def get_filenames(spec: 'Spec') -> List[str]:
     return [file.file_name for file in spec.files if not file.options.optional]
 
 
-def check_spec_dependencies(spec: 'Spec'):
+def check_spec_dependencies(spec: 'Spec') -> bool:
     all_dependencies_present = True
     for filepath in spec.dependencies:
         try:
             os.stat(filepath)
         except FileNotFoundError:
-            logging.warning('spec {}: required file "{}" could not be found'.format(spec.id, filepath))
+            logging.warning('Skipping {}: required file "{}" could not be found'.format(spec.id, filepath))
             all_dependencies_present = False
     return all_dependencies_present
 
 
+def get_user_architecture() -> str:
+    """Get the user's architecture with 'uname -m'"""
+    _, user_arch, _ = run(['uname', '-m'])
+    return user_arch.rstrip()
+
+
 def check_architecture(spec: 'Spec') -> bool:
     """Checks that the user is running the right architecture to test this spec"""
-    _, user_arch, _ = run(['uname', '-m'])
-    user_arch = user_arch.rstrip()
+    user_arch = get_user_architecture()
     spec_arch = spec.architecture
 
     if spec_arch is None or spec_arch == user_arch:
         return True
     else:
         if global_vars.CI:
-            logging.info('Skipping {}: wrong architecture'.format(spec.id))
+            logging.warning('Skipping {}: wrong architecture'.format(spec.id))
         else:
             print('{} requires {} architecture. You have {}'
                   .format(spec.id, spec.architecture, user_arch),

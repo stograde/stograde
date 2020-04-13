@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .spec import Spec
 
 
-def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = True) -> Dict[str, 'Spec']:
+def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = False) -> Dict[str, 'Spec']:
     """Load the desired specs from the specs/ directory, filtering out any that are missing
 
     data/ directory should exist by this point with a repository

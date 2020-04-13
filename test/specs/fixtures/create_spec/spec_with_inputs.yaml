@@ -1,0 +1,7 @@
+---
+assignment: hw8
+
+inputs:
+  - file: input_file.txt
+  - file: input_file2.txt
+    destination: ../input_file2.txt

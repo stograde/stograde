@@ -1,0 +1,7 @@
+---
+assignment: hw7
+
+supporting:
+  - file: supporting_file.txt
+  - file: supporting_file2.txt
+    destination: ../supporting_file2.txt

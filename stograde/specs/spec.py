@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 import os
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 import yaml
 
 from .spec_file import create_spec_file
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Spec:
     id: str
     folder: str
-    architecture: str = None
+    architecture: Optional[str] = None
     dependencies: List[str] = field(default_factory=list)
     files: List['SpecFile'] = field(default_factory=list)
     supporting_files: List['SupportingFile'] = field(default_factory=list)

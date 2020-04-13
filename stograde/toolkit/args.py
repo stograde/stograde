@@ -203,11 +203,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # record SubCommand
     elif command == 'record':
-        assignments = natsorted(set(args['assignments']))
-        if len(assignments) == 0:
-            print('stograde record requires at least one assignment')
-            sys.exit(1)
-
+        assignments = natsorted(set(args['assignments']))  # Has at least one assignment (enforced by argparser)
         students = get_students(args)
 
     # table SubCommand
@@ -217,11 +213,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # web SubCommand
     elif command == 'web':
-        assignments = natsorted(set(args['assignments']))
-        if len(assignments) != 1:
-            print('stograde web can only be used with one assignment at a time')
-            sys.exit(1)
-
+        assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
 
     # repo SubCommand
@@ -230,12 +222,11 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         students = get_students(args)
 
     else:
-        print('Sub-command must be specified')
+        print('Sub-command must be specified', file=sys.stderr)
         sys.exit(1)
 
     if not students:
-        print('No students selected\n'
-              'Is your students.txt missing?')
+        print('No students selected\nIs your students.txt missing?', file=sys.stderr)
         sys.exit(1)
 
     debug_print_args(args)

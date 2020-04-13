@@ -28,7 +28,7 @@ class SpecFile:
                     test_commands += commands
 
             elif isinstance(file_test_spec, list):  # legacy spec support
-                if len(file_test_spec) == 0:
+                if len(file_test_spec) == 1:
                     continue
                 elif file_test_spec[0] == self.file_name:
                     test_commands += [f for f in file_test_spec[1:] if isinstance(f, str)]
@@ -36,6 +36,8 @@ class SpecFile:
             else:
                 raise TypeError('Cannot parse "tests:": incorrect data type for a test: {}'
                                 .format(type(file_test_spec)))
+
+        self.test_commands.extend(test_commands)
 
         return self
 

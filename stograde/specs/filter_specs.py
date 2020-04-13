@@ -37,7 +37,7 @@ def get_spec_paths(wanted_specs: List[str], spec_dir: str) -> List[str]:
     """Removes any missing specs from the list and returns a list of the paths
     of the remaining specs"""
     all_spec_files = find_all_specs(spec_dir)
-    loadable_spec_files = {path.split('/')[-1].split('.')[0]: path for path in list(all_spec_files)}
+    loadable_spec_files = {path.split('/')[-1].split('.')[0]: path for path in all_spec_files}
     specs_to_load = set(loadable_spec_files.keys()).intersection(wanted_specs)
     missing_spec_files = set(wanted_specs).difference(loadable_spec_files.keys())
 
@@ -47,7 +47,7 @@ def get_spec_paths(wanted_specs: List[str], spec_dir: str) -> List[str]:
     return list(loadable_spec_files[filename] for filename in specs_to_load)
 
 
-def find_all_specs(spec_dir: str):
+def find_all_specs(spec_dir: str) -> List[str]:
     """Get a list of all .yaml files in the specs directory"""
     return list(iglob(os.path.join(spec_dir, '*.yaml')))
 

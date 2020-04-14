@@ -27,8 +27,7 @@ def process_assignment(*,
         first_submit = ''
 
         if not global_vars.CI:
-            first_date = check_dates(spec, cwd)
-            first_submit = "First Submission for {}: {}".format(spec.id, first_date)
+            first_submit = check_dates(spec, cwd)
 
         result = RecordResult(spec_id=spec.id,
                               first_submission=first_submit,

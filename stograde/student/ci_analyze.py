@@ -23,7 +23,7 @@ def ci_analyze(student_result: 'StudentResult') -> bool:
                 # Alert student about any compilation errors
                 for compilation in file.compile_results:
                     if compilation.status is not RunStatus.SUCCESS:
-                        if file.compile_optional:
+                        if file.compile_optional or file.optional:
                             logging.warning("{}: File {} compile error (This did not fail the build)"
                                             .format(result.spec_id, file.file_name))
                         else:

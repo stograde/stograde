@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from ..common.run_status import RunStatus
 
@@ -12,16 +12,15 @@ LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 
 def ci_analyze(student_result: 'StudentResult') -> bool:
     passing = True
+
     for result in student_result.results:
         for file in result.file_results:
-            # Alert student about any missing files
-            if file.file_missing and not file.optional:
+            if file.file_missing and not file.optional:  # Alert student about any missing files
                 logging.error("{}: File {} missing".format(result.spec_id, file.file_name))
                 if not re.match(LAB_REGEX, result.spec_id):
                     passing = False
             else:
-                # Alert student about any compilation errors
-                for compilation in file.compile_results:
+                for compilation in file.compile_results:  # Alert student about any compilation errors
                     if compilation.status is not RunStatus.SUCCESS:
                         if file.compile_optional or file.optional:
                             logging.warning("{}: File {} compile error (This did not fail the build)"
@@ -32,4 +31,5 @@ def ci_analyze(student_result: 'StudentResult') -> bool:
                                                   compilation.output.replace("\n", "\n\t")))
                             if not re.match(LAB_REGEX, result.spec_id):
                                 passing = False
+
     return passing

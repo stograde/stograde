@@ -43,7 +43,6 @@ def send_recording_to_gist(table, results, assignment):
 
 def save_recordings(results: List['StudentResult'],
                     table: str,
-                    debug: bool = False,
                     gist: bool = False):
     """Take the list of recordings, group by assignment, then save to disk"""
 

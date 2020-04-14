@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from glob import iglob
 from typing import Dict, List, TYPE_CHECKING
 

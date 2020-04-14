@@ -43,9 +43,15 @@ def do_ci(specs: Dict[str, 'Spec'],
                                                       workers=1,
                                                       work_dir='.')
 
-    passing: bool = ci_analyze(results)
+    # There should be only one student because the student name is
+    # retrieved from the environment by process_args,
+    # thus we can make the assumption that there is only one result
+    # and that it is at index 0
+    passing: bool = ci_analyze(results[0])
+
     table = tabulate(results)
     print('\n' + table + '\n')
+
     if not passing:
         logging.debug('Build failed')
         sys.exit(1)

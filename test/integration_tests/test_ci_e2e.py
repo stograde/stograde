@@ -5,6 +5,7 @@ import os
 
 import pytest
 
+from stograde.common import chdir
 from stograde.toolkit import global_vars
 from stograde.toolkit.__main__ import main
 
@@ -13,8 +14,6 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student2'))
 def test_stograde_ci_passing(datafiles, capsys):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'student2'
@@ -23,10 +22,11 @@ def test_stograde_ci_passing(datafiles, capsys):
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 
@@ -43,8 +43,6 @@ def test_stograde_ci_passing(datafiles, capsys):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student1'))
 def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, caplog):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'student1'
@@ -53,10 +51,11 @@ def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, 
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 
@@ -82,8 +81,6 @@ def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'narvae1'))
 def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, caplog):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'narvae1'
@@ -92,10 +89,11 @@ def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, c
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 
@@ -120,8 +118,6 @@ def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, c
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student4'))
 def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'student4'
@@ -130,10 +126,11 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 
@@ -159,8 +156,6 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'rives'))
 def test_stograde_ci_failing(datafiles, capsys, caplog):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'rives'
@@ -169,10 +164,11 @@ def test_stograde_ci_failing(datafiles, capsys, caplog):
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 
@@ -201,8 +197,6 @@ def test_stograde_ci_failing(datafiles, capsys, caplog):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'student3'))
 def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
-    os.chdir(str(datafiles))
-
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     os.environ['CI_PROJECT_NAME'] = 'student3'
@@ -211,10 +205,11 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
     argv = sys.argv
     sys.argv = [argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
-    try:
-        main()
-    except SystemExit:
-        pass
+    with chdir(str(datafiles)):
+        try:
+            main()
+        except SystemExit:
+            pass
 
     out, err = capsys.readouterr()
 

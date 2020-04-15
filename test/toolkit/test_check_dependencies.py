@@ -12,14 +12,17 @@ def test_check_git_installed_passing():
 
 def test_check_git_installed_failing(capsys):
     path = os.getenv('PATH')
-    os.environ['PATH'] = ''
-
     try:
-        check_git_installed()
-    except SystemExit:
-        pass
-    finally:
-        os.environ['PATH'] = path
+        os.environ['PATH'] = ''
+        try:
+            check_git_installed()
+        except SystemExit:
+            pass
+    except KeyboardInterrupt:
+        os.environ['PATH'] = path  # Revert the path even on a KeyboardInterrupt
+        raise
+
+    os.environ['PATH'] = path
 
     _, err = capsys.readouterr()
 

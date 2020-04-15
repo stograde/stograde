@@ -13,9 +13,12 @@ def test_check_git_installed_passing():
 def test_check_git_installed_failing(capsys):
     path = os.getenv('PATH')
     try:
+        # If the command line doesn't have a valid path
+        # then there's no way it can find the git executable
         os.environ['PATH'] = ''
         try:
             check_git_installed()
+            raise AssertionError
         except SystemExit:
             pass
     except KeyboardInterrupt:

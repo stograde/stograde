@@ -52,6 +52,7 @@ def test_create_supporting_file_str():
 
 def test_create_supporting_file_bad_type():
     try:
+        # noinspection PyTypeChecker
         create_supporting_file(15)
     except TypeError:
         pass

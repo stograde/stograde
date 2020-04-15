@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union, Dict
 
 from .file_options import FileOptions
 
@@ -42,7 +42,7 @@ class SpecFile:
         return self
 
 
-def create_spec_file(file_spec) -> SpecFile:
+def create_spec_file(file_spec: Union[Dict, List]) -> SpecFile:
     """Create a new SpecFile instance
 
     :param file_spec: A `dict` or `list` with the file specifications

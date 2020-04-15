@@ -231,6 +231,7 @@ def test_create_spec_file_with_legacy_list():
 
 def test_create_spec_file_bad_type():
     try:
+        # noinspection PyTypeChecker
         create_spec_file(15)
     except TypeError:
         pass

@@ -42,7 +42,9 @@ def check_for_spec_updates(data_dir: str):
 
         _, out, _ = run(['git', 'log', 'HEAD..origin/master'])
 
-    if out != '':
+    if 'commit' in out:
         print("Spec updates found - Updating", file=sys.stderr)
         with chdir(data_dir):
             run(['git', 'pull', 'origin', 'master'])
+    else:
+        print("git log failed", file=sys.stderr)

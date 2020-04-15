@@ -142,7 +142,7 @@ def build_argparser():
 
 def get_students(args: Dict[str, Any]) -> List[str]:
     """Get students from the command line or the students.txt file.
-    Anything on the command line will override using the file"""
+    Any students on the command line will override using the file"""
     sections = args['sections']
     students = args['students']
 

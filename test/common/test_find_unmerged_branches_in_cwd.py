@@ -1,6 +1,5 @@
 import os
 
-import pytest
 from stograde.common.find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
 from stograde.common.run import run
 
@@ -16,7 +15,6 @@ def touch(file):
     return run(['touch', file])
 
 
-# @pytest.mark.skip(reason="this fails on travis-ci")
 def test_find_unmerged_branches_in_cwd_1(tmpdir):
     with tmpdir.as_cwd():
         git('init')
@@ -40,7 +38,6 @@ def test_find_unmerged_branches_in_cwd_1(tmpdir):
         assert find_unmerged_branches_in_cwd() == ['branch']
 
 
-# @pytest.mark.skip(reason="this fails on travis-ci")
 def test_find_unmerged_branches_in_cwd_2(tmpdir):
     with tmpdir.as_cwd():
         git('init')

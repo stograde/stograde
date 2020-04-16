@@ -76,7 +76,7 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         cwd = os.getcwd()
         key_file = os.path.join(cwd, 'totally_a_private_key')
 
-        run(['ssh-keygen', '-b', '8192', '-n', '""', '-f', key_file])
+        run(['ssh-keygen', '-b', '8192', '-N', '""', '-f', key_file])
 
         # Create a fake private key that can't possibly be registered with StoGit
         # (if somehow having an empty private key works, then something's really wrong with StoGit's security)

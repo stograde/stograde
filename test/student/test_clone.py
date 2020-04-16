@@ -1,11 +1,21 @@
 import logging
 import os
 
+from stograde.common import run
 from stograde.student import clone_url, clone_student
+from stograde.toolkit.check_dependencies import check_stogit_known_host
 from test.common.test_find_unmerged_branches_in_cwd import touch
 
 
+def register_stogit_known_host():
+    try:
+        check_stogit_known_host()
+    except SystemExit:
+        run(['ssh-keyscan', 'stogit.cs.stolaf.edu', '>>', '~/.ssh/known_hosts'])
+
+
 def test_clone_student(tmpdir, caplog):
+    register_stogit_known_host()
     with tmpdir.as_cwd():
         with caplog.at_level(logging.DEBUG):
             # Technically this clone will fail, but what we're checking is that the url is calculated correctly
@@ -51,6 +61,7 @@ def test_clone_url_into(tmpdir, caplog):
 
 
 def test_clone_url_permission_denied(tmpdir, capsys):
+    register_stogit_known_host()
     with tmpdir.as_cwd():
         cwd = os.getcwd()
 

@@ -142,7 +142,7 @@ def build_argparser():
 
 def get_students(args: Dict[str, Any]) -> List[str]:
     """Get students from the command line or the students.txt file.
-    Any students on the command line will override using the file"""
+    Passing any students on the command line will ignore the file contents"""
     sections = args['sections']
     students = args['students']
 
@@ -226,7 +226,8 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         sys.exit(1)
 
     if not students:
-        print('No students selected\nIs your students.txt missing?', file=sys.stderr)
+        print('No students selected', file=sys.stderr)
+        print('Is your students.txt missing?', file=sys.stderr)
         sys.exit(1)
 
     debug_print_args(args)

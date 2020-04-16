@@ -77,11 +77,12 @@ def test_clone_url_permission_denied(tmpdir, capsys):
 
         # Create a fake private key that can't possibly be registered with StoGit
         # (if somehow having an empty private key works, then something's really wrong with StoGit's security)
-        touch(os.path.join(cwd, 'totally_a_private_key'))
+        with open(os.path.join(cwd, 'totally_a_private_key'), 'w') as key:
+            key.write('-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE KEY-----\n')
         os.chmod(os.path.join(cwd, 'totally_a_private_key'), 0o600)  # SSH complains otherwise
         # Tell git to use our new 'private key'
         ssh_command = os.getenv('GIT_SSH_COMMAND', '')
-        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {} -o PasswordAuthentication=no'.format(os.path.join(cwd, 'totally_a_private_key'))
+        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(os.path.join(cwd, 'totally_a_private_key'))
 
         try:
             with stogit_as_known_host():

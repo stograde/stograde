@@ -21,11 +21,8 @@ def test_check_git_installed_failing(capsys):
             raise AssertionError
         except SystemExit:
             pass
-    except KeyboardInterrupt:
-        os.environ['PATH'] = path  # Revert the path even on a KeyboardInterrupt
-        raise
-
-    os.environ['PATH'] = path
+    finally:
+        os.environ['PATH'] = path
 
     _, err = capsys.readouterr()
 

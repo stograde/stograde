@@ -1,26 +1,37 @@
+import contextlib
 import logging
 import os
+from pathlib import Path
 
 from stograde.common import run
 from stograde.student import clone_url, clone_student
-from stograde.toolkit.check_dependencies import check_stogit_known_host
+from stograde.toolkit.check_dependencies import is_stogit_known_host
 from test.common.test_find_unmerged_branches_in_cwd import touch
 
 
-def register_stogit_known_host():
+@contextlib.contextmanager
+def stogit_as_known_host():
+    modify_known_hosts = not is_stogit_known_host()
+
     try:
-        check_stogit_known_host()
-    except SystemExit:
-        run(['ssh-keyscan', 'stogit.cs.stolaf.edu', '>>', '~/.ssh/known_hosts'])
+        if modify_known_hosts:
+            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
+            with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
+                known_hosts.write(out)
+                known_hosts.close()
+        yield
+    finally:
+        if modify_known_hosts:
+            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
 
 
 def test_clone_student(tmpdir, caplog):
-    register_stogit_known_host()
-    with tmpdir.as_cwd():
-        with caplog.at_level(logging.DEBUG):
-            # Technically this clone will fail, but what we're checking is that the url is calculated correctly
-            # and that the clone_url function is properly called
-            clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
+    with stogit_as_known_host():
+        with tmpdir.as_cwd():
+            with caplog.at_level(logging.DEBUG):
+                # Technically this clone will fail, but what we're checking is that the url is calculated correctly
+                # and that the clone_url function is properly called
+                clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
 
     log_messages = [log.msg for log in caplog.records]
 
@@ -61,7 +72,6 @@ def test_clone_url_into(tmpdir, caplog):
 
 
 def test_clone_url_permission_denied(tmpdir, capsys):
-    register_stogit_known_host()
     with tmpdir.as_cwd():
         cwd = os.getcwd()
 
@@ -74,7 +84,8 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(os.path.join(cwd, 'totally_a_private_key'))
 
         try:
-            clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
+            with stogit_as_known_host():
+                clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
             raise AssertionError
         except SystemExit:
             pass

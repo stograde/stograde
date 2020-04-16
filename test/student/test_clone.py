@@ -6,7 +6,6 @@ from pathlib import Path
 from stograde.common import run
 from stograde.student import clone_url, clone_student
 from stograde.toolkit.check_dependencies import is_stogit_known_host
-from test.common.test_find_unmerged_branches_in_cwd import touch
 
 
 @contextlib.contextmanager
@@ -31,7 +30,10 @@ def test_clone_student(tmpdir, caplog):
             with caplog.at_level(logging.DEBUG):
                 # Technically this clone will fail, but what we're checking is that the url is calculated correctly
                 # and that the clone_url function is properly called
-                clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
+                try:
+                    clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
+                except SystemExit:
+                    pass
 
     log_messages = [log.msg for log in caplog.records]
 
@@ -76,13 +78,13 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         cwd = os.getcwd()
         key_file = os.path.join(cwd, 'totally_a_private_key')
 
+        # Create a fake private key that can't possibly be registered with StoGit
+        # (or at least it has a chance of being registered that is lower than
+        #  the chance of Great Britain being wiped out by an asteroid in the same
+        #  second that the key is generated, according to stackexchange:
+        #  https://security.stackexchange.com/a/2947)
         run(['ssh-keygen', '-b', '8192', '-N', '""', '-f', key_file])
 
-        # Create a fake private key that can't possibly be registered with StoGit
-        # (if somehow having an empty private key works, then something's really wrong with StoGit's security)
-        # with open(os.path.join(cwd, 'totally_a_private_key'), 'w') as key:
-        #     key.write('-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE KEY-----\n')
-        # os.chmod(os.path.join(cwd, 'totally_a_private_key'), 0o600)  # SSH complains otherwise
         # Tell git to use our new 'private key'
         ssh_command = os.getenv('GIT_SSH_COMMAND', '')
         os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(key_file)

@@ -81,7 +81,7 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         os.chmod(os.path.join(cwd, 'totally_a_private_key'), 0o600)  # SSH complains otherwise
         # Tell git to use our new 'private key'
         ssh_command = os.getenv('GIT_SSH_COMMAND', '')
-        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(os.path.join(cwd, 'totally_a_private_key'))
+        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {} -o PasswordAuthentication=no'.format(os.path.join(cwd, 'totally_a_private_key'))
 
         try:
             with stogit_as_known_host():

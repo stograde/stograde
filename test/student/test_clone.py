@@ -74,15 +74,18 @@ def test_clone_url_into(tmpdir, caplog):
 def test_clone_url_permission_denied(tmpdir, capsys):
     with tmpdir.as_cwd():
         cwd = os.getcwd()
+        key_file = os.path.join(cwd, 'totally_a_private_key')
+
+        run(['ssh-keygen', '-b', '8192', '-n', '""', '-f', key_file])
 
         # Create a fake private key that can't possibly be registered with StoGit
         # (if somehow having an empty private key works, then something's really wrong with StoGit's security)
-        with open(os.path.join(cwd, 'totally_a_private_key'), 'w') as key:
-            key.write('-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE KEY-----\n')
-        os.chmod(os.path.join(cwd, 'totally_a_private_key'), 0o600)  # SSH complains otherwise
+        # with open(os.path.join(cwd, 'totally_a_private_key'), 'w') as key:
+        #     key.write('-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE KEY-----\n')
+        # os.chmod(os.path.join(cwd, 'totally_a_private_key'), 0o600)  # SSH complains otherwise
         # Tell git to use our new 'private key'
         ssh_command = os.getenv('GIT_SSH_COMMAND', '')
-        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(os.path.join(cwd, 'totally_a_private_key'))
+        os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(key_file)
 
         try:
             with stogit_as_known_host():

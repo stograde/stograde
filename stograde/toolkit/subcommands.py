@@ -47,6 +47,7 @@ def do_ci(specs: Dict[str, 'Spec'],
     # retrieved from the environment by process_args,
     # thus we can make the assumption that there is only one result
     # and that it is at index 0
+    assert len(results) == 1
     passing: bool = ci_analyze(results[0])
 
     table = tabulate(results)

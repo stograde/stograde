@@ -76,14 +76,14 @@ def test_clone_url_into(tmpdir, caplog):
 def test_clone_url_permission_denied(tmpdir, capsys):
     with tmpdir.as_cwd():
         cwd = os.getcwd()
-        key_file = os.path.join(cwd, 'totally_a_private_key')
+        key_file = os.path.join(cwd, 'a_private_key')
 
         # Create a fake private key that can't possibly be registered with StoGit
         # (or at least it has a chance of being registered that is lower than
         #  the chance of Great Britain being wiped out by an asteroid in the same
         #  second that the key is generated, according to stackexchange:
         #  https://security.stackexchange.com/a/2947)
-        run(['ssh-keygen', '-b', '4096', '-N', '', '-f', key_file])
+        run(['ssh-keygen', '-b', '8192', '-N', '', '-f', key_file])
 
         # Tell git to use our new 'private key'
         ssh_command = os.getenv('GIT_SSH_COMMAND', '')
@@ -92,7 +92,7 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         try:
             with stogit_as_known_host():
                 clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
-            # raise AssertionError
+            raise AssertionError
         except SystemExit:
             pass
         finally:

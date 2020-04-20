@@ -11,7 +11,7 @@ class SpecFile:
     test_commands: List[str]
     options: FileOptions
 
-    def add_from_tests(self, test_specs: list):
+    def add_from_tests(self, test_specs: List):
         """Support legacy specs with a separate `tests:` tag
 
         :param test_specs: The `list` under `tests:`

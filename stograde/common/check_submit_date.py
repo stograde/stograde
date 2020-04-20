@@ -1,5 +1,4 @@
 from dateutil.parser import parse
-import logging
 import os
 from typing import TYPE_CHECKING
 
@@ -21,20 +20,17 @@ def check_dates(spec: 'Spec', cwd: str) -> str:
 
     for file in spec.files:
         # Run a git log on each file with earliest commits listed first
-        try:
-            status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601', '--',
-                                  os.path.join(cwd, file.file_name)])
-        except Exception as e:
-            logging.debug("CHECK_DATES Exception: {}".format(e))
-            return "ERROR"
+        status, res, _ = run(['git', 'log', '--reverse', '--pretty=format:%ad', '--date=iso8601', '--',
+                              os.path.join(cwd, file.file_name)])
 
-        # If we didn't get an error and got an output, add date to array
         if status is RunStatus.SUCCESS and res:
-            # Parse the first line
+            # If we didn't get an error and got an output, add date to array
+            # Note: a missing file will still return a success code but have no output
             dates.append(parse(res.splitlines()[0]))
 
-    # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
-    if not dates:
-        return "ERROR"
-
-    return min(dates).strftime("%x %X")
+    if dates:
+        # Return earliest date as a string with the format mm/dd/yyyy hh:mm:ss
+        return min(dates).strftime('%x %X')
+    else:
+        # If we couldn't find any dates, say so
+        return 'ERROR: NO DATES'

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from .record_result import RecordResult
 from .submission_warnings import SubmissionWarnings
 from .supporting import import_supporting, remove_supporting
-from ..common import check_dates
+from ..common import get_assignment_first_submit_time
 from ..process_file import process_file
 from ..toolkit import global_vars
 
@@ -27,7 +27,7 @@ def process_assignment(*,
         first_submit = ''
 
         if not global_vars.CI:
-            first_submit = check_dates(spec, cwd)
+            first_submit = get_assignment_first_submit_time(spec, cwd)
 
         result = RecordResult(spec_id=spec.id,
                               first_submission=first_submit,
@@ -36,6 +36,8 @@ def process_assignment(*,
         # prepare the current folder
         supporting_dir, written_files = import_supporting(spec=spec,
                                                           basedir=basedir)
+
+        # process the assignment
         for file_spec in spec.files:
             file_result = process_file(file_spec=file_spec,
                                        cwd=cwd,

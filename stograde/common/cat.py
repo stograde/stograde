@@ -14,5 +14,3 @@ def cat(filename: str) -> Tuple[RunStatus, str]:
             return RunStatus.SUCCESS, infile.read()
     except FileNotFoundError:
         return RunStatus.FILE_NOT_FOUND, ''
-    except:
-        return RunStatus.FAILURE, ''

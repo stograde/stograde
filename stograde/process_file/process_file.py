@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 from .compile_result import CompileResult
 from .file_result import FileResult
 from .test_result import TestResult
-from ..common import cat, run, pipe
+from ..common import cat, get_modification_time, run, pipe
+from ..common.modification_time import ModificationTime
 from ..common.run_status import RunStatus
 from ..formatters.truncate import truncate
 
@@ -15,8 +16,7 @@ if TYPE_CHECKING:
 def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     file_status, file_contents = cat(file_spec.file_name)
     if file_status is RunStatus.SUCCESS:
-        _, last_edit, _ = run(['git', 'log', '-n', '1', '--pretty=format:%cd', '--', file_spec.file_name])
-        file_result.last_modified = last_edit
+        file_result.last_modified, _ = get_modification_time(file_spec.file_name, os.getcwd(), ModificationTime.LATEST)
 
     if file_spec.options.hide_contents:
         file_contents = ''

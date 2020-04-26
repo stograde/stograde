@@ -69,32 +69,23 @@ def test_file(*,
 
         test_cmd, input_for_test = pipe(test_cmd)
 
-        if os.path.exists(os.path.join(cwd, file_spec.file_name)):
-            again = True
-            while again:
-                status, full_result, again = run(test_cmd,
-                                                 input_data=input_for_test,
-                                                 timeout=file_spec.options.timeout,
-                                                 interact=interact)
+        again = True
+        while again:
+            status, full_result, again = run(test_cmd,
+                                             input_data=input_for_test,
+                                             timeout=file_spec.options.timeout,
+                                             interact=interact)
 
-                result = truncate(full_result, file_spec.options.truncate_output)
-                was_truncated = (full_result != result)
+            result = truncate(full_result, file_spec.options.truncate_output)
+            was_truncated = (full_result != result)
 
-                file_results.test_results.append(TestResult(
-                    command=test_cmd,
-                    output=result,
-                    status=status,
-                    error=status != RunStatus.SUCCESS,
-                    truncated=was_truncated,
-                    truncated_after=file_spec.options.truncate_output,
-                ))
-
-        else:
             file_results.test_results.append(TestResult(
                 command=test_cmd,
-                output='{} could not be found.'.format(file_spec.file_name),
-                status=RunStatus.FILE_NOT_FOUND,
-                error=True,
+                output=result,
+                status=status,
+                error=status != RunStatus.SUCCESS,
+                truncated=was_truncated,
+                truncated_after=file_spec.options.truncate_output,
             ))
 
 

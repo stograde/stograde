@@ -29,8 +29,6 @@ def process_student(
         specs: Dict[str, 'Spec'],
         stogit_url: str
 ) -> StudentResult:
-    assignments: List[str] = list(specs.keys())
-
     try:
         prepare_student(student,
                         stogit_url,
@@ -43,7 +41,7 @@ def process_student(
         student_result = StudentResult(name=student)
 
         if record:
-            record_student(student=student_result, specs=specs, assignments=assignments, basedir=basedir,
+            record_student(student=student_result, specs=specs, basedir=basedir,
                            interact=interact, skip_web_compile=skip_web_compile)
 
         if analyze:

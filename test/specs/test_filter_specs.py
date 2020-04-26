@@ -1,4 +1,5 @@
 import os
+from unittest import mock
 
 import pytest
 
@@ -7,53 +8,40 @@ from stograde.specs import filter_assignments
 from stograde.specs.filter_specs import get_spec_paths, find_all_specs, filter_loaded_specs
 from stograde.specs.spec import Spec
 from stograde.specs.util import get_user_architecture
-from stograde.toolkit import global_vars
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 
+@mock.patch('stograde.toolkit.global_vars.CI', False)
 def test_filter_assignments_no_ci():
-    global_vars.CI = False
     assignments = ['hw1', 'hw2']
-    assert filter_assignments(assignments) == assignments
+    assert set(filter_assignments(assignments)) == set(assignments)
 
 
+@mock.patch('stograde.toolkit.global_vars.CI', True)
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'stogradeignore'))
 def test_filter_assignments_ci_some(datafiles, caplog):
-    global_vars.CI = True
     assignments = ['hw1', 'hw2']
 
     with chdir(str(datafiles)):
         assert filter_assignments(assignments) == ['hw2']
 
-    log_messages = {log.msg for log in caplog.records}
-
-    assert log_messages == {'Skipping hw1: ignored by stogradeignore'}
-
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
-
-    global_vars.CI = False
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('Skipping hw1: ignored by stogradeignore', 'WARNING')}
 
 
+@mock.patch('stograde.toolkit.global_vars.CI', True)
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'stogradeignore'))
 def test_filter_assignments_ci_all(datafiles, caplog):
-    global_vars.CI = True
     assignments = ['hw1', 'lab5']
 
     with chdir(str(datafiles)):
         assert not filter_assignments(assignments)
 
-    log_messages = {log.msg for log in caplog.records}
-
-    assert log_messages == {'Skipping hw1: ignored by stogradeignore',
-                            'Skipping lab5: ignored by stogradeignore',
-                            'All assignments ignored by stogradeignore'}
-
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
-
-    global_vars.CI = False
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('Skipping hw1: ignored by stogradeignore', 'WARNING'),
+                            ('Skipping lab5: ignored by stogradeignore', 'WARNING'),
+                            ('All assignments ignored by stogradeignore', 'WARNING')}
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'get_spec_paths'))
@@ -63,7 +51,7 @@ def test_get_spec_paths_all_present(datafiles):
     with chdir(str(datafiles)):
         paths = get_spec_paths(wanted_assignments, str(datafiles))
 
-    assert set(paths) == {os.path.join(datafiles, 'hw1.yaml')}
+    assert paths == [os.path.join(datafiles, 'hw1.yaml')]
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'get_spec_paths'))
@@ -73,14 +61,10 @@ def test_get_spec_paths_some_missing(datafiles, caplog):
     with chdir(str(datafiles)):
         paths = get_spec_paths(wanted_assignments, str(datafiles))
 
-    assert set(paths) == {os.path.join(datafiles, 'hw1.yaml')}
+    assert paths == [os.path.join(datafiles, 'hw1.yaml')]
 
-    log_messages = {log.msg for log in caplog.records}
-
-    assert log_messages == {'No spec for hw4'}
-
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('No spec for hw4', 'WARNING')}
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'get_spec_paths'))
@@ -117,24 +101,19 @@ def test_filter_loaded_specs_wrong_architecture(capsys):
                   'You have {}\n'.format(get_user_architecture())
 
 
+@mock.patch('stograde.toolkit.global_vars.CI', True)
 def test_filter_loaded_specs_wrong_architecture_ci(caplog):
-    global_vars.CI = True
     specs = {
         'hw1': Spec(id='hw1', folder='hw1', architecture='totallynottherightarchitecture')
     }
 
     filtered_specs = filter_loaded_specs(specs)
 
-    log_messages = {log.msg for log in caplog.records}
-
     assert isinstance(filtered_specs, dict)
     assert not filtered_specs
-    assert log_messages == {'Skipping hw1: wrong architecture'}
 
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
-
-    global_vars.CI = False
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('Skipping hw1: wrong architecture', 'WARNING')}
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'get_spec_paths'))
@@ -155,11 +134,9 @@ def test_filter_loaded_specs_missing_dependency(caplog):
 
     filtered_specs = filter_loaded_specs(specs)
 
-    log_messages = {log.msg for log in caplog.records}
-
     assert isinstance(filtered_specs, dict)
     assert not filtered_specs
-    assert log_messages == {'Skipping hw1: required file "definitelymissingdependency.txt" could not be found'}
 
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('Skipping hw1: required file "definitelymissingdependency.txt" could not be found',
+                            'WARNING')}

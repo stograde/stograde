@@ -1,5 +1,4 @@
 import os
-import shutil
 
 import pytest
 
@@ -31,11 +30,6 @@ def test_load_specs_failed_update(datafiles, capsys):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'updated_specs'))
 def test_check_for_spec_updates(datafiles, capsys):
-    try:
-        shutil.rmtree(os.path.join(datafiles, '.git'))
-    except FileNotFoundError:
-        pass
-
     with chdir(str(datafiles)):
         git('init')
         git('config', 'user.email', 'an_email@email_provider.com')
@@ -55,5 +49,3 @@ def test_check_for_spec_updates(datafiles, capsys):
     _, err = capsys.readouterr()
 
     assert err == 'Error fetching specs\nSpec updates found - Updating\n'
-
-    shutil.rmtree(os.path.join(datafiles, '.git'))

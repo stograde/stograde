@@ -10,11 +10,8 @@ def test_pull_success(tmpdir, caplog):
         with caplog.at_level(logging.DEBUG):
             pull('cs251-specs')
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert log_messages == ["Pulling cs251-specs's repository"]
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {("Pulling cs251-specs's repository", 'DEBUG')}
 
 
 def test_pull_fail(tmpdir, capsys):
@@ -24,7 +21,5 @@ def test_pull_fail(tmpdir, capsys):
 
     _, err = capsys.readouterr()
 
-    assert err == 'Student directory not_a_git_repo is not a git repository\n' \
-                  'Try running "stograde repo reclone"\n'
-
-    pass
+    assert err == ('Student directory not_a_git_repo is not a git repository\n'
+                   'Try running "stograde repo reclone"\n')

@@ -1,5 +1,6 @@
 import os
 import sys
+from unittest import mock
 
 import pytest
 
@@ -15,14 +16,15 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 def test_repo_clone(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['repo', 'clone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'clone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
+
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
 
         try:
-            main()
+            with mock.patch('sys.argv', args):
+                main()
         except SystemExit:
             pass
 
@@ -33,14 +35,15 @@ def test_repo_clone(datafiles):
 def test_repo_update(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['repo', 'update', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'update', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
+
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
 
         try:
-            main()
+            with mock.patch('sys.argv', args):
+                main()
         except SystemExit:
             pass
 
@@ -51,9 +54,9 @@ def test_repo_update(datafiles):
 def test_repo_clean(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['repo', 'clean', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'clean', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
+
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
         clone_url('https://github.com/StoDevX/cs251-specs', student_path)
@@ -61,7 +64,8 @@ def test_repo_clean(datafiles):
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 
         try:
-            main()
+            with mock.patch('sys.argv', args):
+                main()
         except SystemExit:
             pass
 
@@ -73,9 +77,9 @@ def test_repo_clean(datafiles):
 def test_repo_reclone(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['repo', 'reclone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'reclone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
+
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
         clone_url('https://github.com/StoDevX/cs251-specs', student_path)
@@ -83,7 +87,8 @@ def test_repo_reclone(datafiles):
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 
         try:
-            main()
+            with mock.patch('sys.argv', args):
+                main()
         except SystemExit:
             pass
 

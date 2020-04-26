@@ -15,29 +15,18 @@ def test_load_stogradeignore(datafiles, caplog):
         with chdir(str(datafiles)):
             assignments = load_stogradeignore()
 
-    log_messages = [log.msg for log in caplog.records]
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {("Ignored specs: ['hw1', 'lab23', 'ws4', 'lab5']", 'DEBUG')}
 
-    assert log_messages == ["Ignored specs: ['hw1', 'lab23', 'ws4', 'lab5']"]
-
-    for log in caplog.records:
-        assert log.levelname == 'DEBUG'
-
-    assert len(assignments) == 4
-    assert 'hw1' in assignments
-    assert 'lab23' in assignments
-    assert 'ws4' in assignments
-    assert 'lab5' in assignments
+    assert set(assignments) == {'hw1', 'lab5', 'lab23', 'ws4'}
 
 
 def test_load_stogradeignore_file_not_found(caplog):
     with caplog.at_level(logging.DEBUG):
         assignments = load_stogradeignore()
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert log_messages == ['No .stogradeignore file found']
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('No .stogradeignore file found', 'DEBUG')}
 
     assert isinstance(assignments, list)
     assert not assignments

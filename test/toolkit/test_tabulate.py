@@ -1,4 +1,4 @@
-from textwrap import dedent
+import textwrap
 
 from stograde.process_assignment.assignment_status import AssignmentStatus
 from stograde.student.student_result import StudentResult
@@ -210,18 +210,16 @@ def test_tabulate():
                       }),
     ]
 
-    assert tabulate(students) == dedent("""
-    USER    | 1 2 3 4 | 1 2 | 1
-    --------+---------+-----+--
-    rives1  | 1 2 - - | 1 2 | 1
-    rives2  | 1 2 3 - | - - | -
-    rives3  | 1 2 3 4 | - - | -
-    """).strip()
+    assert '\n' + tabulate(students) == textwrap.dedent("""
+        USER    | 1 2 3 4 | 1 2 | 1
+        --------+---------+-----+--
+        rives1  | 1 2 - - | 1 2 | 1
+        rives2  | 1 2 3 - | - - | -
+        rives3  | 1 2 3 4 | - - | -""")
 
-    assert tabulate(students, sort_by='count') == dedent("""
-    USER    | 1 2 3 4 | 1 2 | 1
-    --------+---------+-----+--
-    rives1  | 1 2 - - | 1 2 | 1
-    rives3  | 1 2 3 4 | - - | -
-    rives2  | 1 2 3 - | - - | -
-    """).strip()
+    assert '\n' + tabulate(students, sort_by='count') == textwrap.dedent("""
+        USER    | 1 2 3 4 | 1 2 | 1
+        --------+---------+-----+--
+        rives1  | 1 2 - - | 1 2 | 1
+        rives3  | 1 2 3 4 | - - | -
+        rives2  | 1 2 3 - | - - | -""")

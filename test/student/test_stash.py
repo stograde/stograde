@@ -27,6 +27,5 @@ def test_stash(tmpdir, caplog):
         assert os.path.exists('test_file.txt')
         assert not os.path.exists('test_file2.txt')
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert log_messages == ["Stashing .'s repository"]
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {("Stashing .'s repository", 'DEBUG')}

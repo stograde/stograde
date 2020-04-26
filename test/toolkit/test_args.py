@@ -1,5 +1,6 @@
 import os
 import sys
+from unittest import mock
 
 import pytest
 
@@ -12,11 +13,9 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def test_version_flag(capsys):
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['--version']
-
     try:
-        main()
+        with mock.patch('sys.argv', [sys.argv[0], '--version']):
+            main()
     except SystemExit:
         pass
 
@@ -24,10 +23,9 @@ def test_version_flag(capsys):
 
     assert out == 'version {}\n'.format(version)
 
-    sys.argv = [argv[0]] + ['-v']
-
     try:
-        main()
+        with mock.patch('sys.argv', [sys.argv[0], '-v']):
+            main()
     except SystemExit:
         pass
 
@@ -35,17 +33,11 @@ def test_version_flag(capsys):
 
     assert out == 'version {}\n'.format(version)
 
-    sys.argv = argv
 
-
+@mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student7', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
+@mock.patch('sys.argv', [sys.argv[0], 'ci'])
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'student7'))
 def test_process_args_ci(datafiles):
-    os.environ['CI_PROJECT_NAME'] = 'student7'
-    os.environ['CI_PROJECT_NAMESPACE'] = 'sd/s20'
-
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['ci']
-
     with chdir(str(datafiles)):
         args, students, assignments = process_args()
 
@@ -54,76 +46,63 @@ def test_process_args_ci(datafiles):
     assert args['course'] == 'sd/s20'
     assert global_vars.CI is True
 
-    sys.argv = argv
     global_vars.CI = False
 
 
 def test_process_args_record_one_assignment():
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['record', 'hw5', '--student', 'student6']
+    args = [sys.argv[0]] + ['record', 'hw5', '--student', 'student6']
 
-    _, students, assignments = process_args()
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
 
     assert students == ['student6']
     assert assignments == ['hw5']
 
-    sys.argv = argv
-
 
 def test_process_args_record_multiple_assignments():
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['record', 'hw5', 'lab3', 'hw13', '--student', 'student8']
+    args = [sys.argv[0]] + ['record', 'hw5', 'lab3', 'hw13', '--student', 'student8']
 
-    _, students, assignments = process_args()
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
 
     assert students == ['student8']
     assert set(assignments) == {'hw5', 'lab3', 'hw13'}
 
-    sys.argv = argv
-
 
 def test_process_args_table():
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['table', '--student', 'student10']
+    args = [sys.argv[0]] + ['table', '--student', 'student10']
 
-    _, students, assignments = process_args()
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
 
     assert students == ['student10']
     assert not assignments
 
-    sys.argv = argv
-
 
 def test_process_args_web():
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['web', 'hw1', '--student', 'student12', '--port', '12345']
+    args = [sys.argv[0]] + ['web', 'hw1', '--student', 'student12', '--port', '12345']
 
-    _, students, assignments = process_args()
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
 
     assert students == ['student12']
     assert assignments == ['hw1']
 
-    sys.argv = argv
-
 
 def test_process_args_repo():
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['repo', 'clone', '--student', 'student9']
+    args = [sys.argv[0]] + ['repo', 'clone', '--student', 'student9']
 
-    _, students, assignments = process_args()
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
 
     assert students == ['student9']
     assert not assignments
 
-    sys.argv = argv
-
 
 def test_no_sub_command(capsys):
-    argv = sys.argv
-    sys.argv = [argv[0]]
-
     try:
-        main()
+        with mock.patch('sys.argv', [sys.argv[0]]):
+            main()
     except SystemExit:
         pass
 
@@ -131,24 +110,17 @@ def test_no_sub_command(capsys):
 
     assert err == 'Sub-command must be specified\n'
 
-    sys.argv = argv
 
+def test_no_students(tmpdir, capsys):
+    args = [sys.argv[0]] + ['record', 'hw1']
 
-def test_no_students(capsys):
-    try:
-        os.remove('students.txt')
-    except FileNotFoundError:
-        pass
-    argv = sys.argv
-    sys.argv = [argv[0]] + ['record', 'hw1']
-
-    try:
-        main()
-    except SystemExit:
-        pass
+    with tmpdir.as_cwd():
+        try:
+            with mock.patch('sys.argv', args):
+                main()
+        except SystemExit:
+            pass
 
     _, err = capsys.readouterr()
 
     assert err == 'No students selected\nIs your students.txt missing?\n'
-
-    sys.argv = argv

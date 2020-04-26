@@ -26,14 +26,8 @@ def test_ci_analyze_failing_with_missing_file(caplog):
 
     assert passing is False
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert log_messages[0] == 'hw2: File missing.txt missing'
-
-    for log in caplog.records:
-        assert log.levelname == 'ERROR'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('hw2: File missing.txt missing', 'ERROR')}
 
 
 def test_ci_analyze_passing_with_missing_file_because_lab(caplog):
@@ -45,14 +39,8 @@ def test_ci_analyze_passing_with_missing_file_because_lab(caplog):
 
     assert passing is True
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert log_messages[0] == 'lab3: File missing.txt missing'
-
-    for log in caplog.records:
-        assert log.levelname == 'ERROR'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('lab3: File missing.txt missing', 'ERROR')}
 
 
 def test_ci_analyze_failing_with_failed_compile(caplog):
@@ -68,17 +56,10 @@ def test_ci_analyze_failing_with_failed_compile(caplog):
 
     assert passing is False
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert '\n' + log_messages[0] == textwrap.dedent('''
-    hw4: File test_file2.txt compile error:\n
-    \tthe file was not found
-    \tanother line''')
-
-    for log in caplog.records:
-        assert log.levelname == 'ERROR'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('hw4: File test_file2.txt compile error:\n\n'
+                             '\tthe file was not found\n'
+                             '\tanother line', 'ERROR')}
 
 
 def test_ci_analyze_passing_with_failed_compile_because_optional(caplog):
@@ -95,14 +76,8 @@ def test_ci_analyze_passing_with_failed_compile_because_optional(caplog):
 
     assert passing is True
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert log_messages[0] == 'hw5: File test_file3.txt compile error (This did not fail the build)'
-
-    for log in caplog.records:
-        assert log.levelname == 'WARNING'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('hw5: File test_file3.txt compile error (This did not fail the build)', 'WARNING')}
 
 
 def test_ci_analyze_passing_with_failed_compile_because_lab(caplog):
@@ -118,14 +93,7 @@ def test_ci_analyze_passing_with_failed_compile_because_lab(caplog):
 
     assert passing is True
 
-    log_messages = [log.msg for log in caplog.records]
-
-    assert len(log_messages) == 1
-
-    assert '\n' + log_messages[0] == textwrap.dedent('''
-    lab6: File test_file4.txt compile error:\n
-    \tthe file was not found
-    \tanother line''')
-
-    for log in caplog.records:
-        assert log.levelname == 'ERROR'
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('lab6: File test_file4.txt compile error:\n\n'
+                             '\tthe file was not found\n'
+                             '\tanother line', 'ERROR')}

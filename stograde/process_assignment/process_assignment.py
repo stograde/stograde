@@ -40,7 +40,6 @@ def process_assignment(*,
         # process the assignment
         for file_spec in spec.files:
             file_result = process_file(file_spec=file_spec,
-                                       cwd=cwd,
                                        supporting_dir=supporting_dir,
                                        interact=interact,
                                        skip_web_compile=skip_web_compile)

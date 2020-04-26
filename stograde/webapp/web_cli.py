@@ -160,7 +160,6 @@ def ask_file(files: List[str],
                     supporting_dir, written_files = import_supporting(spec=spec,
                                                                       basedir=basedir)
                     process_file(file_spec=file_spec,
-                                 cwd=os.getcwd(),
                                  supporting_dir=supporting_dir,
                                  interact=False,
                                  skip_web_compile=False)

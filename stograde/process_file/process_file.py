@@ -34,11 +34,17 @@ def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
         return True
 
 
+def parse_command(command: str, *, file_name: str, supporting_dir: str) -> str:
+    return command \
+        .replace('$@', './' + file_name) \
+        .replace('$SUPPORT', supporting_dir)
+
+
 def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: str) -> bool:
     for command in file_spec.compile_commands:
-        command = command \
-            .replace('$@', './' + file_spec.file_name) \
-            .replace('$SUPPORT', supporting_dir)
+        command = parse_command(command,
+                                file_name=file_spec.file_name,
+                                supporting_dir=supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
         status, compile_output, _ = run(cmd, timeout=30, input_data=input_for_cmd)
@@ -56,18 +62,17 @@ def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: 
 def test_file(*,
               file_spec: 'SpecFile',
               file_results: FileResult,
-              cwd: str,
               supporting_dir: str,
               interact: bool):
-    for test_cmd in file_spec.test_commands:
-        if not test_cmd:
+    for command in file_spec.test_commands:
+        if not command:
             continue
 
-        test_cmd = test_cmd \
-            .replace('$@', './' + file_spec.file_name) \
-            .replace('$SUPPORT', supporting_dir)
+        command = parse_command(command,
+                                file_name=file_spec.file_name,
+                                supporting_dir=supporting_dir)
 
-        test_cmd, input_for_test = pipe(test_cmd)
+        test_cmd, input_for_test = pipe(command)
 
         again = True
         while again:
@@ -80,7 +85,7 @@ def test_file(*,
             was_truncated = (full_result != result)
 
             file_results.test_results.append(TestResult(
-                command=test_cmd,
+                command=command,
                 output=result,
                 status=status,
                 error=status != RunStatus.SUCCESS,
@@ -91,27 +96,22 @@ def test_file(*,
 
 def process_file(*,
                  file_spec: 'SpecFile',
-                 cwd: str,
                  supporting_dir: str,
                  interact: bool,
                  skip_web_compile: bool) -> FileResult:
     file_result = FileResult(file_name=file_spec.file_name)
 
     should_continue = get_file(file_spec, file_result)
-    if not should_continue or skip_web_compile and file_spec.options.web_file:
-        return file_result
 
-    should_continue = compile_file(file_spec=file_spec,
-                                   results=file_result,
-                                   supporting_dir=supporting_dir)
+    if should_continue and not (skip_web_compile and file_spec.options.web_file):
+        should_continue = compile_file(file_spec=file_spec,
+                                       results=file_result,
+                                       supporting_dir=supporting_dir)
 
-    if not should_continue or file_spec.options.web_file:
-        return file_result
-
-    test_file(file_spec=file_spec,
-              file_results=file_result,
-              cwd=cwd,
-              supporting_dir=supporting_dir,
-              interact=interact)
+    if should_continue and not file_spec.options.web_file:
+        test_file(file_spec=file_spec,
+                  file_results=file_result,
+                  supporting_dir=supporting_dir,
+                  interact=interact)
 
     return file_result

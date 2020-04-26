@@ -12,6 +12,7 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 ci_args = [sys.argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 
 
+pytest.skip('testing coverage without integration tests', allow_module_level=True)
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student2', 'CI_PROJECT_NAMESPACE': 'sd/s20'})

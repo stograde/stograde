@@ -3,7 +3,7 @@ import os
 
 from stograde.common import chdir
 from stograde.toolkit.stogit_url import compute_stogit_url, get_course_from_specs
-from test.common.test_find_unmerged_branches_in_cwd import git
+from test.utils import git
 
 
 def test_compute_stogit_url_infer_course(tmpdir, capsys):

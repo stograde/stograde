@@ -33,6 +33,8 @@ file_results = [FileResult(file_name='test_file.txt',
                            optional=True)]
 
 
+# ----------------------------- format_assignment_markdown -----------------------------
+
 def test_format_assignment_markdown():
     formatted = format_assignment_markdown(RecordResult(spec_id='lab1',
                                                         student='student4',
@@ -76,6 +78,8 @@ def test_format_assignment_markdown():
         ''')
 
 
+# ----------------------------- format_files_list -----------------------------
+
 def test_format_files_list():
     formatted = format_files_list(file_results)
 
@@ -110,6 +114,8 @@ def test_format_files_list():
         ''')
 
 
+# ----------------------------- format_header -----------------------------
+
 def test_format_header_no_warnings():
     formatted = format_header(RecordResult('hw1', 'student1', '4/14/2020 13:22:45'), '')
 
@@ -128,6 +134,8 @@ def test_format_header_with_warnings():
         a warning
         ''')
 
+
+# ----------------------------- format_warnings -----------------------------
 
 def test_format_warnings_none():
     assert format_warnings(SubmissionWarnings()) == ''
@@ -149,6 +157,8 @@ def test_format_warnings_unmerged_branches():
 def test_format_warnings_record_error():
     assert format_warnings(SubmissionWarnings(recording_err='an error occurred')) == '**Warning: an error occurred**'
 
+
+# ----------------------------- format_file -----------------------------
 
 def test_format_file():
     formatted = format_file(file_results[0])
@@ -198,11 +208,15 @@ def test_format_file_optional():
         ''')
 
 
+# ----------------------------- get_file_extension -----------------------------
+
 def test_get_file_extension():
     assert get_file_extension('file.txt') == 'txt'
     assert get_file_extension('another_file.tar.gz') == 'gz'
     assert get_file_extension('no_extension') == ''
 
+
+# ----------------------------- format_file_contents -----------------------------
 
 def test_format_file_contents_empty():
     assert format_file_contents('', 'some_file.txt') == '*File empty*'
@@ -225,6 +239,8 @@ def test_format_file_contents_with_contents():
         ```
         ''')
 
+
+# ----------------------------- format_file_compilation -----------------------------
 
 def test_format_file_compilation_no_warnings():
     formatted = format_file_compilation([compile_results[0]])
@@ -251,6 +267,8 @@ def test_format_file_compilation_multiple_commands():
         ```
         ''')
 
+
+# ----------------------------- format_file_tests -----------------------------
 
 def test_format_file_tests_no_output():
     formatted = format_file_tests([test_results[0]])

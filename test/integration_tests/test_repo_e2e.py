@@ -6,7 +6,7 @@ import pytest
 from stograde.common import chdir
 from stograde.student import clone_url
 from stograde.toolkit.__main__ import main
-from test.common.test_find_unmerged_branches_in_cwd import touch
+from test.utils import touch
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

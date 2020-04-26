@@ -1,5 +1,5 @@
 from stograde.student import reset
-from test.common.test_find_unmerged_branches_in_cwd import git, touch
+from test.utils import git, touch
 
 
 def test_reset(tmpdir):

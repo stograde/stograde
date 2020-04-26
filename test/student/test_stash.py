@@ -2,7 +2,7 @@ import logging
 import os
 
 from stograde.student import stash
-from test.common.test_find_unmerged_branches_in_cwd import git, touch
+from test.utils import git, touch
 
 
 def test_stash(tmpdir, caplog):

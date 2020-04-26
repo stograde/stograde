@@ -5,7 +5,7 @@ from stograde.common.modification_time import ModificationTime
 from stograde.specs.file_options import FileOptions
 from stograde.specs.spec import Spec
 from stograde.specs.spec_file import SpecFile
-from test.common.test_find_unmerged_branches_in_cwd import git, touch
+from test.utils import git, touch
 
 
 def test_get_modification_time_first(tmpdir):

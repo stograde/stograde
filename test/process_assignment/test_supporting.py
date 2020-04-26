@@ -6,7 +6,7 @@ from stograde.common import chdir
 from stograde.process_assignment import import_supporting, remove_supporting
 from stograde.specs.spec import Spec
 from stograde.specs.supporting_file import SupportingFile
-from test.common.test_find_unmerged_branches_in_cwd import touch
+from test.utils import touch
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

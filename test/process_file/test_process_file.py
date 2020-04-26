@@ -11,7 +11,7 @@ from stograde.process_file.process_file import get_file, parse_command, compile_
 from stograde.process_file.test_result import TestResult
 from stograde.specs.file_options import FileOptions
 from stograde.specs.spec_file import SpecFile
-from test.common.test_find_unmerged_branches_in_cwd import git, touch
+from test.utils import git, touch
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

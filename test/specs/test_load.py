@@ -6,7 +6,7 @@ import pytest
 from stograde.common import chdir
 from stograde.specs import load_specs
 from stograde.specs.load import check_for_spec_updates
-from test.common.test_find_unmerged_branches_in_cwd import git
+from test.utils import git
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 

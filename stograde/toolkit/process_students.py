@@ -5,7 +5,7 @@ from typing import List
 
 from ..common import chdir
 from ..specs.spec import Spec
-from ..student import process_student
+from ..student.process_student import process_student
 from ..student.student_result import StudentResult
 from ..toolkit.progress_bar import make_progress_bar
 

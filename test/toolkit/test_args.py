@@ -102,7 +102,7 @@ def test_process_args_repo():
 def test_no_sub_command(capsys):
     try:
         with mock.patch('sys.argv', [sys.argv[0]]):
-            main()
+            process_args()
     except SystemExit:
         pass
 
@@ -117,7 +117,7 @@ def test_no_students(tmpdir, capsys):
     with tmpdir.as_cwd():
         try:
             with mock.patch('sys.argv', args):
-                main()
+                process_args()
         except SystemExit:
             pass
 

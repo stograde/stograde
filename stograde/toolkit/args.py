@@ -3,7 +3,6 @@
 import argparse
 from glob import glob
 import logging
-from logging import warning, debug
 from natsort import natsorted
 import os
 import re
@@ -11,7 +10,7 @@ import sys
 from typing import Any, Dict, List, Tuple
 
 from . import global_vars
-from .get_students import get_students as load_students_from_file
+from .get_students import get_students
 from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
 from ..common import flatten, version
 from ..specs import get_supported_courses
@@ -140,37 +139,6 @@ def build_argparser():
     return parser
 
 
-def get_students(args: Dict[str, Any]) -> List[str]:
-    """Get students from the command line or the students.txt file.
-    Passing any students on the command line will ignore the file contents"""
-    sections = args['sections']
-    students = args['students']
-
-    people = [student for group in students for student in group]
-    if not people:
-        _all_students = load_students_from_file()
-        if sections:
-            collected = []
-            for section_name in sections:
-                student_set = []
-                prefixed = 'section-{}'.format(section_name)
-
-                if section_name in _all_students:
-                    student_set = _all_students[section_name]
-                elif prefixed in _all_students:
-                    student_set = _all_students[prefixed]
-                else:
-                    warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'
-                            .format(section_name))
-
-                collected.append(student_set)
-            people = [student for group in collected for student in group]
-        else:
-            people = list(flatten([_all_students[section] for section in _all_students]))
-
-    return sorted(set(people))
-
-
 def get_ci_assignments() -> List[str]:
     """Find assignments in the student's repository during a CI job"""
     all_assignments: List[str] = []
@@ -238,18 +206,18 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
 
 def debug_print_args(args):
-    debug("Command Line Arguments:")
+    logging.debug("Command Line Arguments:")
     for arg, value in args.items():
-        debug("{}: {}".format(arg, str(value)))
+        logging.debug("{}: {}".format(arg, str(value)))
 
 
 def debug_print_students(students):
-    debug("Students:")
+    logging.debug("Students:")
     debug_print_grid(students)
 
 
 def debug_print_assignments(things):
-    debug("Assignments:")
+    logging.debug("Assignments:")
     debug_print_grid(things)
 
 
@@ -258,5 +226,5 @@ def debug_print_grid(items):
     for i, item in enumerate(items):
         line += item.ljust(10)
         if i % 5 == 4:
-            debug(line)
+            logging.debug(line)
             line = ""

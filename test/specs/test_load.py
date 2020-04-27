@@ -2,10 +2,9 @@ import os
 
 import pytest
 
-from stograde.common import chdir
 from stograde.specs import load_specs
 from stograde.specs.load import check_for_spec_updates
-from test.utils import git
+from test.utils import git, touch
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -28,24 +27,40 @@ def test_load_specs_failed_update(datafiles, capsys):
     assert err == 'Error fetching specs\ngit log failed\n'
 
 
-@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'updated_specs'))
-def test_check_for_spec_updates(datafiles, capsys):
-    with chdir(str(datafiles)):
+def test_check_for_spec_updates_update_found(tmpdir, capsys):
+    with tmpdir.as_cwd():
         git('init')
         git('config', 'user.email', 'an_email@email_provider.com')
         git('config', 'user.name', 'Some Random Name')
+        touch('hw1.yaml')
         git('add', 'hw1.yaml')
         git('commit', '-m', '"Add hw1"')
         git('branch', 'origin/master')
         git('checkout', 'origin/master')
-        with open('hw2.yaml', 'w') as hw2:
-            hw2.write('---\nassignment: hw2\n')
+        touch('hw2.yaml')
         git('add', 'hw2.yaml')
         git('commit', '-m', '"Create hw2"')
         git('checkout', 'master')
 
-    check_for_spec_updates(str(datafiles))
+        check_for_spec_updates(os.getcwd())
 
     _, err = capsys.readouterr()
 
     assert err == 'Error fetching specs\nSpec updates found - Updating\n'
+
+
+def test_check_for_spec_updates_no_update(tmpdir, capsys):
+    with tmpdir.as_cwd():
+        git('init')
+        git('config', 'user.email', 'an_email@email_provider.com')
+        git('config', 'user.name', 'Some Random Name')
+        touch('hw1.yaml')
+        git('add', 'hw1.yaml')
+        git('commit', '-m', '"Add hw1"')
+        git('branch', 'origin/master')
+
+        check_for_spec_updates(os.getcwd())
+
+    _, err = capsys.readouterr()
+
+    assert err == 'Error fetching specs\n'

@@ -1,7 +1,7 @@
 import logging
 import os
 from glob import iglob
-from typing import Dict, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from .stogradeignore import load_stogradeignore
 from ..specs.util import check_architecture, check_spec_dependencies
@@ -51,14 +51,13 @@ def find_all_specs(spec_dir: str) -> List[str]:
     return list(iglob(os.path.join(spec_dir, '*.yaml')))
 
 
-def filter_loaded_specs(specs: Dict[str, 'Spec']) -> Dict[str, 'Spec']:
+def filter_loaded_specs(specs: List['Spec']) -> List['Spec']:
     """Filters the loaded specs based on properties such as required architecture"""
-    remaining_specs: Dict[str, 'Spec'] = {}
+    remaining_specs: List['Spec'] = []
 
-    for spec_id in specs.keys():
-        spec_to_use = specs[spec_id]
+    for spec_to_use in specs:
         if not check_spec_dependencies(spec_to_use) or not check_architecture(spec_to_use):
             continue
-        remaining_specs[spec_id] = spec_to_use
+        remaining_specs.append(spec_to_use)
 
     return remaining_specs

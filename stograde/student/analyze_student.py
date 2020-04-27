@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from ..common import chdir
 from ..process_assignment.assignment_status import AssignmentStatus
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ..student.student_result import StudentResult
 
 
-def analyze_student(student: 'StudentResult', specs: Dict[str, 'Spec'], check_for_branches: bool):
+def analyze_student(student: 'StudentResult', specs: List['Spec'], check_for_branches: bool):
     logging.debug("Analyzing {}'s assignments".format(student.name))
 
     directory = student.name if not global_vars.CI else '.'
@@ -22,7 +22,7 @@ def analyze_student(student: 'StudentResult', specs: Dict[str, 'Spec'], check_fo
     with chdir(directory):
         if check_for_branches and not global_vars.CI:
             find_unmerged_branches(student)
-        for _, spec in specs.items():
+        for spec in specs:
             analyses[spec.id] = analyze_assignment(spec)
 
     for name, analysis in analyses.items():

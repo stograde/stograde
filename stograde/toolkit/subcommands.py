@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from ..student.student_result import StudentResult
 
 
-def do_ci(specs: Dict[str, 'Spec'],
+def do_ci(specs: List['Spec'],
           students: List[str],
           base_dir: str,
           stogit_url: str,
@@ -58,7 +58,7 @@ def do_ci(specs: Dict[str, 'Spec'],
         sys.exit(1)
 
 
-def do_record(specs: Dict[str, 'Spec'],
+def do_record(specs: List['Spec'],
               students: List[str],
               base_dir: str,
               stogit_url: str,
@@ -103,7 +103,7 @@ def do_record(specs: Dict[str, 'Spec'],
     save_recordings(results, table, gist=gist)
 
 
-def do_table(specs: Dict[str, 'Spec'],
+def do_table(specs: List['Spec'],
              students: List[str],
              base_dir: str,
              stogit_url: str,
@@ -135,7 +135,7 @@ def do_table(specs: Dict[str, 'Spec'],
     print('\n' + tabulate(results, sort_by=sort_by, highlight_partials=not no_partials) + '\n')
 
 
-def do_web(specs: Dict[str, 'Spec'],
+def do_web(specs: List['Spec'],
            students: List[str],
            base_dir: str,
            stogit_url: str,
@@ -146,7 +146,7 @@ def do_web(specs: Dict[str, 'Spec'],
     skip_repo_update: bool = args['skip_repo_update']
     workers: int = args['workers'] if not global_vars.DEBUG else 1
     port: int = args['port']
-    spec: 'Spec' = list(specs.values())[0]
+    spec: 'Spec' = specs[0]
 
     if not is_web_spec(spec):
         print("No web files in assignment {}".format(spec.id))

@@ -20,10 +20,10 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_record_student(datafiles):
     student_result = StudentResult('student1')
-    specs = {'hw1': Spec('hw1', 'hw1', architecture=None,
-                         files=[SpecFile('a_file.txt', [], [], FileOptions())]),
-             'hw2': Spec('hw2', 'hw2', architecture=None,
-                         files=[SpecFile('b_file.txt', [], [], FileOptions())])}
+    specs = [Spec('hw1', 'hw1', architecture=None,
+                  files=[SpecFile('a_file.txt', [], [], FileOptions())]),
+             Spec('hw2', 'hw2', architecture=None,
+                  files=[SpecFile('b_file.txt', [], [], FileOptions())])]
 
     with chdir(str(datafiles)):
         with chdir('student1'):
@@ -58,7 +58,7 @@ def test_record_student(datafiles):
 
 def test_record_student_no_specs():
     student = StudentResult('name')
-    record_student(student=student, specs={}, basedir='.',
+    record_student(student=student, specs=[], basedir='.',
                    interact=False, skip_web_compile=False)
 
     assert student.results == []
@@ -71,9 +71,7 @@ def test_record_student_assignment_folder_missing(datafiles, caplog):
     with chdir(str(datafiles)):
         with caplog.at_level(logging.DEBUG):
             record_student(student=student,
-                           specs={
-                               'hw1': Spec('hw1', 'another_folder', None)
-                           },
+                           specs=[Spec('hw1', 'another_folder', None)],
                            basedir='.',
                            interact=False,
                            skip_web_compile=False)

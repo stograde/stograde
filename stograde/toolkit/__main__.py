@@ -3,7 +3,7 @@ import logging
 import os.path
 import sys
 from os import getcwd
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from . import global_vars
 from .args import process_args
@@ -65,9 +65,9 @@ def main():
 
     assignments = filter_assignments(assignments)
 
-    loaded_specs: Dict[str, 'Spec'] = load_specs(assignments,
-                                                 data_dir=os.path.join(base_dir, 'data'),
-                                                 skip_spec_update=skip_spec_update)
+    loaded_specs: List['Spec'] = load_specs(assignments,
+                                            data_dir=os.path.join(base_dir, 'data'),
+                                            skip_spec_update=skip_spec_update)
 
     if not loaded_specs:
         print('No specs loaded!')

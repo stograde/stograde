@@ -11,7 +11,6 @@ from stograde.specs.file_options import FileOptions
 from stograde.specs.spec import Spec
 from stograde.specs.spec_file import SpecFile
 from stograde.student.student_result import StudentResult
-from stograde.toolkit import global_vars
 from test.utils import git, touch
 
 _dir = os.path.dirname(os.path.realpath(__file__))

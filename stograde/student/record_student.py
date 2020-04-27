@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from ..common import chdir
 from ..process_assignment.process_assignment import process_assignment
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 def record_student(*,
                    student: 'StudentResult',
-                   specs: Dict[str, 'Spec'],
+                   specs: List['Spec'],
                    basedir: str,
                    interact: bool,
                    skip_web_compile: bool):
@@ -25,7 +25,7 @@ def record_student(*,
         with chdir(directory):
             find_unmerged_branches(student)
 
-            for _, spec in specs.items():
+            for spec in specs:
                 logging.debug("Recording {}'s {}".format(student.name, spec.id))
                 if os.path.exists(spec.folder):
                     with chdir(spec.folder):

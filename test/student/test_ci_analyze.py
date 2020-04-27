@@ -1,5 +1,3 @@
-import textwrap
-
 from stograde.common.run_status import RunStatus
 from stograde.process_assignment.record_result import RecordResult
 from stograde.process_file.compile_result import CompileResult

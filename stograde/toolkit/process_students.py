@@ -1,7 +1,7 @@
 import functools
 import logging
 from concurrent.futures import as_completed, ProcessPoolExecutor
-from typing import Dict, List
+from typing import List
 
 from ..common import chdir
 from ..specs.spec import Spec
@@ -10,7 +10,7 @@ from ..student.student_result import StudentResult
 from ..toolkit.progress_bar import make_progress_bar
 
 
-def process_students(specs: Dict[str, 'Spec'],
+def process_students(specs: List['Spec'],
                      students: List[str],
                      *,
                      analyze: bool,

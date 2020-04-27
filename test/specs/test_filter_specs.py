@@ -76,10 +76,8 @@ def test_find_all_specs(datafiles):
 
 
 def test_filter_loaded_specs():
-    specs = {
-        'hw1': Spec(id='hw1', folder='hw1', architecture=None),
-        'hw2': Spec(id='hw2', folder='hw2', architecture=None),
-    }
+    specs = [Spec(id='hw1', folder='hw1', architecture=None),
+             Spec(id='hw2', folder='hw2', architecture=None)]
 
     filtered_specs = filter_loaded_specs(specs)
 
@@ -87,15 +85,13 @@ def test_filter_loaded_specs():
 
 
 def test_filter_loaded_specs_wrong_architecture(capsys):
-    specs = {
-        'hw1': Spec(id='hw1', folder='hw1', architecture='totallynottherightarchitecture')
-    }
+    specs = [Spec(id='hw1', folder='hw1', architecture='totallynottherightarchitecture')]
 
     filtered_specs = filter_loaded_specs(specs)
 
     _, err = capsys.readouterr()
 
-    assert isinstance(filtered_specs, dict)
+    assert isinstance(filtered_specs, list)
     assert not filtered_specs
     assert err == 'hw1 requires totallynottherightarchitecture architecture. ' \
                   'You have {}\n'.format(get_user_architecture())
@@ -103,13 +99,11 @@ def test_filter_loaded_specs_wrong_architecture(capsys):
 
 @mock.patch('stograde.toolkit.global_vars.CI', True)
 def test_filter_loaded_specs_wrong_architecture_ci(caplog):
-    specs = {
-        'hw1': Spec(id='hw1', folder='hw1', architecture='totallynottherightarchitecture')
-    }
+    specs = [Spec(id='hw1', folder='hw1', architecture='totallynottherightarchitecture')]
 
     filtered_specs = filter_loaded_specs(specs)
 
-    assert isinstance(filtered_specs, dict)
+    assert isinstance(filtered_specs, list)
     assert not filtered_specs
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
@@ -118,9 +112,7 @@ def test_filter_loaded_specs_wrong_architecture_ci(caplog):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'get_spec_paths'))
 def test_filter_loaded_specs_present_dependency(datafiles):
-    specs = {
-        'hw1': Spec(id='hw1', folder='hw1', architecture=None, dependencies=[os.path.join(datafiles, 'hw1.yaml')])
-    }
+    specs = [Spec(id='hw1', folder='hw1', architecture=None, dependencies=[os.path.join(datafiles, 'hw1.yaml')])]
 
     filtered_specs = filter_loaded_specs(specs)
 
@@ -128,15 +120,13 @@ def test_filter_loaded_specs_present_dependency(datafiles):
 
 
 def test_filter_loaded_specs_missing_dependency(caplog):
-    specs = {
-        'hw1': Spec(id='hw1', folder='hw1', architecture=None, dependencies=['definitelymissingdependency.txt'])
-    }
+    specs = [Spec(id='hw1', folder='hw1', architecture=None, dependencies=['definitelymissingdependency.txt'])]
 
     filtered_specs = filter_loaded_specs(specs)
 
-    assert isinstance(filtered_specs, dict)
+    assert isinstance(filtered_specs, list)
     assert not filtered_specs
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
     assert log_messages == {('Skipping hw1: required file "definitelymissingdependency.txt" could not be found',
-                            'WARNING')}
+                             'WARNING')}

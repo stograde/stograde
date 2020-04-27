@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Union, Dict
 
 from .file_options import FileOptions
@@ -7,9 +7,9 @@ from .file_options import FileOptions
 @dataclass
 class SpecFile:
     file_name: str
-    compile_commands: List[str]
-    test_commands: List[str]
-    options: FileOptions
+    compile_commands: List[str] = field(default_factory=list)
+    test_commands: List[str] = field(default_factory=list)
+    options: FileOptions = field(default_factory=FileOptions)
 
     def add_from_tests(self, test_specs: List):
         """Support legacy specs with a separate `tests:` tag

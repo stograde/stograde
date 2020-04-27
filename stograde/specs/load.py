@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Dict, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from .filter_specs import filter_loaded_specs, get_spec_paths
 from .spec import create_spec
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .spec import Spec
 
 
-def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = False) -> Dict[str, 'Spec']:
+def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = False) -> List['Spec']:
     """Load the desired specs from the specs/ directory, filtering out any that are missing
 
     data/ directory should exist by this point with a repository
@@ -26,7 +26,6 @@ def load_specs(wanted_specs: List[str], data_dir: str, skip_spec_update: bool = 
     specs_to_load = get_spec_paths(wanted_specs, spec_dir)
 
     loaded_specs = [create_spec(filename, spec_dir) for filename in specs_to_load]  # Create list of Specs
-    loaded_specs = {spec.id: spec for spec in loaded_specs}  # Convert to dict (id to Spec)
     loaded_specs = filter_loaded_specs(loaded_specs)
 
     return loaded_specs

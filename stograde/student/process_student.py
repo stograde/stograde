@@ -1,4 +1,4 @@
-from typing import Dict, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from .analyze_student import analyze_student
 from .record_student import record_student
@@ -26,7 +26,7 @@ def process_student(
         skip_branch_check: bool,
         skip_repo_update: bool,
         skip_web_compile: bool,
-        specs: Dict[str, 'Spec'],
+        specs: List['Spec'],
         stogit_url: str
 ) -> StudentResult:
     try:

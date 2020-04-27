@@ -1,4 +1,6 @@
+import re
 import textwrap
+from unittest import mock
 
 from stograde.common.run_status import RunStatus
 from stograde.formatters.markdown import format_file_contents, get_file_extension, format_file_compilation, \
@@ -76,6 +78,30 @@ def test_format_assignment_markdown():
         yet_another_file.txt
         ```\n\n\n\n
         ''')
+
+
+def test_format_assignment_markdown_error():
+    # noinspection PyTypeChecker
+    formatted = format_assignment_markdown(RecordResult(spec_id='hw1', student='student5',
+                                                        file_results=5))
+
+    assert formatted['assignment'] == 'hw1'
+    assert formatted['student'] == 'student5'
+    assert formatted['type'] == 'md'
+    assert re.compile(r"^```\nTraceback \(most recent call last\):"
+                      r"[\s\S]*"
+                      r"TypeError: 'int' object is not iterable\n\n```$").match(formatted['content'])
+
+
+@mock.patch('stograde.toolkit.global_vars.DEBUG', True)
+def test_format_assignment_markdown_error_debug():
+    try:
+        # noinspection PyTypeChecker
+        format_assignment_markdown(RecordResult(spec_id='hw1', student='student5',
+                                                file_results=5))
+        raise AssertionError
+    except TypeError:
+        pass
 
 
 # ----------------------------- format_files_list -----------------------------

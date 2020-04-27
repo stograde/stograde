@@ -67,10 +67,10 @@ def test_process_assignment_with_error(mock_function):
     assert result.warnings == SubmissionWarnings(recording_err="'An exception was thrown'")
 
 
+@mock.patch('stograde.toolkit.global_vars.DEBUG', True)
 @mock.patch('stograde.process_assignment.process_assignment.remove_execs',
             side_effect=KeyError('An exception was thrown'))
 def test_process_assignment_with_error_debug(mock_function):
-    global_vars.DEBUG = True
     student_result = StudentResult('student1')
     spec = Spec('hw1', 'hw1', architecture=None)
     try:
@@ -84,7 +84,6 @@ def test_process_assignment_with_error_debug(mock_function):
         pass
 
     assert mock_function.called
-    global_vars.DEBUG = False
 
 
 @mock.patch('stograde.toolkit.global_vars.CI', True)

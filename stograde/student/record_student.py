@@ -29,11 +29,11 @@ def record_student(*,
                 logging.debug("Recording {}'s {}".format(student.name, spec.id))
                 if os.path.exists(spec.folder):
                     with chdir(spec.folder):
-                        assignment_result = process_assignment(student=student,
-                                                               spec=spec,
-                                                               basedir=basedir,
-                                                               interact=interact,
-                                                               skip_web_compile=skip_web_compile)
+                        assignment_result: RecordResult = process_assignment(student=student,
+                                                                             spec=spec,
+                                                                             basedir=basedir,
+                                                                             interact=interact,
+                                                                             skip_web_compile=skip_web_compile)
                 else:
                     assignment_result = RecordResult(spec_id=spec.id,
                                                      student=student.name)

@@ -1,4 +1,3 @@
-from .analyze_student import analyze_student
 from .checkout import checkout_date, checkout_ref
 from .ci_analyze import ci_analyze
 from .clone import clone_student, clone_url

@@ -69,7 +69,7 @@ def prepare_student(student: str,
                     do_clone: bool,
                     do_pull: bool,
                     do_checkout: bool,
-                    date: str = ''):
+                    date: str = '') -> str:
     if do_clean:
         remove(student)
     if do_clone:
@@ -79,21 +79,5 @@ def prepare_student(student: str,
         pull(student)
     if do_checkout:
         checkout_date(student, date=date)
-
-
-def prepare_student_repo(student: str,
-                         stogit_url: str,
-                         do_clean: bool,
-                         do_clone: bool,
-                         do_pull: bool,
-                         do_checkout: bool,
-                         date: str = '') -> str:
-    prepare_student(student,
-                    stogit_url,
-                    do_clean,
-                    do_clone,
-                    do_pull,
-                    do_checkout,
-                    date)
 
     return student

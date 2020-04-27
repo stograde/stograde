@@ -12,7 +12,7 @@ from .process_students import process_students
 from .save_recordings import save_recordings
 from .tabulate import tabulate
 from ..common import chdir
-from ..student import ci_analyze, prepare_student_repo
+from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
 
 if TYPE_CHECKING:
@@ -172,7 +172,7 @@ def do_clean(students: List[str],
              workers: int):
     with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=True,
             do_clone=True,
@@ -193,7 +193,7 @@ def do_update(students: List[str],
               workers: int):
     with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=False,
             do_clone=True,

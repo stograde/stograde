@@ -9,7 +9,7 @@ from ..process_assignment import import_supporting, remove_supporting
 from ..process_file import process_file
 from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
-from ..student.process_student import prepare_student_repo
+from ..student.process_student import prepare_student
 from ..toolkit.process_repos import process_parallel_repos
 
 if TYPE_CHECKING:
@@ -37,7 +37,7 @@ def launch_cli(base_dir: str,
 
     with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=clean,
             do_clone=not skip_repo_update,

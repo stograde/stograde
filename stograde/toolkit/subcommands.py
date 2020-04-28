@@ -7,7 +7,7 @@ from threading import Thread
 from typing import Any, Dict, List, TYPE_CHECKING
 
 from . import global_vars
-from .process_repos import process_parallel_repos
+from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
 from .tabulate import tabulate
@@ -180,10 +180,10 @@ def do_clean(students: List[str],
             do_checkout=False
         )
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
 
 
 def do_update(students: List[str],
@@ -201,7 +201,7 @@ def do_update(students: List[str],
             do_checkout=False
         )
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)

@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, List
 from . import global_vars
 from .args import process_args
 from .check_dependencies import check_dependencies
+from .create_students_dir import create_students_dir
 from .find_update import update_available
-from .process_repos import create_students_dir
 from .stogit_url import compute_stogit_url
 from ..specs import create_data_dir, filter_assignments, find_all_specs, load_specs
 

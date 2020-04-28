@@ -9,8 +9,8 @@ from ..process_assignment import import_supporting, remove_supporting
 from ..process_file import process_file
 from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
+from ..toolkit.process_parallel import process_parallel
 from ..student.process_student import prepare_student
-from ..toolkit.process_repos import process_parallel_repos
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -45,10 +45,10 @@ def launch_cli(base_dir: str,
             do_checkout=True,
             date=date)
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
 
     while True:
         student = ask_student(usernames)

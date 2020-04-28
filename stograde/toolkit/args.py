@@ -205,26 +205,26 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     return args, students, assignments
 
 
-def debug_print_args(args):
+def debug_print_args(args: Dict[str, Any]):
     logging.debug("Command Line Arguments:")
     for arg, value in args.items():
         logging.debug("{}: {}".format(arg, str(value)))
 
 
-def debug_print_students(students):
+def debug_print_students(students: List[str]):
     logging.debug("Students:")
     debug_print_grid(students)
 
 
-def debug_print_assignments(things):
+def debug_print_assignments(assignments: List[str]):
     logging.debug("Assignments:")
-    debug_print_grid(things)
+    debug_print_grid(assignments)
 
 
-def debug_print_grid(items):
+def debug_print_grid(items: List[str]):
     line = ""
     for i, item in enumerate(items):
         line += item.ljust(10)
-        if i % 5 == 4:
+        if i % 5 == 4 or i == len(items) - 1:
             logging.debug(line)
             line = ""

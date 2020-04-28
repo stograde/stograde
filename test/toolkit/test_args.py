@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from unittest import mock
@@ -7,7 +8,7 @@ import pytest
 from stograde.common import version, chdir
 from stograde.toolkit import global_vars
 from stograde.toolkit.__main__ import main
-from stograde.toolkit.args import process_args
+from stograde.toolkit.args import process_args, debug_print_grid
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -124,3 +125,12 @@ def test_no_students(tmpdir, capsys):
     _, err = capsys.readouterr()
 
     assert err == 'No students selected\nIs your students.txt missing?\n'
+
+
+def test_debug_print_grid(caplog):
+    with caplog.at_level(logging.DEBUG):
+        debug_print_grid(['item', 'item2', 'a', 'bc', 'item5', 'item6', 'last_item', 'last_item'])
+
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('item      item2     a         bc        item5     ', 'DEBUG'),
+                            ('item6     last_item last_item ', 'DEBUG')}

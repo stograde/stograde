@@ -1,28 +1,10 @@
-import contextlib
 import logging
 import os
-from pathlib import Path
 from unittest import mock
 
 from stograde.common import run
 from stograde.student import clone_url, clone_student
-from stograde.toolkit.check_dependencies import is_stogit_known_host
-
-
-@contextlib.contextmanager
-def stogit_as_known_host():
-    modify_known_hosts = not is_stogit_known_host()
-
-    try:
-        if modify_known_hosts:
-            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
-            with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
-                known_hosts.write(out)
-                known_hosts.close()
-        yield
-    finally:
-        if modify_known_hosts:
-            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
+from test.toolkit.test_check_dependencies import stogit_as_known_host
 
 
 def test_clone_student(tmpdir, caplog):

@@ -1,18 +1,19 @@
 """Deal with argument parsing for the toolkit"""
 
 import argparse
-from glob import glob
 import logging
-from natsort import natsorted
 import os
 import re
 import sys
+from glob import glob
 from typing import Any, Dict, List, Tuple
+
+from natsort import natsorted
 
 from . import global_vars
 from .get_students import get_students
 from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
-from ..common import flatten, version
+from ..common import version
 from ..specs import get_supported_courses
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)

@@ -1,12 +1,14 @@
 import logging
 import os
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Mapping
 
 from .gist import post_gist
 from ..formatters import format_collected_data, markdown
+from ..formatters.group_type import GroupType
 from ..formatters.tabulate import asciiify
 
 if TYPE_CHECKING:
+    from ..formatters.formatted_result import FormattedResult
     from ..student.student_result import StudentResult
 
 
@@ -46,9 +48,9 @@ def save_recordings(results: List['StudentResult'],
                     gist: bool = False):
     """Take the list of recordings, group by assignment, then save to disk"""
 
-    result_dict = format_collected_data(results,
-                                        group_by='assignment',
-                                        formatter=markdown)
+    result_dict: Mapping[str, List['FormattedResult']] = format_collected_data(results,
+                                                                               group_by=GroupType.ASSIGNMENT,
+                                                                               formatter=markdown)
 
     for assignment, content in result_dict.items():
         logging.debug("Saving recording for {}".format(assignment))

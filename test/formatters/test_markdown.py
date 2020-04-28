@@ -3,6 +3,7 @@ import textwrap
 from unittest import mock
 
 from stograde.common.run_status import RunStatus
+from stograde.formatters.format_type import FormatType
 from stograde.formatters.markdown import format_file_contents, get_file_extension, format_file_compilation, \
     format_file_tests, format_file, format_warnings, format_header, format_files_list, format_assignment_markdown
 from stograde.process_assignment.record_result import RecordResult
@@ -44,39 +45,63 @@ def test_format_assignment_markdown():
                                                         warnings=SubmissionWarnings(),
                                                         file_results=file_results))
 
-    assert formatted['assignment'] == 'lab1'
-    assert formatted['student'] == 'student4'
-    assert formatted['type'] == 'md'
-    assert '\n' + formatted['content'] == textwrap.dedent('''
+    assert formatted.assignment == 'lab1'
+    assert formatted.student == 'student4'
+    assert formatted.type is FormatType.MD
+    assert '\n' + formatted.content == textwrap.dedent('''
         # lab1 – student4
-        First submission for lab1: 4/14/2020 16:04:05\n\n
-        ## test_file.txt (a modification time)\n
+        First submission for lab1: 4/14/2020 16:04:05
+
+
+        ## test_file.txt (a modification time)
+
         ```txt
         some file contents
         and another line
-        ```\n\n
-        **no warnings: `a command`**\n
-        **warnings: `another command`**\n
+        ```
+
+
+        **no warnings: `a command`**
+
+        **warnings: `another command`**
+
         ```
         output text
-        ```\n\n
-        **results of `a test command`** (status: SUCCESS)\n
-        **results of `other test command`** (status: FILE_NOT_FOUND)\n
+        ```
+
+
+        **results of `a test command`** (status: SUCCESS)
+
+        **results of `other test command`** (status: FILE_NOT_FOUND)
+
         ```
         more output
         another line
-        ```\n\n\n
-        ## another_file.txt\n
+        ```
+
+
+
+        ## another_file.txt
+
         File not found. `ls .` says that these files exist:
         ```
         a_third_file.txt
         more_files.txt
-        ```\n\n\n\n
-        ## optional.txt (**optional submission**)\n
+        ```
+
+
+
+
+        ## optional.txt (**optional submission**)
+
         File not found. `ls .` says that these files exist:
         ```
         yet_another_file.txt
-        ```\n\n\n\n
+        ```
+
+
+
+
         ''')
 
 
@@ -85,12 +110,12 @@ def test_format_assignment_markdown_error():
     formatted = format_assignment_markdown(RecordResult(spec_id='hw1', student='student5',
                                                         file_results=5))
 
-    assert formatted['assignment'] == 'hw1'
-    assert formatted['student'] == 'student5'
-    assert formatted['type'] == 'md'
+    assert formatted.assignment == 'hw1'
+    assert formatted.student == 'student5'
+    assert formatted.type is FormatType.MD
     assert re.compile(r"^```\nTraceback \(most recent call last\):"
                       r"[\s\S]*"
-                      r"TypeError: 'int' object is not iterable\n\n```$").match(formatted['content'])
+                      r"TypeError: 'int' object is not iterable\n\n```$").match(formatted.content)
 
 
 @mock.patch('stograde.toolkit.global_vars.DEBUG', True)
@@ -109,34 +134,56 @@ def test_format_assignment_markdown_error_debug():
 def test_format_files_list():
     formatted = format_files_list(file_results)
 
-    assert '\n' + formatted == textwrap.dedent('''\n\n
-        ## test_file.txt (a modification time)\n
+    assert '\n' + formatted == textwrap.dedent('''
+
+
+        ## test_file.txt (a modification time)
+
         ```txt
         some file contents
         and another line
-        ```\n\n
-        **no warnings: `a command`**\n
-        **warnings: `another command`**\n
+        ```
+
+
+        **no warnings: `a command`**
+
+        **warnings: `another command`**
+
         ```
         output text
-        ```\n\n
-        **results of `a test command`** (status: SUCCESS)\n
-        **results of `other test command`** (status: FILE_NOT_FOUND)\n
+        ```
+
+
+        **results of `a test command`** (status: SUCCESS)
+
+        **results of `other test command`** (status: FILE_NOT_FOUND)
+
         ```
         more output
         another line
-        ```\n\n\n
-        ## another_file.txt\n
+        ```
+
+
+
+        ## another_file.txt
+
         File not found. `ls .` says that these files exist:
         ```
         a_third_file.txt
         more_files.txt
-        ```\n\n\n\n
-        ## optional.txt (**optional submission**)\n
+        ```
+
+
+
+
+        ## optional.txt (**optional submission**)
+
         File not found. `ls .` says that these files exist:
         ```
         yet_another_file.txt
-        ```\n\n
+        ```
+
+
         ''')
 
 
@@ -156,8 +203,18 @@ def test_format_header_with_warnings():
 
     assert '\n' + formatted == textwrap.dedent('''
         # hw1 – student2
-        First submission for hw1: ERROR\n
+        First submission for hw1: ERROR
+
         a warning
+        ''')
+
+
+def test_format_header_assignment_missing():
+    formatted = format_header(RecordResult('hw1', 'student1', '4/14/2020 13:22:45',
+                                           SubmissionWarnings(assignment_missing=True)), '')
+
+    assert '\n' + formatted == textwrap.dedent('''
+        # hw1 – student1
         ''')
 
 
@@ -190,22 +247,32 @@ def test_format_file():
     formatted = format_file(file_results[0])
 
     assert '\n' + formatted == textwrap.dedent('''
-        ## test_file.txt (a modification time)\n
+        ## test_file.txt (a modification time)
+
         ```txt
         some file contents
         and another line
-        ```\n\n
-        **no warnings: `a command`**\n
-        **warnings: `another command`**\n
+        ```
+
+
+        **no warnings: `a command`**
+
+        **warnings: `another command`**
+
         ```
         output text
-        ```\n\n
-        **results of `a test command`** (status: SUCCESS)\n
-        **results of `other test command`** (status: FILE_NOT_FOUND)\n
+        ```
+
+
+        **results of `a test command`** (status: SUCCESS)
+
+        **results of `other test command`** (status: FILE_NOT_FOUND)
+
         ```
         more output
         another line
-        ```\n
+        ```
+
         ''')
 
 
@@ -213,12 +280,15 @@ def test_format_file_missing():
     formatted = format_file(file_results[1])
 
     assert '\n' + formatted == textwrap.dedent('''
-        ## another_file.txt\n
+        ## another_file.txt
+
         File not found. `ls .` says that these files exist:
         ```
         a_third_file.txt
         more_files.txt
-        ```\n\n
+        ```
+
+
         ''')
 
 
@@ -226,11 +296,14 @@ def test_format_file_optional():
     formatted = format_file(file_results[2])
 
     assert '\n' + formatted == textwrap.dedent('''
-        ## optional.txt (**optional submission**)\n
+        ## optional.txt (**optional submission**)
+
         File not found. `ls .` says that these files exist:
         ```
         yet_another_file.txt
-        ```\n\n
+        ```
+
+
         ''')
 
 
@@ -258,7 +331,8 @@ def test_format_file_contents_with_contents():
     formatted = '\n' + format_file_contents(simple_contents, 'simple.cpp')
 
     assert formatted == textwrap.dedent('''
-        ```cpp\n
+        ```cpp
+
         int main() {
             return 0;
         }
@@ -276,7 +350,8 @@ def test_format_file_compilation_no_warnings():
 def test_format_file_compilation_warnings():
     formatted = format_file_compilation([compile_results[1]])
     assert '\n' + formatted == textwrap.dedent('''
-        **warnings: `test command 2`**\n
+        **warnings: `test command 2`**
+
         ```
         some output
         ```
@@ -286,8 +361,10 @@ def test_format_file_compilation_warnings():
 def test_format_file_compilation_multiple_commands():
     formatted = format_file_compilation(compile_results)
     assert '\n' + formatted == textwrap.dedent('''
-        **no warnings: `test command`**\n
-        **warnings: `test command 2`**\n
+        **no warnings: `test command`**
+
+        **warnings: `test command 2`**
+
         ```
         some output
         ```
@@ -306,7 +383,8 @@ def test_format_file_tests_no_output():
 def test_format_file_tests_output():
     formatted = format_file_tests([test_results[1]])
     assert '\n' + formatted == textwrap.dedent('''
-        **results of `other command`** (status: SUCCESS)\n
+        **results of `other command`** (status: SUCCESS)
+
         ```
         some more output
         and another line
@@ -317,7 +395,8 @@ def test_format_file_tests_output():
 def test_format_file_tests_truncated_output():
     formatted = format_file_tests([test_results[2]])
     assert '\n' + formatted == textwrap.dedent('''
-        **results of `a third command`** (status: SUCCESS)\n
+        **results of `a third command`** (status: SUCCESS)
+
         ```
         more output
         and lines
@@ -331,13 +410,17 @@ def test_format_file_tests_truncated_output():
 def test_format_file_tests_multiple_commands():
     formatted = format_file_tests(test_results)
     assert '\n' + formatted == textwrap.dedent('''
-        **results of `test command`** (status: SUCCESS)\n
-        **results of `other command`** (status: SUCCESS)\n
+        **results of `test command`** (status: SUCCESS)
+
+        **results of `other command`** (status: SUCCESS)
+
         ```
         some more output
         and another line
-        ```\n
-        **results of `a third command`** (status: SUCCESS)\n
+        ```
+
+        **results of `a third command`** (status: SUCCESS)
+
         ```
         more output
         and lines

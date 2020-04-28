@@ -1,20 +1,22 @@
 import traceback
-from typing import Dict, List
+from typing import List, TYPE_CHECKING
 
-from ..process_assignment.record_result import RecordResult
-from ..process_assignment.submission_warnings import SubmissionWarnings
-from ..process_file.compile_result import CompileResult
-from ..process_file.file_result import FileResult
-from ..process_file.test_result import TestResult
+from .format_type import FormatType
+from .formatted_result import FormattedResult
 from ..toolkit import global_vars
 
+if TYPE_CHECKING:
+    from ..process_assignment.record_result import RecordResult
+    from ..process_assignment.submission_warnings import SubmissionWarnings
+    from ..process_file.compile_result import CompileResult
+    from ..process_file.file_result import FileResult
+    from ..process_file.test_result import TestResult
 
-def format_assignment_markdown(result: RecordResult) -> Dict:
-    """Given a single recording, format it into a markdown file.
 
-    Each recording will only have one student.
+def format_assignment_markdown(result: 'RecordResult') -> 'FormattedResult':
+    """Given a single recording, format it in markdown
 
-    Returns a {content: str, student: str, type: str, assignment: str} dict.
+    Each recording will only have one student
     """
 
     try:
@@ -28,26 +30,25 @@ def format_assignment_markdown(result: RecordResult) -> Dict:
             raise err
         output = '```\n' + traceback.format_exc() + '\n```\n'
 
-    return {
-        'assignment': result.spec_id,
-        'content': output,
-        'student': result.student,
-        'type': 'md',
-    }
+    return FormattedResult(assignment=result.spec_id,
+                           content=output,
+                           student=result.student,
+                           type=FormatType.MD)
 
 
-def format_files_list(files: List[FileResult]) -> str:
+def format_files_list(files: List['FileResult']) -> str:
     return '\n\n' + '\n\n'.join([format_file(info) for info in files])
 
 
-def format_header(result: RecordResult, warnings: str) -> str:
+def format_header(result: 'RecordResult', warnings: str) -> str:
     """Format the header for the section of the log file"""
 
-    first_submit = 'First submission for {}: {}'.format(result.spec_id, result.first_submission)
+    header = '# {spec} – {student}\n'.format(spec=result.spec_id,
+                                             student=result.student)
 
-    header = '# {spec} – {student}\n{first_submit}\n'.format(spec=result.spec_id,
-                                                             student=result.student,
-                                                             first_submit=first_submit)
+    if not result.warnings.assignment_missing:
+        first_submit = 'First submission for {}: {}'.format(result.spec_id, result.first_submission)
+        header += first_submit + '\n'
 
     if warnings:
         header += '\n' + warnings + '\n'
@@ -55,7 +56,7 @@ def format_header(result: RecordResult, warnings: str) -> str:
     return header
 
 
-def format_warnings(warnings: SubmissionWarnings) -> str:
+def format_warnings(warnings: 'SubmissionWarnings') -> str:
     if warnings.assignment_missing:
         return '**No submission found**\n'
 
@@ -70,7 +71,7 @@ def format_warnings(warnings: SubmissionWarnings) -> str:
         return ''
 
 
-def format_file(file_info: FileResult) -> str:
+def format_file(file_info: 'FileResult') -> str:
     """Format a file for the log.
     Formats and concatenates a header, the file contents, compile output and test output.
 
@@ -122,7 +123,7 @@ def format_file_contents(contents: str, filename: str) -> str:
     return '```{}\n'.format(get_file_extension(filename)) + contents + '\n```\n'
 
 
-def format_file_compilation(compilations: List[CompileResult]) -> str:
+def format_file_compilation(compilations: List['CompileResult']) -> str:
     """Add header and markdown code block to compile command outputs"""
 
     result = []
@@ -139,7 +140,7 @@ def format_file_compilation(compilations: List[CompileResult]) -> str:
     return '\n'.join(result)
 
 
-def format_file_tests(test_results: List[TestResult]) -> str:
+def format_file_tests(test_results: List['TestResult']) -> str:
     """Add header and markdown code block to test outputs"""
 
     result = []

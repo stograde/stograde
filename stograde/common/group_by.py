@@ -1,6 +1,6 @@
 from itertools import groupby
 from types import LambdaType
-from typing import Any, Generator, Iterable, List, Tuple, TYPE_CHECKING
+from typing import Any, Generator, List, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..process_assignment.record_result import RecordResult
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 __all__ = ['group_by']
 
 
-def group_by(iterable: Iterable['RecordResult'],
+def group_by(iterable: List['RecordResult'],
              predicate: LambdaType) -> Generator[Tuple[Any, List['RecordResult']], None, None]:
     """Group an iterable by a predicate function"""
     sorted_iterable = sorted(iterable, key=predicate)

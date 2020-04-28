@@ -10,8 +10,8 @@ from . import global_vars
 from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
-from .tabulate import tabulate
 from ..common import chdir
+from ..formatters.tabulate import tabulate
 from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
 

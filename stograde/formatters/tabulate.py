@@ -7,7 +7,7 @@ from ..process_assignment.assignment_status import AssignmentStatus
 from ..process_assignment.assignment_type import get_assignment_number
 
 if TYPE_CHECKING:
-    from ..student.student_result import StudentResult
+    from stograde.student.student_result import StudentResult
 
 COL = '|'
 ROW = '-'

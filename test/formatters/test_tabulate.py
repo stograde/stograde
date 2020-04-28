@@ -2,8 +2,8 @@ import textwrap
 
 from stograde.process_assignment.assignment_status import AssignmentStatus
 from stograde.student.student_result import StudentResult
-from stograde.toolkit.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, \
-    sort_by_username, tabulate
+from stograde.formatters.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, \
+    sort_by_username, tabulate, asciiify
 
 
 def test_pad():
@@ -21,6 +21,11 @@ def test_symbol():
     assert symbol((5, AssignmentStatus.MISSING)) == MISSING, "returns MISSING for missing assignments"
     assert symbol((5, AssignmentStatus.PARTIAL), highlight_partials=False) == '5', \
         "returns the raw number if stdout can't handle fanciness"
+    assert symbol((5, AssignmentStatus.PARTIAL), highlight_partials=True) == '\x1b[1m\x1b[31m5\x1b[0m'
+
+
+def test_asciiify():
+    assert asciiify(symbol((5, AssignmentStatus.PARTIAL), highlight_partials=True)) == '5'
 
 
 def test_concat():

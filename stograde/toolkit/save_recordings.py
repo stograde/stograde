@@ -3,8 +3,8 @@ import os
 from typing import List, TYPE_CHECKING
 
 from .gist import post_gist
-from .tabulate import asciiify
 from ..formatters import format_collected_data, markdown
+from ..formatters.tabulate import asciiify
 
 if TYPE_CHECKING:
     from ..student.student_result import StudentResult

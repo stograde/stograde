@@ -49,7 +49,7 @@ def test_get_course_from_specs_sd(tmpdir):
         with chdir('data'):
             git('init')
             git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs251-specs.git')
-        assert get_course_from_specs() == 'sd'
+        assert get_course_from_specs() == 'SD'
 
 
 def test_get_course_from_specs_hd(tmpdir):
@@ -58,7 +58,7 @@ def test_get_course_from_specs_hd(tmpdir):
         with chdir('data'):
             git('init')
             git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs241-specs.git')
-        assert get_course_from_specs() == 'hd'
+        assert get_course_from_specs() == 'HD'
 
 
 def test_get_course_from_specs_ads(tmpdir):
@@ -67,7 +67,7 @@ def test_get_course_from_specs_ads(tmpdir):
         with chdir('data'):
             git('init')
             git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs253-specs.git')
-        assert get_course_from_specs() == 'ads'
+        assert get_course_from_specs() == 'ADS'
 
 
 def test_get_course_from_specs_os(tmpdir):
@@ -76,7 +76,7 @@ def test_get_course_from_specs_os(tmpdir):
         with chdir('data'):
             git('init')
             git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs273-specs.git')
-        assert get_course_from_specs() == 'os'
+        assert get_course_from_specs() == 'OS'
 
 
 def test_get_course_from_specs_fallback(tmpdir, capsys):
@@ -85,17 +85,17 @@ def test_get_course_from_specs_fallback(tmpdir, capsys):
         with chdir('data'):
             git('init')
             git('remote', 'add', 'origin', 'https://github.com/StoDevX/stograde.git')
-        assert get_course_from_specs() == 'sd'
+        assert get_course_from_specs() == 'SD'
 
     _, err = capsys.readouterr()
 
-    assert err == 'Unable to determine course from specs: remote url not recognized\n' \
-                  'Defaulting to SD\n'
+    assert err == ('Could not determine course from url: https://github.com/StoDevX/stograde.git\n'
+                   'Defaulting to SD\n')
 
 
 def test_get_course_from_specs_failure_no_data_dir(capsys):
     try:
-        assert get_course_from_specs() == 'sd'
+        get_course_from_specs()
     except SystemExit:
         pass
 

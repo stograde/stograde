@@ -1,7 +1,7 @@
 import os
 from unittest import mock
 
-from stograde.specs.download_specs import download_specs, create_data_dir, get_supported_courses
+from stograde.specs.download_specs import download_specs, create_data_dir
 
 
 def test_download_specs(tmpdir, capsys):
@@ -16,12 +16,13 @@ def test_download_specs(tmpdir, capsys):
 def test_download_specs_bad_course(capsys):
     try:
         download_specs(course='bad', basedir='.')
+        raise AssertionError
     except SystemExit:
         pass
 
     _, err = capsys.readouterr()
 
-    assert err == 'Course BAD not recognized\n'
+    assert err == 'Invalid course: BAD\n'
 
 
 def test_download_specs_failed_clone(tmpdir, capsys):
@@ -33,6 +34,7 @@ def test_download_specs_failed_clone(tmpdir, capsys):
 
         try:
             download_specs(course='sd', basedir='.')
+            raise AssertionError
         except SystemExit:
             pass
 
@@ -68,6 +70,7 @@ def test_create_data_dir_yes_but_no_course(capsys):
     try:
         with mock.patch('builtins.input', side_effect=['y', '']):
             create_data_dir(course='', basedir='.')
+            raise AssertionError
     except SystemExit:
         pass
 
@@ -80,6 +83,7 @@ def test_create_data_dir_no(capsys):
     try:
         with mock.patch('builtins.input', return_value='n'):
             create_data_dir(course='', basedir='.')
+            raise AssertionError
     except SystemExit:
         pass
 
@@ -102,13 +106,10 @@ def test_create_data_dir_ci(tmpdir, capsys):
 def test_create_data_dir_ci_no_course(capsys):
     try:
         create_data_dir(course='', basedir='.')
+        raise AssertionError
     except SystemExit:
         pass
 
     _, err = capsys.readouterr()
 
     assert err == 'data directory not found and no course specified\n'
-
-
-def test_get_supported_courses():
-    assert get_supported_courses() == 'sd, hd, ads, os'

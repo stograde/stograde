@@ -14,7 +14,7 @@ from . import global_vars
 from .get_students import get_students
 from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
 from ..common import version
-from ..specs import get_supported_courses
+from ..specs.spec_repos import format_supported_course_list
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 
@@ -48,7 +48,7 @@ def build_argparser():
                                 help='Which course to evaluate '
                                      '(this sets a default stogit url and downloads the correct specs). '
                                      'Can be {} or one of the previous with /f## or /s## (i.e. sd/s19)'
-                                .format(get_supported_courses()))
+                                .format(format_supported_course_list(delimiter=', ')))
     repo_selection.add_argument('--stogit', metavar='URL',
                                 help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
 

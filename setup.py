@@ -12,7 +12,6 @@ install_requires = [
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',
-    'bidict == 0.19.*',
 ]
 
 if sys.version_info < (3, 7):

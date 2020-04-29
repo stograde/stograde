@@ -6,10 +6,9 @@ import pytest
 
 from stograde.common import chdir
 from stograde.toolkit.__main__ import main
+from test.utils import check_e2e_err_output
 
 _dir = os.path.dirname(os.path.realpath(__file__))
-
-pytest.skip('testing coverage without integration tests', allow_module_level=True)
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
@@ -39,7 +38,7 @@ def test_stograde_record_with_table(datafiles, capsys):
         except SystemExit:
             pass
 
-    out, _ = capsys.readouterr()
+    out, err = capsys.readouterr()
 
     assert out == ("\n"
                    "USER      | 1 |  | \n"
@@ -50,3 +49,5 @@ def test_stograde_record_with_table(datafiles, capsys):
                    "student3  | 1 |  | \n"
                    "student4  | 1 |  | \n"
                    "student5  | \x1b[1m\x1b[31m1\x1b[0m |  | \n\n")
+
+    assert check_e2e_err_output(err)

@@ -12,9 +12,6 @@ from test.utils import touch
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 
-pytest.skip('testing coverage without integration tests', allow_module_level=True)
-
-
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'repo_tests'))
 def test_repo_clone(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')

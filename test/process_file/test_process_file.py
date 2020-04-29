@@ -175,10 +175,14 @@ def test_compile_file_failure(datafiles):
         ret = compile_file(file_spec=spec, results=result, supporting_dir='')
 
     assert ret is False
+
+    for c_result in result.compile_results:
+        c_result.output = c_result.output.replace('\r\n', '\n')
+
     assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./bad.cpp -o ./bad.cpp.exec',
                                                     output='./bad.cpp: In function ‘int main()’:\n'
                                                            './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
-                                                           '     return 0;\r\n'
+                                                           '     return 0;\n'
                                                            '             ^\n',
                                                     status=RunStatus.CALLED_PROCESS_ERROR)]
 
@@ -318,10 +322,14 @@ def test_process_file_fail_compile(datafiles):
             cout << "Hello" << endl;
             return 0;
         ''')
+
+    for c_result in result.compile_results:
+        c_result.output = c_result.output.replace('\r\n', '\n')
+
     assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./bad.cpp -o ./bad.cpp.exec',
                                                     output='./bad.cpp: In function ‘int main()’:\n'
                                                            './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
-                                                           '     return 0;\r\n'
+                                                           '     return 0;\n'
                                                            '             ^\n',
                                                     status=RunStatus.CALLED_PROCESS_ERROR)]
     assert not result.test_results

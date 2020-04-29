@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from ..student.student_result import StudentResult
 
 
-def record_recording_to_disk(results, file_identifier):
-    results = sorted(results, key=lambda file: file['student'])
-    results = [file['content'] for file in results]
+def record_recording_to_disk(results: List['FormattedResult'], file_identifier: str):
+    results = sorted(results, key=lambda file: file.student)
+    results = [file.content for file in results]
     output = '\n'.join(results)
     try:
         os.makedirs('logs', exist_ok=True)

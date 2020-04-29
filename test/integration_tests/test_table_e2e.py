@@ -1,15 +1,14 @@
-import sys
 import os
+import sys
 from unittest import mock
 
 import pytest
 
 from stograde.common import chdir
 from stograde.toolkit.__main__ import main
+from test.utils import check_e2e_err_output
 
 _dir = os.path.dirname(os.path.realpath(__file__))
-
-pytest.skip('testing coverage without integration tests', allow_module_level=True)
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
@@ -26,12 +25,14 @@ def test_stograde_table(datafiles, capsys):
 
     out, err = capsys.readouterr()
 
-    assert out == ("\n"
-                   "USER      | 1 | 1 | 1\n"
-                   "----------+---+---+--\n"
-                   "rives     | - | - | -\n"
-                   "student1  | 1 | - | -\n"
-                   "student2  | 1 | - | -\n"
-                   "student3  | 1 | - | -\n"
-                   "student4  | 1 | - | -\n"
-                   "student5  | \x1b[1m\x1b[31m1\x1b[0m | - | -\n\n")
+    assert out.replace('\r\n', '\n') == ("\n"
+                                         "USER      | 1 | 1 | 1\n"
+                                         "----------+---+---+--\n"
+                                         "rives     | - | - | -\n"
+                                         "student1  | 1 | - | -\n"
+                                         "student2  | 1 | - | -\n"
+                                         "student3  | 1 | - | -\n"
+                                         "student4  | 1 | - | -\n"
+                                         "student5  | \x1b[1m\x1b[31m1\x1b[0m | - | -\n\n")
+
+    assert check_e2e_err_output(err)

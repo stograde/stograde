@@ -1,6 +1,4 @@
 import functools
-import logging
-from concurrent.futures import as_completed, ProcessPoolExecutor
 from typing import List
 
 from .process_parallel import process_parallel
@@ -8,7 +6,6 @@ from ..common import chdir
 from ..specs.spec import Spec
 from ..student.process_student import process_student
 from ..student.student_result import StudentResult
-from ..toolkit.progress_bar import make_progress_bar
 
 
 def process_students(specs: List['Spec'],

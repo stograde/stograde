@@ -93,6 +93,20 @@ def test_get_course_from_specs_fallback(tmpdir, capsys):
                    'Defaulting to SD\n')
 
 
+def test_get_course_from_specs_fallback_git_failure(tmpdir, capsys):
+    with tmpdir.as_cwd():
+        os.makedirs('data')
+        with chdir('data'):
+            git('init')
+        assert get_course_from_specs() == 'SD'
+
+    _, err = capsys.readouterr()
+
+    assert err == ('Could not get URL from data directory: '
+                   "Command '['git', 'config', '--get', 'remote.origin.url']' returned non-zero exit status 1.\n"
+                   'Defaulting to SD\n')
+
+
 def test_get_course_from_specs_failure_no_data_dir(capsys):
     try:
         get_course_from_specs()

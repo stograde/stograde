@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from typing import List, TYPE_CHECKING, Mapping
 
 from .gist import post_gist
@@ -21,10 +22,10 @@ def record_recording_to_disk(results: List['FormattedResult'], file_identifier: 
         with open('logs/log-{}.md'.format(file_identifier), 'w', encoding='utf-8') as outfile:
             outfile.write(output)
     except Exception as err:
-        logging.warning('error! could not write recording:', err)
+        print('Could not write recording for {}: {}'.format(file_identifier, str(err)), file=sys.stderr)
 
 
-def send_recording_to_gist(table, results, assignment):
+def send_recording_to_gist(table: str, results: List['FormattedResult'], assignment: str):
     """Publish a table/result pair to a private gist"""
 
     # the "-" at the front is so that github sees it first and names the gist
@@ -35,9 +36,9 @@ def send_recording_to_gist(table, results, assignment):
     }
 
     for file in results:
-        filename = file['student'] + '.' + file['type']
+        filename = file.student + '.' + file.type.name.lower()
         files[filename] = {
-            'content': file['content'].strip()
+            'content': file.content.strip()
         }
 
     return post_gist('log for ' + assignment, files)
@@ -48,11 +49,11 @@ def save_recordings(results: List['StudentResult'],
                     gist: bool = False):
     """Take the list of recordings, group by assignment, then save to disk"""
 
-    result_dict: Mapping[str, List['FormattedResult']] = format_collected_data(results,
-                                                                               group_by=GroupType.ASSIGNMENT,
-                                                                               formatter=markdown)
+    formatted_results: Mapping[str, List['FormattedResult']] = format_collected_data(results,
+                                                                                     group_by=GroupType.ASSIGNMENT,
+                                                                                     formatter=markdown)
 
-    for assignment, content in result_dict.items():
+    for assignment, content in formatted_results.items():
         logging.debug("Saving recording for {}".format(assignment))
         if gist:
             table = asciiify(table)

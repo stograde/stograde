@@ -55,12 +55,6 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         #  https://security.stackexchange.com/a/2947)
         run(['ssh-keygen', '-b', '8192', '-N', '', '-f', key_file])
 
-        # Tell git to use our new 'private key'
-        # We have to modify the environment directly instead of using mock.patch.dict
-        # because git doesn't get its environment variables from os.environ
-        # ssh_command = os.getenv('GIT_SSH_COMMAND', '')
-        # os.environ['GIT_SSH_COMMAND'] = 'ssh -i {}'.format(key_file)
-
         try:
             with stogit_as_known_host():
                 with mock.patch.dict(os.environ, {'GIT_SSH_COMMAND': 'ssh -i {}'.format(key_file)}):
@@ -68,10 +62,21 @@ def test_clone_url_permission_denied(tmpdir, capsys):
             raise AssertionError
         except SystemExit:
             pass
-        # finally:
-        #     os.environ['GIT_SSH_COMMAND'] = ssh_command
 
     _, err = capsys.readouterr()
 
     assert err == ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
                    'Make sure that this SSH key is registered with StoGit.\n')
+
+
+def test_clone_url_repo_not_found(tmpdir, capsys):
+    with stogit_as_known_host():
+        with tmpdir.as_cwd():
+            try:
+                clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
+            except SystemExit:
+                pass
+
+    _, err = capsys.readouterr()
+
+    assert err == 'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'

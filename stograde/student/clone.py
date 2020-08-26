@@ -20,7 +20,13 @@ def clone_url(url: str, into: Optional[str] = None):
     else:
         logging.info('cloning {}'.format(url))
         status, output, _ = run(['git', 'clone', '--quiet', url])
-    if status is RunStatus.CALLED_PROCESS_ERROR and 'Permission denied (publickey)' in output:
-        print('Permission denied when cloning from {}'.format(url), file=sys.stderr)
-        print('Make sure that this SSH key is registered with StoGit.', file=sys.stderr)
-        sys.exit(1)
+
+    if status is RunStatus.CALLED_PROCESS_ERROR:
+        if 'Permission denied (publickey)' in output:
+            print('Permission denied when cloning from {}'.format(url), file=sys.stderr)
+            print('Make sure that this SSH key is registered with StoGit.', file=sys.stderr)
+            sys.exit(1)
+
+        if 'The project you were looking for could not be found.' in output:
+            print('Could not find repository {}'.format(url), file=sys.stderr)
+            sys.exit(1)

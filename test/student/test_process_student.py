@@ -5,7 +5,6 @@ from stograde.common import chdir
 from stograde.process_assignment.record_result import RecordResult
 from stograde.process_assignment.submission_warnings import SubmissionWarnings
 from stograde.specs.spec import Spec
-from stograde.specs.spec_file import SpecFile
 from stograde.student.process_student import prepare_student, process_student
 from test.utils import git, touch
 

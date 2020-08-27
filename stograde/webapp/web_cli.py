@@ -26,16 +26,16 @@ def launch_cli(base_dir: str,
                students: List[str],
                workers: int):
     """Start the web grading CLI"""
-    usernames = [
-        '{} NO SUBMISSION'.format(student)
-        if not os.path.exists('{}/{}'.format(student, spec.id))
-        else student
-        for student in students
-    ]
-
-    print('Loading repos. Please wait...')
-
     with chdir(os.path.join(base_dir, 'students')):
+        usernames = [
+            '{} NO SUBMISSION'.format(student)
+            if not os.path.exists('{}/{}'.format(student, spec.id))
+            else student
+            for student in students
+        ]
+
+        print('Loading repos. Please wait...')
+
         single_repo = functools.partial(
             prepare_student,
             stogit_url=stogit_url,

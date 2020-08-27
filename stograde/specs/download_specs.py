@@ -10,12 +10,15 @@ def download_specs(course: str, basedir: str):
     course = course.split("/")[0].upper()
     url = get_spec_download_url(course)
     with chdir(basedir):
-        print('Downloading specs for {}'.format(course))
+        if not global_vars.CI:
+            print('Downloading specs for {}'.format(course))
         status, result, _ = run(['git', 'clone', url, 'data'])
         if status is RunStatus.SUCCESS:
-            print('Download complete')
+            if not global_vars.CI:
+                print('Download complete')
         else:
-            print('Download failed: {}: {}'.format(status.name, result), file=sys.stderr)
+            print('Downloading specs for {} failed: {}: {}'.format(course, status.name, result),
+                  file=sys.stderr)
             sys.exit(1)
 
 

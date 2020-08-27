@@ -70,10 +70,11 @@ def main():
                                             skip_spec_update=skip_spec_update)
 
     if not loaded_specs:
-        print('No specs loaded!')
         if global_vars.CI:
+            logging.warning('No assignments detected!')
             sys.exit(0)
         else:
+            print('No specs loaded!')
             sys.exit(1)
 
     # Call function to handle SubCommand

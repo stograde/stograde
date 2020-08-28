@@ -50,18 +50,18 @@ def launch_cli(base_dir: str,
                          workers=workers,
                          operation=single_repo)
 
-    while True:
-        student = ask_student(usernames)
+        while True:
+            student = ask_student(usernames)
 
-        if not student or student == 'QUIT':
-            return
-        elif 'NO SUBMISSION' in student:
-            continue
+            if not student or student == 'QUIT':
+                return
+            elif 'NO SUBMISSION' in student:
+                continue
 
-        files = check_student(student, spec, base_dir)
+            files = check_student(student, spec, base_dir)
 
-        if files:
-            ask_file(files, student, spec, base_dir)
+            if files:
+                ask_file(files, student, spec, base_dir)
 
 
 def ask_student(usernames: List[str]) -> str:
@@ -77,7 +77,7 @@ def ask_student(usernames: List[str]) -> str:
             'type': 'list',
             'name': 'student',
             'message': 'Choose student',
-            'choices': ['QUIT', *usernames]
+            'choices': ['QUIT', *usernames],
         }
     ]
 
@@ -116,8 +116,6 @@ def check_student(student: str,
                             description = '{} MISSING'.format(file.file_name)
 
                     files = files + [description]
-                else:
-                    continue
             # and we remove any supporting files
             remove_supporting(written_files)
 
@@ -142,7 +140,7 @@ def ask_file(files: List[str],
                 'type': 'list',
                 'name': 'file',
                 'message': 'Choose file',
-                'choices': ['BACK'] + files,
+                'choices': ['BACK', *files],
             }
         ]
         file = prompt(questions, style=style)

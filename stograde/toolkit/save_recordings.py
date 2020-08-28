@@ -30,7 +30,7 @@ def send_recording_to_gist(table: str, results: List['FormattedResult'], assignm
 
     # the "-" at the front is so that github sees it first and names the gist
     # after the homework
-    table_filename = '-cs251 report %s table.txt' % assignment
+    table_filename = '-stograde report {} table.txt'.format(assignment)
     files = {
         table_filename: {'content': table},
     }
@@ -58,6 +58,6 @@ def save_recordings(results: List['StudentResult'],
         if gist:
             table = asciiify(table)
             url = send_recording_to_gist(table, content, assignment)
-            print(assignment, 'results are available at', url)
+            print('{} results are available at {}'.format(assignment, url))
         else:
             record_recording_to_disk(content, assignment)

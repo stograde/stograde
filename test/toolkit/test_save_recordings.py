@@ -139,3 +139,54 @@ def test_save_recordings_disk(tmpdir):
 
 
                 ''')
+
+
+def test_save_recording_gist(capsys):
+    with mock.patch('stograde.toolkit.save_recordings.post_gist') as mock_gist:
+        mock_gist.return_value = 'a_url'
+        save_recordings([StudentResult(name='z',
+                                       results=[RecordResult(spec_id='hw1',
+                                                             student='student4',
+                                                             first_submission='4/14/2020 16:04:05',
+                                                             warnings=SubmissionWarnings(),
+                                                             file_results=file_results)])],
+                        'the table',
+                        True)
+
+        assert mock_gist.call_args[0][0] == 'log for hw1'
+        assert mock_gist.call_args[0][1] == {'-stograde report hw1 table.txt': {'content': 'the table'},
+                                             'student4.md':
+                                                 {'content': '# hw1 – student4\n'
+                                                             'First submission for hw1: 4/14/2020 16:04:05\n\n\n'
+                                                             '## test_file.txt (a modification time)\n\n'
+                                                             '```txt\n'
+                                                             'some file contents\n'
+                                                             'and another line\n'
+                                                             '```\n\n\n'
+                                                             '**no warnings: `a command`**\n\n'
+                                                             '**warnings: `another command`**\n\n'
+                                                             '```\n'
+                                                             'output text\n'
+                                                             '```\n\n\n'
+                                                             '**results of `a test command`** (status: SUCCESS)\n\n'
+                                                             '**results of `other test command`** '
+                                                             '(status: FILE_NOT_FOUND)\n\n'
+                                                             '```\n'
+                                                             'more output\n'
+                                                             'another line\n'
+                                                             '```\n\n\n\n'
+                                                             '## another_file.txt\n\n'
+                                                             'File not found. `ls .` says that these files exist:\n'
+                                                             '```\n'
+                                                             'a_third_file.txt\n'
+                                                             'more_files.txt\n'
+                                                             '```\n\n\n\n\n'
+                                                             '## optional.txt (**optional submission**)\n\n'
+                                                             'File not found. `ls .` says that these files exist:\n'
+                                                             '```\n'
+                                                             'yet_another_file.txt\n'
+                                                             '```'}}
+
+    out, _ = capsys.readouterr()
+
+    assert out == 'hw1 results are available at a_url\n'

@@ -68,6 +68,8 @@ def do_record(specs: List['Spec'],
     clean: bool = args['clean']
     date: str = args['date']
     gist: bool = args['gist']
+    if gist:
+        show_table = True
     interact: bool = args['interact']
     no_partials: bool = args['no_partials']
     no_progress_bar: bool = args['no_progress_bar']

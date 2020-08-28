@@ -9,6 +9,7 @@ from stograde.toolkit.__main__ import main
 from stograde.webapp import server
 
 _dir = os.path.dirname(os.path.realpath(__file__))
+pytest.skip('testing coverage without integration tests', allow_module_level=True)
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'web_tests'))
@@ -254,3 +255,21 @@ def test_stograde_web_file_menu_file(datafiles, capsys):
     out, _ = capsys.readouterr()
 
     assert out == 'Loading repos. Please wait...\nProcessing...\n'
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'web_tests'))
+def test_stograde_web_not_web_spec(datafiles, capsys):
+    args = [sys.argv[0]] + ['web', '--port', '1509', 'hw1',
+                            '--skip-repo-update', '--skip-spec-update',
+                            '--skip-version-check', '--skip-dependency-check']
+
+    with chdir(str(datafiles)):
+        try:
+            with mock.patch('sys.argv', args):
+                main()
+        except SystemExit:
+            pass
+
+    out, _ = capsys.readouterr()
+
+    assert out == 'No web files in assignment hw1\n'

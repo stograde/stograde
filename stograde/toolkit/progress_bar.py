@@ -1,11 +1,11 @@
 from shutil import get_terminal_size
 import sys
-from typing import List
+from typing import List, Callable
 
 CHAR = '·' if sys.stderr.encoding == 'UTF-8' else '='
 
 
-def progress_bar(size, current, message=''):
+def progress_bar(size: int, current: int, message: str = ''):
     cols, _ = get_terminal_size()
 
     filled = [CHAR for i in range(current)]
@@ -20,7 +20,7 @@ def progress_bar(size, current, message=''):
     print('\r' + result, end='', file=sys.stderr)
 
 
-def make_progress_bar(students: List[str], no_progress_bar: bool = False):
+def make_progress_bar(students: List[str], no_progress_bar: bool = False) -> Callable[[str], None]:
     if no_progress_bar:
         return lambda _: None
 
@@ -28,7 +28,7 @@ def make_progress_bar(students: List[str], no_progress_bar: bool = False):
     remaining = set(students)
     invocation_count = 0
 
-    def increment(username):
+    def increment(username: str):
         nonlocal remaining
         nonlocal invocation_count
         remaining.remove(username)

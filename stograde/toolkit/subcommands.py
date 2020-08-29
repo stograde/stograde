@@ -11,6 +11,7 @@ from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
 from ..common import chdir
+from ..formatters.format_type import FormatType
 from ..formatters.tabulate import tabulate
 from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
@@ -67,6 +68,10 @@ def do_record(specs: List['Spec'],
 
     clean: bool = args['clean']
     date: str = args['date']
+    if args['format'] == 'md':
+        format_type = FormatType.MD
+    elif args['format'] == 'html':
+        format_type = FormatType.HTML
     gist: bool = args['gist']
     if gist:
         show_table = True
@@ -102,7 +107,8 @@ def do_record(specs: List['Spec'],
         table = tabulate(results, sort_by=sort_by, highlight_partials=not no_partials)
         print('\n' + table + '\n')
 
-    save_recordings(results, table, gist=gist)
+    # noinspection PyUnboundLocalVariable
+    save_recordings(results, table, gist=gist, format_type=format_type)
 
 
 def do_table(specs: List['Spec'],

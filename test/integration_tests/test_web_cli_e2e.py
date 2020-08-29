@@ -9,7 +9,6 @@ from stograde.toolkit.__main__ import main
 from stograde.webapp import server
 
 _dir = os.path.dirname(os.path.realpath(__file__))
-pytest.skip('testing coverage without integration tests', allow_module_level=True)
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'web_tests'))

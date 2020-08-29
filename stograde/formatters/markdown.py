@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 
 
 def format_assignment_markdown(result: 'RecordResult') -> 'FormattedResult':
-    """Given a single recording, format it in markdown
+    """Given a single recording, format it into a Markdown file.
 
-    Each recording will only have one student
+    Each recording will only have one student.
     """
 
     try:

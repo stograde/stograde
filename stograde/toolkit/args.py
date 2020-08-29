@@ -61,6 +61,8 @@ def build_argparser():
     record_options.add_argument('--date', action='store', metavar='GIT_DATE',
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
+    record_options.add_argument('--format', action='store', choices=['md', 'html'], default='md',
+                                help='Set the output format')
 
     compile_options = argparse.ArgumentParser(add_help=False)
     compile_options.add_argument('--skip-web-compile', action='store_true',
@@ -78,8 +80,7 @@ def build_argparser():
     table_options = argparse.ArgumentParser(add_help=False)
     table_options_args = table_options.add_argument_group('table printout options')
     table_options_args.add_argument('--sort', dest='sort_by', action='store', default='name', type=str,
-                                    choices=['name', 'count'],
-                                    help='Sort the students table')
+                                    choices=['name', 'count'], help='Sort the students table')
     table_options_args.add_argument('--no-partials', '-P', action='store_true',
                                     help="Don't highlight partial submissions")
 

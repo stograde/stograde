@@ -28,7 +28,8 @@ def test_record_recording_to_disk(tmpdir):
                                                   content='even more content',
                                                   student='b',
                                                   type=FormatType.MD)],
-                                 file_identifier='hw1')
+                                 file_identifier='hw1',
+                                 format_type=FormatType.MD)
 
         assert os.path.exists(os.path.join('logs', 'log-hw1.md'))
 
@@ -43,7 +44,7 @@ def test_record_recording_to_disk(tmpdir):
 
 def test_record_recording_to_disk_error(capsys):
     with mock.patch('os.makedirs', side_effect=TypeError('An error was thrown')):
-        record_recording_to_disk([], 'hw1')
+        record_recording_to_disk([], 'hw1', FormatType.MD)
 
     _, err = capsys.readouterr()
 

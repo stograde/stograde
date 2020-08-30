@@ -17,11 +17,8 @@ def test_stograde_table(datafiles, capsys):
                             '--skip-dependency-check']
 
     with chdir(str(datafiles)):
-        try:
-            with mock.patch('sys.argv', args):
-                main()
-        except SystemExit:
-            pass
+        with mock.patch('sys.argv', args):
+            main()
 
     out, err = capsys.readouterr()
 

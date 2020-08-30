@@ -266,6 +266,7 @@ def test_stograde_web_not_web_spec(datafiles, capsys):
         try:
             with mock.patch('sys.argv', args):
                 main()
+            raise AssertionError
         except SystemExit:
             pass
 

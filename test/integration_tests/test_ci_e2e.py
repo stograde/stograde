@@ -20,10 +20,7 @@ def test_stograde_ci_passing(datafiles, capsys):
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     with chdir(str(datafiles)):
-        try:
-            main()
-        except SystemExit:
-            pass
+        main()
 
     out, _ = capsys.readouterr()
 
@@ -41,10 +38,7 @@ def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, 
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     with chdir(str(datafiles)):
-        try:
-            main()
-        except SystemExit:
-            pass
+        main()
 
     out, _ = capsys.readouterr()
 
@@ -61,7 +55,7 @@ def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, 
 @mock.patch('sys.argv', ci_args)
 @mock.patch('stograde.toolkit.global_vars.CI', True)
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'students', 'narvae1'))
-def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, caplog):
+def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, caplog):
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     with chdir(str(datafiles)):
@@ -70,14 +64,11 @@ def test_stograde_ci_passing_stogradeignore_all_assignments(datafiles, capsys, c
         except SystemExit:
             pass
 
-    out, _ = capsys.readouterr()
-
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
     assert log_messages == {('Skipping hw1: ignored by stogradeignore', 'WARNING'),
                             ('Skipping lab1: ignored by stogradeignore', 'WARNING'),
-                            ('All assignments ignored by stogradeignore', 'WARNING')}
-
-    assert out == 'No specs loaded!\n'
+                            ('All assignments ignored by stogradeignore', 'WARNING'),
+                            ('No assignments detected!', 'WARNING')}
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student4', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
@@ -88,10 +79,7 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
     shutil.copytree(os.path.join(_dir, 'fixtures', 'data'), os.path.join(datafiles, 'data'))
 
     with chdir(str(datafiles)):
-        try:
-            main()
-        except SystemExit:
-            pass
+        main()
 
     out, _ = capsys.readouterr()
 

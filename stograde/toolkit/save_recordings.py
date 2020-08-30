@@ -60,7 +60,7 @@ def save_recordings(results: List['StudentResult'],
     elif format_type is FormatType.HTML:
         formatter = html
     else:
-        formatter = markdown
+        raise ValueError('Unrecognized formatter')
 
     formatted_results: Mapping[str, List['FormattedResult']] = format_collected_data(results,
                                                                                      group_by=GroupType.ASSIGNMENT,

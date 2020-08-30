@@ -191,3 +191,12 @@ def test_save_recording_gist(capsys):
     out, _ = capsys.readouterr()
 
     assert out == 'hw1 results are available at a_url\n'
+
+
+def test_save_recording_bad_formatter():
+    try:
+        # noinspection PyTypeChecker
+        save_recordings([], '', False, 5)
+        raise AssertionError
+    except ValueError:
+        pass

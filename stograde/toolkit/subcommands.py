@@ -64,17 +64,15 @@ def do_record(specs: List['Spec'],
               base_dir: str,
               stogit_url: str,
               args: Dict[str, Any]):
-    show_table: bool = args['table']
-
     clean: bool = args['clean']
     date: str = args['date']
     if args['format'] == 'md':
         format_type = FormatType.MD
     elif args['format'] == 'html':
         format_type = FormatType.HTML
+    else:
+        raise ValueError('Unrecognized formatter')
     gist: bool = args['gist']
-    if gist:
-        show_table = True
     interact: bool = args['interact']
     no_partials: bool = args['no_partials']
     no_progress_bar: bool = args['no_progress_bar']
@@ -83,6 +81,9 @@ def do_record(specs: List['Spec'],
     skip_web_compile: bool = args['skip_web_compile']
     sort_by: str = args['sort_by']
     workers: int = args['workers'] if not global_vars.DEBUG and not interact else 1
+
+    show_table: bool = args['table']
+    create_table: bool = show_table or gist
 
     makedirs('./students', exist_ok=True)
 
@@ -103,11 +104,11 @@ def do_record(specs: List['Spec'],
                                                       work_dir='./students')
 
     table: str = ''
-    if show_table:
+    if create_table:
         table = tabulate(results, sort_by=sort_by, highlight_partials=not no_partials)
+    if show_table:
         print('\n' + table + '\n')
 
-    # noinspection PyUnboundLocalVariable
     save_recordings(results, table, gist=gist, format_type=format_type)
 
 

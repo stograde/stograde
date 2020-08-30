@@ -61,7 +61,7 @@ def main():
     skip_spec_update: bool = args.get('skip_spec_update', False)
 
     if date:
-        logging.debug('Checking out {}'.format(date))
+        print('Checking out {}'.format(date))
 
     assignments = filter_assignments(assignments)
 
@@ -74,7 +74,7 @@ def main():
             logging.warning('No assignments detected!')
             sys.exit(0)
         else:
-            print('No specs loaded!')
+            print('No specs loaded!', file=sys.stderr)
             sys.exit(1)
 
     # Call function to handle SubCommand

@@ -1,3 +1,4 @@
+import sys
 from subprocess import CompletedProcess
 from unittest import mock
 
@@ -29,7 +30,10 @@ def test_run_timeout():
 def test_run_not_found():
     status, result, again = run(['notfound'])
     assert status == RunStatus.FILE_NOT_FOUND
-    assert result == "[Errno 2] No such file or directory: 'notfound': 'notfound'"
+    if sys.version_info.minor < 8:
+        assert result == "[Errno 2] No such file or directory: 'notfound': 'notfound'"
+    else:
+        assert result == "[Errno 2] No such file or directory: 'notfound'"
     assert again is False
 
 

@@ -1,18 +1,25 @@
+import datetime
 import functools
 import logging
 import os
+import re
 from os import makedirs
 import sys
 from threading import Thread
 from typing import Any, Dict, List, TYPE_CHECKING
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 from . import global_vars
 from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
 from ..common import chdir
+from ..drive.drive import authenticate, get_all_files, filter_files, group_files, print_file_group
 from ..formatters.format_type import FormatType
 from ..formatters.tabulate import tabulate
+from ..process_assignment.assignment_type import get_assignment_type, get_assignment_number, AssignmentType
+from stograde.drive.drive_result import DriveResult
 from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
 
@@ -172,6 +179,33 @@ def do_web(specs: List['Spec'],
                stogit_url=stogit_url,
                students=students,
                workers=workers)
+
+
+def do_drive(students: List[str],
+             assignment: str,
+             args: Dict[str, Any]):
+
+    credentials = authenticate()
+    print()
+
+    all_files = get_all_files(credentials=credentials, email=args['email'])
+
+    assignment_files = filter_files(all_files, assignment)
+
+    if not assignment_files:
+        print('No files found!', file=sys.stderr)
+        sys.exit(1)
+
+    cls_files, non_cls_files, non_sto_files = group_files(assignment_files, students)
+
+    if cls_files:
+        print_file_group(cls_files, 'Files shared from students in class:')
+
+    if non_cls_files:
+        print_file_group(non_cls_files, 'Files shared from students NOT in class:')
+
+    if non_sto_files:
+        print_file_group(non_sto_files, 'Files shared from personal emails:')
 
 
 def do_clean(students: List[str],

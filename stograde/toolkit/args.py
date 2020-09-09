@@ -12,7 +12,7 @@ from natsort import natsorted
 
 from . import global_vars
 from .get_students import get_students
-from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
+from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web, do_drive
 from ..common import version
 from ..specs.spec_repos import format_supported_course_list
 
@@ -91,6 +91,16 @@ def build_argparser():
     parser_ci = sub_parsers.add_parser('ci', parents=[base_options, compile_options], conflict_handler='resolve',
                                        help="Check a single student's assignment as part of a CI job")
     parser_ci.set_defaults(func=do_ci)
+
+    # Drive SubParser
+    parser_drive = sub_parsers.add_parser('drive', parents=[base_options, student_selection],
+                                          conflict_handler='resolve', help='Manage submissions via google drive')
+    parser_drive.set_defaults(func=do_drive)
+    parser_drive.add_argument('assignments', nargs=1, metavar='HW',
+                              help='An assignment to process')
+    parser_drive.add_argument('--email', '-e', required=True,
+                              help='Set the email of the group that documents are shared with '
+                                   '(e.g. hd-tas or hd-tas@stolaf.edu)')
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",
@@ -190,6 +200,11 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     elif command == 'repo':
         assignments = []
         students = get_students(args)
+
+    elif command == 'drive':
+        assignments = natsorted(set(args['assignments']))
+        students = get_students(args)
+        args['course'] = ''
 
     else:
         print('Sub-command must be specified', file=sys.stderr)

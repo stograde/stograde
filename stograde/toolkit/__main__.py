@@ -34,6 +34,12 @@ def main():
                    'Try "pip3 install --no-cache --user --upgrade stograde" '
                    'to update.').format(new_version, current_version), file=sys.stderr)
 
+    if command == 'drive':
+        command_func(students=students,
+                     assignment=assignments[0],
+                     args=args)
+        sys.exit(0)
+
     if not skip_dependency_check:
         check_dependencies()
 

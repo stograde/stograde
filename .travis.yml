@@ -42,6 +42,7 @@ jobs:
       env:
         - DOCKER_IMAGE=stodevx/stograde
       before_install:
+        - sudo apt-get install qemu-user-static -y
         - sudo rm -rf /var/lib/apt/lists/*
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
@@ -50,7 +51,6 @@ jobs:
         - mkdir -vp ~/.docker/cli-plugins/
         - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
         - chmod a+x ~/.docker/cli-plugins/docker-buildx
-        - sudo apt-get install qemu-user-static -y
         - docker buildx create --name stogradebuilder
         - docker buildx inspect --bootstrap
         - docker buildx use stogradebuilder

@@ -1,5 +1,5 @@
 ---
-dist: bionic
+dist: xenial
 
 language: python
 
@@ -41,6 +41,7 @@ jobs:
       python: 3.7
       env:
         - DOCKER_IMAGE=stodevx/stograde
+        - DOCKER_BUILDKIT=1
       before_install:
         - sudo rm -rf /var/lib/apt/lists/*
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -

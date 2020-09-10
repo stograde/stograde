@@ -41,7 +41,6 @@ jobs:
       python: 3.7
       env:
         - DOCKER_IMAGE=stodevx/stograde
-        - DOCKER_BUILDKIT=1
       before_install:
         - sudo rm -rf /var/lib/apt/lists/*
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -51,6 +50,8 @@ jobs:
         - mkdir -vp ~/.docker/cli-plugins/
         - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
         - chmod a+x ~/.docker/cli-plugins/docker-buildx
+        - docker buildx create --name stogradebuilder
+        - docker buildx use stogradebuilder
       script:
         - docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile .
       deploy:

@@ -51,7 +51,7 @@ jobs:
         - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
         - chmod a+x ~/.docker/cli-plugins/docker-buildx
       script:
-        - docker build -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile .
+        - docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile .
       deploy:
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD

@@ -1,20 +1,20 @@
 """Deal with argument parsing for the toolkit"""
 
 import argparse
-from glob import glob
 import logging
-from logging import warning, debug
-from natsort import natsorted
 import os
 import re
 import sys
+from glob import glob
 from typing import Any, Dict, List, Tuple
 
+from natsort import natsorted
+
 from . import global_vars
-from .get_students import get_students as load_students_from_file
+from .get_students import get_students
 from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web
-from ..common import flatten, version
-from ..specs import get_supported_courses
+from ..common import version
+from ..specs.spec_repos import format_supported_course_list
 
 ASSIGNMENT_REGEX = re.compile(r'^(HW|LAB|WS)', re.IGNORECASE)
 
@@ -33,6 +33,8 @@ def build_argparser():
                               help='Skips the pypi update check')
     base_options.add_argument('--skip-dependency-check', action='store_true',
                               help='Skip checking for dependencies')
+    base_options.add_argument('--skip-spec-update', '-S', action='store_true',
+                              help='Skip checking for spec updates')
     base_options.add_argument('--debug', action='store_true',
                               help='Enable debugging mode (throw errors, implies -w1)')
     base_options.add_argument('--no-progress-bar', action='store_true',
@@ -46,7 +48,7 @@ def build_argparser():
                                 help='Which course to evaluate '
                                      '(this sets a default stogit url and downloads the correct specs). '
                                      'Can be {} or one of the previous with /f## or /s## (i.e. sd/s19)'
-                                .format(get_supported_courses()))
+                                .format(format_supported_course_list(delimiter=', ')))
     repo_selection.add_argument('--stogit', metavar='URL',
                                 help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
 
@@ -56,11 +58,11 @@ def build_argparser():
                                 help='Remove student folders and re-clone them')
     record_options.add_argument('--skip-repo-update', '-R', action='store_true',
                                 help='Do not update the student folders when checking')
-    record_options.add_argument('--skip-spec-update', '-S', action='store_true',
-                                help='Skip checking for spec updates')
     record_options.add_argument('--date', action='store', metavar='GIT_DATE',
                                 help=('Check out last submission on GIT_DATE (eg, "last week", "tea time", "2 hrs ago")'
                                       '(see `man git-rev-list`)'))
+    record_options.add_argument('--format', action='store', choices=['md', 'html'], default='md',
+                                help='Set the output format')
 
     compile_options = argparse.ArgumentParser(add_help=False)
     compile_options.add_argument('--skip-web-compile', action='store_true',
@@ -78,8 +80,7 @@ def build_argparser():
     table_options = argparse.ArgumentParser(add_help=False)
     table_options_args = table_options.add_argument_group('table printout options')
     table_options_args.add_argument('--sort', dest='sort_by', action='store', default='name', type=str,
-                                    choices=['name', 'count'],
-                                    help='Sort the students table')
+                                    choices=['name', 'count'], help='Sort the students table')
     table_options_args.add_argument('--no-partials', '-P', action='store_true',
                                     help="Don't highlight partial submissions")
 
@@ -140,37 +141,6 @@ def build_argparser():
     return parser
 
 
-def get_students(args: Dict[str, Any]) -> List[str]:
-    """Get students from the command line or the students.txt file.
-    Anything on the command line will override using the file"""
-    sections = args['sections']
-    students = args['students']
-
-    people = [student for group in students for student in group]
-    if not people:
-        _all_students = load_students_from_file()
-        if sections:
-            collected = []
-            for section_name in sections:
-                student_set = []
-                prefixed = 'section-{}'.format(section_name)
-
-                if section_name in _all_students:
-                    student_set = _all_students[section_name]
-                elif prefixed in _all_students:
-                    student_set = _all_students[prefixed]
-                else:
-                    warning('Neither section [section-{0}] nor [{0}] could not be found in ./students.txt'
-                            .format(section_name))
-
-                collected.append(student_set)
-            people = [student for group in collected for student in group]
-        else:
-            people = list(flatten([_all_students[section] for section in _all_students]))
-
-    return sorted(set(people))
-
-
 def get_ci_assignments() -> List[str]:
     """Find assignments in the student's repository during a CI job"""
     all_assignments: List[str] = []
@@ -203,11 +173,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # record SubCommand
     elif command == 'record':
-        assignments = natsorted(set(args['assignments']))
-        if len(assignments) == 0:
-            print('stograde record requires at least one assignment')
-            sys.exit(1)
-
+        assignments = natsorted(set(args['assignments']))  # Has at least one assignment (enforced by argparser)
         students = get_students(args)
 
     # table SubCommand
@@ -217,11 +183,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # web SubCommand
     elif command == 'web':
-        assignments = natsorted(set(args['assignments']))
-        if len(assignments) != 1:
-            print('stograde web can only be used with one assignment at a time')
-            sys.exit(1)
-
+        assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
 
     # repo SubCommand
@@ -230,12 +192,12 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         students = get_students(args)
 
     else:
-        print('Sub-command must be specified')
+        print('Sub-command must be specified', file=sys.stderr)
         sys.exit(1)
 
     if not students:
-        print('No students selected\n'
-              'Is your students.txt missing?')
+        print('No students selected', file=sys.stderr)
+        print('Is your students.txt missing?', file=sys.stderr)
         sys.exit(1)
 
     debug_print_args(args)
@@ -245,26 +207,26 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     return args, students, assignments
 
 
-def debug_print_args(args):
-    debug("Command Line Arguments:")
+def debug_print_args(args: Dict[str, Any]):
+    logging.debug("Command Line Arguments:")
     for arg, value in args.items():
-        debug("{}: {}".format(arg, str(value)))
+        logging.debug("{}: {}".format(arg, str(value)))
 
 
-def debug_print_students(students):
-    debug("Students:")
+def debug_print_students(students: List[str]):
+    logging.debug("Students:")
     debug_print_grid(students)
 
 
-def debug_print_assignments(things):
-    debug("Assignments:")
-    debug_print_grid(things)
+def debug_print_assignments(assignments: List[str]):
+    logging.debug("Assignments:")
+    debug_print_grid(assignments)
 
 
-def debug_print_grid(items):
+def debug_print_grid(items: List[str]):
     line = ""
     for i, item in enumerate(items):
         line += item.ljust(10)
-        if i % 5 == 4:
-            debug(line)
+        if i % 5 == 4 or i == len(items) - 1:
+            logging.debug(line)
             line = ""

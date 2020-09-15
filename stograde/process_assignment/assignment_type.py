@@ -22,8 +22,6 @@ def get_assignment_type(name: str) -> AssignmentType:
         return AssignmentType.LAB
     elif kind == 'ws':
         return AssignmentType.WORKSHEET
-    else:
-        raise ValueError("Could not parse assignment type for {}".format(name))
 
 
 def get_assignment_number(name: str) -> int:
@@ -34,5 +32,9 @@ def get_assignment_number(name: str) -> int:
 
 def parse_assignment_name(name: str) -> Tuple[str, str]:
     """Splits an assignment id into its type and number"""
-    matches = re.match(r'([a-zA-Z]+)(\d+)', name).groups()
-    return matches[0], matches[1]
+    matches = re.match(r'^(HW|LAB|WS)(\d+)$', name, re.IGNORECASE)
+    if not matches:
+        raise ValueError('Invalid assignment ID: {}'.format(name))
+    else:
+        match_groups = matches.groups()
+        return match_groups[0], match_groups[1]

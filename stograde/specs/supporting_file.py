@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union, Dict, List
 
 
 @dataclass
@@ -7,7 +8,7 @@ class SupportingFile:
     destination: str
 
 
-def create_supporting_file(s_file_spec) -> SupportingFile:
+def create_supporting_file(s_file_spec: Union[Dict, List, str]) -> SupportingFile:
     if isinstance(s_file_spec, dict):
         assert 'file' in s_file_spec
         file_name = s_file_spec['file']

@@ -1,0 +1,6 @@
+---
+assignment: hw5
+
+dependencies:
+  - dependency1
+  - dependency2

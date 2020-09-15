@@ -1,4 +1,4 @@
-from typing import Dict, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from .analyze_student import analyze_student
 from .record_student import record_student
@@ -26,11 +26,9 @@ def process_student(
         skip_branch_check: bool,
         skip_repo_update: bool,
         skip_web_compile: bool,
-        specs: Dict[str, 'Spec'],
+        specs: List['Spec'],
         stogit_url: str
 ) -> StudentResult:
-    assignments: List[str] = list(specs.keys())
-
     try:
         prepare_student(student,
                         stogit_url,
@@ -43,7 +41,7 @@ def process_student(
         student_result = StudentResult(name=student)
 
         if record:
-            record_student(student=student_result, specs=specs, assignments=assignments, basedir=basedir,
+            record_student(student=student_result, specs=specs, basedir=basedir,
                            interact=interact, skip_web_compile=skip_web_compile)
 
         if analyze:
@@ -71,7 +69,7 @@ def prepare_student(student: str,
                     do_clone: bool,
                     do_pull: bool,
                     do_checkout: bool,
-                    date: str = ''):
+                    date: str = '') -> str:
     if do_clean:
         remove(student)
     if do_clone:
@@ -81,21 +79,5 @@ def prepare_student(student: str,
         pull(student)
     if do_checkout:
         checkout_date(student, date=date)
-
-
-def prepare_student_repo(student: str,
-                         stogit_url: str,
-                         do_clean: bool,
-                         do_clone: bool,
-                         do_pull: bool,
-                         do_checkout: bool,
-                         date: str = '') -> str:
-    prepare_student(student,
-                    stogit_url,
-                    do_clean,
-                    do_clone,
-                    do_pull,
-                    do_checkout,
-                    date)
 
     return student

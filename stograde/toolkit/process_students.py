@@ -1,16 +1,14 @@
 import functools
-import logging
-from concurrent.futures import as_completed, ProcessPoolExecutor
-from typing import Dict, List
+from typing import List
 
+from .process_parallel import process_parallel
 from ..common import chdir
 from ..specs.spec import Spec
-from ..student import process_student
+from ..student.process_student import process_student
 from ..student.student_result import StudentResult
-from ..toolkit.progress_bar import make_progress_bar
 
 
-def process_students(specs: Dict[str, 'Spec'],
+def process_students(specs: List['Spec'],
                      students: List[str],
                      *,
                      analyze: bool,
@@ -42,20 +40,10 @@ def process_students(specs: Dict[str, 'Spec'],
             stogit_url=stogit_url
         )
 
-        results: List['StudentResult'] = []
-
-        if workers > 1:
-            print_progress = make_progress_bar(students, no_progress_bar=no_progress_bar)
-            with ProcessPoolExecutor(max_workers=workers) as pool:
-                futures = [pool.submit(single_analysis, name) for name in students]
-                for future in as_completed(futures):
-                    result: 'StudentResult' = future.result()
-                    print_progress(result.name)
-                    results.append(result)
-        else:
-            for student in students:
-                logging.debug('Processing {}'.format(student))
-                result: 'StudentResult' = single_analysis(student)
-                results.append(result)
+        results: List['StudentResult'] = process_parallel(students,
+                                                          no_progress_bar,
+                                                          workers,
+                                                          single_analysis,
+                                                          progress_indicator=lambda value: value.name)
 
     return results

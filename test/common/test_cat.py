@@ -12,7 +12,7 @@ def test_cat(fs):
     assert result[1] == contents
 
 
-def test_cat_missing(fs):
+def test_cat_missing():
     result = cat('file.txt')
     assert result[0] == RunStatus.FILE_NOT_FOUND
     assert result[1] == ''

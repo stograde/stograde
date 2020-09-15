@@ -1,0 +1,6 @@
+---
+assignment: hw4
+
+files:
+  - file: test_file_1.txt
+  - file: test_file_2.txt

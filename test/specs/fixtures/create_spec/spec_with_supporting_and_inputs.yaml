@@ -1,0 +1,12 @@
+---
+assignment: hw9
+
+supporting:
+  - file: supporting_file3.txt
+  - file: supporting_file4.txt
+    destination: ../supporting_file4.txt
+
+inputs:
+  - file: input_file3.txt
+  - file: input_file4.txt
+    destination: ../input_file4.txt

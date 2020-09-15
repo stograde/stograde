@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Union, Dict
 
 from .file_options import FileOptions
 
@@ -7,11 +7,11 @@ from .file_options import FileOptions
 @dataclass
 class SpecFile:
     file_name: str
-    compile_commands: List[str]
-    test_commands: List[str]
-    options: FileOptions
+    compile_commands: List[str] = field(default_factory=list)
+    test_commands: List[str] = field(default_factory=list)
+    options: FileOptions = field(default_factory=FileOptions)
 
-    def add_from_tests(self, test_specs: list):
+    def add_from_tests(self, test_specs: List):
         """Support legacy specs with a separate `tests:` tag
 
         :param test_specs: The `list` under `tests:`
@@ -28,7 +28,7 @@ class SpecFile:
                     test_commands += commands
 
             elif isinstance(file_test_spec, list):  # legacy spec support
-                if len(file_test_spec) == 0:
+                if len(file_test_spec) == 1:
                     continue
                 elif file_test_spec[0] == self.file_name:
                     test_commands += [f for f in file_test_spec[1:] if isinstance(f, str)]
@@ -37,10 +37,12 @@ class SpecFile:
                 raise TypeError('Cannot parse "tests:": incorrect data type for a test: {}'
                                 .format(type(file_test_spec)))
 
+        self.test_commands.extend(test_commands)
+
         return self
 
 
-def create_spec_file(file_spec) -> SpecFile:
+def create_spec_file(file_spec: Union[Dict, List]) -> SpecFile:
     """Create a new SpecFile instance
 
     :param file_spec: A `dict` or `list` with the file specifications

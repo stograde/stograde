@@ -1,0 +1,22 @@
+---
+assignment: hw2
+
+compilers:
+  - &server 'g++ -std=c++11 $@ show_mem.o'
+
+files:
+  - file: hw2.txt
+  - file: second.cpp
+    commands: *server
+    options:
+      web: true
+  - file: third.cpp
+    commands: *server
+    options:
+      web: true
+      optional: true
+
+supporting:
+  - file: show_mem.h
+    destination: ../show_mem.h
+  - file: show_mem.o

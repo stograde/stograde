@@ -3,12 +3,13 @@ import logging
 import os.path
 import sys
 from os import getcwd
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
+from . import global_vars
 from .args import process_args
 from .check_dependencies import check_dependencies
+from .create_students_dir import create_students_dir
 from .find_update import update_available
-from .process_repos import create_students_dir
 from .stogit_url import compute_stogit_url
 from ..specs import create_data_dir, filter_assignments, find_all_specs, load_specs
 
@@ -60,17 +61,21 @@ def main():
     skip_spec_update: bool = args.get('skip_spec_update', False)
 
     if date:
-        logging.debug('Checking out {}'.format(date))
+        print('Checking out {}'.format(date))
 
     assignments = filter_assignments(assignments)
 
-    loaded_specs: Dict[str, 'Spec'] = load_specs(assignments,
-                                                 data_dir=os.path.join(base_dir, 'data'),
-                                                 skip_spec_update=skip_spec_update)
+    loaded_specs: List['Spec'] = load_specs(assignments,
+                                            data_dir=os.path.join(base_dir, 'data'),
+                                            skip_spec_update=skip_spec_update)
 
     if not loaded_specs:
-        print('No specs loaded!')
-        sys.exit(1)
+        if global_vars.CI:
+            logging.warning('No assignments detected!')
+            sys.exit(0)
+        else:
+            print('No specs loaded!', file=sys.stderr)
+            sys.exit(1)
 
     # Call function to handle SubCommand
     command_func(specs=loaded_specs,

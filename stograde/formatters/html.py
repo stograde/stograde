@@ -1,132 +1,162 @@
 import html
 import traceback
+from typing import List, TYPE_CHECKING
+
+from .format_type import FormatType
+from .formatted_result import FormattedResult
+
+from ..toolkit import global_vars
+
+if TYPE_CHECKING:
+    from ..process_assignment.record_result import RecordResult
+    from ..process_assignment.submission_warnings import SubmissionWarnings
+    from ..process_file.compile_result import CompileResult
+    from ..process_file.file_result import FileResult
+    from ..process_file.test_result import TestResult
 
 
-def format_assignment_html(recording, debug=False):
+def format_assignment_html(result: 'RecordResult') -> 'FormattedResult':
     """Given a single recording, format it into an HTML file.
 
     Each recording will only have one student.
-
-    Returns a {content: str, student: str, type: str, assignment: str} dict.
     """
 
     try:
-        files = format_files_list(recording.get('files', {}))
-        warnings = format_warnings(recording.get('warnings', {}).items())
-        header = format_header(recording, warnings)
-        output = (header + files) + '\n\n'
+        files = format_files_list(result.file_results)
+        warnings = format_warnings(result.warnings)
+        header = format_header(result, warnings)
+        output = (header + files) + '\n<hr>\n'
 
     except Exception as err:
-        if debug:
+        if global_vars.DEBUG:
             raise err
         output = format_as_code(traceback.format_exc())
 
-    return {
-        'assignment': recording['spec'],
-        'content': output,
-        'student': recording['student'],
-        'type': 'html',
-    }
+    return FormattedResult(assignment=result.spec_id,
+                           content=output,
+                           student=result.student,
+                           type=FormatType.HTML)
 
 
-def format_files_list(files):
-    return '\n\n'.join([format_file(name, info) for name, info in files.items()])
+def format_files_list(files: List['FileResult']) -> str:
+    return '\n\n'.join([format_file(info) for info in files])
 
 
-def format_warnings(warnings):
-    formatted = [format_warning(warning, value) for warning, value in warnings]
-    return [w for w in formatted if w]
+def format_header(result: 'RecordResult', warnings: str) -> str:
+    """Format the header for the section of the log file"""
 
+    header = '<h1 id="{student}">{spec} - {student}</h1>\n'.format(spec=result.spec_id,
+                                                                   student=result.student)
 
-def format_header(recording, warnings):
-    header = '<h1>{spec}</h1>'.format_map(recording)
+    if not result.warnings.assignment_missing:
+        first_submit = '<p><b>First submission for {}: {}</b></p>'.format(result.spec_id, result.first_submission)
+        header += first_submit + '\n'
 
     if warnings:
-        header += format_as_ul(''.join(warnings))
+        header += warnings + '\n'
 
-    return header
+    return header + '\n'
 
 
-def format_warning(w, value):
-    if w == 'no submission':
-        return '<li>No submission found.</li>'
+def format_warnings(warnings: 'SubmissionWarnings') -> str:
+    if warnings.assignment_missing:
+        return '<p><b>No submission found</b></p>\n'
 
-    elif w == 'unmerged branches' and value:
-        branches = ['<li>{}</li>'.format(b) for b in value]
-        return '<li>Repository has unmerged branches:<ul>{}</ul></li>'.format('\n'.join(branches))
+    elif warnings.unmerged_branches:
+        return '<p><b>Repository has unmerged branches:</b></p>\n{}'.format(format_as_ul(warnings.unmerged_branches))
 
-    elif value:
-        return '<li>Warning: {}</li>'.format(value)
+    elif warnings.recording_err:
+        return '<p><b>Warning: ' + warnings.recording_err + '</b></p>'
 
     else:
         return ''
 
 
-def format_file(filename, file_info):
-    contents = format_file_contents(file_info.get('contents', ''), file_info) + '\n'
-    compilation = format_file_compilation(file_info.get('compilation', [])) + '\n'
-    test_results = format_file_results(file_info.get('result', [])) + '\n'
+def format_file(file_info: 'FileResult') -> str:
+    """Format a file for the log.
+    Formats and concatenates a header, the file contents, compile output and test output.
 
-    if file_info.get('last modified', None):
-        last_modified = ' (last modified on {})'.format(file_info['last modified'])
+    Last modification is calculated and added to header.
+    If file does not exist, adds a list of all files in the directory.
+    If file is missing and is optional, adds a note
+    """
+
+    contents = format_file_contents(file_info.contents) + '\n'
+    compilation = format_file_compilation(file_info.compile_results) + '\n'
+    test_results = format_file_tests(file_info.test_results) + '\n'
+
+    if file_info.last_modified:
+        last_modified = ' ({})'.format(file_info.last_modified)
     else:
         last_modified = ''
 
-    file_header = '<h2><code>{}</code>{}</h2>'.format(filename, last_modified)
+    file_header = '<h2><code>{}</code>{}</h2>\n'.format(file_info.file_name, last_modified)
 
-    if file_info['missing']:
-        note = '<code>{}</code> was not found. We found these files:\n'.format(filename)
-        directory_listing = format_as_ul(['<li><code>{}</code></li>'.format(f) for f in file_info.get('other files', [])])
+    if file_info.file_missing:
+        note = '<p>File not found. <code>ls .</code> says that these files exist:</p>'
+        directory_listing = format_as_code('\n'.join(file_info.other_files))
 
-        if file_info['optional']:
+        if file_info.optional:
             file_header = file_header.strip()
-            file_header += ' (<strong>optional submission</strong>)\n'
+            file_header = file_header[:-5] + ' (<b>optional submission</b>)</h2>\n'
 
         return '\n'.join([file_header, note, directory_listing + '\n\n'])
 
     return '\n'.join([file_header, contents, compilation, test_results])
 
 
-def format_file_contents(contents, info):
-    return format_as_code(html.escape(contents))
+def format_file_contents(contents: str):
+    """Add code block around file contents.
+
+    If a file is empty or contains only whitespace, note this in the log.
+    """
+    if not contents.rstrip():
+        return '<p><i>File empty</i></p>'
+    return format_as_code(contents)
 
 
-def format_file_compilation(compilations):
+def format_file_compilation(compilations: List['CompileResult']) -> str:
+    """Add header and code block to compile command outputs"""
+
     result = []
-    for status in compilations:
-        output = status['output']
-        command = '<code>{command}</code>'.format_map(status)
+    for compile_result in compilations:
+        output = compile_result.output
+        command = '<code>{command}</code>'.format(command=html.escape(compile_result.command))
 
         if not output:
-            result.append('<p><strong>no warnings: {}</strong></p>'.format(command))
+            result.append('<p><b>no warnings: {}</b></p>\n'.format(command))
         else:
-            result.append('<p><strong>warnings: {}</strong></p>'.format(command))
-            result.append(format_as_code(output))
+            result.append('<p><b>warnings: {}</b></p>'.format(command))
+            result.append(format_as_code(output) + '\n')
 
     return '\n'.join(result)
 
 
-def format_file_results(test_results):
-    result = ''
+def format_file_tests(test_results: List['TestResult']) -> str:
+    """Add header and markdown code block to test outputs"""
 
+    result = []
     for test in test_results:
-        header = '<p><strong>results of <code>{command}</code></strong> (status: {status})</p>'.format_map(test)
-        output = format_as_code(test['output'])
-        result += header + '\n' + output
+        header = '<p><b>results of <code>{}</code></b> (status: {})</p>\n'.format(test.command,
+                                                                                            test.status.name)
+        if test.output:
+            header_and_contents = header + format_as_code(test.output) + '\n'
+            if test.truncated:
+                header_and_contents += '<p><i>(truncated after {} lines)</i></p>\n'.format(test.truncated_after)
+            result.append(header_and_contents)
+        else:
+            result.append(header)
 
-        if test['truncated']:
-            result += '<p><em>(truncated after {truncated after})</em></p>'.format_map(test)
-
-    return result
+    return '\n'.join(result)
 
 
-def format_as_code(data):
+def format_as_code(data: str) -> str:
     if not data:
         return ''
-    return '<pre><code>{}</code></pre>'.format(data)
+    return '<pre><code>\n{}\n</code></pre>'.format(html.escape(data))
 
 
-def format_as_ul(data):
+def format_as_ul(data: List[str]) -> str:
     if not data:
         return ''
-    return '<ul>{}</ul>'.format(''.join(data))
+    return '<ul>\n<li>{}</li>\n</ul>'.format('</li>\n<li>'.join(data))

@@ -1,0 +1,11 @@
+---
+assignment: lab1
+
+files:
+  - file: Dog.h
+  - file: Dog.cpp
+  - file: Makefile
+  - file: tryDog.cpp
+    commands:
+      - rm -f tryDog tryDog.o Dog.o
+      - make

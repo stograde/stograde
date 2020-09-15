@@ -1,25 +1,136 @@
-import datetime
-from stograde.toolkit.args import build_argparser
+import logging
+import os
+import sys
+from unittest import mock
 
-from stograde.toolkit.stogit_url import compute_stogit_url
+import pytest
+
+from stograde.common import version, chdir
+from stograde.toolkit import global_vars
+from stograde.toolkit.__main__ import main
+from stograde.toolkit.args import process_args, debug_print_grid
+
+_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-def args(arglist):
-    return vars(build_argparser().parse_args(args=arglist))
+def test_version_flag(capsys):
+    try:
+        with mock.patch('sys.argv', [sys.argv[0], '--version']):
+            main()
+    except SystemExit:
+        pass
+
+    out, _ = capsys.readouterr()
+
+    assert out == 'version {}\n'.format(version)
+
+    try:
+        with mock.patch('sys.argv', [sys.argv[0], '-v']):
+            main()
+    except SystemExit:
+        pass
+
+    out, _ = capsys.readouterr()
+
+    assert out == 'version {}\n'.format(version)
 
 
-def test_stogit_url_computation():
-    assert compute_stogit_url(stogit='', course='sd', _now=datetime.date(2017, 1, 31)) \
-        == 'git@stogit.cs.stolaf.edu:sd/s17'
+@mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student7', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
+@mock.patch('sys.argv', [sys.argv[0], 'ci'])
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'student7'))
+def test_process_args_ci(datafiles):
+    with chdir(str(datafiles)):
+        args, students, assignments = process_args()
 
-    assert compute_stogit_url(stogit='', course='sd', _now=datetime.date(2016, 9, 15)) \
-        == 'git@stogit.cs.stolaf.edu:sd/f16'
+    assert students == ['student7']
+    assert set(assignments) == {'hw4', 'hw7', 'lab4', 'ws2'}
+    assert args['course'] == 'sd/s20'
+    assert global_vars.CI is True
 
-    assert compute_stogit_url(stogit='', course='sd', _now=datetime.date(2016, 4, 15)) \
-        == 'git@stogit.cs.stolaf.edu:sd/s16'
+    global_vars.CI = False
 
-    assert compute_stogit_url(stogit='blah', course='sd', _now=datetime.date.today()) \
-        == 'blah'
 
-    assert compute_stogit_url(stogit='', course='hd', _now=datetime.date(2016, 4, 15)) \
-        == 'git@stogit.cs.stolaf.edu:hd/s16'
+def test_process_args_record_one_assignment():
+    args = [sys.argv[0]] + ['record', 'hw5', '--student', 'student6']
+
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
+
+    assert students == ['student6']
+    assert assignments == ['hw5']
+
+
+def test_process_args_record_multiple_assignments():
+    args = [sys.argv[0]] + ['record', 'hw5', 'lab3', 'hw13', '--student', 'student8']
+
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
+
+    assert students == ['student8']
+    assert set(assignments) == {'hw5', 'lab3', 'hw13'}
+
+
+def test_process_args_table():
+    args = [sys.argv[0]] + ['table', '--student', 'student10']
+
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
+
+    assert students == ['student10']
+    assert not assignments
+
+
+def test_process_args_web():
+    args = [sys.argv[0]] + ['web', 'hw1', '--student', 'student12', '--port', '12345']
+
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
+
+    assert students == ['student12']
+    assert assignments == ['hw1']
+
+
+def test_process_args_repo():
+    args = [sys.argv[0]] + ['repo', 'clone', '--student', 'student9']
+
+    with mock.patch('sys.argv', args):
+        _, students, assignments = process_args()
+
+    assert students == ['student9']
+    assert not assignments
+
+
+def test_no_sub_command(capsys):
+    try:
+        with mock.patch('sys.argv', [sys.argv[0]]):
+            process_args()
+    except SystemExit:
+        pass
+
+    _, err = capsys.readouterr()
+
+    assert err == 'Sub-command must be specified\n'
+
+
+def test_no_students(tmpdir, capsys):
+    args = [sys.argv[0]] + ['record', 'hw1']
+
+    with tmpdir.as_cwd():
+        try:
+            with mock.patch('sys.argv', args):
+                process_args()
+        except SystemExit:
+            pass
+
+    _, err = capsys.readouterr()
+
+    assert err == 'No students selected\nIs your students.txt missing?\n'
+
+
+def test_debug_print_grid(caplog):
+    with caplog.at_level(logging.DEBUG):
+        debug_print_grid(['item', 'item2', 'a', 'bc', 'item5', 'item6', 'last_item', 'last_item'])
+
+    log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    assert log_messages == {('item      item2     a         bc        item5     ', 'DEBUG'),
+                            ('item6     last_item last_item ', 'DEBUG')}

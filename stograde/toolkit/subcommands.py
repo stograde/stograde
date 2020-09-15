@@ -7,12 +7,13 @@ from threading import Thread
 from typing import Any, Dict, List, TYPE_CHECKING
 
 from . import global_vars
-from .process_repos import process_parallel_repos
+from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
-from .tabulate import tabulate
 from ..common import chdir
-from ..student import ci_analyze, prepare_student_repo
+from ..formatters.format_type import FormatType
+from ..formatters.tabulate import tabulate
+from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
     from ..student.student_result import StudentResult
 
 
-def do_ci(specs: Dict[str, 'Spec'],
+def do_ci(specs: List['Spec'],
           students: List[str],
           base_dir: str,
           stogit_url: str,
@@ -43,23 +44,34 @@ def do_ci(specs: Dict[str, 'Spec'],
                                                       workers=1,
                                                       work_dir='.')
 
-    passing: bool = ci_analyze(results)
+    # There should be only one student because the student name is
+    # retrieved from the environment by process_args,
+    # thus we can make the assumption that there is only one result
+    # and that it is at index 0
+    assert len(results) == 1
+    passing: bool = ci_analyze(results[0])
+
     table = tabulate(results)
     print('\n' + table + '\n')
+
     if not passing:
         logging.debug('Build failed')
         sys.exit(1)
 
 
-def do_record(specs: Dict[str, 'Spec'],
+def do_record(specs: List['Spec'],
               students: List[str],
               base_dir: str,
               stogit_url: str,
               args: Dict[str, Any]):
-    show_table: bool = args['table']
-
     clean: bool = args['clean']
     date: str = args['date']
+    if args['format'] == 'md':
+        format_type = FormatType.MD
+    elif args['format'] == 'html':
+        format_type = FormatType.HTML
+    else:
+        raise ValueError('Unrecognized formatter')
     gist: bool = args['gist']
     interact: bool = args['interact']
     no_partials: bool = args['no_partials']
@@ -69,6 +81,9 @@ def do_record(specs: Dict[str, 'Spec'],
     skip_web_compile: bool = args['skip_web_compile']
     sort_by: str = args['sort_by']
     workers: int = args['workers'] if not global_vars.DEBUG and not interact else 1
+
+    show_table: bool = args['table']
+    create_table: bool = show_table or gist
 
     makedirs('./students', exist_ok=True)
 
@@ -89,14 +104,15 @@ def do_record(specs: Dict[str, 'Spec'],
                                                       work_dir='./students')
 
     table: str = ''
-    if show_table:
+    if create_table:
         table = tabulate(results, sort_by=sort_by, highlight_partials=not no_partials)
+    if show_table:
         print('\n' + table + '\n')
 
-    save_recordings(results, table, gist=gist)
+    save_recordings(results, table, gist=gist, format_type=format_type)
 
 
-def do_table(specs: Dict[str, 'Spec'],
+def do_table(specs: List['Spec'],
              students: List[str],
              base_dir: str,
              stogit_url: str,
@@ -128,7 +144,7 @@ def do_table(specs: Dict[str, 'Spec'],
     print('\n' + tabulate(results, sort_by=sort_by, highlight_partials=not no_partials) + '\n')
 
 
-def do_web(specs: Dict[str, 'Spec'],
+def do_web(specs: List['Spec'],
            students: List[str],
            base_dir: str,
            stogit_url: str,
@@ -139,7 +155,7 @@ def do_web(specs: Dict[str, 'Spec'],
     skip_repo_update: bool = args['skip_repo_update']
     workers: int = args['workers'] if not global_vars.DEBUG else 1
     port: int = args['port']
-    spec: 'Spec' = list(specs.values())[0]
+    spec: 'Spec' = specs[0]
 
     if not is_web_spec(spec):
         print("No web files in assignment {}".format(spec.id))
@@ -165,7 +181,7 @@ def do_clean(students: List[str],
              workers: int):
     with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=True,
             do_clone=True,
@@ -173,10 +189,10 @@ def do_clean(students: List[str],
             do_checkout=False
         )
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
 
 
 def do_update(students: List[str],
@@ -186,7 +202,7 @@ def do_update(students: List[str],
               workers: int):
     with chdir(os.path.join(base_dir, 'students')):
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=False,
             do_clone=True,
@@ -194,7 +210,7 @@ def do_update(students: List[str],
             do_checkout=False
         )
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)

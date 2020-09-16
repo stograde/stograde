@@ -12,7 +12,7 @@ from natsort import natsorted
 
 from . import global_vars
 from .get_students import get_students
-from .subcommands import do_ci, do_clean, do_record, do_table, do_update, do_web, do_drive
+from .subcommands import do_ci, do_drive, do_record, do_repo_clean, do_repo_update, do_table, do_web
 from ..common import version
 from ..specs.spec_repos import format_supported_course_list
 
@@ -125,10 +125,10 @@ def build_argparser():
     repo_sub_parsers = parser_repo.add_subparsers()
     repo_sub_parsers.add_parser('clean', aliases=['reclone'], help='Remove and reclone student repositories',
                                 parents=[base_options, repo_selection, student_selection],
-                                conflict_handler='resolve').set_defaults(func=do_clean)
+                                conflict_handler='resolve').set_defaults(func=do_repo_clean)
     repo_sub_parsers.add_parser('update', aliases=['clone'], help='Clone and/or update student repos',
                                 parents=[base_options, repo_selection, student_selection],
-                                conflict_handler='resolve').set_defaults(func=do_update)
+                                conflict_handler='resolve').set_defaults(func=do_repo_update)
 
     # Table SubParser
     parser_table = sub_parsers.add_parser('table', help='Print an table of the assignments submitted by students',

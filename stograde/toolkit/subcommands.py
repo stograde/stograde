@@ -11,7 +11,7 @@ from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
 from ..common import chdir
-from ..drive.drive import authenticate, filter_files, get_all_files, group_files, format_file_group
+from ..drive.drive import authenticate, get_assignment_files, get_all_files, group_files, format_file_group
 from ..formatters.format_type import FormatType
 from ..formatters.tabulate import tabulate
 from ..student import ci_analyze, prepare_student
@@ -58,6 +58,35 @@ def do_ci(specs: List['Spec'],
     if not passing:
         logging.debug('Build failed')
         sys.exit(1)
+
+
+def do_drive(students: List[str],
+             assignment: str,
+             args: Dict[str, Any]):
+    credentials = authenticate()
+
+    all_files = get_all_files(credentials=credentials, email=args['email'])
+
+    assignment_files = get_assignment_files(all_files, assignment)
+
+    if not assignment_files:
+        print('No files found!', file=sys.stderr)
+        sys.exit(1)
+
+    cls_files, non_cls_files, non_sto_files = group_files(assignment_files, students)
+
+    file_groups = []
+
+    if cls_files:
+        file_groups.append(format_file_group(cls_files, 'Files shared from students in class:'))
+
+    if non_cls_files:
+        file_groups.append(format_file_group(non_cls_files, 'Files shared from students NOT in class:'))
+
+    if non_sto_files:
+        file_groups.append(format_file_group(non_sto_files, 'Files shared from personal emails:'))
+
+    print('\n' + '\n\n'.join(file_groups))
 
 
 def do_record(specs: List['Spec'],
@@ -111,6 +140,48 @@ def do_record(specs: List['Spec'],
         print('\n' + table + '\n')
 
     save_recordings(results, table, gist=gist, format_type=format_type)
+
+
+def do_repo_clean(students: List[str],
+                  stogit_url: str,
+                  base_dir: str,
+                  no_progress_bar: bool,
+                  workers: int):
+    with chdir(os.path.join(base_dir, 'students')):
+        single_repo = functools.partial(
+            prepare_student,
+            stogit_url=stogit_url,
+            do_clean=True,
+            do_clone=True,
+            do_pull=True,
+            do_checkout=False
+        )
+
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
+
+
+def do_repo_update(students: List[str],
+                   stogit_url: str,
+                   base_dir: str,
+                   no_progress_bar: bool,
+                   workers: int):
+    with chdir(os.path.join(base_dir, 'students')):
+        single_repo = functools.partial(
+            prepare_student,
+            stogit_url=stogit_url,
+            do_clean=False,
+            do_clone=True,
+            do_pull=True,
+            do_checkout=False
+        )
+
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
 
 
 def do_table(specs: List['Spec'],
@@ -173,75 +244,3 @@ def do_web(specs: List['Spec'],
                stogit_url=stogit_url,
                students=students,
                workers=workers)
-
-
-def do_drive(students: List[str],
-             assignment: str,
-             args: Dict[str, Any]):
-
-    credentials = authenticate()
-
-    all_files = get_all_files(credentials=credentials, email=args['email'])
-
-    assignment_files = filter_files(all_files, assignment)
-
-    if not assignment_files:
-        print('No files found!', file=sys.stderr)
-        sys.exit(1)
-
-    cls_files, non_cls_files, non_sto_files = group_files(assignment_files, students)
-
-    file_groups = []
-
-    if cls_files:
-        file_groups.append(format_file_group(cls_files, 'Files shared from students in class:'))
-
-    if non_cls_files:
-        file_groups.append(format_file_group(non_cls_files, 'Files shared from students NOT in class:'))
-
-    if non_sto_files:
-        file_groups.append(format_file_group(non_sto_files, 'Files shared from personal emails:'))
-
-    print('\n' + '\n\n'.join(file_groups))
-
-
-def do_clean(students: List[str],
-             stogit_url: str,
-             base_dir: str,
-             no_progress_bar: bool,
-             workers: int):
-    with chdir(os.path.join(base_dir, 'students')):
-        single_repo = functools.partial(
-            prepare_student,
-            stogit_url=stogit_url,
-            do_clean=True,
-            do_clone=True,
-            do_pull=True,
-            do_checkout=False
-        )
-
-        process_parallel(students=students,
-                         no_progress_bar=no_progress_bar,
-                         workers=workers,
-                         operation=single_repo)
-
-
-def do_update(students: List[str],
-              stogit_url: str,
-              base_dir: str,
-              no_progress_bar: bool,
-              workers: int):
-    with chdir(os.path.join(base_dir, 'students')):
-        single_repo = functools.partial(
-            prepare_student,
-            stogit_url=stogit_url,
-            do_clean=False,
-            do_clone=True,
-            do_pull=True,
-            do_checkout=False
-        )
-
-        process_parallel(students=students,
-                         no_progress_bar=no_progress_bar,
-                         workers=workers,
-                         operation=single_repo)

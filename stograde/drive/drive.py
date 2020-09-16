@@ -50,9 +50,12 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
     (January-June or July-December of the current year)"""
     # Create drive service with provided credentials
     service = build('drive', 'v3', credentials=credentials, cache_discovery=False)
-    next_page_token = None
+
     all_user_files = []
+
+    next_page_token = None
     date = datetime.date.today()
+
     while True:
         # Get metadata about 100 files at a time
         response = service.files().list(q="modifiedTime > '{year}-{month}-01T00:00:00'"
@@ -61,6 +64,7 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
                                         pageSize=100,
                                         fields='files(createdTime,name,owners,permissions,webViewLink),nextPageToken',
                                         pageToken=next_page_token).execute()
+
         all_user_files = all_user_files + [file for file in response['files']]
         next_page_token = response.get('nextPageToken', None)
 
@@ -77,7 +81,7 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
             for file in shared_files]
 
 
-def filter_file_assignment(file: 'DriveResult', assignment: str) -> bool:
+def get_assignment_files(files: List['DriveResult'], assignment: str) -> List['DriveResult']:
     a_type = get_assignment_type(assignment)
     a_num = get_assignment_number(assignment)
     if a_type is AssignmentType.HOMEWORK:
@@ -90,14 +94,7 @@ def filter_file_assignment(file: 'DriveResult', assignment: str) -> bool:
         print('Could not parse assignment name {}'.format(assignment), file=sys.stderr)
         sys.exit(1)
 
-    if re.match(reg, file.file_name, re.IGNORECASE):
-        return True
-    else:
-        return False
-
-
-def filter_files(files: List['DriveResult'], assignment: str) -> List['DriveResult']:
-    return list(filter(lambda f: filter_file_assignment(f, assignment), files))
+    return list(filter(lambda f: re.match(reg, f.file_name, re.IGNORECASE) is not None, files))
 
 
 def group_files(files: List['DriveResult'],

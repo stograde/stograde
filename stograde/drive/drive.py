@@ -72,6 +72,7 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
         if next_page_token is None:
             break
 
+    # Filter out files not shared with the correct email
     shared_files = list(filter(lambda f: filter_file_shared_email(f, email), all_user_files))
 
     return [DriveResult(student_email=file['owners'][0]['emailAddress'],
@@ -82,6 +83,7 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
 
 
 def get_assignment_files(files: List['DriveResult'], assignment: str) -> List['DriveResult']:
+    """Filter out only files that contain the name of the assignment in their name"""
     a_type = get_assignment_type(assignment)
     a_num = get_assignment_number(assignment)
     if a_type is AssignmentType.HOMEWORK:
@@ -101,38 +103,59 @@ def group_files(files: List['DriveResult'],
                 students: List[str]) -> Tuple[List['DriveResult'],
                                               List['DriveResult'],
                                               List['DriveResult']]:
-    missing_students = [DriveResult(student + '@stolaf.edu', None, None, None) for student in
+    """Group files found into three groups:
+        - Students whose username is in the students.txt file
+        - Students whose username is not in the students.txt file
+        - Students who shared the file using an email that does not end with @stolaf.edu
+
+    If a file is not found for a student in the students.txt file, a placeholder result is added to the
+    first group."""
+    # Create placeholders for students who are listed in the students.txt file
+    # that have not shared a document using their school email
+    missing_students = [DriveResult(student + '@stolaf.edu', 'MISSING', None, 'MISSING') for student in
                         list(set(students).difference({file.student_email[:-11] for file in files}))]
+
+    # Get all documents that were shared by stolaf.edu emails
     stolaf_files = [file for file in files if file.student_email.endswith('@stolaf.edu')]
+
+    # Get all documents that were shared by students listed in the students.txt file
     stolaf_class_files = [file for file in files if file.student_email[:-11] in students] + missing_students
+
+    # Get all documents that were shared by students listed in the students.txt file
     stolaf_non_class_files = list(set(stolaf_files).difference(stolaf_class_files))
+
+    # Get any documents shared with non-stolaf.edu emails
     non_stolaf_files = list(set(files).difference(stolaf_files))
 
     return stolaf_class_files, stolaf_non_class_files, non_stolaf_files
 
 
 def create_line(file: 'DriveResult', longest_email_len: int, longest_file_name_len: int, longest_link_len: int) -> str:
+    """Create a line of the table"""
     if file.create_time is not None:
         create_time = parse(file.create_time).astimezone(tz.gettz('America/Central')).strftime('%x %X %Z')
     else:
-        create_time = '---------------------'
+        create_time = ''.ljust(21, '-')
 
     return '{email:<{emailsize}} | {name:<{namesize}} | {link:<{linksize}} | {time}'.format(
         email=file.student_email,
         emailsize=longest_email_len,
-        name=file.file_name if file.file_name is not None else 'MISSING',
+        name=file.file_name,
         namesize=longest_file_name_len,
-        link=file.url if file.url is not None else 'MISSING',
+        link=file.url,
         linksize=longest_link_len,
         time=create_time)
 
 
 def format_file_group(files: List['DriveResult'], title: str):
+    """Create a table for a group of documents (see group_files for groupings)"""
+    # Determine longest length for each column
     longest_email_len = len(max(files,
                                 key=lambda f: len(f.student_email) if f.student_email is not None else 0).student_email)
     longest_file_name_len = len(max(files, key=lambda f: len(f.file_name) if f.file_name is not None else 0).file_name)
     longest_link_len = len(max(files, key=lambda f: len(f.url) if f.url is not None else 0).url)
 
+    # Create the header row
     header = '{email:<{emailsize}} | {name:<{namesize}} | {link:<{linksize}} | {time}'.format(
         email='EMAIL',
         emailsize=longest_email_len,
@@ -142,6 +165,7 @@ def format_file_group(files: List['DriveResult'], title: str):
         linksize=longest_link_len,
         time='CREATION DATE')
 
+    # Create the border between the header row and the rest of the table
     border = ''.join([
         ''.ljust(longest_email_len + 1, ROW),
         JOIN,
@@ -152,6 +176,7 @@ def format_file_group(files: List['DriveResult'], title: str):
         ''.ljust(22, ROW),
     ])
 
+    # Create and return the table
     lines = [title, header, border] + [create_line(file,
                                                    longest_email_len,
                                                    longest_file_name_len,

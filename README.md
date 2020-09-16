@@ -11,6 +11,7 @@ This toolkit gives you the power to do a bunch of things, including
 
 - simply manage a set of student repositories (`stograde repo ...`)
 - check which assignments the students have turned in (`stograde table`)
+- get a list of URLs for assignments submitted via Google Drive (`stograde drive`)
 - run tests against those assignments and produce a log file for grading (`stograde record`)
 - view programs one at a time in the SD_app React app (`stograde web`)
 - check a student's submissions as part of an automatic GitLab CI job (`stograde ci`)
@@ -19,6 +20,7 @@ This toolkit gives you the power to do a bunch of things, including
 
 For more details, take a look at the documentation pages for:
 - [Recording Assignments with `stograde record`](docs/RECORD.md)
+- [Checking Google Drive Submissions with `stograde drive`](docs/DRIVE.md)
 - [Getting an Overview of Submissions with `stograde table`](docs/TABLE.md)
 - [Grading React App Files with `stograde web`](docs/WEB.md)
 - [Managing Student Repositories with `stograde repo`](docs/REPO.md)

@@ -1,15 +1,18 @@
 import datetime
 
+# noinspection PyPackageRequirements
 from dateutil import tz
+# noinspection PyPackageRequirements
 from dateutil.parser import parse
 import os
 import re
 import sys
 from typing import Any, Dict, List, Tuple
 
-import dateutil
+# noinspection PyPackageRequirements
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+# noinspection PyPackageRequirements
 from googleapiclient.discovery import build
 
 from .drive_result import DriveResult
@@ -18,6 +21,7 @@ from ..process_assignment.assignment_type import AssignmentType, get_assignment_
 
 
 def authenticate() -> Credentials:
+    """Authenticate the connection"""
     if not os.path.exists('client_secret.json'):
         print('client_secret.json required for stograde drive functionality.', file=sys.stderr)
         print('Please make sure it is located in the directory you are running stograde in.', file=sys.stderr)
@@ -29,6 +33,10 @@ def authenticate() -> Credentials:
 
 
 def filter_file_shared_email(file: Dict[str, Any], email: str) -> bool:
+    """Filter out assignments not shared with the specified email.
+
+    This prevents StoGrade from listing documents shared with the TA's email and only those shared with the TA
+    group alias"""
     if 'permissions' not in file:
         return False
     for perm in file['permissions']:
@@ -38,11 +46,15 @@ def filter_file_shared_email(file: Dict[str, Any], email: str) -> bool:
 
 
 def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
+    """Get all files shared with the user in the current half-year
+    (January-June or July-December of the current year)"""
+    # Create drive service with provided credentials
     service = build('drive', 'v3', credentials=credentials, cache_discovery=False)
     next_page_token = None
     all_user_files = []
     date = datetime.date.today()
     while True:
+        # Get metadata about 100 files at a time
         response = service.files().list(q="modifiedTime > '{year}-{month}-01T00:00:00'"
                                         .format(year=date.year,
                                                 month='01' if date.month < 7 else '07'),
@@ -51,6 +63,8 @@ def get_all_files(credentials: Credentials, email: str) -> List['DriveResult']:
                                         pageToken=next_page_token).execute()
         all_user_files = all_user_files + [file for file in response['files']]
         next_page_token = response.get('nextPageToken', None)
+
+        # If we have reached the end of the list of documents, next_page_token will be None
         if next_page_token is None:
             break
 

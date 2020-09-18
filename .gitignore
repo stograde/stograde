@@ -14,6 +14,7 @@ Thumbs.db
 __pycache__/
 *.swp
 client_secret*.json
+!test/drive/fixtures/client_secret.json
 
 build/
 *.egg-info/

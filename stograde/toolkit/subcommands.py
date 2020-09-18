@@ -11,9 +11,9 @@ from .process_parallel import process_parallel
 from .process_students import process_students
 from .save_recordings import save_recordings
 from ..common import chdir
-from ..drive.drive import authenticate, get_assignment_files, get_all_files, group_files, format_file_group
+from ..drive import authenticate_drive, get_assignment_files, group_files, format_file_group
+from ..formatters import tabulate
 from ..formatters.format_type import FormatType
-from ..formatters.tabulate import tabulate
 from ..student import ci_analyze, prepare_student
 from ..webapp import is_web_spec, launch_cli, server
 
@@ -63,11 +63,11 @@ def do_ci(specs: List['Spec'],
 def do_drive(students: List[str],
              assignment: str,
              args: Dict[str, Any]):
-    credentials = authenticate()
+    credentials = authenticate_drive()
 
-    all_files = get_all_files(credentials=credentials, email=args['email'])
-
-    assignment_files = get_assignment_files(all_files, assignment)
+    assignment_files = get_assignment_files(assignment=assignment,
+                                            credentials=credentials,
+                                            email=args['email'])
 
     if not assignment_files:
         print('No files found!', file=sys.stderr)
@@ -86,7 +86,7 @@ def do_drive(students: List[str],
     if non_sto_files:
         file_groups.append(format_file_group(non_sto_files, 'Files shared from personal emails:'))
 
-    print('\n' + '\n\n'.join(file_groups))
+    print('\n\n' + '\n\n'.join(file_groups))
 
 
 def do_record(specs: List['Spec'],

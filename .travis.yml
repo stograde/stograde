@@ -27,8 +27,7 @@ jobs:
         - GIST_USER="maxnz"
         # GIST_KEY
         - secure: "j2lYO/8l/+RwsYVU4w3HtgJ/aMgMMrrjxi6JZg9/tNPPsukZOvwhzng5i0fpBs5LtBrhXyV9VYmtHx+1tb0ywWW2I3oM/m+ry0dvy01mQWSP5NjW8GSL0RCWP9ZNT8IT95YxdLB8TVQsPOgriluf5JVxwpxfeTu124FR8i+1QAIrfUDhN8AzN2IikP3Zbc1YdBWZP1RkN1dafk2Kwfh32J2K58c5RRx1gNWmw0AmTXXhP+dKjaPS6yKwe+LzxUSHmW1ZX8QA989aINhyJHaoKHi1UPKFotO3jcR1xlPIBuq1OgeVj789hq8yeUoeXbhsHS2x43YkQiNKrmQB6/v0e/oEaAnqRGGo9C8n9z6YgqFgnDdnrAPdy+DAEvKazbAWOwEBLD2dtveBYIVBr4InmQYh0sRHE0HEQXj3kIB2LHguidzjCx96Go7Quof82jF6uhv1uO7y9zU+UbGV+qjkglAxJyeOb6ThqPneA1MJKmKm6uVM2g8sbjQ1DpynXPSCINdS4ZW+EyBlnvVKaLl1x9rZ+t/v+M7roLRxll4BfwgNdHvM0m0ch5dLtny1Q2KUNRMtMsP0F52LRrd7f58VpJeUAD8/zmBp3lNVOQhINoWeH9K9XQMIpeZs2cfkFMm2a7qynrUpqlYdVYRxDtmyDqDUCRXJbWgg5xPf6stZ2Y4="
-      install: pip install tox tox-travis setuptools>=40.3.0
-      before_script: pip show setuptools
+      install: pip install tox tox-travis
       script: tox
 
     - stage: test
@@ -37,8 +36,7 @@ jobs:
         - GIST_USER="maxnz"
         # GIST_KEY
         - secure: "j2lYO/8l/+RwsYVU4w3HtgJ/aMgMMrrjxi6JZg9/tNPPsukZOvwhzng5i0fpBs5LtBrhXyV9VYmtHx+1tb0ywWW2I3oM/m+ry0dvy01mQWSP5NjW8GSL0RCWP9ZNT8IT95YxdLB8TVQsPOgriluf5JVxwpxfeTu124FR8i+1QAIrfUDhN8AzN2IikP3Zbc1YdBWZP1RkN1dafk2Kwfh32J2K58c5RRx1gNWmw0AmTXXhP+dKjaPS6yKwe+LzxUSHmW1ZX8QA989aINhyJHaoKHi1UPKFotO3jcR1xlPIBuq1OgeVj789hq8yeUoeXbhsHS2x43YkQiNKrmQB6/v0e/oEaAnqRGGo9C8n9z6YgqFgnDdnrAPdy+DAEvKazbAWOwEBLD2dtveBYIVBr4InmQYh0sRHE0HEQXj3kIB2LHguidzjCx96Go7Quof82jF6uhv1uO7y9zU+UbGV+qjkglAxJyeOb6ThqPneA1MJKmKm6uVM2g8sbjQ1DpynXPSCINdS4ZW+EyBlnvVKaLl1x9rZ+t/v+M7roLRxll4BfwgNdHvM0m0ch5dLtny1Q2KUNRMtMsP0F52LRrd7f58VpJeUAD8/zmBp3lNVOQhINoWeH9K9XQMIpeZs2cfkFMm2a7qynrUpqlYdVYRxDtmyDqDUCRXJbWgg5xPf6stZ2Y4="
-      install: pip install tox tox-travis setuptools>=40.3.0
-      before_script: pip show setuptools
+      install: pip install tox tox-travis
       script: tox
 
     - stage: test
@@ -47,8 +45,7 @@ jobs:
         - GIST_USER="maxnz"
         # GIST_KEY
         - secure: "j2lYO/8l/+RwsYVU4w3HtgJ/aMgMMrrjxi6JZg9/tNPPsukZOvwhzng5i0fpBs5LtBrhXyV9VYmtHx+1tb0ywWW2I3oM/m+ry0dvy01mQWSP5NjW8GSL0RCWP9ZNT8IT95YxdLB8TVQsPOgriluf5JVxwpxfeTu124FR8i+1QAIrfUDhN8AzN2IikP3Zbc1YdBWZP1RkN1dafk2Kwfh32J2K58c5RRx1gNWmw0AmTXXhP+dKjaPS6yKwe+LzxUSHmW1ZX8QA989aINhyJHaoKHi1UPKFotO3jcR1xlPIBuq1OgeVj789hq8yeUoeXbhsHS2x43YkQiNKrmQB6/v0e/oEaAnqRGGo9C8n9z6YgqFgnDdnrAPdy+DAEvKazbAWOwEBLD2dtveBYIVBr4InmQYh0sRHE0HEQXj3kIB2LHguidzjCx96Go7Quof82jF6uhv1uO7y9zU+UbGV+qjkglAxJyeOb6ThqPneA1MJKmKm6uVM2g8sbjQ1DpynXPSCINdS4ZW+EyBlnvVKaLl1x9rZ+t/v+M7roLRxll4BfwgNdHvM0m0ch5dLtny1Q2KUNRMtMsP0F52LRrd7f58VpJeUAD8/zmBp3lNVOQhINoWeH9K9XQMIpeZs2cfkFMm2a7qynrUpqlYdVYRxDtmyDqDUCRXJbWgg5xPf6stZ2Y4="
-      install: pip install tox tox-travis setuptools>=40.3.0 coveralls
-      before_script: pip show setuptools
+      install: pip install tox tox-travis coveralls
       script: tox
       after_success: coveralls
 

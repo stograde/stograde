@@ -51,7 +51,7 @@ setup(
     ],
     keywords='stolaf course-tooling',
     install_requires=install_requires,
-    tests_require=['tox', 'pytest', 'setuptools >= 40.3.*'],
+    tests_require=['tox', 'pytest'],
     packages=find_packages(exclude=['tests', 'docs']),
     # see http://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
     entry_points={

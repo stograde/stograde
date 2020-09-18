@@ -1,16 +1,5 @@
 #!/bin/bash
 
-if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
-if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
-
-if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
-then
-  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
-else
-  (>&2 echo "Failed to log into Docker properly.  SAD!")
-  exit 1
-fi
-
 suffix="$2"
 
 if [[ "$TRAVIS_BRANCH" == "master" ]]; then deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"; fi
@@ -28,6 +17,32 @@ fi
 # shellcheck disable=SC2237
 # shellcheck disable=SC2086
 if ! [ -z $deploy_targets ]; then echo "No targets to deploy"; exit 0; fi
+
+# Set up docker buildx for multiplatform build
+sudo apt-get install qemu-user-static -y
+sudo rm -rf /var/lib/apt/lists/*
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+sudo apt-get update
+sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+mkdir -vp ~/.docker/cli-plugins/
+curl --silent -L "https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+chmod a+x ~/.docker/cli-plugins/docker-buildx
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker buildx create --name stogradebuilder
+docker buildx inspect stogradebuilder --bootstrap
+docker buildx use stogradebuilder
+
+if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
+if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
+
+if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+then
+  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
+else
+  (>&2 echo "Failed to log into Docker properly.  SAD!")
+  exit 1
+fi
 
 echo "Deploying $deploy_targets"
 

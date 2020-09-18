@@ -31,7 +31,7 @@ tags=""
 
 for deploy_target in $deploy_targets
 do
-  tags="$tags -t $deploy_target"
+  tags="$tags --tag $deploy_target"
 done
 
 docker buildx build --platform linux/arm/v7,linux/amd64 "$tags" -f "$1"

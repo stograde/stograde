@@ -98,4 +98,4 @@ def test_stograde_drive_no_files(datafiles, capsys):
                         pass
 
     _, err = capsys.readouterr()
-    assert err == 'No files found!\n'
+    assert err == '\nNo files found!\n'

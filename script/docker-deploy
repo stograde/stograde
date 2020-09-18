@@ -44,6 +44,7 @@ then
 fi
 
 # Set up docker buildx for multiplatform build
+sudo apt-get update
 sudo apt-get install qemu-user-static -y
 sudo rm -rf /var/lib/apt/lists/*
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -

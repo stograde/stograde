@@ -70,7 +70,7 @@ def do_drive(students: List[str],
                                             email=args['email'])
 
     if not assignment_files:
-        print('No files found!', file=sys.stderr)
+        print('\nNo files found!', file=sys.stderr)
         sys.exit(1)
 
     cls_files, non_cls_files, non_sto_files = group_files(assignment_files, students)

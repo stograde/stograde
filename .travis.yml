@@ -57,6 +57,7 @@ jobs:
         - docker buildx use stogradebuilder
       script:
         - docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $DOCKER_IMAGE:$TRAVIS_COMMIT -f Dockerfile .
+        - docker images
       deploy:
         - provider: script
           script: script/docker-deploy $DOCKER_IMAGE:$TRAVIS_COMMIT $DOCKER_IMAGE:HEAD

@@ -47,7 +47,7 @@ Thus it uses the `-gcc` version of the docker images, which are based off of the
 ```yaml
 image: stodevx/stograde:latest-gcc
 stograde:
-    stage: stograde
+    stage: test
     script:
         - stograde ci
 ```
@@ -81,13 +81,13 @@ gcloud:
 #### Hardware Design
 
 Because Hardware Design uses ARM assembly, the default runner on thing3 is unable to test their assembly code from late in the semester.
-Thus, we add the `rasperrypi` label which tells it to use a runner with the `raspberrypi` label if possible.
+Thus, we add the `rasperrypi` tag which tells it to use a runner with the `raspberrypi` tag if possible.
 
 ```yaml
 image: stodevx/stograde:latest
 stograde:
-    stage: stograde
-    labels:
+    stage: test
+    tags:
         - raspberrypi 
     script:
         - stograde ci
@@ -100,7 +100,7 @@ Any other course that doesn't require special accommodations can use this config
 ```yaml
 image: stodevx/stograde:latest
 stograde:
-    stage: stograde
+    stage: test
     script:
         - stograde ci
 ```

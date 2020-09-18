@@ -10,14 +10,14 @@ if [[ "$TRAVIS_BRANCH" == "master" ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"
 else
-  echo "TRAVIS_BRANCH is not master"
+  echo "branch is not master"
 fi
 
 if [[ "$TRAVIS_BRANCH" =~ travis-.* ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_COMMIT$suffix"
 else
-  echo "TRAVIS_BRANCH does not match travis-.*"
+  echo "branch does not match travis-.*"
 fi
 
 if [ -n "$TRAVIS_TAG" ]
@@ -33,9 +33,15 @@ else
   echo "Not a tagged commit"
 fi
 
-# shellcheck disable=SC2237
-# shellcheck disable=SC2086
-if ! [ -z $deploy_targets ]; then echo "No targets to deploy"; exit 0; fi
+deploy_targets=${deploy_targets# }
+
+echo "Deploy targets selected: $deploy_targets"
+
+if [ -z "$deploy_targets" ]
+then
+  echo "No targets to deploy"
+  exit 0
+fi
 
 # Set up docker buildx for multiplatform build
 sudo apt-get install qemu-user-static -y
@@ -62,8 +68,6 @@ else
   (>&2 echo "Failed to log into Docker properly.  SAD!")
   exit 1
 fi
-
-echo "Deploying $deploy_targets"
 
 tags=""
 

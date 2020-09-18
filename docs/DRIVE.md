@@ -111,9 +111,9 @@ Rename the file to `client_secret.json` and copy it to the directory where your 
 ## Running `stograde drive`
 
 `stograde drive` requires a positional argument for the assignment to grade, as well as the `--email` (or `-e`) flag.
-This flag indicates the group email (e.g. `hd-tas` or `hd-tas@stolaf.edu`) that the student's have been sharing their documents with and is used to filter out files not shared with that group email.
+This flag indicates the group email (e.g. `hd-tas@stolaf.edu`) that the student's have been sharing their documents with and is used to filter out files not shared with that group email.
 
-e.g. `stograde drive hw1 --email hd-tas`
+e.g. `stograde drive hw1 --email hd-tas@stolaf.edu`
 
 The app will then prompt you to open a long link in your browser.
 

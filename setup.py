@@ -21,7 +21,7 @@ if sys.version_info < (3, 7):
 
 setup(
     name='stograde',
-    version='4.0.2',
+    version='4.2.0',
     description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
@@ -45,9 +45,9 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     keywords='stolaf course-tooling',
     install_requires=install_requires,

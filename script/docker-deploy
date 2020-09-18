@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
-#if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
-#
-#if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
-#then
-#  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
-#else
-#  (>&2 echo "Failed to log into Docker properly.  SAD!")
-#  exit 1
-#fi
+if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
+if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
+
+if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+then
+  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
+else
+  (>&2 echo "Failed to log into Docker properly.  SAD!")
+  exit 1
+fi
 
 suffix="$2"
 

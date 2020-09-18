@@ -2,8 +2,23 @@
 
 suffix="$2"
 
-if [[ "$TRAVIS_BRANCH" == "master" ]]; then deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"; fi
-if [[ "$TRAVIS_BRANCH" =~ travis-.* ]]; then deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_COMMIT$suffix"; fi
+echo "TRAVIS_BRANCH is $TRAVIS_BRANCH"
+echo "TRAVIS_COMMIT is $TRAVIS_COMMIT"
+echo "TRAVIS_TAG is $TRAVIS_TAG"
+
+if [[ "$TRAVIS_BRANCH" == "master" ]]
+then
+  deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"
+else
+  echo "TRAVIS_BRANCH is not master"
+fi
+
+if [[ "$TRAVIS_BRANCH" =~ travis-.* ]]
+then
+  deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_COMMIT$suffix"
+else
+  echo "TRAVIS_BRANCH does not match travis-.*"
+fi
 
 if [ -n "$TRAVIS_TAG" ]
 then
@@ -11,7 +26,11 @@ then
   if [[ "$(script/github-latest-release)" == "$TRAVIS_TAG" ]]
   then
     deploy_targets="$deploy_targets $DOCKER_IMAGE:latest$suffix"
+  else
+    echo "Tag does not match the latest release"
   fi
+else
+  echo "Not a tagged commit"
 fi
 
 # shellcheck disable=SC2237

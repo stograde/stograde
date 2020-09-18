@@ -34,4 +34,4 @@ do
   tags="$tags --tag $deploy_target"
 done
 
-docker buildx build --platform linux/arm/v7,linux/amd64 "$tags" -f "$1"
+docker buildx build --platform linux/arm/v7,linux/amd64 $tags -f "$1"

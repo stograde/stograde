@@ -9,4 +9,4 @@ def find_unmerged_branches_in_cwd() -> List[str]:
     _, unmerged_branches, _ = run(['git', 'branch', '-a', '--no-merged', 'master'])
     return [s.strip()
             for s in unmerged_branches.split('\n')
-            if s.strip()]
+            if s.strip() and 'not a git repository' not in s]

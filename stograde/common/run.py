@@ -21,7 +21,6 @@ def run(cmd: List[str],
 
 def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
     status = RunStatus.SUCCESS
-    result = None
 
     print('Recording {}. Send EOF (^D) to end.'.format(cmd), end='\n\n')
 
@@ -32,7 +31,6 @@ def run_interactive(cmd: List[str]) -> Tuple[RunStatus, str, bool]:
             script.write(data)
             return data
 
-        # TODO: update this with try/except clauses as we find exceptions
         pty.spawn(cmd, read)
 
         try:
@@ -67,9 +65,6 @@ def run_static(cmd: List[str],
         if hasattr(proc_result, 'stdout'):
             result = proc_result.stdout
 
-        # if hasattr(proc_result, 'stderr'):
-        #     if str(proc_result.stderr)
-
     except subprocess.CalledProcessError as err:
         status = RunStatus.CALLED_PROCESS_ERROR
         result = err.output if err.output else str(err)
@@ -83,11 +78,8 @@ def run_static(cmd: List[str],
         result = str(err)
 
     except ProcessLookupError as err:
-        try:
-            status, result, _ = run(cmd, input_data=input_data, timeout=timeout)
-        except:
-            status = RunStatus.PROCESS_LOOKUP_ERROR
-            result = str(err)
+        status = RunStatus.PROCESS_LOOKUP_ERROR
+        result = str(err)
 
     try:
         if not isinstance(result, str):

@@ -1,0 +1,35 @@
+---
+assignment: hw1
+
+compilers:
+  - &cpp 'g++ --std=c++11 $@ -o $@.exec'
+
+files:
+  - file: hello.cpp
+    commands: *cpp
+    tests: $@.exec
+  - file: first.cpp
+    commands: *cpp
+    tests: $@.exec
+  - file: secondComment.cpp
+    commands: *cpp
+    tests: $@.exec
+    options:
+      optional_compile: true
+  - file: Makefile
+    options:
+      optional: true
+  - file: Dog.h
+  - file: Dog.cpp
+  - file: tryDog.cpp
+    commands:
+      - rm -f tryDog tryDog.o Dog.o
+      - make
+    tests: ./tryDog
+
+supporting:
+  - file: example_supporting.txt
+    destination: ../example_supporting.txt
+
+inputs:
+  - file: example_input.txt

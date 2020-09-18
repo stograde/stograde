@@ -1,4 +1,5 @@
 import os
+import shutil
 from typing import List, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -13,20 +14,17 @@ def import_supporting(*, spec: 'Spec', basedir: str) -> Tuple[str, List[str]]:
 
     # write the supporting files into the folder
     for file in spec.supporting_files:
-        with open(os.path.join(supporting_dir, spec.id, file.file_name), 'rb') as infile:
-            contents = infile.read()
-        with open(os.path.join(cwd, file.destination), 'wb') as outfile:
-            outfile.write(contents)
-            written_files.append(file.destination)
+        shutil.copy(os.path.join(supporting_dir, spec.id, file.file_name),
+                    os.path.join(cwd, file.destination))
+        written_files.append(file.destination)
 
     return supporting_dir, written_files
 
 
 def remove_supporting(written_files: List[str]):
     """Remove supporting and input files after testing is complete"""
-    try:
-        for supporting_file in written_files:
+    for supporting_file in written_files:
+        try:
             os.remove(supporting_file)
-    except FileNotFoundError:
-        pass
-
+        except FileNotFoundError:
+            pass

@@ -1,10 +1,9 @@
-from pyfakefs import fake_filesystem
+from unittest import mock
+
 from stograde.common.dirsize import dirsize
 
 
-def test_chdir(fs):
-    os_module = fake_filesystem.FakeOsModule(fs)
-
+def test_dirsize(fs):
     fs.create_dir('/folder')
     fs.create_file('/folder/file1', contents='0123456789')
     fs.create_file('/folder/file2', contents='0123456789')
@@ -12,4 +11,7 @@ def test_chdir(fs):
     fs.create_file('/folder/file4', contents='0123456789')
     fs.create_file('/folder/file5', contents='0123456789')
 
-    print(dirsize('/folder'))
+    assert dirsize('/folder') == 50
+
+    with mock.patch('os.path.getsize', side_effect=OSError('An error was thrown')):
+        assert dirsize('/folder') == 0

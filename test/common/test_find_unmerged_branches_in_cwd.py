@@ -1,20 +1,16 @@
-import pytest
+import os
+
 from stograde.common.find_unmerged_branches_in_cwd import find_unmerged_branches_in_cwd
-from stograde.common.run import run
+from test.utils import git, touch
+
+_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-def git(cmd, *args):
-    return run(['git', cmd, *args])
-
-
-def touch(file):
-    return run(['touch', file])
-
-
-@pytest.mark.skip(reason="this fails on travis-ci")
-def test_find_unmerged_branches_in_cwd_1(tmpdir):
+def test_find_unmerged_branches_in_cwd(tmpdir):
     with tmpdir.as_cwd():
         git('init')
+        git('config', 'user.email', 'an_email@email_provider.com')
+        git('config', 'user.name', 'Some Random Name')
 
         touch('file1')
         git('add', 'file1')
@@ -27,28 +23,9 @@ def test_find_unmerged_branches_in_cwd_1(tmpdir):
         git('commit', '-m', 'newcommit')
 
         git('checkout', 'master')
-
-        print(git('--version'))
 
         assert find_unmerged_branches_in_cwd() == ['branch']
 
-
-@pytest.mark.skip(reason="this fails on travis-ci")
-def test_find_unmerged_branches_in_cwd_2(tmpdir):
-    with tmpdir.as_cwd():
-        git('init')
-
-        touch('file1')
-        git('add', 'file1')
-        git('commit', '-m', 'initial')
-
-        git('checkout', '-b', 'branch')
-
-        touch('file2')
-        git('add', 'file2')
-        git('commit', '-m', 'newcommit')
-
-        git('checkout', 'master')
         git('merge', 'branch')
 
         assert find_unmerged_branches_in_cwd() == []

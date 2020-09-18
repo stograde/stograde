@@ -9,8 +9,8 @@ from ..process_assignment import import_supporting, remove_supporting
 from ..process_file import process_file
 from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
-from ..student.process_student import prepare_student_repo
-from ..toolkit.process_repos import process_parallel_repos
+from ..toolkit.process_parallel import process_parallel
+from ..student.process_student import prepare_student
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec
@@ -26,18 +26,18 @@ def launch_cli(base_dir: str,
                students: List[str],
                workers: int):
     """Start the web grading CLI"""
-    usernames = [
-        '{} NO SUBMISSION'.format(student)
-        if not os.path.exists('{}/{}'.format(student, spec.id))
-        else student
-        for student in students
-    ]
-
-    print('Loading repos. Please wait...')
-
     with chdir(os.path.join(base_dir, 'students')):
+        usernames = [
+            '{} NO SUBMISSION'.format(student)
+            if not os.path.exists('{}/{}'.format(student, spec.id))
+            else student
+            for student in students
+        ]
+
+        print('Loading repos. Please wait...')
+
         single_repo = functools.partial(
-            prepare_student_repo,
+            prepare_student,
             stogit_url=stogit_url,
             do_clean=clean,
             do_clone=not skip_repo_update,
@@ -45,23 +45,23 @@ def launch_cli(base_dir: str,
             do_checkout=True,
             date=date)
 
-        process_parallel_repos(students=students,
-                               no_progress_bar=no_progress_bar,
-                               workers=workers,
-                               operation=single_repo)
+        process_parallel(students=students,
+                         no_progress_bar=no_progress_bar,
+                         workers=workers,
+                         operation=single_repo)
 
-    while True:
-        student = ask_student(usernames)
+        while True:
+            student = ask_student(usernames)
 
-        if not student or student == 'QUIT':
-            return
-        elif 'NO SUBMISSION' in student:
-            continue
+            if not student or student == 'QUIT':
+                return
+            elif 'NO SUBMISSION' in student:
+                continue
 
-        files = check_student(student, spec, base_dir)
+            files = check_student(student, spec, base_dir)
 
-        if files:
-            ask_file(files, student, spec, base_dir)
+            if files:
+                ask_file(files, student, spec, base_dir)
 
 
 def ask_student(usernames: List[str]) -> str:
@@ -77,7 +77,7 @@ def ask_student(usernames: List[str]) -> str:
             'type': 'list',
             'name': 'student',
             'message': 'Choose student',
-            'choices': ['QUIT', *usernames]
+            'choices': ['QUIT', *usernames],
         }
     ]
 
@@ -116,8 +116,6 @@ def check_student(student: str,
                             description = '{} MISSING'.format(file.file_name)
 
                     files = files + [description]
-                else:
-                    continue
             # and we remove any supporting files
             remove_supporting(written_files)
 
@@ -142,7 +140,7 @@ def ask_file(files: List[str],
                 'type': 'list',
                 'name': 'file',
                 'message': 'Choose file',
-                'choices': ['BACK'] + files,
+                'choices': ['BACK', *files],
             }
         ]
         file = prompt(questions, style=style)
@@ -160,7 +158,6 @@ def ask_file(files: List[str],
                     supporting_dir, written_files = import_supporting(spec=spec,
                                                                       basedir=basedir)
                     process_file(file_spec=file_spec,
-                                 cwd=os.getcwd(),
                                  supporting_dir=supporting_dir,
                                  interact=False,
                                  skip_web_compile=False)

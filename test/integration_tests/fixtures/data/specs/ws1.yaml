@@ -1,0 +1,10 @@
+---
+assignment: ws1
+
+compilers:
+  - &c-math 'gcc $@ -o $@.exec -lm'
+
+files:
+  - file: 2column.c
+    commands: *c-math
+    tests: $@.exec

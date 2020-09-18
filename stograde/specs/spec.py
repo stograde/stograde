@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 import os
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 import yaml
 
 from .spec_file import create_spec_file
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Spec:
     id: str
     folder: str
-    architecture: str = None
+    architecture: Optional[str]
     dependencies: List[str] = field(default_factory=list)
     files: List['SpecFile'] = field(default_factory=list)
     supporting_files: List['SupportingFile'] = field(default_factory=list)
@@ -29,7 +29,8 @@ def create_spec(yaml_path: str, basedir: str) -> Spec:
 
     # assignment id and folder
     new_spec = Spec(id=loaded_file['assignment'],
-                    folder=loaded_file.get('folder', loaded_file['assignment']))
+                    folder=loaded_file.get('folder', loaded_file['assignment']),
+                    architecture=loaded_file.get('architecture', None))
 
     # assignment files
     if loaded_file.get('files', None) is not None:
@@ -46,6 +47,7 @@ def create_spec(yaml_path: str, basedir: str) -> Spec:
     if isinstance(dependencies, str):
         dependencies = [dependencies]
     assert isinstance(dependencies, list)
+    new_spec.dependencies = dependencies
 
     # supporting/input files
     if loaded_file.get('supporting', None) is not None:

@@ -25,6 +25,10 @@ then
   fi
 fi
 
+# shellcheck disable=SC2237
+# shellcheck disable=SC2086
+if ! [ -z $deploy_targets ]; then echo "No targets to deploy"; exit 0; fi
+
 echo "Deploying $deploy_targets"
 
 tags=""

@@ -55,6 +55,7 @@ jobs:
         - docker buildx create --name stogradebuilder
         - docker buildx inspect stogradebuilder --bootstrap
         - docker buildx use stogradebuilder
+      script: skip
       deploy:
         - provider: script
           script: script/docker-deploy Dockerfile
@@ -77,6 +78,7 @@ jobs:
         - docker buildx create --name stogradebuilder
         - docker buildx inspect stogradebuilder --bootstrap
         - docker buildx use stogradebuilder
+      script: skip
       deploy:
         - provider: script
           script: script/docker-deploy Dockerfile.gcc "-gcc"

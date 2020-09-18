@@ -136,7 +136,7 @@ def group_files(files: Set['DriveResult'],
 def create_line(file: 'DriveResult', longest_email_len: int, longest_file_name_len: int, longest_link_len: int) -> str:
     """Create a line of the table"""
     if file.create_time is not None:
-        create_time = parse(file.create_time).astimezone(tz.gettz('America/Central')).strftime('%x %X %Z')
+        create_time = parse(file.create_time).astimezone(tz.gettz('CST6CDT,M3.2.0,M11.1.0')).strftime('%x %X %Z')
     else:
         create_time = ''.ljust(21, '-')
 

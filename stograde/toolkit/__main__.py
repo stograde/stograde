@@ -38,7 +38,7 @@ def main():
         command_func(students=students,
                      assignment=assignments[0],
                      args=args)
-        sys.exit(0)
+        return
 
     if not skip_dependency_check:
         check_dependencies()
@@ -57,9 +57,9 @@ def main():
                      base_dir=base_dir,
                      no_progress_bar=args['no_progress_bar'],
                      workers=args['workers'])
-        sys.exit(0)
+        return
 
-    elif command == 'table':
+    if command == 'table':
         assignments = [path.split('/')[-1].split('.')[0]
                        for path in find_all_specs(os.path.join(base_dir, 'data', 'specs'))]
 

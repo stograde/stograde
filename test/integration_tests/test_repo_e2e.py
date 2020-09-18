@@ -22,11 +22,8 @@ def test_repo_clone(datafiles):
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
 
-        try:
-            with mock.patch('sys.argv', args):
-                main()
-        except SystemExit:
-            pass
+        with mock.patch('sys.argv', args):
+            main()
 
         assert os.path.exists(student_path)
 
@@ -41,11 +38,8 @@ def test_repo_update(datafiles):
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
 
-        try:
-            with mock.patch('sys.argv', args):
-                main()
-        except SystemExit:
-            pass
+        with mock.patch('sys.argv', args):
+            main()
 
         assert os.path.exists(student_path)
 
@@ -63,11 +57,8 @@ def test_repo_clean(datafiles):
         touch(os.path.join(student_path, 'a_file'))
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 
-        try:
-            with mock.patch('sys.argv', args):
-                main()
-        except SystemExit:
-            pass
+        with mock.patch('sys.argv', args):
+            main()
 
         assert os.path.exists(student_path)
         assert not os.path.exists(os.path.join(student_path, 'a_file'))
@@ -86,11 +77,8 @@ def test_repo_reclone(datafiles):
         touch(os.path.join(student_path, 'a_file'))
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 
-        try:
-            with mock.patch('sys.argv', args):
-                main()
-        except SystemExit:
-            pass
+        with mock.patch('sys.argv', args):
+            main()
 
         assert os.path.exists(student_path)
         assert not os.path.exists(os.path.join(student_path, 'a_file'))

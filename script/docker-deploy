@@ -1,23 +1,37 @@
 #!/bin/bash
 
-if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
-if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
+#if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
+#if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
+#
+#if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+#then
+#  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
+#else
+#  (>&2 echo "Failed to log into Docker properly.  SAD!")
+#  exit 1
+#fi
 
-if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+suffix="$2"
+
+if [[ "$TRAVIS_BRANCH" == "master" ]]; then deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"; fi
+if [[ "$TRAVIS_BRANCH" =~ travis-.* ]]; then deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_COMMIT$suffix"; fi
+
+if [ -n "$TRAVIS_TAG" ]
 then
-    (>&2 echo "Logged into Docker Hub.  Ready to roll!")
-else
-    (>&2 echo "Failed to log into Docker properly.  SAD!")
-    exit 1
+  deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_TAG$suffix"
+  if [[ "$(script/github-latest-release)" == "$TRAVIS_TAG" ]]
+  then
+    deploy_targets="$deploy_targets $DOCKER_IMAGE:latest$suffix"
+  fi
 fi
 
-source_tag="$1"
-deploy_targets="${@:2}"
+echo "Deploying $deploy_targets"
 
-for deploy_target in $deploy_targets;
+tags=""
+
+for deploy_target in $deploy_targets
 do
-	echo "Deploying $source_tag => $deploy_target!"
-
-	docker tag $source_tag $deploy_target
-	docker push $deploy_target
+  tags="$tags -t $deploy_target"
 done
+
+docker buildx build --push --platform linux/arm/v7,linux/amd64 "$tags" -f "$1"

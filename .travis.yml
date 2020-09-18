@@ -59,6 +59,8 @@ jobs:
       deploy:
         - provider: script
           script: script/docker-deploy Dockerfile
+          on:
+            all_branches: true
 
     - stage: deploy docker
       python: 3.7
@@ -82,6 +84,8 @@ jobs:
       deploy:
         - provider: script
           script: script/docker-deploy Dockerfile.gcc "-gcc"
+          on:
+            all_branches: true
 
     - stage: deploy pypi
       python: 3.7

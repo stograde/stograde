@@ -7,5 +7,5 @@ from ..common.run_status import RunStatus
 class CompileResult:
     """Result from compiling an assignment file"""
     command: str  # Command used to compile
-    output: str     # Output from running the command
+    output: str  # Output from running the command
     status: RunStatus

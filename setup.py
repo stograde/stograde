@@ -12,6 +12,8 @@ install_requires = [
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',
+    'google-api-python-client == 1.11.*',
+    'google-auth-oauthlib == 0.4.*',
 ]
 
 if sys.version_info < (3, 7):

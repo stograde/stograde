@@ -109,14 +109,14 @@ def test_create_spec_with_supporting(datafiles):
     assert new_spec.id == 'hw7'
     assert new_spec.folder == 'hw7'
     assert new_spec.architecture is None
-    assert new_spec.dependencies is None
+    assert not new_spec.dependencies
     assert not new_spec.files
     assert new_spec.supporting_files
     assert len(new_spec.supporting_files) == 2
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'create_spec'))
-def test_create_spec_with_supporting(datafiles):
+def test_create_spec_with_inputs(datafiles):
     with chdir(str(datafiles)):
         new_spec = create_spec(os.path.join(datafiles, 'spec_with_inputs.yaml'), '.')
 
@@ -130,7 +130,7 @@ def test_create_spec_with_supporting(datafiles):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'create_spec'))
-def test_create_spec_with_supporting(datafiles):
+def test_create_spec_with_supporting_and_inputs(datafiles):
     with chdir(str(datafiles)):
         new_spec = create_spec(os.path.join(datafiles, 'spec_with_supporting_and_inputs.yaml'), '.')
 

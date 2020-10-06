@@ -1,4 +1,5 @@
 from stograde.common.parse_commit_msg_for_assignments import parse_commit_msg_for_assignments
+
 sample = parse_commit_msg_for_assignments
 
 
@@ -44,7 +45,8 @@ def test_parse_commit_msg_for_assignments():
     assert sample('''first part of lab 7''') == [('lab', '7')]
     assert sample('''fix .gitignore to not ignore hw8/''') == [('hw', '8')]
     assert sample('''fix lab2 gitignore''') == [('lab', '2')]
-    assert sample('''Fixed Lab 1, compiled with the gcc compiler that comes with OS X on my local machine''') == [('lab', '1')]
+    assert sample('Fixed Lab 1, compiled with the gcc compiler that comes '
+                  'with OS X on my local machine') == [('lab', '1')]
     assert sample('''git submit partial lab8: all up to B:6-complete''') == [('lab', '8')]
     assert sample('''had extension, submitting lab5 complete''') == [('lab', '5')]
     assert sample('''homework 1''') == [('hw', '1')]
@@ -248,7 +250,9 @@ def test_parse_commit_msg_for_assignments():
     assert sample('''This is my first attempt to turn in homework 6''') == [('hw', '6')]
     assert sample('''this is my first attempt to upload homework 1''') == [('hw', '1')]
     assert sample('''This is my first attempt to upload homework 5''') == [('hw', '5')]
-    assert sample('''This is my first attempt to upload homework 7because originally my homework files were stored in the SD directory, so I moved them to hw6, and manually deleted the files on stogit through the web interface''') == [('hw', '7'), ('hw', '6')]
+    assert sample('This is my first attempt to upload homework 7because originally my homework files were stored '
+                  'in the SD directory, so I moved them to hw6, and manually deleted the files on stogit through '
+                  'the web interface') == [('hw', '7'), ('hw', '6')]
     assert sample('''This is my revision to homework 7''') == [('hw', '7')]
     assert sample('''this is my second attempt at submittiing lab 2''') == [('lab', '2')]
     assert sample('''this is my second attempt to upload homework 1''') == [('hw', '1')]

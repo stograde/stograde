@@ -2,8 +2,8 @@ import textwrap
 
 from stograde.process_assignment.assignment_status import AssignmentStatus
 from stograde.student.student_result import StudentResult
-from stograde.formatters.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, sort_by_hw_count, \
-    sort_by_username, tabulate, asciiify
+from stograde.formatters.tabulate import find_columns, pad, MISSING, concat, symbol, columnize, get_nums, \
+    sort_by_hw_count, sort_by_username, tabulate, asciiify
 
 
 def test_pad():

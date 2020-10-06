@@ -1,4 +1,3 @@
-import sys
 from shutil import get_terminal_size
 from unittest import mock
 

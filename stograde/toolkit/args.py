@@ -90,24 +90,24 @@ def build_argparser():
     # CI SubParser
     parser_ci = sub_parsers.add_parser('ci', parents=[base_options, compile_options], conflict_handler='resolve',
                                        help="Check a single student's assignment as part of a CI job")
-    parser_ci.set_defaults(func=do_ci)
+    parser_ci.set_defaults(func=do_ci)  # Set function to run from subcommands.py
 
     # Drive SubParser
     parser_drive = sub_parsers.add_parser('drive', parents=[base_options, student_selection],
                                           conflict_handler='resolve', help='Manage submissions via google drive')
-    parser_drive.set_defaults(func=do_drive)
+    parser_drive.set_defaults(func=do_drive)  # Set function to run from subcommands.py
     parser_drive.add_argument('assignments', nargs=1, metavar='HW',
                               help='An assignment to process')
     parser_drive.add_argument('--email', '-e', required=True,
                               help='Set the email of the group that documents are shared with '
-                                   '(e.g. hd-tas or hd-tas@stolaf.edu)')
+                                   '(e.g. hd-tas@stolaf.edu)')
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",
                                            parents=[base_options, record_options, compile_options,
                                                     repo_selection, table_options, student_selection],
                                            conflict_handler='resolve')
-    parser_record.set_defaults(func=do_record)
+    parser_record.set_defaults(func=do_record)  # Set function to run from subcommands.py
     parser_record.add_argument('assignments', nargs='+', metavar='HW',
                                help='An assignment to process')
     parser_record.add_argument('--table', '-t', action='store_true',
@@ -125,24 +125,26 @@ def build_argparser():
     repo_sub_parsers = parser_repo.add_subparsers()
     repo_sub_parsers.add_parser('clean', aliases=['reclone'], help='Remove and reclone student repositories',
                                 parents=[base_options, repo_selection, student_selection],
-                                conflict_handler='resolve').set_defaults(func=do_repo_clean)
+                                conflict_handler='resolve'
+                                ).set_defaults(func=do_repo_clean)  # Set function to run from subcommands.py
     repo_sub_parsers.add_parser('update', aliases=['clone'], help='Clone and/or update student repos',
                                 parents=[base_options, repo_selection, student_selection],
-                                conflict_handler='resolve').set_defaults(func=do_repo_update)
+                                conflict_handler='resolve'
+                                ).set_defaults(func=do_repo_update)  # Set function to run from subcommands.py
 
     # Table SubParser
     parser_table = sub_parsers.add_parser('table', help='Print an table of the assignments submitted by students',
                                           parents=[base_options, record_options, compile_options, repo_selection,
                                                    table_options, student_selection],
                                           conflict_handler='resolve')
-    parser_table.set_defaults(func=do_table)
+    parser_table.set_defaults(func=do_table)  # Set function to run from subcommands.py
 
     # Web SubParser
     parser_web = sub_parsers.add_parser('web', help='Run the CLI for grading React App files',
                                         parents=[base_options, record_options, compile_options,
                                                  repo_selection, student_selection],
                                         conflict_handler='resolve')
-    parser_web.set_defaults(func=do_web)
+    parser_web.set_defaults(func=do_web)  # Set function to run from subcommands.py
     parser_web.add_argument('assignments', nargs=1, metavar='HW',
                             help='An assignment to process')
     parser_web.add_argument('--port', type=int, required=True,
@@ -174,6 +176,9 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     command: str = args['command']
 
+    # Prepare assignments and students for each SubCommand, along with other necessary variables
+    # Note that the SubCommand is not run here, that is done by main() (which called this)
+
     # ci SubCommand
     if command == 'ci':
         assignments = get_ci_assignments()
@@ -181,9 +186,19 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         args['course'] = os.environ['CI_PROJECT_NAMESPACE']
         global_vars.CI = True
 
+    elif command == 'drive':
+        assignments = natsorted(set(args['assignments']))
+        students = get_students(args)
+        args['course'] = ''
+
     # record SubCommand
     elif command == 'record':
         assignments = natsorted(set(args['assignments']))  # Has at least one assignment (enforced by argparser)
+        students = get_students(args)
+
+    # repo SubCommand
+    elif command == 'repo':
+        assignments = []
         students = get_students(args)
 
     # table SubCommand
@@ -195,16 +210,6 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     elif command == 'web':
         assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
-
-    # repo SubCommand
-    elif command == 'repo':
-        assignments = []
-        students = get_students(args)
-
-    elif command == 'drive':
-        assignments = natsorted(set(args['assignments']))
-        students = get_students(args)
-        args['course'] = ''
 
     else:
         print('Sub-command must be specified', file=sys.stderr)

@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 
 def main():
     base_dir = getcwd()
-    args, students, assignments = process_args()
-    command: str = args['command']
-    command_func = args['func']
+    args, students, assignments = process_args()  # Dict[str, Any], List[str], List[str]
+    command: str = args['command']  # The name of the SubCommand specified
+    command_func = args['func']  # The function associated with the SubCommand
     course: str = args['course']
     skip_dependency_check: bool = args['skip_dependency_check']
     skip_version_check: bool = args['skip_version_check']
@@ -35,10 +35,11 @@ def main():
                    'to update.').format(new_version, current_version), file=sys.stderr)
 
     if command == 'drive':
+        # command_func will be do_drive()
         command_func(students=students,
                      assignment=assignments[0],
                      args=args)
-        return
+        return  # stograde drive does not use the functionality below, so return
 
     if not skip_dependency_check:
         check_dependencies()
@@ -52,12 +53,13 @@ def main():
         create_students_dir(base_dir=base_dir)
 
     if command == 'repo':
+        # command_func will be do_repo_clean() or do_repo_update()
         command_func(students=students,
                      stogit_url=stogit_url,
                      base_dir=base_dir,
                      no_progress_bar=args['no_progress_bar'],
                      workers=args['workers'])
-        return
+        return  # stograde repo does not use the functionality below, so return
 
     if command == 'table':
         assignments = [path.split('/')[-1].split('.')[0]
@@ -83,7 +85,8 @@ def main():
             print('No specs loaded!', file=sys.stderr)
             sys.exit(1)
 
-    # Call function to handle SubCommand
+    # Call function associated with specified SubCommand
+    # command_func will be do_ci(), do_record(), do_table() or do_web()
     command_func(specs=loaded_specs,
                  students=students,
                  base_dir=base_dir,

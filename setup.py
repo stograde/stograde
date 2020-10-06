@@ -12,8 +12,11 @@ install_requires = [
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',
-    'google-api-python-client == 1.11.*',
+    # stograde drive
+    'google-api-python-client == 1.12.*',
     'google-auth-oauthlib == 0.4.*',
+    'six >= 1.13.0',  # required by google-api-core
+    'setuptools >= 40.3.0',  # required by google-auth
 ]
 
 if sys.version_info < (3, 7):

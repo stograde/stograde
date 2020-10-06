@@ -8,8 +8,8 @@ CHAR = '·' if sys.stderr.encoding == 'UTF-8' else '='
 def progress_bar(size: int, current: int, message: str = ''):
     cols, _ = get_terminal_size()
 
-    filled = [CHAR for i in range(current)]
-    empty = [' ' for i in range(size - current)]
+    filled = [CHAR for _ in range(current)]
+    empty = [' ' for _ in range(size - current)]
     bar = ''.join(filled + empty)
 
     line = '[{}] {}'.format(bar, message)

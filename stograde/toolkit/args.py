@@ -100,7 +100,7 @@ def build_argparser():
                               help='An assignment to process')
     parser_drive.add_argument('--email', '-e', required=True,
                               help='Set the email of the group that documents are shared with '
-                                   '(e.g. hd-tas or hd-tas@stolaf.edu)')
+                                   '(e.g. hd-tas@stolaf.edu)')
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",

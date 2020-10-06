@@ -174,6 +174,9 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     command: str = args['command']
 
+    # Prepare assignments and students for each SubCommand, along with other necessary variables
+    # Note that the SubCommand is not run here, that is done by main() (which called this)
+
     # ci SubCommand
     if command == 'ci':
         assignments = get_ci_assignments()
@@ -181,9 +184,19 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         args['course'] = os.environ['CI_PROJECT_NAMESPACE']
         global_vars.CI = True
 
+    elif command == 'drive':
+        assignments = natsorted(set(args['assignments']))
+        students = get_students(args)
+        args['course'] = ''
+
     # record SubCommand
     elif command == 'record':
         assignments = natsorted(set(args['assignments']))  # Has at least one assignment (enforced by argparser)
+        students = get_students(args)
+
+    # repo SubCommand
+    elif command == 'repo':
+        assignments = []
         students = get_students(args)
 
     # table SubCommand
@@ -195,16 +208,6 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     elif command == 'web':
         assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
-
-    # repo SubCommand
-    elif command == 'repo':
-        assignments = []
-        students = get_students(args)
-
-    elif command == 'drive':
-        assignments = natsorted(set(args['assignments']))
-        students = get_students(args)
-        args['course'] = ''
 
     else:
         print('Sub-command must be specified', file=sys.stderr)

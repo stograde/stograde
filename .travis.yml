@@ -37,6 +37,11 @@ jobs:
       script: tox
       after_success: coveralls
 
+    - stage: test
+      python: 3.9
+      install: pip install tox tox-travis
+      script: tox
+
     - stage: deploy docker
       python: 3.7
       env:

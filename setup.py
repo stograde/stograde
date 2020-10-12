@@ -19,7 +19,7 @@ install_requires = [
 ]
 
 # This allows us to use dataclasses in python 3.6
-if sys.version_info == (3, 6):
+if sys.version_info < (3, 7):
     install_requires.append('dataclasses >= 0.6')
 
 setup(

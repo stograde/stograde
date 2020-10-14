@@ -27,8 +27,8 @@ def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     else:
         file_result.compile_optional = file_spec.options.compile_optional
         file_result.contents = truncate(file_contents, file_spec.options.truncate_contents)
-        file_result.contents_truncated_after = file_spec.options.truncate_contents \
-            if file_result.contents != file_contents else -1
+        if file_result.contents != file_contents:
+            file_result.contents_truncated_after = file_spec.options.truncate_contents
         file_result.last_modified, _ = get_modification_time(file_spec.file_name, os.getcwd(), ModificationTime.LATEST)
         return True
 
@@ -46,11 +46,16 @@ def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: 
                                 supporting_dir=supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
-        status, compile_output, _ = run(cmd, timeout=30, input_data=input_for_cmd)
+        status, full_output, _ = run(cmd, timeout=30, input_data=input_for_cmd)
 
-        results.compile_results.append(CompileResult(command=command,
-                                                     output=compile_output,
-                                                     status=status))
+        output = truncate(full_output, file_spec.options.truncate_output)
+
+        results.compile_results.append(CompileResult(
+            command=command,
+            output=output,
+            status=status,
+            truncated_after=file_spec.options.truncate_output if output != full_output else None,
+        ))
 
         if status is not RunStatus.SUCCESS:
             return False
@@ -81,15 +86,13 @@ def test_file(*,
                                              interact=interact)
 
             result = truncate(full_result, file_spec.options.truncate_output)
-            was_truncated = (full_result != result)
 
             file_results.test_results.append(TestResult(
                 command=command,
                 output=result,
                 status=status,
                 error=status != RunStatus.SUCCESS,
-                truncated=was_truncated,
-                truncated_after=file_spec.options.truncate_output,
+                truncated_after=file_spec.options.truncate_output if result != full_result else None,
             ))
 
 
@@ -98,6 +101,8 @@ def process_file(*,
                  supporting_dir: str,
                  interact: bool,
                  skip_web_compile: bool) -> FileResult:
+    """Process a single file.
+    Get the contents of the file, then compile it (if applicable), and test it (if applicable)"""
     file_result = FileResult(file_name=file_spec.file_name)
 
     should_continue = get_file(file_spec, file_result)

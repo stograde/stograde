@@ -14,23 +14,22 @@ if TYPE_CHECKING:
 
 
 def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
-    file_status, file_contents = cat(file_spec.file_name)
-    if file_status is RunStatus.SUCCESS:
-        file_result.last_modified, _ = get_modification_time(file_spec.file_name, os.getcwd(), ModificationTime.LATEST)
-
-    if file_spec.options.hide_contents:
-        file_contents = ''
-    elif file_spec.options.truncate_contents:
-        file_contents = truncate(file_contents, file_spec.options.truncate_contents)
+    """Get the contents of the file and check when it was last modified.
+    If the file doesn't exist, find what other files are present.
+    """
+    file_status, file_contents = cat(file_spec.file_name, hide_contents=file_spec.options.hide_contents)
 
     if file_status is not RunStatus.SUCCESS:
         file_result.file_missing = True
-        file_result.other_files = os.listdir('.')
         file_result.optional = file_spec.options.optional
+        file_result.other_files = os.listdir('.')
         return False
     else:
         file_result.compile_optional = file_spec.options.compile_optional
-        file_result.contents = file_contents
+        file_result.contents = truncate(file_contents, file_spec.options.truncate_contents)
+        file_result.contents_truncated_after = file_spec.options.truncate_contents \
+            if file_result.contents != file_contents else -1
+        file_result.last_modified, _ = get_modification_time(file_spec.file_name, os.getcwd(), ModificationTime.LATEST)
         return True
 
 

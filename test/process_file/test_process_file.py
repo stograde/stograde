@@ -204,13 +204,11 @@ def test_test_file_success(datafiles):
                                               output='g++ --std=c++11 good.cpp -o good.cpp.exec\n',
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=False,
                                               truncated_after=10000),
                                    TestResult(command='./good.cpp.exec',
                                               output='Hello\n',
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=False,
                                               truncated_after=10000)]
 
 
@@ -229,13 +227,11 @@ def test_test_file_error(datafiles):
                                               output='g++ --std=c++11 error.cpp -o error.cpp.exec\n',
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=False,
                                               truncated_after=10000),
                                    TestResult(command='./error.cpp.exec',
                                               output="Command '['./error.cpp.exec']' returned non-zero exit status 1.",
                                               error=True,
                                               status=RunStatus.CALLED_PROCESS_ERROR,
-                                              truncated=False,
                                               truncated_after=10000)]
 
 
@@ -254,7 +250,6 @@ def test_test_file_truncated(datafiles):
                                               output='g++ --std=c++11 chatty.cpp -o chatty.cpp.exec\n',
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=False,
                                               truncated_after=180),
                                    TestResult(command='./chatty.cpp.exec',
                                               output="Hi, I'm chatty, I like to say a lot\n"
@@ -264,7 +259,6 @@ def test_test_file_truncated(datafiles):
                                                      "Hi, I'm chatty, I like to say a lot\n",
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=True,
                                               truncated_after=180)]
 
 
@@ -376,7 +370,6 @@ def test_process_file_success(datafiles):
                                               output='Hello\n',
                                               error=False,
                                               status=RunStatus.SUCCESS,
-                                              truncated=False,
                                               truncated_after=10000)]
     assert result.file_missing is False
     assert result.last_modified == 'Tue Apr 21 12:28:03 2020 -0500'

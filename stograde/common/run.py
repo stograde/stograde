@@ -77,6 +77,10 @@ def run_static(cmd: List[str],
         status = RunStatus.FILE_NOT_FOUND
         result = str(err)
 
+    except PermissionError as err:
+        status = RunStatus.PERMISSION_DENIED
+        result = str(err)
+
     except ProcessLookupError as err:
         status = RunStatus.PROCESS_LOOKUP_ERROR
         result = str(err)

@@ -98,4 +98,5 @@ Docker is smart enough to pick the correct one for the architecture it is runnin
 *Note that, for whatever reason, the combination of the `gcc:latest` image plus the ARM build leads to a docker build that takes about 20 minutes. It seems like the python regex library may be partially to blame as it takes about 13 minutes to build.*
 
 The docker builds happen as part of the CI/CD process.
+The final container images are uploaded to [docker hub](https://hub.docker.com/r/stodevx/stograde).
 

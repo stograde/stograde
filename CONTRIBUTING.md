@@ -15,6 +15,26 @@ The release process for StoGrade is quite simple, yet does have a few steps:
 - Enjoy the new release
 
 
+## Testing
+
+StoGrade uses pytest and tox for testing.
+To run tests, run the command `tox` from the root directory of the project.
+
+To skip integration tests (those located in `test/integration_tests`) which take a while to run, add the `SKIP_E2E` environment variable to your command like this: `SKIP_E2E="yes" tox`.
+
+Tests is an important part of any codebase, and StoGrade is no different.
+StoGrade comes with hundreds of tests that test every aspect of the codebase.
+
+[![Coverage Status](https://coveralls.io/repos/github/StoDevX/stograde/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/stograde?branch=master)
+
+The 100% test coverage badge in the README (and above) indicates that every line of code in StoGrade is run at least once during testing, or is ignored from coverage.
+As new code is added to StoGrade, tests should be written to test it and verify that it works, keeping that coverage at 100%.
+Here is a [good article](https://www.dein.fr/2019-09-06-test-coverage-only-matters-if-at-100-percent.html) about why to do this.
+
+The `referee` module is ignored because that codebase is not actively maintained and the `webapp/server.py` file is ignored because it is a copy-paste of the file used by students in Software Design.
+We also ignore any blocks of code within a `if TYPE_CHECKING:` guard because lines within those blocks are only run when the code is being edited and never when the code is being run.
+
+
 ## Tips for Understanding the Codebase
 
 `stograde` is a large program, split into multiple modules, that can be difficult to understand at times.

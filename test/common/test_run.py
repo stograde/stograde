@@ -1,4 +1,3 @@
-import sys
 from subprocess import CompletedProcess
 from unittest import mock
 

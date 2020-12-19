@@ -8,6 +8,9 @@ from stograde.common import chdir
 from stograde.toolkit.__main__ import main
 from stograde.webapp import server
 
+if os.getenv('SKIP_E2E') is not None:
+    pytest.skip('Skipping Integration Tests', allow_module_level=True)
+
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 

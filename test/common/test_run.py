@@ -1,4 +1,3 @@
-import sys
 from subprocess import CompletedProcess
 from unittest import mock
 
@@ -28,12 +27,18 @@ def test_run_timeout():
 
 
 def test_run_not_found():
-    status, result, again = run(['notfound'])
+    with mock.patch('subprocess.run', side_effect=FileNotFoundError("[Errno 2] No such file or directory: 'notfound'")):
+        status, result, again = run(['notfound'])
     assert status == RunStatus.FILE_NOT_FOUND
-    if sys.version_info.minor < 8:
-        assert result == "[Errno 2] No such file or directory: 'notfound': 'notfound'"
-    else:
-        assert result == "[Errno 2] No such file or directory: 'notfound'"
+    assert result == "[Errno 2] No such file or directory: 'notfound'"
+    assert again is False
+
+
+def test_run_permission_denied():
+    with mock.patch('subprocess.run', side_effect=PermissionError("[Errno 13] Permission denied: 'notfound'")):
+        status, result, again = run(['notfound'])
+    assert status == RunStatus.PERMISSION_DENIED
+    assert result == "[Errno 13] Permission denied: 'notfound'"
     assert again is False
 
 

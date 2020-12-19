@@ -81,7 +81,7 @@ def format_file(file_info: 'FileResult') -> str:
     If file is missing and is optional, adds a note
     """
 
-    contents = format_file_contents(file_info.contents) + '\n'
+    contents = format_file_contents(file_info) + '\n'
     compilation = format_file_compilation(file_info.compile_results) + '\n'
     test_results = format_file_tests(file_info.test_results) + '\n'
 
@@ -105,14 +105,18 @@ def format_file(file_info: 'FileResult') -> str:
     return '\n'.join([file_header, contents, compilation, test_results])
 
 
-def format_file_contents(contents: str):
+def format_file_contents(file_info: 'FileResult'):
     """Add code block around file contents.
 
     If a file is empty or contains only whitespace, note this in the log.
     """
-    if not contents.rstrip():
+    if not file_info.contents.rstrip():
         return '<p><i>File empty</i></p>'
-    return format_as_code(contents)
+    elif file_info.truncated_after:
+        return format_as_code(file_info.contents) + \
+               '\n<p><i>(truncated after {} chars)</i></p>'.format(file_info.truncated_after)
+    else:
+        return format_as_code(file_info.contents)
 
 
 def format_file_compilation(compilations: List['CompileResult']) -> str:
@@ -128,6 +132,8 @@ def format_file_compilation(compilations: List['CompileResult']) -> str:
         else:
             result.append('<p><b>warnings: {}</b></p>'.format(command))
             result.append(format_as_code(output) + '\n')
+            if compile_result.truncated_after:
+                result.append('<p><i>(truncated after {} chars)</i></p>\n'.format(compile_result.truncated_after))
 
     return '\n'.join(result)
 
@@ -138,11 +144,11 @@ def format_file_tests(test_results: List['TestResult']) -> str:
     result = []
     for test in test_results:
         header = '<p><b>results of <code>{}</code></b> (status: {})</p>\n'.format(test.command,
-                                                                                            test.status.name)
+                                                                                  test.status.name)
         if test.output:
             header_and_contents = header + format_as_code(test.output) + '\n'
-            if test.truncated:
-                header_and_contents += '<p><i>(truncated after {} lines)</i></p>\n'.format(test.truncated_after)
+            if test.truncated_after:
+                header_and_contents += '<p><i>(truncated after {} chars)</i></p>\n'.format(test.truncated_after)
             result.append(header_and_contents)
         else:
             result.append(header)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from ..common.run_status import RunStatus
 
@@ -9,6 +10,5 @@ class TestResult:
     command: str  # Command used to test
     output: str  # Output from the test
     error: bool  # Did the command return an error code
-    status: RunStatus  # Status of the test
-    truncated: bool = False  # Was the output truncated
-    truncated_after: int = 0  # How much was it truncated
+    status: RunStatus  # Status from running the test
+    truncated_after: Optional[int] = None  # How much was it truncated

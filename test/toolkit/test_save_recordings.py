@@ -98,7 +98,6 @@ def test_save_recordings_disk_md(tmpdir):
                 and another line
                 ```
 
-
                 **no warnings: `a command`**
 
                 **warnings: `another command`**
@@ -106,7 +105,6 @@ def test_save_recordings_disk_md(tmpdir):
                 ```
                 output text
                 ```
-
 
                 **results of `a test command`** (status: SUCCESS)
 
@@ -118,7 +116,6 @@ def test_save_recordings_disk_md(tmpdir):
                 ```
 
 
-
                 ## another_file.txt
 
                 File not found. `ls .` says that these files exist:
@@ -128,16 +125,12 @@ def test_save_recordings_disk_md(tmpdir):
                 ```
 
 
-
-
                 ## optional.txt (**optional submission**)
 
                 File not found. `ls .` says that these files exist:
                 ```
                 yet_another_file.txt
                 ```
-
-
 
 
                 ''')
@@ -612,25 +605,25 @@ def test_save_recording_gist(capsys):
                                                              '```txt\n'
                                                              'some file contents\n'
                                                              'and another line\n'
-                                                             '```\n\n\n'
+                                                             '```\n\n'
                                                              '**no warnings: `a command`**\n\n'
                                                              '**warnings: `another command`**\n\n'
                                                              '```\n'
                                                              'output text\n'
-                                                             '```\n\n\n'
+                                                             '```\n\n'
                                                              '**results of `a test command`** (status: SUCCESS)\n\n'
                                                              '**results of `other test command`** '
                                                              '(status: FILE_NOT_FOUND)\n\n'
                                                              '```\n'
                                                              'more output\n'
                                                              'another line\n'
-                                                             '```\n\n\n\n'
+                                                             '```\n\n\n'
                                                              '## another_file.txt\n\n'
                                                              'File not found. `ls .` says that these files exist:\n'
                                                              '```\n'
                                                              'a_third_file.txt\n'
                                                              'more_files.txt\n'
-                                                             '```\n\n\n\n\n'
+                                                             '```\n\n\n'
                                                              '## optional.txt (**optional submission**)\n\n'
                                                              'File not found. `ls .` says that these files exist:\n'
                                                              '```\n'

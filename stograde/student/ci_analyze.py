@@ -10,14 +10,14 @@ if TYPE_CHECKING:
 LAB_REGEX = re.compile(r'^LAB', re.IGNORECASE)
 
 
-def ci_analyze(student_result: 'StudentResult') -> bool:
+def ci_analyze(student_result: 'StudentResult', course: str) -> bool:
     passing = True
 
     for result in student_result.results:
         for file in result.file_results:
             if file.file_missing and not file.optional:  # Alert student about any missing files
                 logging.error("{}: File {} missing".format(result.spec_id, file.file_name))
-                if not re.match(LAB_REGEX, result.spec_id):
+                if not (course == 'sd' and re.match(LAB_REGEX, result.spec_id)):
                     passing = False
             else:
                 for compilation in file.compile_results:  # Alert student about any compilation errors
@@ -29,7 +29,7 @@ def ci_analyze(student_result: 'StudentResult') -> bool:
                             logging.error("{}: File {} compile error:\n\n\t{}"
                                           .format(result.spec_id, file.file_name,
                                                   compilation.output.replace("\n", "\n\t")))
-                            if not re.match(LAB_REGEX, result.spec_id):
+                            if not (course == 'sd' and re.match(LAB_REGEX, result.spec_id)):
                                 passing = False
 
     return passing

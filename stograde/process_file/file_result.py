@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ..process_file.compile_result import CompileResult
@@ -18,3 +18,4 @@ class FileResult:
     other_files: List[str] = field(default_factory=list)  # Other files in the directory (used if file is missing)
     optional: bool = False  # Is the file not required to exist
     compile_optional: bool = False  # Is the file not required to compile
+    truncated_after: Optional[int] = None  # How much were the file contents truncated

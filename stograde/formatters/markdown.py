@@ -80,9 +80,9 @@ def format_file(file_info: 'FileResult') -> str:
     If file is missing and is optional, adds a note
     """
 
-    contents = format_file_contents(file_info.contents, file_info.file_name) + '\n'
-    compilation = format_file_compilation(file_info.compile_results) + '\n'
-    test_results = format_file_tests(file_info.test_results) + '\n'
+    contents = format_file_contents(file_info)
+    compilation = format_file_compilation(file_info.compile_results)
+    test_results = format_file_tests(file_info.test_results)
 
     if file_info.last_modified:
         last_modified = ' ({})'.format(file_info.last_modified)
@@ -99,7 +99,7 @@ def format_file(file_info: 'FileResult') -> str:
             file_header = file_header.strip()
             file_header += ' (**optional submission**)\n'
 
-        return '\n'.join([file_header, note, directory_listing + '\n\n'])
+        return '\n'.join([file_header, note, directory_listing])
 
     return '\n'.join([file_header, contents, compilation, test_results])
 
@@ -112,15 +112,21 @@ def get_file_extension(filename: str) -> str:
         return ''
 
 
-def format_file_contents(contents: str, filename: str) -> str:
+def format_file_contents(file_info: 'FileResult') -> str:
     """Add markdown code block around file contents with extension for code highlighting.
 
     If a file is empty or contains only whitespace, note this in the log.
     """
 
-    if not contents.rstrip():
+    if not file_info.contents.rstrip():
         return '*File empty*'
-    return '```{}\n'.format(get_file_extension(filename)) + contents + '\n```\n'
+
+    contents = '```{}\n'.format(get_file_extension(file_info.file_name)) + file_info.contents + '\n```\n'
+
+    if file_info.truncated_after:
+        contents += '*(truncated after {} chars)*\n'.format(file_info.truncated_after)
+
+    return contents
 
 
 def format_file_compilation(compilations: List['CompileResult']) -> str:
@@ -136,6 +142,8 @@ def format_file_compilation(compilations: List['CompileResult']) -> str:
         else:
             result.append('**warnings: {}**\n'.format(command))
             result.append('```\n' + output + '\n```\n')
+            if compile_result.truncated_after:
+                result.append('*(truncated after {} chars)*\n'.format(compile_result.truncated_after))
 
     return '\n'.join(result)
 
@@ -149,8 +157,8 @@ def format_file_tests(test_results: List['TestResult']) -> str:
                                                                           status=test.status.name)
         if test.output:
             header_and_contents = header + '\n```\n' + test.output + '\n```\n'
-            if test.truncated:
-                header_and_contents += '*(truncated after {} lines)*\n'.format(test.truncated_after)
+            if test.truncated_after:
+                header_and_contents += '*(truncated after {} chars)*\n'.format(test.truncated_after)
             result.append(header_and_contents)
         else:
             result.append(header)

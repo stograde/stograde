@@ -2,7 +2,6 @@ import re
 import textwrap
 from unittest import mock
 
-from stograde.common.run_status import RunStatus
 from stograde.formatters.format_type import FormatType
 from stograde.formatters.html import format_file_contents, format_file_compilation, \
     format_file_tests, format_file, format_warnings, format_header, format_files_list, format_assignment_html, \
@@ -10,32 +9,8 @@ from stograde.formatters.html import format_file_contents, format_file_compilati
 from stograde.formatters.html_template import add_styling
 from stograde.process_assignment.record_result import RecordResult
 from stograde.process_assignment.submission_warnings import SubmissionWarnings
-from stograde.process_file.compile_result import CompileResult
 from stograde.process_file.file_result import FileResult
-from stograde.process_file.test_result import TestResult
-
-compile_results = [CompileResult('test command', '', RunStatus.SUCCESS),
-                   CompileResult('test command 2', 'some output', RunStatus.SUCCESS)]
-test_results = [TestResult('test command', '', error=False, status=RunStatus.SUCCESS),
-                TestResult('other command', 'some more output\nand another line', error=False,
-                           status=RunStatus.SUCCESS),
-                TestResult('a third command', 'more output\nand lines\nand more lines\nand yet more lines...',
-                           error=False, status=RunStatus.SUCCESS, truncated=True, truncated_after=4)]
-file_results = [FileResult(file_name='test_file.txt',
-                           contents='some file contents\nand another line',
-                           compile_results=[CompileResult('a command', '', RunStatus.SUCCESS),
-                                            CompileResult('another command', 'output text', RunStatus.SUCCESS)],
-                           test_results=[TestResult('a test command', '', error=False, status=RunStatus.SUCCESS),
-                                         TestResult('other test command', 'more output\nanother line',
-                                                    error=True, status=RunStatus.FILE_NOT_FOUND)],
-                           last_modified='a modification time'),
-                FileResult(file_name='another_file.txt',
-                           file_missing=True,
-                           other_files=['a_third_file.txt', 'more_files.txt']),
-                FileResult(file_name='optional.txt',
-                           file_missing=True,
-                           other_files=['yet_another_file.txt'],
-                           optional=True)]
+from test.formatters.results_for_tests import compile_results, test_results, file_results
 
 
 # ----------------------------- add_styling -----------------------------
@@ -459,6 +434,18 @@ def test_add_styling():
                                 </code></pre>
 
 
+
+                                <h2><code>truncated.txt</code> (a modification time)</h2>
+
+                                <pre><code>
+        some tex
+                                </code></pre>
+                                <p><i>(truncated after 8 chars)</i></p>
+
+
+
+
+
                                 <hr>
 
                             </div>
@@ -537,6 +524,18 @@ def test_format_assignment_html():
         </code></pre>
 
 
+
+        <h2><code>truncated.txt</code> (a modification time)</h2>
+
+        <pre><code>
+        some tex
+        </code></pre>
+        <p><i>(truncated after 8 chars)</i></p>
+
+
+
+
+
         <hr>
         ''')
 
@@ -612,6 +611,18 @@ def test_format_files_list():
         <pre><code>
         yet_another_file.txt
         </code></pre>
+
+
+
+        <h2><code>truncated.txt</code> (a modification time)</h2>
+
+        <pre><code>
+        some tex
+        </code></pre>
+        <p><i>(truncated after 8 chars)</i></p>
+
+
+
 
         ''')
 
@@ -740,8 +751,8 @@ def test_format_file_optional():
 # ----------------------------- format_file_contents -----------------------------
 
 def test_format_file_contents_empty():
-    assert format_file_contents('') == '<p><i>File empty</i></p>'
-    assert format_file_contents('   \n\t\n  ') == '<p><i>File empty</i></p>'
+    assert format_file_contents(FileResult(file_name='a', contents='')) == '<p><i>File empty</i></p>'
+    assert format_file_contents(FileResult(file_name='b', contents='   \n\t\n  ')) == '<p><i>File empty</i></p>'
 
 
 def test_format_file_contents_with_contents():
@@ -750,7 +761,8 @@ def test_format_file_contents_with_contents():
             return 0;
         }''')
 
-    formatted = '\n' + format_file_contents(simple_contents)
+    formatted = '\n' + format_file_contents(FileResult(file_name='',
+                                                       contents=simple_contents))
 
     assert formatted == textwrap.dedent('''
         <pre><code>
@@ -787,6 +799,13 @@ def test_format_file_compilation_multiple_commands():
         <pre><code>
         some output
         </code></pre>
+
+        <p><b>warnings: <code>test command 3</code></b></p>
+        <pre><code>
+        more
+        </code></pre>
+
+        <p><i>(truncated after 4 chars)</i></p>
         ''')
 
 
@@ -815,12 +834,9 @@ def test_format_file_tests_truncated_output():
     assert '\n' + formatted == textwrap.dedent('''
         <p><b>results of <code>a third command</code></b> (status: SUCCESS)</p>
         <pre><code>
-        more output
-        and lines
-        and more lines
-        and yet more lines...
+        more
         </code></pre>
-        <p><i>(truncated after 4 lines)</i></p>
+        <p><i>(truncated after 4 chars)</i></p>
         ''')
 
 
@@ -837,12 +853,9 @@ def test_format_file_tests_multiple_commands():
 
         <p><b>results of <code>a third command</code></b> (status: SUCCESS)</p>
         <pre><code>
-        more output
-        and lines
-        and more lines
-        and yet more lines...
+        more
         </code></pre>
-        <p><i>(truncated after 4 lines)</i></p>
+        <p><i>(truncated after 4 chars)</i></p>
         ''')
 
 

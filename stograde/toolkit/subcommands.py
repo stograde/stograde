@@ -50,7 +50,7 @@ def do_ci(specs: List['Spec'],
     # thus we can make the assumption that there is only one result
     # and that it is at index 0
     assert len(results) == 1
-    passing: bool = ci_analyze(results[0])
+    passing: bool = ci_analyze(results[0], args['course'])
 
     table = tabulate(results)
     print('\n' + table + '\n')

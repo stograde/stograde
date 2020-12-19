@@ -1,5 +1,14 @@
 # Contributing to `stograde`
 
+## Starting to Develop for StoGrade
+
+- `git clone https://github.com/StoDevX/stograde`
+- `cd stograde`
+- `python3 setup.py develop`
+- go to your grading folder that contains the data/ and students/ folders
+- run `stograde`, which will be the development version.
+
+
 ## Creating a New Release
 
 The release process for StoGrade is quite simple, yet does have a few steps:

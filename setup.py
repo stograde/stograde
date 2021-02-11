@@ -8,7 +8,7 @@ install_requires = [
     'PyYAML == 5.*',
     'requests >= 2.20.*',
     'termcolor == 1.*',
-    'natsort == 7.0.*',
+    'natsort==7.1.*',
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',  # required by stograde web

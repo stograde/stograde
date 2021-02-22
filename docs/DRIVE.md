@@ -2,6 +2,10 @@
 
 `stograde drive` is used to determine who has shared a Google Doc with the TAs for grading, and collects the links for all of those documents in one place.
 
+- [Setting Up an OAuth 2.0 Client ID](#setting-up-an-oauth-20-client-id)
+- [Running `stograde drive`](#running-stograde-drive)
+- [How to Create an Assignment Detectable by `stograde drive`](#how-to-create-an-assignment-detectable-by-stograde-drive)
+
 ## Setting Up an OAuth 2.0 Client ID
 
 `stograde drive` needs to be able to communicate with the Google Drive API.

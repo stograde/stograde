@@ -111,7 +111,7 @@ Rename the file to `client_secret.json` and copy it to the directory where your 
 ## Running `stograde drive`
 
 `stograde drive` requires a positional argument for the assignment to grade, as well as the `--email` (or `-e`) flag.
-This flag indicates the group email (e.g. `hd-tas@stolaf.edu`) that the student's have been sharing their documents with and is used to filter out files not shared with that group email.
+This flag indicates the group email (e.g. `hd-tas@stolaf.edu`) that the students have been sharing their documents with and is used to filter out files not shared with that group email.
 
 e.g. `stograde drive hw1 --email hd-tas@stolaf.edu`
 
@@ -127,3 +127,23 @@ You will then get a key to copy.
 Paste this key into the prompt in your terminal.
 
 ![Drive Auth Key](images/StoGrade_drive_auth_key.png)
+
+## How to Create an Assignment Detectable by `stograde drive`
+
+`stograde drive` finds assignments based on two criteria:
+- It was shared with the email specified with `--email` (or `-e`)
+- The file name matches a regex expression
+
+The regex expression is determined based on the two attributes of the assignment specified:
+- The type of assignment
+- The number associated with the assignment
+
+These are put into a regex expression that checks for the keyword(s) associated with the type of assignment, followed by an optional space, then the assignment number, then a non-digit or the end of the name.
+Capitalization is ignored.
+For example, assignment `hw1` will match `Homework1` or `This is hw 1 for HD`, but will not match `hw 10`.
+Other matches would include `Copy of HW 1 assignment`, `CopyOfHomeWork1`, `homework1assignment`, etc.
+
+The keywords for each type are:
+- Homework: `homework`, `hw`
+- Lab: `lab`
+- Worksheet: `worksheet`, `ws`

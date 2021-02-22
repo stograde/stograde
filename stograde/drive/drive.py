@@ -124,7 +124,7 @@ def group_files(files: Set['DriveResult'],
     # Get all documents that were shared by students listed in the students.txt file
     stolaf_class_files = {file for file in files if file.student_email[:-11] in students} | missing_students
 
-    # Get all documents that were shared by students listed in the students.txt file
+    # Get all documents that were shared by students not listed in the students.txt file
     stolaf_non_class_files = stolaf_files.difference(stolaf_class_files)
 
     # Get any documents shared with non-stolaf.edu emails
@@ -136,6 +136,7 @@ def group_files(files: Set['DriveResult'],
 def create_line(file: 'DriveResult', longest_email_len: int, longest_file_name_len: int, longest_link_len: int) -> str:
     """Create a line of the table"""
     if file.create_time is not None:
+        # 'CST6CDT,M3.2.0,M11.1.0' represents CST/CDT
         create_time = parse(file.create_time).astimezone(tz.gettz('CST6CDT,M3.2.0,M11.1.0')).strftime('%x %X %Z')
     else:
         create_time = ''.ljust(21, '-')

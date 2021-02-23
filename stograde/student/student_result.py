@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class StudentResult:
     name: str
     results: List['RecordResult'] = field(default_factory=list)
+    days: Dict[str, 'AssignmentStatus'] = field(default_factory=OrderedDict)
     homeworks: Dict[str, 'AssignmentStatus'] = field(default_factory=OrderedDict)
     labs: Dict[str, 'AssignmentStatus'] = field(default_factory=OrderedDict)
     worksheets: Dict[str, 'AssignmentStatus'] = field(default_factory=OrderedDict)
@@ -19,6 +20,7 @@ class StudentResult:
 
     def assignments(self) -> Dict[str, 'AssignmentStatus']:
         assignments = {}
+        assignments.update(self.days)
         assignments.update(self.homeworks)
         assignments.update(self.labs)
         assignments.update(self.worksheets)

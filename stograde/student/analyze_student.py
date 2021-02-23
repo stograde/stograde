@@ -27,7 +27,9 @@ def analyze_student(student: 'StudentResult', specs: List['Spec'], check_for_bra
 
     for name, analysis in analyses.items():
         a_type = get_assignment_type(name)
-        if a_type is AssignmentType.HOMEWORK:
+        if a_type is AssignmentType.DAY:
+            student.days[name] = analysis
+        elif a_type is AssignmentType.HOMEWORK:
             student.homeworks[name] = analysis
         elif a_type is AssignmentType.LAB:
             student.labs[name] = analysis

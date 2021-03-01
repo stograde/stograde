@@ -2,38 +2,13 @@ import re
 import textwrap
 from unittest import mock
 
-from stograde.common.run_status import RunStatus
 from stograde.formatters.format_type import FormatType
 from stograde.formatters.markdown import format_file_contents, get_file_extension, format_file_compilation, \
     format_file_tests, format_file, format_warnings, format_header, format_files_list, format_assignment_markdown
 from stograde.process_assignment.record_result import RecordResult
 from stograde.process_assignment.submission_warnings import SubmissionWarnings
-from stograde.process_file.compile_result import CompileResult
 from stograde.process_file.file_result import FileResult
-from stograde.process_file.test_result import TestResult
-
-compile_results = [CompileResult('test command', '', RunStatus.SUCCESS),
-                   CompileResult('test command 2', 'some output', RunStatus.SUCCESS)]
-test_results = [TestResult('test command', '', error=False, status=RunStatus.SUCCESS),
-                TestResult('other command', 'some more output\nand another line', error=False,
-                           status=RunStatus.SUCCESS),
-                TestResult('a third command', 'more output\nand lines\nand more lines\nand yet more lines...',
-                           error=False, status=RunStatus.SUCCESS, truncated=True, truncated_after=4)]
-file_results = [FileResult(file_name='test_file.txt',
-                           contents='some file contents\nand another line',
-                           compile_results=[CompileResult('a command', '', RunStatus.SUCCESS),
-                                            CompileResult('another command', 'output text', RunStatus.SUCCESS)],
-                           test_results=[TestResult('a test command', '', error=False, status=RunStatus.SUCCESS),
-                                         TestResult('other test command', 'more output\nanother line',
-                                                    error=True, status=RunStatus.FILE_NOT_FOUND)],
-                           last_modified='a modification time'),
-                FileResult(file_name='another_file.txt',
-                           file_missing=True,
-                           other_files=['a_third_file.txt', 'more_files.txt']),
-                FileResult(file_name='optional.txt',
-                           file_missing=True,
-                           other_files=['yet_another_file.txt'],
-                           optional=True)]
+from test.formatters.results_for_tests import compile_results, test_results, file_results
 
 
 # ----------------------------- format_assignment_markdown -----------------------------
@@ -48,6 +23,7 @@ def test_format_assignment_markdown():
     assert formatted.assignment == 'lab1'
     assert formatted.student == 'student4'
     assert formatted.type is FormatType.MD
+    print(formatted.content)
     assert '\n' + formatted.content == textwrap.dedent('''
         # lab1 – student4
         First submission for lab1: 4/14/2020 16:04:05
@@ -60,7 +36,6 @@ def test_format_assignment_markdown():
         and another line
         ```
 
-
         **no warnings: `a command`**
 
         **warnings: `another command`**
@@ -68,7 +43,6 @@ def test_format_assignment_markdown():
         ```
         output text
         ```
-
 
         **results of `a test command`** (status: SUCCESS)
 
@@ -80,7 +54,6 @@ def test_format_assignment_markdown():
         ```
 
 
-
         ## another_file.txt
 
         File not found. `ls .` says that these files exist:
@@ -90,14 +63,20 @@ def test_format_assignment_markdown():
         ```
 
 
-
-
         ## optional.txt (**optional submission**)
 
         File not found. `ls .` says that these files exist:
         ```
         yet_another_file.txt
         ```
+
+
+        ## truncated.txt (a modification time)
+
+        ```txt
+        some tex
+        ```
+        *(truncated after 8 chars)*
 
 
 
@@ -144,7 +123,6 @@ def test_format_files_list():
         and another line
         ```
 
-
         **no warnings: `a command`**
 
         **warnings: `another command`**
@@ -152,7 +130,6 @@ def test_format_files_list():
         ```
         output text
         ```
-
 
         **results of `a test command`** (status: SUCCESS)
 
@@ -164,7 +141,6 @@ def test_format_files_list():
         ```
 
 
-
         ## another_file.txt
 
         File not found. `ls .` says that these files exist:
@@ -174,14 +150,20 @@ def test_format_files_list():
         ```
 
 
-
-
         ## optional.txt (**optional submission**)
 
         File not found. `ls .` says that these files exist:
         ```
         yet_another_file.txt
         ```
+
+
+        ## truncated.txt (a modification time)
+
+        ```txt
+        some tex
+        ```
+        *(truncated after 8 chars)*
 
 
         ''')
@@ -254,7 +236,6 @@ def test_format_file():
         and another line
         ```
 
-
         **no warnings: `a command`**
 
         **warnings: `another command`**
@@ -262,7 +243,6 @@ def test_format_file():
         ```
         output text
         ```
-
 
         **results of `a test command`** (status: SUCCESS)
 
@@ -272,7 +252,6 @@ def test_format_file():
         more output
         another line
         ```
-
         ''')
 
 
@@ -287,8 +266,6 @@ def test_format_file_missing():
         a_third_file.txt
         more_files.txt
         ```
-
-
         ''')
 
 
@@ -302,8 +279,6 @@ def test_format_file_optional():
         ```
         yet_another_file.txt
         ```
-
-
         ''')
 
 
@@ -318,8 +293,8 @@ def test_get_file_extension():
 # ----------------------------- format_file_contents -----------------------------
 
 def test_format_file_contents_empty():
-    assert format_file_contents('', 'some_file.txt') == '*File empty*'
-    assert format_file_contents('   \n\t\n  ', 'another_file.txt') == '*File empty*'
+    assert format_file_contents(FileResult(file_name='a', contents='')) == '*File empty*'
+    assert format_file_contents(FileResult(file_name='b', contents='   \n\t\n  ')) == '*File empty*'
 
 
 def test_format_file_contents_with_contents():
@@ -328,7 +303,7 @@ def test_format_file_contents_with_contents():
             return 0;
         }''')
 
-    formatted = '\n' + format_file_contents(simple_contents, 'simple.cpp')
+    formatted = '\n' + format_file_contents(FileResult(file_name='c.cpp', contents=simple_contents))
 
     assert formatted == textwrap.dedent('''
         ```cpp
@@ -368,6 +343,14 @@ def test_format_file_compilation_multiple_commands():
         ```
         some output
         ```
+
+        **warnings: `test command 3`**
+
+        ```
+        more
+        ```
+
+        *(truncated after 4 chars)*
         ''')
 
 
@@ -398,12 +381,9 @@ def test_format_file_tests_truncated_output():
         **results of `a third command`** (status: SUCCESS)
 
         ```
-        more output
-        and lines
-        and more lines
-        and yet more lines...
+        more
         ```
-        *(truncated after 4 lines)*
+        *(truncated after 4 chars)*
         ''')
 
 
@@ -422,10 +402,7 @@ def test_format_file_tests_multiple_commands():
         **results of `a third command`** (status: SUCCESS)
 
         ```
-        more output
-        and lines
-        and more lines
-        and yet more lines...
+        more
         ```
-        *(truncated after 4 lines)*
+        *(truncated after 4 chars)*
         ''')

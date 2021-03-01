@@ -5,5 +5,6 @@ class RunStatus(Enum):
     SUCCESS = auto()
     CALLED_PROCESS_ERROR = auto()
     FILE_NOT_FOUND = auto()
+    PERMISSION_DENIED = auto()
     PROCESS_LOOKUP_ERROR = auto()
     TIMEOUT_EXPIRED = auto()

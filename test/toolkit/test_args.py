@@ -50,6 +50,18 @@ def test_process_args_ci(datafiles):
     global_vars.CI = False
 
 
+def test_process_args_drive():
+    args = [sys.argv[0]] + ['drive', 'hw5', '--student', 'student6', '--email', 'test@test.com']
+
+    with mock.patch('sys.argv', args):
+        args, students, assignments = process_args()
+
+    assert args['course'] == ''
+    assert args['email'] == 'test@test.com'
+    assert students == ['student6']
+    assert assignments == ['hw5']
+
+
 def test_process_args_record_one_assignment():
     args = [sys.argv[0]] + ['record', 'hw5', '--student', 'student6']
 

@@ -8,6 +8,9 @@ import pytest
 from stograde.common import chdir
 from stograde.toolkit.__main__ import main
 
+if os.getenv('SKIP_E2E') is not None:
+    pytest.skip('Skipping Integration Tests', allow_module_level=True)
+
 _dir = os.path.dirname(os.path.realpath(__file__))
 ci_args = [sys.argv[0]] + ['ci', '--skip-spec-update', '--skip-version-check', '--skip-dependency-check']
 

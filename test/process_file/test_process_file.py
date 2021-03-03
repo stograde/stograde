@@ -69,7 +69,7 @@ def test_get_file_alternate(datafiles):
     assert not result.test_results
     assert result.file_missing is False
     assert result.last_modified == 'Tue Apr 21 12:28:03 2020 -0500'
-    assert not result.other_files
+    assert result.other_files == ['a_file.txt']
     assert result.optional is False
     assert result.compile_optional is False
 
@@ -495,7 +495,7 @@ def test_process_file_alternate(datafiles):
                                               truncated_after=None)]
     assert result.file_missing is False
     assert result.last_modified == 'Tue Apr 21 12:28:03 2020 -0500'
-    assert not result.other_files
+    assert result.other_files == ['bad.cpp']
     assert result.optional is False
     assert result.compile_optional is False
 

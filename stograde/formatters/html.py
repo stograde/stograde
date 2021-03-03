@@ -107,6 +107,9 @@ def format_file(file_info: 'FileResult') -> str:
 
         return '\n'.join([file_header, note, directory_listing + '\n\n'])
 
+    if file_info.other_files:
+        file_header = file_header + "<i>Alternate files detected:</i>\n" + format_as_ul(file_info.other_files) + '\n'
+
     return '\n'.join([file_header, contents, compilation, test_results])
 
 

@@ -448,6 +448,11 @@ def test_add_styling():
 
 
                                 <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+                                <i>Alternate files detected:</i>
+                                <ul>
+                                <li>misnamed2.txt</li>
+                                <li>Misnamed.text</li>
+                                </ul>
 
                                 <pre><code>
         more contents
@@ -549,6 +554,11 @@ def test_format_assignment_html():
 
 
         <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+        <i>Alternate files detected:</i>
+        <ul>
+        <li>misnamed2.txt</li>
+        <li>Misnamed.text</li>
+        </ul>
 
         <pre><code>
         more contents
@@ -649,6 +659,11 @@ def test_format_files_list():
 
 
         <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+        <i>Alternate files detected:</i>
+        <ul>
+        <li>misnamed2.txt</li>
+        <li>Misnamed.text</li>
+        </ul>
 
         <pre><code>
         more contents
@@ -803,6 +818,11 @@ def test_format_file_alternate_name():
 
     assert '\n' + formatted == textwrap.dedent('''
         <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+        <i>Alternate files detected:</i>
+        <ul>
+        <li>misnamed2.txt</li>
+        <li>Misnamed.text</li>
+        </ul>
 
         <pre><code>
         more contents

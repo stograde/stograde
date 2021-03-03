@@ -82,6 +82,9 @@ def test_format_assignment_markdown():
 
 
         ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
 
         ```txt
         more contents
@@ -178,6 +181,9 @@ def test_format_files_list():
 
 
         ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
 
         ```txt
         more contents
@@ -320,6 +326,9 @@ def test_format_file_alternate_name():
 
     assert '\n' + formatted == textwrap.dedent('''
         ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
 
         ```txt
         more contents

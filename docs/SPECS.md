@@ -10,6 +10,7 @@ To jump to the explanation of a specific tag, follow the following links:
 - [`compilers:`](#Compilers)
 - [`files:`](#Files)
   - [`file:`](#Files)
+  - [`alternates:`](#Alternate-Names)
   - [`commands:`](#Compile-Steps)
   - [`tests:`](#Test-Steps)
   - [`options:` (and its child tags)](#Options)
@@ -82,6 +83,26 @@ files:
   - file: Dog.h
   - file: tryDog.cpp
 ```
+
+#### Alternate Names
+
+If a student turns in a file but it is not named properly, it will not be detected by StoGrade.
+If there is a file that multiple students have or may misname, this can be accommodated for in the spec file.
+Using the `alternates:` tag, one or more alternate names for the file can be given.
+For example:
+
+```yaml
+files:
+  - file: Dog.cpp
+    alternates: dog.cpp
+  - file: Dog.h
+    alternates:
+      - dog.h
+      - cat.h
+```
+
+If alternate names are given and more than one name has a matching file, then a warning will be printed in the recording alerting the grader that the file the student intended to turn in may not be the one shown in the recording.
+
 
 #### Compile Steps
 

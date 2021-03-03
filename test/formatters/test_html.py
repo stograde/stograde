@@ -446,6 +446,17 @@ def test_add_styling():
 
 
 
+
+                                <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+
+                                <pre><code>
+        more contents
+                                </code></pre>
+
+
+
+
+
                                 <hr>
 
                             </div>
@@ -536,6 +547,17 @@ def test_format_assignment_html():
 
 
 
+
+        <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+
+        <pre><code>
+        more contents
+        </code></pre>
+
+
+
+
+
         <hr>
         ''')
 
@@ -620,6 +642,17 @@ def test_format_files_list():
         some tex
         </code></pre>
         <p><i>(truncated after 8 chars)</i></p>
+
+
+
+
+
+
+        <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+
+        <pre><code>
+        more contents
+        </code></pre>
 
 
 
@@ -744,6 +777,39 @@ def test_format_file_optional():
         <pre><code>
         yet_another_file.txt
         </code></pre>
+
+        ''')
+
+
+def test_format_file_truncated():
+    formatted = format_file(file_results[3])
+
+    assert '\n' + formatted == textwrap.dedent('''
+        <h2><code>truncated.txt</code> (a modification time)</h2>
+
+        <pre><code>
+        some tex
+        </code></pre>
+        <p><i>(truncated after 8 chars)</i></p>
+
+
+
+
+        ''')
+
+
+def test_format_file_alternate_name():
+    formatted = format_file(file_results[4])
+
+    assert '\n' + formatted == textwrap.dedent('''
+        <h2><code>mn.txt</code> (alternate name for <code>misnamed.txt</code>) (a time)</h2>
+
+        <pre><code>
+        more contents
+        </code></pre>
+
+
+
 
         ''')
 

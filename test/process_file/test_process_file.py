@@ -20,7 +20,7 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_get_file_success(datafiles):
-    spec = SpecFile('a_file.txt', [], [], FileOptions())
+    spec = SpecFile('a_file.txt', [], [], [], FileOptions())
     result = FileResult(file_name='a_file.txt')
 
     with chdir(str(datafiles)):
@@ -47,9 +47,9 @@ def test_get_file_success(datafiles):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_get_file_hide_contents(datafiles):
-    spec = SpecFile('a_file.txt', [], [], FileOptions(hide_contents=True,
-                                                      optional=True,
-                                                      compile_optional=True))
+    spec = SpecFile('a_file.txt', [], [], [], FileOptions(hide_contents=True,
+                                                          optional=True,
+                                                          compile_optional=True))
     result = FileResult(file_name='a_file.txt')
 
     with chdir(str(datafiles)):
@@ -76,7 +76,7 @@ def test_get_file_hide_contents(datafiles):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_get_file_truncated_contents(datafiles):
-    spec = SpecFile('a_file.txt', [], [], FileOptions(truncate_contents=4))
+    spec = SpecFile('a_file.txt', [], [], [], FileOptions(truncate_contents=4))
     result = FileResult(file_name='a_file.txt')
 
     with chdir(str(datafiles)):
@@ -103,7 +103,7 @@ def test_get_file_truncated_contents(datafiles):
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_get_file_missing(datafiles):
-    spec = SpecFile('b_file.txt', [], [], FileOptions(optional=True))
+    spec = SpecFile('b_file.txt', [], [], [], FileOptions(optional=True))
     result = FileResult(file_name='b_file.txt')
 
     with chdir(str(datafiles)):

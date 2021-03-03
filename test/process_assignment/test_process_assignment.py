@@ -20,8 +20,8 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 def test_process_assignment(datafiles):
     student_result = StudentResult('student1')
     spec = Spec('hw1', 'hw1', architecture=None,
-                files=[SpecFile('a_file.txt', [], [], FileOptions()),
-                       SpecFile('b_file.txt', [], [], FileOptions())])
+                files=[SpecFile('a_file.txt', [], [], [], FileOptions()),
+                       SpecFile('b_file.txt', [], [], [], FileOptions())])
 
     with chdir(str(datafiles)):
         git('init')
@@ -101,17 +101,19 @@ def test_process_assignment_ci(mock_function):
 
 def test_remove_execs(tmpdir):
     spec = Spec('hw2', 'hw2', architecture=None,
-                files=[SpecFile('a_file.txt', [], [], FileOptions()),
-                       SpecFile('file', [], [], FileOptions()),
-                       SpecFile('test.cpp', [], [], FileOptions())])
+                files=[SpecFile('a_file.txt', [], [], [], FileOptions()),
+                       SpecFile('file', [], [], [], FileOptions()),
+                       SpecFile('test.cpp', ['Test.cpp', 'TEST.cpp'], [], [], FileOptions())])
 
     with tmpdir.as_cwd():
         touch('non_exec_file.txt')
         touch('file.exec')
         touch('non_spec_exec.exec')
         touch('test.cpp.exec')
+        touch('Test.cpp.exec')
 
-        assert set(os.listdir('.')) == {'non_exec_file.txt', 'file.exec', 'non_spec_exec.exec', 'test.cpp.exec'}
+        assert set(os.listdir('.')) == {'non_exec_file.txt', 'file.exec', 'non_spec_exec.exec',
+                                        'test.cpp.exec', 'Test.cpp.exec'}
 
         remove_execs(spec)
 

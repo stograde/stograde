@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 class FileResult:
     """The results from compiling and testing an assignment file"""
     file_name: str  # Name of the file
+    actual_name: Optional[str] = None  # Name of the file that was found (if it was an alternate name)
     contents: str = ''  # Contents of the file
     compile_results: List['CompileResult'] = field(default_factory=list)  # Results of each compilation
     test_results: List['TestResult'] = field(default_factory=list)  # Results of each test

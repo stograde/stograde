@@ -89,7 +89,12 @@ def format_file(file_info: 'FileResult') -> str:
     else:
         last_modified = ''
 
-    file_header = '## {}{}\n'.format(file_info.file_name, last_modified)
+    if file_info.actual_name is not None:
+        file_header = '## {} (alternate name for {}){}\n'.format(file_info.actual_name,
+                                                                 file_info.file_name,
+                                                                 last_modified)
+    else:
+        file_header = '## {}{}\n'.format(file_info.file_name, last_modified)
 
     if file_info.file_missing:
         note = 'File not found. `ls .` says that these files exist:'

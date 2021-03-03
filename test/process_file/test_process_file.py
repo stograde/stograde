@@ -35,7 +35,36 @@ def test_get_file_success(datafiles):
 
     assert ret is True
     assert result.file_name == 'a_file.txt'
+    assert not result.actual_name
     assert result.contents == 'contents\n'
+    assert not result.compile_results
+    assert not result.test_results
+    assert result.file_missing is False
+    assert result.last_modified == 'Tue Apr 21 12:28:03 2020 -0500'
+    assert not result.other_files
+    assert result.optional is False
+    assert result.compile_optional is False
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
+def test_get_file_alternate(datafiles):
+    spec = SpecFile('b_file.txt', ['another_file.txt', 'a_file.txt'], [], [], FileOptions())
+    result = FileResult(file_name='b_file.txt')
+
+    with chdir(str(datafiles)):
+        git('init')
+        git('config', 'user.email', 'an_email@email_provider.com')
+        git('config', 'user.name', 'Some Random Name')
+
+        git('add', 'another_file.txt')
+        git('commit', '-m', '"Add file"', '--date="Tue Apr 21 12:28:03 2020 -0500"')
+
+        ret = get_file(spec, result)
+
+    assert ret is True
+    assert result.file_name == 'b_file.txt'
+    assert result.actual_name == 'another_file.txt'
+    assert result.contents == 'other contents\n'
     assert not result.compile_results
     assert not result.test_results
     assert result.file_missing is False
@@ -64,6 +93,7 @@ def test_get_file_hide_contents(datafiles):
 
     assert ret is True
     assert result.file_name == 'a_file.txt'
+    assert not result.actual_name
     assert result.contents == ''
     assert not result.compile_results
     assert not result.test_results
@@ -91,6 +121,7 @@ def test_get_file_truncated_contents(datafiles):
 
     assert ret is True
     assert result.file_name == 'a_file.txt'
+    assert not result.actual_name
     assert result.contents == 'cont'
     assert not result.compile_results
     assert not result.test_results
@@ -111,12 +142,13 @@ def test_get_file_missing(datafiles):
 
     assert ret is False
     assert result.file_name == 'b_file.txt'
+    assert not result.actual_name
     assert not result.contents
     assert not result.compile_results
     assert not result.test_results
     assert result.file_missing is True
     assert not result.last_modified
-    assert set(result.other_files) == {'a_file.txt', 'compile_file', 'process_file', 'test_file'}
+    assert set(result.other_files) == {'a_file.txt', 'another_file.txt', 'compile_file', 'process_file', 'test_file'}
     assert result.optional is True
     assert result.compile_optional is False
 
@@ -164,6 +196,27 @@ def test_compile_file_success(datafiles):
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'compile_file'))
+def test_compile_file_alternate(datafiles):
+    spec = SpecFile(file_name='missing.cpp',
+                    compile_commands=['g++ --std=c++11 $@ -o $@.exec', 'echo A'],
+                    test_commands=[],
+                    options=FileOptions())
+    result = FileResult(file_name='missing.cpp', actual_name='good.cpp')
+
+    with chdir(str(datafiles)):
+        ret = compile_file(file_spec=spec, results=result, supporting_dir='')
+
+    assert ret is True
+    assert result.actual_name == 'good.cpp'
+    assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./good.cpp -o ./good.cpp.exec',
+                                                    output='',
+                                                    status=RunStatus.SUCCESS),
+                                      CompileResult(command='echo A',
+                                                    output='A\n',
+                                                    status=RunStatus.SUCCESS)]
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'compile_file'))
 def test_compile_file_failure(datafiles):
     spec = SpecFile(file_name='bad.cpp',
                     compile_commands=['g++ --std=c++11 $@ -o $@.exec', 'echo A'],
@@ -196,6 +249,29 @@ def test_test_file_success(datafiles):
                     test_commands=['make good.cpp.exec', '$@.exec'],
                     options=FileOptions())
     result = FileResult(file_name='good.cpp')
+
+    with chdir(str(datafiles)):
+        test_file(file_spec=spec, file_results=result, supporting_dir='', interact=False)
+
+    assert result.test_results == [TestResult(command='make good.cpp.exec',
+                                              output='g++ --std=c++11 good.cpp -o good.cpp.exec\n',
+                                              error=False,
+                                              status=RunStatus.SUCCESS,
+                                              truncated_after=None),
+                                   TestResult(command='./good.cpp.exec',
+                                              output='Hello\n',
+                                              error=False,
+                                              status=RunStatus.SUCCESS,
+                                              truncated_after=None)]
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'test_file'))
+def test_test_file_alternate(datafiles):
+    spec = SpecFile(file_name='missing.cpp',
+                    compile_commands=[],
+                    test_commands=['make good.cpp.exec', '$@.exec'],
+                    options=FileOptions())
+    result = FileResult(file_name='missing.cpp', actual_name='good.cpp')
 
     with chdir(str(datafiles)):
         test_file(file_spec=spec, file_results=result, supporting_dir='', interact=False)
@@ -355,6 +431,52 @@ def test_process_file_success(datafiles):
                               skip_web_compile=False)
 
     assert result.file_name == 'good.cpp'
+    assert '\n' + result.contents == textwrap.dedent('''
+        #include <iostream>\n
+        using namespace std;\n
+        int main() {
+            cout << "Hello" << endl;
+            return 0;
+        }
+        ''')
+    assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./good.cpp -o ./good.cpp.exec',
+                                                    output='',
+                                                    status=RunStatus.SUCCESS)]
+    assert result.test_results == [TestResult(command='./good.cpp.exec',
+                                              output='Hello\n',
+                                              error=False,
+                                              status=RunStatus.SUCCESS,
+                                              truncated_after=None)]
+    assert result.file_missing is False
+    assert result.last_modified == 'Tue Apr 21 12:28:03 2020 -0500'
+    assert not result.other_files
+    assert result.optional is False
+    assert result.compile_optional is False
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures', 'process_file'))
+def test_process_file_alternate(datafiles):
+    spec = SpecFile(file_name='missing.cpp',
+                    alternate_names=['good.cpp', 'bad.cpp'],
+                    compile_commands=['g++ --std=c++11 $@ -o $@.exec'],
+                    test_commands=['$@.exec'],
+                    options=FileOptions())
+
+    with chdir(str(datafiles)):
+        git('init')
+        git('config', 'user.email', 'an_email@email_provider.com')
+        git('config', 'user.name', 'Some Random Name')
+
+        git('add', 'good.cpp')
+        git('commit', '-m', '"Add file"', '--date="Tue Apr 21 12:28:03 2020 -0500"')
+
+        result = process_file(file_spec=spec,
+                              supporting_dir='.',
+                              interact=False,
+                              skip_web_compile=False)
+
+    assert result.file_name == 'missing.cpp'
+    assert result.actual_name == 'good.cpp'
     assert '\n' + result.contents == textwrap.dedent('''
         #include <iostream>\n
         using namespace std;\n

@@ -6,6 +6,7 @@ from .file_options import FileOptions
 
 @dataclass
 class SpecFile:
+    """Represents a file to be checked as part of an assignment"""
     file_name: str
     alternate_names: List[str] = field(default_factory=list)
     compile_commands: List[str] = field(default_factory=list)

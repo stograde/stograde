@@ -98,6 +98,28 @@ def test_create_spec_file_with_tests_list():
     check_file_options_has_defaults(new_file.options)
 
 
+def test_create_spec_file_with_alternates_str():
+    new_file = create_spec_file({
+        'file': 'test_file5-1.txt',
+        'alternates': 'test_file5-2.txt',
+    })
+
+    assert new_file.file_name == 'test_file5-1.txt'
+    assert new_file.alternate_names == ['test_file5-2.txt']
+    check_file_options_has_defaults(new_file.options)
+
+
+def test_create_spec_file_with_alternates_list():
+    new_file = create_spec_file({
+        'file': 'test_file5-3.txt',
+        'alternates': ['test_file5-4.txt', 'test_file5-5.txt'],
+    })
+
+    assert new_file.file_name == 'test_file5-3.txt'
+    assert new_file.alternate_names == ['test_file5-4.txt', 'test_file5-5.txt']
+    check_file_options_has_defaults(new_file.options)
+
+
 def test_create_spec_file_with_compile_optional():
     new_file = create_spec_file({
         'file': 'test_file6.txt',

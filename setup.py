@@ -8,11 +8,11 @@ install_requires = [
     'PyYAML == 5.*',
     'requests >= 2.20.*',
     'termcolor == 1.*',
-    'natsort == 7.0.*',
+    'natsort==7.1.*',
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',  # required by stograde web
-    'google-api-python-client == 1.12.*',  # required by stograde drive
+    'google-api-python-client==2.0.*',  # required by stograde drive
     'google-auth-oauthlib == 0.4.*',  # required by stograde drive
     'six >= 1.13.0',  # required by google-api-core
     'setuptools >= 40.3.0',  # required by google-auth

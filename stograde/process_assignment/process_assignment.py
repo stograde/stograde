@@ -65,7 +65,7 @@ def process_assignment(*,
 def remove_execs(spec: 'Spec'):
     """Remove executable files (identified by a .exec extension)"""
     for file in spec.files:
-        for name in [file.file_name] + file.alternate_names:
+        for name in [file.file_name, *file.alternate_names]:
             try:
                 os.remove('{}.exec'.format(name))
             except FileNotFoundError:

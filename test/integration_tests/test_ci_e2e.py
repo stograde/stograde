@@ -28,9 +28,9 @@ def test_stograde_ci_passing(datafiles, capsys):
     out, _ = capsys.readouterr()
 
     assert out == ("\n"
-                   "USER      | 1 |  | \n"
-                   "----------+---+--+-\n"
-                   "student2  | 1 |  | \n\n")
+                   "USER      | 1 |  |  | \n"
+                   "----------+---+--+--+-\n"
+                   "student2  | 1 |  |  | \n\n")
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student1', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
@@ -49,9 +49,9 @@ def test_stograde_ci_passing_stogradeignore_some_assignments(datafiles, capsys, 
     assert log_messages == {('Skipping lab1: ignored by stogradeignore', 'WARNING')}
 
     assert out == ("\n"
-                   "USER      | 1 |  | \n"
-                   "----------+---+--+-\n"
-                   "student1  | 1 |  | \n\n")
+                   "USER      | 1 |  |  | \n"
+                   "----------+---+--+--+-\n"
+                   "student1  | 1 |  |  | \n\n")
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'narvae1', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
@@ -90,9 +90,9 @@ def test_stograde_ci_passing_with_optional_compile(datafiles, capsys, caplog):
     assert log_messages == {('hw1: File secondComment.cpp compile error (This did not fail the build)', 'WARNING')}
 
     assert out == ("\n"
-                   "USER      | 1 |  | \n"
-                   "----------+---+--+-\n"
-                   "student4  | 1 |  | \n\n")
+                   "USER      | 1 |  |  | \n"
+                   "----------+---+--+--+-\n"
+                   "student4  | 1 |  |  | \n\n")
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'rives', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
@@ -117,9 +117,9 @@ def test_stograde_ci_failing(datafiles, capsys, caplog):
                             ('lab1: File tryDog.cpp missing', 'ERROR')}
 
     assert out == ("\n"
-                   "USER   |  | 1 | \n"
-                   "-------+--+---+-\n"
-                   "rives  |  | - | \n\n")
+                   "USER   |  | 1 |  | \n"
+                   "-------+--+---+--+-\n"
+                   "rives  |  | - |  | \n\n")
 
 
 @mock.patch.dict(os.environ, {'CI_PROJECT_NAME': 'student3', 'CI_PROJECT_NAMESPACE': 'sd/s20'})
@@ -145,6 +145,6 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
                              "            ^\n\t", 'ERROR')}
 
     assert out == ("\n"
-                   "USER      | 1 |  | \n"
-                   "----------+---+--+-\n"
-                   "student3  | 1 |  | \n\n")
+                   "USER      | 1 |  |  | \n"
+                   "----------+---+--+--+-\n"
+                   "student3  | 1 |  |  | \n\n")

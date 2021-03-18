@@ -133,12 +133,14 @@ def tabulate(student_results: List['StudentResult'],
     header_hw_nums = find_columns(max_hwk_num)
     header_lab_nums = find_columns(max_lab_num)
     header_wst_nums = find_columns(max_wst_num)
-    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums} {sep} {wstnums}'.format(
+    header_day_nums = find_columns(max_day_num)
+    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums} {sep} {wstnums} {sep} {daynums}'.format(
         name='USER',
         namesize=len(longest_user),
         hwnums=header_hw_nums,
         labnums=header_lab_nums,
         wstnums=header_wst_nums,
+        daynums=header_day_nums,
         sep=COL)
 
     # build the header's bottom border
@@ -149,7 +151,9 @@ def tabulate(student_results: List['StudentResult'],
         JOIN,
         ''.ljust(len(header_lab_nums) + 2, ROW),
         JOIN,
-        ''.ljust(len(header_wst_nums) + 1, ROW),
+        ''.ljust(len(header_wst_nums) + 2, ROW),
+        JOIN,
+        ''.ljust(len(header_day_nums) + 1, ROW),
     ])
 
     # build the table body

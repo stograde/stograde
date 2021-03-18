@@ -90,7 +90,12 @@ def format_file(file_info: 'FileResult') -> str:
     else:
         last_modified = ''
 
-    file_header = '<h2><code>{}</code>{}</h2>\n'.format(file_info.file_name, last_modified)
+    if file_info.actual_name is not None:
+        file_header = '<h2><code>{}</code> (alternate name for <code>{}</code>){}</h2>\n'.format(file_info.actual_name,
+                                                                                                 file_info.file_name,
+                                                                                                 last_modified)
+    else:
+        file_header = '<h2><code>{}</code>{}</h2>\n'.format(file_info.file_name, last_modified)
 
     if file_info.file_missing:
         note = '<p>File not found. <code>ls .</code> says that these files exist:</p>'
@@ -101,6 +106,9 @@ def format_file(file_info: 'FileResult') -> str:
             file_header = file_header[:-5] + ' (<b>optional submission</b>)</h2>\n'
 
         return '\n'.join([file_header, note, directory_listing + '\n\n'])
+
+    if file_info.other_files:
+        file_header = file_header + "<i>Alternate files detected:</i>\n" + format_as_ul(file_info.other_files) + '\n'
 
     return '\n'.join([file_header, contents, compilation, test_results])
 

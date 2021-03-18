@@ -23,7 +23,7 @@ def test_format_assignment_markdown():
     assert formatted.assignment == 'lab1'
     assert formatted.student == 'student4'
     assert formatted.type is FormatType.MD
-    print(formatted.content)
+
     assert '\n' + formatted.content == textwrap.dedent('''
         # lab1 – student4
         First submission for lab1: 4/14/2020 16:04:05
@@ -77,6 +77,18 @@ def test_format_assignment_markdown():
         some tex
         ```
         *(truncated after 8 chars)*
+
+
+
+
+        ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
+
+        ```txt
+        more contents
+        ```
 
 
 
@@ -164,6 +176,18 @@ def test_format_files_list():
         some tex
         ```
         *(truncated after 8 chars)*
+
+
+
+
+        ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
+
+        ```txt
+        more contents
+        ```
 
 
         ''')
@@ -279,6 +303,38 @@ def test_format_file_optional():
         ```
         yet_another_file.txt
         ```
+        ''')
+
+
+def test_format_file_truncated():
+    formatted = format_file(file_results[3])
+
+    assert '\n' + formatted == textwrap.dedent('''
+        ## truncated.txt (a modification time)
+
+        ```txt
+        some tex
+        ```
+        *(truncated after 8 chars)*
+
+
+        ''')
+
+
+def test_format_file_alternate_name():
+    formatted = format_file(file_results[4])
+
+    assert '\n' + formatted == textwrap.dedent('''
+        ## mn.txt (alternate name for misnamed.txt) (a time)
+        *Alternate files detected:*
+        - misnamed2.txt
+        - Misnamed.text
+
+        ```txt
+        more contents
+        ```
+
+
         ''')
 
 

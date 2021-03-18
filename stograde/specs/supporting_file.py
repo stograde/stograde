@@ -4,6 +4,7 @@ from typing import Union, Dict, List
 
 @dataclass
 class SupportingFile:
+    """A file to include in the student's repo when checking the assignment"""
     file_name: str
     destination: str
 

@@ -22,7 +22,7 @@ Add this to your path if your command line tells you it can't find `stograde`.
 This directory is located at
 
 - `~/.local/bin` on Linux
-- `~/Library/Python/3.X/bin` on maxOS, where `X` is your version (check with `python3 -V`)
+- `~/Library/Python/3.X/bin` on macOS, where `X` is your version (check with `python3 -V`)
 
 Consult Google or your local unix guru for help.
 

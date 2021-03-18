@@ -21,9 +21,9 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 def test_record_student(datafiles):
     student_result = StudentResult('student1')
     specs = [Spec('hw1', 'hw1', architecture=None,
-                  files=[SpecFile('a_file.txt', [], [], FileOptions())]),
+                  files=[SpecFile('a_file.txt', [], [], [], FileOptions())]),
              Spec('hw2', 'hw2', architecture=None,
-                  files=[SpecFile('b_file.txt', [], [], FileOptions())])]
+                  files=[SpecFile('b_file.txt', [], [], [], FileOptions())])]
 
     with chdir(str(datafiles)):
         with chdir('student1'):

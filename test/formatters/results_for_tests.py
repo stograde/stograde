@@ -29,4 +29,9 @@ file_results = [FileResult(file_name='test_file.txt',
                 FileResult(file_name='truncated.txt',
                            contents='some tex',
                            truncated_after=8,
-                           last_modified='a modification time')]
+                           last_modified='a modification time'),
+                FileResult(file_name='misnamed.txt',
+                           actual_name='mn.txt',
+                           contents='more contents',
+                           other_files=['misnamed2.txt', 'Misnamed.text'],
+                           last_modified='a time')]

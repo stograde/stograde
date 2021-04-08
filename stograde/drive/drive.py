@@ -97,7 +97,7 @@ def get_assignment_files(assignment: str, credentials: Credentials, email: str) 
         sys.exit(1)
 
     # noinspection PyUnboundLocalVariable
-    reg = '.*' + type_reg + ' ?0*' + str(a_num) + r'(\D.*|$)'
+    reg = '.*' + type_reg + ' *0*' + str(a_num) + r'(\D.*|$)'
 
     files = get_all_files(credentials=credentials, email=email)
 

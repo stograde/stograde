@@ -555,6 +555,28 @@ test_files_ws = [DriveResult('student1@stolaf.edu',
                              'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                  ]
 
+test_files_day = [DriveResult('student1@stolaf.edu',
+                              'Copy of Day 1 assignment',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_1/edit?usp=drivesdk'),
+                  DriveResult('student2@stolaf.edu',
+                              'Copy of DAY1',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_2/edit?usp=drivesdk'),
+                  DriveResult('student3@stolaf.edu',
+                              'Copy Of Day 01',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_3/edit?usp=drivesdk'),
+                  DriveResult('student4@stolaf.edu',
+                              'Copyof day 11',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_4/edit?usp=drivesdk'),
+                  DriveResult('student5@stolaf.edu',
+                              'Copy of WORKSHEET 1',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_5/edit?usp=drivesdk'),
+                  ]
+
 
 def test_get_assignment_files():
     with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
@@ -571,6 +593,11 @@ def test_get_assignment_files():
         # noinspection PyTypeChecker
         files = get_assignment_files('ws1', None, '')
         assert files == set(test_files_ws[0:6])
+
+    with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_day):
+        # noinspection PyTypeChecker
+        files = get_assignment_files('day1', None, '')
+        assert files == set(test_files_day[0:3])
 
 
 def test_get_assignment_files_parse_error(capsys):

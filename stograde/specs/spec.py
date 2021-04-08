@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class Spec:
+    """Represents an assignment to be checked"""
     id: str
     folder: str
     architecture: Optional[str]

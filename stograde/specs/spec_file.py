@@ -6,7 +6,9 @@ from .file_options import FileOptions
 
 @dataclass
 class SpecFile:
+    """Represents a file to be checked as part of an assignment"""
     file_name: str
+    alternate_names: List[str] = field(default_factory=list)
     compile_commands: List[str] = field(default_factory=list)
     test_commands: List[str] = field(default_factory=list)
     options: FileOptions = field(default_factory=FileOptions)
@@ -65,6 +67,11 @@ def create_spec_file(file_spec: Union[Dict, List]) -> SpecFile:
         file_options = file_spec.get('options', {})
         options = FileOptions().update(file_options)
 
+        alternates = file_spec.get('alternates', [])
+        if isinstance(alternates, str):
+            alternates = [alternates]
+        assert isinstance(alternates, list)
+
     elif isinstance(file_spec, list):  # legacy spec support
         file_name = file_spec[0]
         compile_commands = [f for f in file_spec[1:] if isinstance(f, str)]
@@ -72,11 +79,13 @@ def create_spec_file(file_spec: Union[Dict, List]) -> SpecFile:
         option_list = [opt for opt in file_spec[1:] if isinstance(opt, dict)]
         option_dict = {k: v for opt in option_list for k, v in opt.items()}
         options = FileOptions().update(option_dict)
+        alternates = []
 
     else:
         raise TypeError('Cannot parse "files:": incorrect data type for a file: {}'.format(type(file_spec)))
 
     return SpecFile(file_name=file_name,
+                    alternate_names=alternates,
                     compile_commands=compile_commands,
                     test_commands=test_commands,
                     options=options)

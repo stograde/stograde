@@ -19,6 +19,22 @@ def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
     """
     file_status, file_contents = cat(file_spec.file_name, hide_contents=file_spec.options.hide_contents)
 
+    if file_spec.alternate_names:
+        if file_status is not RunStatus.SUCCESS:
+            for file_name in file_spec.alternate_names:
+                file_status, file_contents = cat(file_name, hide_contents=file_spec.options.hide_contents)
+                if file_status is RunStatus.SUCCESS:
+                    file_result.actual_name = file_name
+                    break
+
+        other_files = os.listdir('.')
+        for file_name in file_spec.alternate_names:
+            if file_name in other_files:
+                file_result.other_files.append(file_name)
+
+        if file_result.actual_name is not None:
+            file_result.other_files.remove(file_result.actual_name)
+
     if file_status is not RunStatus.SUCCESS:
         file_result.file_missing = True
         file_result.optional = file_spec.options.optional
@@ -26,10 +42,15 @@ def get_file(file_spec: 'SpecFile', file_result: FileResult) -> bool:
         return False
     else:
         file_result.compile_optional = file_spec.options.compile_optional
+
         file_result.contents = truncate(file_contents, file_spec.options.truncate_contents)
         if file_result.contents != file_contents:
             file_result.contents_truncated_after = file_spec.options.truncate_contents
-        file_result.last_modified, _ = get_modification_time(file_spec.file_name, os.getcwd(), ModificationTime.LATEST)
+
+        file_result.last_modified, _ = get_modification_time(
+            file_result.file_name if file_result.actual_name is None else file_result.actual_name,
+            os.getcwd(),
+            ModificationTime.LATEST)
         return True
 
 
@@ -42,7 +63,7 @@ def parse_command(command: str, *, file_name: str, supporting_dir: str) -> str:
 def compile_file(*, file_spec: 'SpecFile', results: FileResult, supporting_dir: str) -> bool:
     for command in file_spec.compile_commands:
         command = parse_command(command,
-                                file_name=file_spec.file_name,
+                                file_name=results.file_name if results.actual_name is None else results.actual_name,
                                 supporting_dir=supporting_dir)
 
         cmd, input_for_cmd = pipe(command)
@@ -73,7 +94,8 @@ def test_file(*,
             continue
 
         command = parse_command(command,
-                                file_name=file_spec.file_name,
+                                file_name=file_results.file_name
+                                if file_results.actual_name is None else file_results.actual_name,
                                 supporting_dir=supporting_dir)
 
         test_cmd, input_for_test = pipe(command)

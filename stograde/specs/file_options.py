@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class FileOptions:
+    """Represents options available for files in specs"""
     compile_optional: bool = False
     hide_contents: bool = False
     optional: bool = False

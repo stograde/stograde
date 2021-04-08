@@ -560,17 +560,17 @@ def test_get_assignment_files():
     with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
         # noinspection PyTypeChecker
         files = get_assignment_files('hw1', None, '')
-        assert files == set(test_files_hw[0:4])
+        assert files == set(test_files_hw[0:6])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_lab):
         # noinspection PyTypeChecker
         files = get_assignment_files('lab1', None, '')
-        assert files == set(test_files_lab[0:3])
+        assert files == set(test_files_lab[0:5])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_ws):
         # noinspection PyTypeChecker
         files = get_assignment_files('ws1', None, '')
-        assert files == set(test_files_ws[0:4])
+        assert files == set(test_files_ws[0:6])
 
 
 def test_get_assignment_files_parse_error(capsys):

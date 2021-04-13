@@ -60,10 +60,10 @@ def test_columnize():
                                 'lab1': AssignmentStatus.SUCCESS,
                             })
 
-    assert columnize(student, 'rives', 2, 1, 1) == "rives  | 1 2 | 1 | -"
-    assert columnize(student, 'long_username', 2, 1, 1) == "rives          | 1 2 | 1 | -"
-    assert columnize(student, 'rives', 5, 1, 1) == "rives  | 1 2 - - - | 1 | -"
-    assert columnize(student, 'rives', 2, 5, 1) == "rives  | 1 2 | 1 - - - - | -"
+    assert columnize(student, 'rives', 2, 1, 1, 1) == "rives  | 1 2 | 1 | - | -"
+    assert columnize(student, 'long_username', 2, 1, 1, 1) == "rives          | 1 2 | 1 | - | -"
+    assert columnize(student, 'rives', 5, 1, 1, 1) == "rives  | 1 2 - - - | 1 | - | -"
+    assert columnize(student, 'rives', 2, 5, 1, 1) == "rives  | 1 2 | 1 - - - - | - | -"
 
     student2 = StudentResult(name='rives',
                              unmerged_branches=['branch'],
@@ -75,13 +75,13 @@ def test_columnize():
                                  'lab1': AssignmentStatus.SUCCESS,
                              })
 
-    assert columnize(student2, 'rives', 2, 1, 1) == "\033[1mrives\033[0m  | 1 2 | 1 | -"
+    assert columnize(student2, 'rives', 2, 1, 1, 1) == "\033[1mrives\033[0m  | 1 2 | 1 | - | -"
 
     student3 = StudentResult(name='rives',
                              error='an error occurred')
 
-    assert columnize(student3, 'rives', 2, 1, 1) == "{username}  | {error}".format(username=student3.name,
-                                                                                   error=student3.error)
+    assert columnize(student3, 'rives', 2, 1, 1, 1) == "{username}  | {error}".format(username=student3.name,
+                                                                                      error=student3.error)
 
 
 def test_get_nums():
@@ -94,7 +94,7 @@ def test_get_nums():
                       labs={
                           'lab1': AssignmentStatus.SUCCESS,
                       }),
-    ]) == (2, 1, 0)
+    ]) == (2, 1, 0, 0)
 
     assert get_nums([
         StudentResult(name='rives',
@@ -113,27 +113,30 @@ def test_get_nums():
                       labs={
                           'lab10': AssignmentStatus.SUCCESS,
                       }),
-    ]) == (9, 10, 0)
+    ]) == (9, 10, 0, 0)
 
     assert get_nums([
         StudentResult(name='student',
                       homeworks={},
                       labs={}),
-    ]) == (0, 0, 0)
+    ]) == (0, 0, 0, 0)
 
     assert get_nums([
         StudentResult(name='student',
                       homeworks={
                           'hw1': AssignmentStatus.SUCCESS,
                       })
-    ]) == (1, 0, 0)
+    ]) == (1, 0, 0, 0)
 
     assert get_nums([
         StudentResult(name='student',
                       labs={
                           'lab1': AssignmentStatus.SUCCESS,
+                      },
+                      days={
+                          'day1': AssignmentStatus.SUCCESS,
                       })
-    ]) == (0, 1, 0)
+    ]) == (0, 1, 0, 1)
 
 
 def test_sort_by_hw_count():
@@ -194,6 +197,9 @@ def test_tabulate():
                           'hw2': AssignmentStatus.SUCCESS,
                           'hw3': AssignmentStatus.SUCCESS,
                           'hw4': AssignmentStatus.SUCCESS,
+                      },
+                      days={
+                          'day1': AssignmentStatus.SUCCESS
                       }),
         StudentResult(name='rives2',
                       homeworks={
@@ -212,19 +218,22 @@ def test_tabulate():
                       },
                       worksheets={
                           'ws1': AssignmentStatus.SUCCESS
+                      },
+                      days={
+                          'day1': AssignmentStatus.SUCCESS
                       }),
     ]
 
     assert '\n' + tabulate(students) == textwrap.dedent("""
-        USER    | 1 2 3 4 | 1 2 | 1
-        --------+---------+-----+--
-        rives1  | 1 2 - - | 1 2 | 1
-        rives2  | 1 2 3 - | - - | -
-        rives3  | 1 2 3 4 | - - | -""")
+        USER    | 1 2 3 4 | 1 2 | 1 | 1
+        --------+---------+-----+---+--
+        rives1  | 1 2 - - | 1 2 | 1 | 1
+        rives2  | 1 2 3 - | - - | - | -
+        rives3  | 1 2 3 4 | - - | - | 1""")
 
     assert '\n' + tabulate(students, sort_by='count') == textwrap.dedent("""
-        USER    | 1 2 3 4 | 1 2 | 1
-        --------+---------+-----+--
-        rives1  | 1 2 - - | 1 2 | 1
-        rives3  | 1 2 3 4 | - - | -
-        rives2  | 1 2 3 - | - - | -""")
+        USER    | 1 2 3 4 | 1 2 | 1 | 1
+        --------+---------+-----+---+--
+        rives1  | 1 2 - - | 1 2 | 1 | 1
+        rives3  | 1 2 3 4 | - - | - | 1
+        rives2  | 1 2 3 - | - - | - | -""")

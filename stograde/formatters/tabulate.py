@@ -76,6 +76,7 @@ def columnize(student: 'StudentResult',
               max_hwk_num: int,
               max_lab_num: int,
               max_wst_num: int,
+              max_day_num: int,
               highlight_partials: bool = True):
     """Build the data for each row of the information table"""
     name = '{0:<{1}}'.format(student.name, len(longest_user))
@@ -83,6 +84,7 @@ def columnize(student: 'StudentResult',
     if len(student.unmerged_branches) > 0:
         name = colored(name, attrs={'bold': True})
 
+    day_row = concat(student.days, max_day_num, highlight_partials)
     homework_row = concat(student.homeworks, max_hwk_num, highlight_partials)
     lab_row = concat(student.labs, max_lab_num, highlight_partials)
     worksheet_row = concat(student.worksheets, max_wst_num, highlight_partials)
@@ -93,25 +95,28 @@ def columnize(student: 'StudentResult',
             sep=COL,
             err=student.error)
     else:
-        return '{name}  {sep} {hws} {sep} {labs} {sep} {wkshts}'.format(
+        return '{name}  {sep} {hws} {sep} {labs} {sep} {wkshts} {sep} {days}'.format(
             name=name,
             hws=homework_row,
             labs=lab_row,
             wkshts=worksheet_row,
+            days=day_row,
             sep=COL)
 
 
-def get_nums(students: List['StudentResult']) -> Tuple[int, int, int]:
+def get_nums(students: List['StudentResult']) -> Tuple[int, int, int, int]:
     """Given a list of students, return the highest hw and lab number among them"""
     homework_nums = [get_assignment_number(hw) for s in students for hw in s.homeworks.keys()]
     lab_nums = [get_assignment_number(lab) for s in students for lab in s.labs.keys()]
     worksheet_nums = [get_assignment_number(ws) for s in students for ws in s.worksheets.keys()]
+    day_nums = [get_assignment_number(day) for s in students for day in s.days.keys()]
 
     max_hwk_num = max(homework_nums, default=0)
     max_lab_num = max(lab_nums, default=0)
     max_worksheet_num = max(worksheet_nums, default=0)
+    max_day_num = max(day_nums, default=0)
 
-    return max_hwk_num, max_lab_num, max_worksheet_num
+    return max_hwk_num, max_lab_num, max_worksheet_num, max_day_num
 
 
 def tabulate(student_results: List['StudentResult'],
@@ -124,16 +129,18 @@ def tabulate(student_results: List['StudentResult'],
     longest_user = max(usernames, key=len)
 
     # build the header row of the table
-    max_hwk_num, max_lab_num, max_wst_num = get_nums(student_results)
+    max_hwk_num, max_lab_num, max_wst_num, max_day_num = get_nums(student_results)
     header_hw_nums = find_columns(max_hwk_num)
     header_lab_nums = find_columns(max_lab_num)
     header_wst_nums = find_columns(max_wst_num)
-    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums} {sep} {wstnums}'.format(
+    header_day_nums = find_columns(max_day_num)
+    header = '{name:<{namesize}}  {sep} {hwnums} {sep} {labnums} {sep} {wstnums} {sep} {daynums}'.format(
         name='USER',
         namesize=len(longest_user),
         hwnums=header_hw_nums,
         labnums=header_lab_nums,
         wstnums=header_wst_nums,
+        daynums=header_day_nums,
         sep=COL)
 
     # build the header's bottom border
@@ -144,7 +151,9 @@ def tabulate(student_results: List['StudentResult'],
         JOIN,
         ''.ljust(len(header_lab_nums) + 2, ROW),
         JOIN,
-        ''.ljust(len(header_wst_nums) + 1, ROW),
+        ''.ljust(len(header_wst_nums) + 2, ROW),
+        JOIN,
+        ''.ljust(len(header_day_nums) + 1, ROW),
     ])
 
     # build the table body
@@ -160,7 +169,7 @@ def tabulate(student_results: List['StudentResult'],
         sorter2 = sort_by_hw_count
         should_reverse = False
 
-    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num,
+    lines = [columnize(student, longest_user, max_hwk_num, max_lab_num, max_wst_num, max_day_num,
                        highlight_partials=highlight_partials)
              for student in sorted(sorted(student_results, key=sorter2), reverse=should_reverse, key=sorter1)]
 

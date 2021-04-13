@@ -450,25 +450,33 @@ test_files_hw = [DriveResult('student1@stolaf.edu',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_2/edit?usp=drivesdk'),
                  DriveResult('student3@stolaf.edu',
-                             'CopyOfHomeWork1',
+                             'CopyOfHomeWork 001',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_3/edit?usp=drivesdk'),
                  DriveResult('student4@stolaf.edu',
-                             'Copy of HOMEWORK 1',
+                             'Copy of HOMEWORK 000001',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_4/edit?usp=drivesdk'),
                  DriveResult('student5@stolaf.edu',
-                             'aoisfgnoisdnfao',
+                             'CopyOfHomeWork1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_5/edit?usp=drivesdk'),
                  DriveResult('student6@stolaf.edu',
-                             'lab3',
+                             'Copy of HOMEWORK 1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_6/edit?usp=drivesdk'),
                  DriveResult('student7@stolaf.edu',
-                             'homework 11',
+                             'aoisfgnoisdnfao',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
+                 DriveResult('student8@stolaf.edu',
+                             'lab3',
+                             '2020-09-16T15:54:59.679Z',
+                             'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
+                 DriveResult('student9@stolaf.edu',
+                             'homework 11',
+                             '2020-09-16T15:54:59.679Z',
+                             'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                  ]
 
 test_files_lab = [DriveResult('student1@stolaf.edu',
@@ -476,29 +484,37 @@ test_files_lab = [DriveResult('student1@stolaf.edu',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_1/edit?usp=drivesdk'),
                   DriveResult('student2@stolaf.edu',
-                              'Copy of lab1',
+                              'Copy of lab  1',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_2/edit?usp=drivesdk'),
                   DriveResult('student3@stolaf.edu',
-                              'CopyOfLaB1',
+                              'CopyOfLaB001',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_3/edit?usp=drivesdk'),
                   DriveResult('student4@stolaf.edu',
-                              'Copy of HOMEWORK 1',
+                              'Copy of lab 01',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_4/edit?usp=drivesdk'),
                   DriveResult('student5@stolaf.edu',
-                              'aoisfgnoisdnfao',
+                              'CopyOfLaB1',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_5/edit?usp=drivesdk'),
                   DriveResult('student6@stolaf.edu',
-                              'lab3',
+                              'Copy of HOMEWORK 1',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_6/edit?usp=drivesdk'),
                   DriveResult('student7@stolaf.edu',
-                              'lab 11',
+                              'aoisfgnoisdnfao',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
+                  DriveResult('student8@stolaf.edu',
+                              'lab3',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
+                  DriveResult('student9@stolaf.edu',
+                              'lab 11',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                   ]
 
 test_files_ws = [DriveResult('student1@stolaf.edu',
@@ -510,43 +526,78 @@ test_files_ws = [DriveResult('student1@stolaf.edu',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_2/edit?usp=drivesdk'),
                  DriveResult('student3@stolaf.edu',
-                             'CopyOfWorkSheet1',
+                             'Copy Of WorkSheet 01',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_3/edit?usp=drivesdk'),
                  DriveResult('student4@stolaf.edu',
-                             'Copy of WORKSHEET 1',
+                             'CopyofWORKSHEET001',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_4/edit?usp=drivesdk'),
                  DriveResult('student5@stolaf.edu',
-                             'aoisfgnoisdnfao',
+                             'Copy of WORKSHEET 1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_5/edit?usp=drivesdk'),
                  DriveResult('student6@stolaf.edu',
-                             'lab3',
+                             'Copy of WORKSHEET 1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_6/edit?usp=drivesdk'),
                  DriveResult('student7@stolaf.edu',
-                             'worksheet 11',
+                             'aoisfgnoisdnfao',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
+                 DriveResult('student8@stolaf.edu',
+                             'lab3',
+                             '2020-09-16T15:54:59.679Z',
+                             'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
+                 DriveResult('student9@stolaf.edu',
+                             'worksheet 11',
+                             '2020-09-16T15:54:59.679Z',
+                             'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                  ]
+
+test_files_day = [DriveResult('student1@stolaf.edu',
+                              'Copy of Day 1 assignment',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_1/edit?usp=drivesdk'),
+                  DriveResult('student2@stolaf.edu',
+                              'Copy of DAY1',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_2/edit?usp=drivesdk'),
+                  DriveResult('student3@stolaf.edu',
+                              'Copy Of Day 01',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_3/edit?usp=drivesdk'),
+                  DriveResult('student4@stolaf.edu',
+                              'Copyof day 11',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_4/edit?usp=drivesdk'),
+                  DriveResult('student5@stolaf.edu',
+                              'Copy of WORKSHEET 1',
+                              '2020-09-16T15:54:59.679Z',
+                              'https://docs.google.com/document/d/the_document_id_5/edit?usp=drivesdk'),
+                  ]
 
 
 def test_get_assignment_files():
     with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
         # noinspection PyTypeChecker
         files = get_assignment_files('hw1', None, '')
-        assert files == set(test_files_hw[0:4])
+        assert files == set(test_files_hw[0:6])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_lab):
         # noinspection PyTypeChecker
         files = get_assignment_files('lab1', None, '')
-        assert files == set(test_files_lab[0:3])
+        assert files == set(test_files_lab[0:5])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_ws):
         # noinspection PyTypeChecker
         files = get_assignment_files('ws1', None, '')
-        assert files == set(test_files_ws[0:4])
+        assert files == set(test_files_ws[0:6])
+
+    with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_day):
+        # noinspection PyTypeChecker
+        files = get_assignment_files('day1', None, '')
+        assert files == set(test_files_day[0:3])
 
 
 def test_get_assignment_files_parse_error(capsys):

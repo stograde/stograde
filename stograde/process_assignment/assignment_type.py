@@ -5,6 +5,7 @@ from typing import Tuple
 
 class AssignmentType(Enum):
     """The type of assignment"""
+    DAY = auto()
     HOMEWORK = auto()
     LAB = auto()
     WORKSHEET = auto()
@@ -16,7 +17,9 @@ def get_assignment_type(name: str) -> AssignmentType:
     Throws a ValueError if name is not a valid assignment type"""
     kind, _ = parse_assignment_name(name)
 
-    if kind == 'hw':
+    if kind == 'day':
+        return AssignmentType.DAY
+    elif kind == 'hw':
         return AssignmentType.HOMEWORK
     elif kind == 'lab':
         return AssignmentType.LAB
@@ -32,7 +35,7 @@ def get_assignment_number(name: str) -> int:
 
 def parse_assignment_name(name: str) -> Tuple[str, str]:
     """Splits an assignment id into its type and number"""
-    matches = re.match(r'^(HW|LAB|WS)(\d+)$', name, re.IGNORECASE)
+    matches = re.match(r'^(DAY|HW|LAB|WS)(\d+)$', name, re.IGNORECASE)
     if not matches:
         raise ValueError('Invalid assignment ID: {}'.format(name))
     else:

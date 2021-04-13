@@ -1,0 +1,12 @@
+---
+assignment: day1
+
+compilers:
+  - &c-thread-math 'gcc $@ -lpthread -lm -o $@.exec'
+
+files:
+  - file: pthreads.c
+    commands: *c-thread-math
+    tests: $@.exec
+    options:
+      optional_compile: true

@@ -67,7 +67,8 @@ def do_drive(students: List[str],
 
     assignment_files = get_assignment_files(assignment=assignment,
                                             credentials=credentials,
-                                            email=args['email'])
+                                            email=args['email'],
+                                            regex=args['regex'])
 
     if not assignment_files:
         print('\nNo files found!', file=sys.stderr)

@@ -101,6 +101,8 @@ def build_argparser():
     parser_drive.add_argument('--email', '-e', required=True,
                               help='Set the email of the group that documents are shared with '
                                    '(e.g. hd-tas@stolaf.edu)')
+    parser_drive.add_argument('--regex', '-r', metavar='REG', nargs=1, type=str,
+                              help="Use custom regex to filter assignments, e.g -r '.*assignment *0*4(\\D.*|$)'")
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",
@@ -189,7 +191,6 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
     elif command == 'drive':
         assignments = natsorted(set(args['assignments']))
         students = get_students(args)
-        args['course'] = ''
 
     # record SubCommand
     elif command == 'record':

@@ -102,3 +102,21 @@ def test_stograde_drive_no_files(datafiles, capsys):
 
     _, err = capsys.readouterr()
     assert err == '\nNo files found!\n'
+
+
+@pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
+def test_stograde_drive_no_assignment_or_regex(datafiles, capsys):
+    args = [sys.argv[0]] + ['drive', '--skip-version-check', '--skip-dependency-check',
+                            '-e', 'an_email@email.com']
+    with chdir(str(datafiles)):
+        with mock.patch('stograde.toolkit.subcommands.get_assignment_files', return_value=set()):
+            with mock.patch('stograde.toolkit.subcommands.authenticate_drive'):
+                with mock.patch('sys.argv', args):
+                    try:
+                        main()
+                        raise AssertionError
+                    except SystemExit:
+                        pass
+
+    _, err = capsys.readouterr()
+    assert err == 'Must provide either an assignment name or custom regex'

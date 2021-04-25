@@ -96,7 +96,7 @@ def build_argparser():
     parser_drive = sub_parsers.add_parser('drive', parents=[base_options, student_selection],
                                           conflict_handler='resolve', help='Manage submissions via google drive')
     parser_drive.set_defaults(func=do_drive)  # Set function to run from subcommands.py
-    parser_drive.add_argument('assignments', nargs=1, metavar='HW',
+    parser_drive.add_argument('assignments', nargs='?', metavar='HW',
                               help='An assignment to process')
     parser_drive.add_argument('--email', '-e', required=True,
                               help='Set the email of the group that documents are shared with '
@@ -189,6 +189,10 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         global_vars.CI = True
 
     elif command == 'drive':
+        if not args['assignments'] and not args['regex']:
+            print('Must provide either an assignment name or custom regex', file=sys.stderr)
+            sys.exit(1)
+
         assignments = natsorted(set(args['assignments']))
         students = get_students(args)
 

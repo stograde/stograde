@@ -85,7 +85,12 @@ def get_assignment_files(assignment: str,
                          regex: Optional[str]) -> Set['DriveResult']:
     """Filter out only files that contain the name of the assignment in their name"""
     if regex:
-        reg = regex
+        try:
+            re.compile(str(regex))
+            reg = regex
+        except re.error:
+            print('Invalid regex! Please enter valid custom regex.', file=sys.stderr)
+            sys.exit(1)
     else:
         try:
             a_type = get_assignment_type(assignment)

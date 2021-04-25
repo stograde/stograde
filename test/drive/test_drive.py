@@ -466,11 +466,11 @@ test_files_hw = [DriveResult('student1@stolaf.edu',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_6/edit?usp=drivesdk'),
                  DriveResult('student7@stolaf.edu',
-                             'aoisfgnoisdnfao',
+                             'Copy of HW1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
                  DriveResult('student8@stolaf.edu',
-                             'lab3',
+                             'hw    1',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
                  DriveResult('student9@stolaf.edu',
@@ -508,11 +508,11 @@ test_files_lab = [DriveResult('student1@stolaf.edu',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
                   DriveResult('student8@stolaf.edu',
-                              'lab3',
+                              'this assignment  ',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
                   DriveResult('student9@stolaf.edu',
-                              'lab 11',
+                              'this   assignment  3',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                   ]
@@ -581,22 +581,27 @@ test_files_day = [DriveResult('student1@stolaf.edu',
 def test_get_assignment_files():
     with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
         # noinspection PyTypeChecker
-        files = get_assignment_files('hw1', None, '')
+        files = get_assignment_files('hw1', None, '', None)
         assert files == set(test_files_hw[0:6])
+
+    with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
+        # noinspection PyTypeChecker
+        files = get_assignment_files('hw1', None, '', '.*this\\s*assignment\\s*\\w*')
+        assert files == set(test_files_hw[6:8])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_lab):
         # noinspection PyTypeChecker
-        files = get_assignment_files('lab1', None, '')
+        files = get_assignment_files('lab1', None, '', None)
         assert files == set(test_files_lab[0:5])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_ws):
         # noinspection PyTypeChecker
-        files = get_assignment_files('ws1', None, '')
+        files = get_assignment_files('ws1', None, '', None)
         assert files == set(test_files_ws[0:6])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_day):
         # noinspection PyTypeChecker
-        files = get_assignment_files('day1', None, '')
+        files = get_assignment_files('day1', None, '', None)
         assert files == set(test_files_day[0:3])
 
 

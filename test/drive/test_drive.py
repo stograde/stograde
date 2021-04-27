@@ -466,11 +466,11 @@ test_files_hw = [DriveResult('student1@stolaf.edu',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_6/edit?usp=drivesdk'),
                  DriveResult('student7@stolaf.edu',
-                             'Copy of HW1',
+                             'aoisfgnoisdnfao',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
                  DriveResult('student8@stolaf.edu',
-                             'hw    1',
+                             'lab3',
                              '2020-09-16T15:54:59.679Z',
                              'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
                  DriveResult('student9@stolaf.edu',
@@ -584,11 +584,6 @@ def test_get_assignment_files():
         files = get_assignment_files('hw1', None, '', None)
         assert files == set(test_files_hw[0:6])
 
-    with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
-        # noinspection PyTypeChecker
-        files = get_assignment_files('hw1', None, '', '.*this\\s*assignment\\s*\\w*')
-        assert files == set(test_files_hw[6:8])
-
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_lab):
         # noinspection PyTypeChecker
         files = get_assignment_files('lab1', None, '', None)
@@ -605,10 +600,17 @@ def test_get_assignment_files():
         assert files == set(test_files_day[0:3])
 
 
+def test_get_assignment_files_regex():
+    with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_lab)):
+        # noinspection PyTypeChecker
+        files = get_assignment_files('lab1', None, '', '.*this\\s*assignment\\s*\\w*')
+        assert files == set(test_files_lab[7:])
+
+
 def test_get_assignment_files_parse_error(capsys):
     try:
         # noinspection PyTypeChecker
-        get_assignment_files('gibberish4', None, '')
+        get_assignment_files('gibberish4', None, '', None)
         raise AssertionError
     except SystemExit:
         pass

@@ -119,4 +119,4 @@ def test_stograde_drive_no_assignment_or_regex(datafiles, capsys):
                         pass
 
     _, err = capsys.readouterr()
-    assert err == 'Must provide either an assignment name or custom regex'
+    assert err == 'Must provide either an assignment name or custom regex\n'

@@ -57,7 +57,7 @@ def test_process_args_drive():
     with mock.patch('sys.argv', args):
         args, students, assignments = process_args()
 
-    assert args['regex'] == '.*/test\\w*file'
+    assert args['regex'] == ['.*/test\\w*file']
     assert args['email'] == 'test@test.com'
     assert students == ['student6']
     assert assignments == ['hw5']

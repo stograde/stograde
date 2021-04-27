@@ -193,7 +193,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
             print('Must provide either an assignment name or custom regex', file=sys.stderr)
             sys.exit(1)
 
-        assignments = natsorted(set(args['assignments']))
+        assignments = [args['assignments']]
         students = get_students(args)
 
     # record SubCommand

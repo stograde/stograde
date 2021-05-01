@@ -110,11 +110,16 @@ def test_stograde_drive_regex_list_to_string(datafiles):
                             '-e', 'an_email@email.com', '--regex', '.*/test\\w*file']
 
     with chdir(str(datafiles)):
-        with mock.patch('stograde.toolkit.subcommands.get_assignment_files') as mock_fun:
+        with mock.patch('stograde.toolkit.subcommands.get_assignment_files', return_value=set()) as mock_fun:
             with mock.patch('stograde.toolkit.subcommands.authenticate_drive'):
                 with mock.patch('sys.argv', args):
-                    main()
-            mock_fun.assert_called_with('', None, 'an_email@email.com', '.*/test\\w*file')
+                    try:
+                        main()
+                        raise AssertionError
+                    except SystemExit:
+                        pass
+            mock_fun.assert_called_with(assignment='', credentials=mock.ANY, email='an_email@email.com',
+                                        regex='.*/test\\w*file')
 
 
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))

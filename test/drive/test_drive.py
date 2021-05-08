@@ -607,6 +607,19 @@ def test_get_assignment_files_regex():
         assert files == set(test_files_lab[7:])
 
 
+def test_get_assignment_files_invalid_regex(capsys):
+    with mock.patch('stograde.drive.drive.get_assignment_files', return_value=set(test_files_hw)):
+        try:
+            # noinspection PyTypeChecker
+            get_assignment_files('lab1', None, '', '(')
+            raise AssertionError
+        except SystemExit:
+            pass
+
+    _, err = capsys.readouterr()
+    assert err == 'Invalid regex: missing ), unterminated subpattern at position 0\n'
+
+
 def test_get_assignment_files_parse_error(capsys):
     try:
         # noinspection PyTypeChecker

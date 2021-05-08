@@ -88,8 +88,8 @@ def get_assignment_files(assignment: str,
         try:
             re.compile(str(regex))
             reg = regex
-        except re.error:
-            print('Invalid regex! Please enter valid custom regex.', file=sys.stderr)
+        except re.error as err:
+            print('Invalid regex: {}'.format(err), file=sys.stderr)
             sys.exit(1)
     else:
         try:

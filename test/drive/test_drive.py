@@ -508,11 +508,11 @@ test_files_lab = [DriveResult('student1@stolaf.edu',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_7/edit?usp=drivesdk'),
                   DriveResult('student8@stolaf.edu',
-                              'lab3',
+                              'this assignment  ',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_8/edit?usp=drivesdk'),
                   DriveResult('student9@stolaf.edu',
-                              'lab 11',
+                              'this   assignment  3',
                               '2020-09-16T15:54:59.679Z',
                               'https://docs.google.com/document/d/the_document_id_9/edit?usp=drivesdk'),
                   ]
@@ -581,29 +581,49 @@ test_files_day = [DriveResult('student1@stolaf.edu',
 def test_get_assignment_files():
     with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_hw)):
         # noinspection PyTypeChecker
-        files = get_assignment_files('hw1', None, '')
+        files = get_assignment_files('hw1', None, '', None)
         assert files == set(test_files_hw[0:6])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_lab):
         # noinspection PyTypeChecker
-        files = get_assignment_files('lab1', None, '')
+        files = get_assignment_files('lab1', None, '', None)
         assert files == set(test_files_lab[0:5])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_ws):
         # noinspection PyTypeChecker
-        files = get_assignment_files('ws1', None, '')
+        files = get_assignment_files('ws1', None, '', None)
         assert files == set(test_files_ws[0:6])
 
     with mock.patch('stograde.drive.drive.get_all_files', return_value=test_files_day):
         # noinspection PyTypeChecker
-        files = get_assignment_files('day1', None, '')
+        files = get_assignment_files('day1', None, '', None)
         assert files == set(test_files_day[0:3])
+
+
+def test_get_assignment_files_regex():
+    with mock.patch('stograde.drive.drive.get_all_files', return_value=set(test_files_lab)):
+        # noinspection PyTypeChecker
+        files = get_assignment_files('lab1', None, '', '.*this\\s*assignment\\s*\\w*')
+        assert files == set(test_files_lab[7:])
+
+
+def test_get_assignment_files_invalid_regex(capsys):
+    with mock.patch('stograde.drive.drive.get_assignment_files', return_value=set(test_files_hw)):
+        try:
+            # noinspection PyTypeChecker
+            get_assignment_files('lab1', None, '', '(')
+            raise AssertionError
+        except SystemExit:
+            pass
+
+    _, err = capsys.readouterr()
+    assert err == 'Invalid regex: missing ), unterminated subpattern at position 0\n'
 
 
 def test_get_assignment_files_parse_error(capsys):
     try:
         # noinspection PyTypeChecker
-        get_assignment_files('gibberish4', None, '')
+        get_assignment_files('gibberish4', None, '', None)
         raise AssertionError
     except SystemExit:
         pass

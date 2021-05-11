@@ -79,25 +79,36 @@ def get_all_files(credentials: Credentials, email: str) -> Set['DriveResult']:
             for file in all_user_files}
 
 
-def get_assignment_files(assignment: str, credentials: Credentials, email: str) -> Set['DriveResult']:
+def get_assignment_files(assignment: str,
+                         credentials: Credentials,
+                         email: str,
+                         regex: Optional[str]) -> Set['DriveResult']:
     """Filter out only files that contain the name of the assignment in their name"""
-    try:
-        a_type = get_assignment_type(assignment)
-        a_num = get_assignment_number(assignment)
-        if a_type is AssignmentType.DAY:
-            type_reg = 'day'
-        elif a_type is AssignmentType.HOMEWORK:
-            type_reg = '(hw|homework)'
-        elif a_type is AssignmentType.LAB:
-            type_reg = 'lab'
-        elif a_type is AssignmentType.WORKSHEET:
-            type_reg = '(ws|worksheet)'
-    except ValueError:
-        print('Could not parse assignment name {}'.format(assignment), file=sys.stderr)
-        sys.exit(1)
+    if regex:
+        try:
+            re.compile(str(regex))
+            reg = regex
+        except re.error as err:
+            print('Invalid regex: {}'.format(err), file=sys.stderr)
+            sys.exit(1)
+    else:
+        try:
+            a_type = get_assignment_type(assignment)
+            a_num = get_assignment_number(assignment)
+            if a_type is AssignmentType.DAY:
+                type_reg = 'day'
+            elif a_type is AssignmentType.HOMEWORK:
+                type_reg = '(hw|homework)'
+            elif a_type is AssignmentType.LAB:
+                type_reg = 'lab'
+            elif a_type is AssignmentType.WORKSHEET:
+                type_reg = '(ws|worksheet)'
+        except ValueError:
+            print('Could not parse assignment name {}'.format(assignment), file=sys.stderr)
+            sys.exit(1)
 
-    # noinspection PyUnboundLocalVariable
-    reg = '.*' + type_reg + ' *0*' + str(a_num) + r'(\D.*|$)'
+        # noinspection PyUnboundLocalVariable
+        reg = '.*' + type_reg + ' *0*' + str(a_num) + r'(\D.*|$)'
 
     files = get_all_files(credentials=credentials, email=email)
 

@@ -96,11 +96,13 @@ def build_argparser():
     parser_drive = sub_parsers.add_parser('drive', parents=[base_options, student_selection],
                                           conflict_handler='resolve', help='Manage submissions via google drive')
     parser_drive.set_defaults(func=do_drive)  # Set function to run from subcommands.py
-    parser_drive.add_argument('assignments', nargs=1, metavar='HW',
+    parser_drive.add_argument('assignments', nargs='?', metavar='HW',
                               help='An assignment to process')
     parser_drive.add_argument('--email', '-e', required=True,
                               help='Set the email of the group that documents are shared with '
                                    '(e.g. hd-tas@stolaf.edu)')
+    parser_drive.add_argument('--regex', '-r', metavar='REG', nargs=1, type=str,
+                              help="Use custom regex to filter assignments, e.g -r '.*assignment *0*4(\\D.*|$)'")
 
     # Record SubParser
     parser_record = sub_parsers.add_parser('record', help="Record students' work",
@@ -187,9 +189,12 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         global_vars.CI = True
 
     elif command == 'drive':
-        assignments = natsorted(set(args['assignments']))
+        if not args['assignments'] and not args['regex']:
+            print('Must provide either an assignment name or custom regex', file=sys.stderr)
+            sys.exit(1)
+
+        assignments = [args['assignments'] if args['assignments'] is not None else '']
         students = get_students(args)
-        args['course'] = ''
 
     # record SubCommand
     elif command == 'record':

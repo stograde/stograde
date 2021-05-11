@@ -22,7 +22,7 @@ def main():
     args, students, assignments = process_args()  # Dict[str, Any], List[str], List[str]
     command: str = args['command']  # The name of the SubCommand specified
     command_func = args['func']  # The function associated with the SubCommand
-    course: str = args['course']
+    course: str = args.get('course', '')
     skip_dependency_check: bool = args['skip_dependency_check']
     skip_version_check: bool = args['skip_version_check']
     stogit: str = args.get('stogit', '')

@@ -14,7 +14,7 @@
 The release process for StoGrade is quite simple, yet does have a few steps:
 
 - Create a new branch with the version name, e.g. `git checkout -b v2.1.3`
-    - The name of the new branch should begin with a 'v' e.g 'v4.4.0'
+    - The name of the new branch should begin with a 'v' e.g 'v4.4.0' 
 - Update the version in `setup.py` (Make sure you understand [semantic versioning](https://packaging.python.org/guides/distributing-packages-using-setuptools/#semantic-versioning-preferred) first!)
 - Commit the modification to `setup.py`
     - Don't include anything else in this branch, just the version change

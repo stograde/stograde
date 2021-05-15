@@ -54,7 +54,7 @@ RUN gcc --version \
     && g++ --version \
     && make --version \
     && git --version \
-    && python --version
+    && python3 --version
 
 # Finally, set our default command to just "stograde".
 CMD ["stograde"]

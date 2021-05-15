@@ -49,17 +49,12 @@ RUN apt-get install -y python3-setuptools python3-dev python3-pip
 # Install the toolkit from the source directory.
 RUN pip3 install .
 
-# Where packages are Installed
-RUN which python3
-
-RUN which python
-
 # Print out the versions of the installed tools.
 RUN gcc --version \
     && g++ --version \
     && make --version \
     && git --version \
-    && python --version
+    && python3 --version
 
 # Finally, set our default command to just "stograde".
 CMD ["stograde"]

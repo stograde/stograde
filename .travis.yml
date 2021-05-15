@@ -21,32 +21,32 @@ stages:
 
 jobs:
   include:
-#    - stage: test
-#      python: 3.6
-#      install: pip install tox tox-travis
-#      script: tox
-#
-#    - stage: test
-#      python: 3.7
-#      install: pip install tox tox-travis
-#      script: tox
-#
-#    - stage: test
-#      python: 3.8
-#      install: pip install tox tox-travis coveralls
-#      script: tox
-#      after_success: coveralls
-#
-#    - stage: deploy docker
-#      python: 3.7
-#      env:
-#        - DOCKER_IMAGE=stodevx/stograde
-#      script: skip
-#      deploy:
-#        - provider: script
-#          script: script/docker-deploy Dockerfile
-#          on:
-#            all_branches: true
+    - stage: test
+      python: 3.6
+      install: pip install tox tox-travis
+      script: tox
+
+    - stage: test
+      python: 3.7
+      install: pip install tox tox-travis
+      script: tox
+
+    - stage: test
+      python: 3.8
+      install: pip install tox tox-travis coveralls
+      script: tox
+      after_success: coveralls
+
+    - stage: deploy docker
+      python: 3.7
+      env:
+        - DOCKER_IMAGE=stodevx/stograde
+      script: skip
+      deploy:
+        - provider: script
+          script: script/docker-deploy Dockerfile
+          on:
+            all_branches: true
 
     - stage: deploy docker
       python: 3.7

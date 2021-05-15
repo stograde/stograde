@@ -14,9 +14,10 @@
 The release process for StoGrade is quite simple, yet does have a few steps:
 
 - Create a new branch with the version name, e.g. `git checkout -b v2.1.3`
+    - The name of the new branch should begin with a 'v' e.g 'v4.4.0' 
 - Update the version in `setup.py` (Make sure you understand [semantic versioning](https://packaging.python.org/guides/distributing-packages-using-setuptools/#semantic-versioning-preferred) first!)
 - Commit the modification to `setup.py`
-  - Don't include anything else in this branch, just the version change
+    - Don't include anything else in this branch, just the version change
 - Tag the commit with that same version, e.g. `git tag v2.1.3`
 - Push the commit and tag: `git push --tags`
 - Quickly go to GitHub and create a new release (you need to do it before the CI/CD process gets to deployment to PyPI, where it compares the tag to the latest release)

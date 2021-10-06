@@ -9,11 +9,9 @@ SPEC_REPO_NAMES = {
     'MCA': 'cs284-specs',
 }
 
-SUPPORTED_COURSES = [course for course in SPEC_REPO_NAMES.keys()]
-
 
 def format_supported_course_list(delimiter: str) -> str:
-    return delimiter.join(SUPPORTED_COURSES)
+    return delimiter.join(SPEC_REPO_NAMES.keys())
 
 
 def github_https_clone_address(repo: str):

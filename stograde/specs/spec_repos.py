@@ -6,6 +6,7 @@ SPEC_REPO_NAMES = {
     'HD': 'cs241-specs',
     'ADS': 'cs253-specs',
     'OS': 'cs273-specs',
+    'MCA': 'cs284-specs',
 }
 
 SUPPORTED_COURSES = [course for course in SPEC_REPO_NAMES.keys()]

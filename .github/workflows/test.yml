@@ -30,6 +30,8 @@ jobs:
           pip install tox tox-gh-actions coveralls
       - name: Test with tox
         run: tox
+        env:
+          GIST_TESTING_TOKEN: ${{ secrets.GIST_TESTING_TOKEN }}
       - name: Upload coverage
         if: ${{ matrix.python-version }} -eq '3.8'
         run: coveralls

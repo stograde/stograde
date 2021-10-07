@@ -10,8 +10,6 @@ on:
       - master
       - travis*
       - migrate-to-gh-actions
-    tags:
-      - v*
 
 jobs:
   docker:

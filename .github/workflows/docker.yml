@@ -1,6 +1,9 @@
 name: Deploy Docker
 
 on:
+  push:
+    branches:
+      - migrate-to-gh-actions
   workflow_run:
     workflows:
       - Test

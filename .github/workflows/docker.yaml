@@ -1,7 +1,11 @@
 name: Deploy Docker
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Test
+    types:
+      - completed
     branches:
       - master
       - travis*

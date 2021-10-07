@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - travis*
+      - gh-actions*
       - v*
       - migrate-to-gh-actions
   pull_request:

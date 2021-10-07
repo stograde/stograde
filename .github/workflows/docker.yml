@@ -8,8 +8,10 @@ on:
       - completed
     branches:
       - master
-      - travis*
+      - gh-actions*
       - migrate-to-gh-actions
+    tags:
+      - v*
 
 jobs:
   docker:

@@ -33,3 +33,5 @@ jobs:
       - name: Upload coverage
         if: ${{ matrix.python-version }} -eq '3.8'
         run: coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.COVERALLS_TOKEN }}

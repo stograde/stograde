@@ -31,7 +31,8 @@ jobs:
       - name: Test with tox
         run: tox
         env:
-          GIST_TESTING_TOKEN: ${{ secrets.GIST_TESTING_TOKEN }}
+          GIST_TESTING_USER: ${{ secrets.GIST_TESTING_USER }}
+          GIST_TESTING_KEY: ${{ secrets.GIST_TESTING_KEY }}
       - name: Upload coverage
         if: ${{ matrix.python-version }} -eq '3.8'
         run: coveralls

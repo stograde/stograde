@@ -64,8 +64,8 @@ def test_stograde_record_with_table(datafiles, capsys):
     assert check_e2e_err_output(err)
 
 
-@pytest.mark.skipif(os.getenv('GIST_USER') is None, reason='Cannot run test without gist username')
-@pytest.mark.skipif(os.getenv('GIST_KEY') is None, reason='Cannot run test without gist key')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_USER') is None, reason='Cannot run test without gist username')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_KEY') is None, reason='Cannot run test without gist key')
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_stograde_record_to_gist(datafiles, capsys):
     args = [sys.argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check',
@@ -73,8 +73,8 @@ def test_stograde_record_to_gist(datafiles, capsys):
 
     with chdir(str(datafiles)):
         with mock.patch('sys.argv', args):
-            with mock.patch('builtins.input', return_value=os.getenv('GIST_USER')):
-                with mock.patch('getpass.getpass', return_value=os.getenv('GIST_KEY')):
+            with mock.patch('builtins.input', return_value=os.getenv('GIST_TESTING_USER')):
+                with mock.patch('getpass.getpass', return_value=os.getenv('GIST_TESTING_KEY')):
                     main()
 
     out, err = capsys.readouterr()

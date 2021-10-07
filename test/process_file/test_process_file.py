@@ -236,7 +236,7 @@ def test_compile_file_failure(datafiles):
                                                     output='./bad.cpp: In function ‘int main()’:\n'
                                                            './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
                                                            '    7 |     return 0;\n'
-                                                           '                    ^\n'
+                                                           '      |             ^\n'
                                                            './bad.cpp:5:12: note: to match this ‘{’\n'
                                                            '    5 | int main() {\n'
                                                            '      |            ^\n',
@@ -403,7 +403,7 @@ def test_process_file_fail_compile(datafiles):
                                                     output='./bad.cpp: In function ‘int main()’:\n'
                                                            './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
                                                            '    7 |     return 0;\n'
-                                                           '                    ^\n'
+                                                           '      |             ^\n'
                                                            './bad.cpp:5:12: note: to match this ‘{’\n'
                                                            '    5 | int main() {\n'
                                                            '      |            ^\n',

@@ -1,29 +1,38 @@
 #!/bin/bash
 
-suffix="$2"
+dockerfile="$1"
+ref="$2"
+suffix="$3"
 
-echo "TRAVIS_BRANCH is $TRAVIS_BRANCH"
-echo "TRAVIS_COMMIT is $TRAVIS_COMMIT"
-echo "TRAVIS_TAG is $TRAVIS_TAG"
+#echo "TRAVIS_BRANCH is $TRAVIS_BRANCH"
+#echo "TRAVIS_COMMIT is $TRAVIS_COMMIT"
+#echo "TRAVIS_TAG is $TRAVIS_TAG"
 
-if [[ "$TRAVIS_BRANCH" == "master" ]]
+if [[ "$ref" == "ref/heads/master" ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"
 else
   echo "branch is not master"
 fi
 
-if [[ "$TRAVIS_BRANCH" =~ travis-.* ]]
+if [[ "$ref" =~ ref/heads/travis-.* ]]
 then
-  deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_COMMIT$suffix"
+  deploy_targets="$deploy_targets $DOCKER_IMAGE:$GITHUB_SHA$suffix"
 else
   echo "branch does not match travis-.*"
 fi
 
-if [ -n "$TRAVIS_TAG" ]
+if [[ "$ref" == "refs/heads/migrate-to-gh-actions" ]]
+then
+  deploy_targets="$deploy_targets $DOCKER_IMAGE:$GITHUB_SHA$suffix"
+else
+  echo "branch does not match migrate-to-gh-actions"
+fi
+
+if [[ "$ref" =~ ref/tags/v.* ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_TAG$suffix"
-  if [[ "$(script/github-latest-release)" == "$TRAVIS_TAG" ]]
+  if [[ "$(script/github-latest-release)" == "${ref#refs/tags/}" ]]
   then
     deploy_targets="$deploy_targets $DOCKER_IMAGE:latest$suffix"
   else
@@ -64,9 +73,9 @@ if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"
 
 if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
 then
-  (>&2 echo "Logged into Docker Hub.  Ready to roll!")
+  (>&2 echo "Logged into Docker Hub")
 else
-  (>&2 echo "Failed to log into Docker properly.  SAD!")
+  (>&2 echo "Failed to log into Docker properly")
   exit 1
 fi
 
@@ -77,4 +86,4 @@ do
   tags="$tags --tag $deploy_target"
 done
 
-docker buildx build --push --platform linux/arm/v7,linux/amd64 $tags -f "$1" .
+docker buildx build --push --platform linux/arm/v7,linux/amd64 $tags -f "$dockerfile" .

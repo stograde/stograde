@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - travis*
+      - migrate-to-gh-actions
     tags:
       - v*
 

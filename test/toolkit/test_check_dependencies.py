@@ -27,6 +27,11 @@ def stogit_as_known_host():
 
 @contextlib.contextmanager
 def stogit_not_as_known_host():
+    if not (Path.home() / '.ssh').exists():
+        os.mkdir(Path.home() / '.ssh')
+    if not (Path.home() / '.ssh' / 'known_hosts').exists():
+        with open(Path.home() / '.ssh' / 'known_hosts', 'w'):
+            pass
     modify_known_hosts = is_stogit_known_host()
 
     try:

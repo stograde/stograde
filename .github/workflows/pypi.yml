@@ -1,9 +1,9 @@
 name: PyPi Deploy
 
 on:
-  push:
-    branches:
-      - migrate-to-gh-actions
+#  push:
+#    branches:
+#      - migrate-to-gh-actions
   workflow_run:
     workflows:
       - Test

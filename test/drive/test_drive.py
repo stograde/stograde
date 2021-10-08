@@ -16,7 +16,6 @@ from stograde.drive.drive_result import DriveResult
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 
-@pytest.mark.skip(reason="Taking too long")
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_authenticate_drive(datafiles, capsys):
     with chdir(str(datafiles)):

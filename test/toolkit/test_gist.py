@@ -21,11 +21,11 @@ def test_post_gist_bad_auth():
             assert post_gist('describe', {'testFile.md': {'content': 'fileContents'}}) == '"Bad credentials"'
 
 
-@pytest.mark.skipif(os.getenv('GIST_USER') is None, reason='Cannot run test without gist username')
-@pytest.mark.skipif(os.getenv('GIST_KEY') is None, reason='Cannot run test without gist key')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_USER') is None, reason='Cannot run test without gist username')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_KEY') is None, reason='Cannot run test without gist key')
 def test_post_gist():
-    with mock.patch('builtins.input', return_value=os.getenv('GIST_USER')):
-        with mock.patch('getpass.getpass', return_value=os.getenv('GIST_KEY')):
+    with mock.patch('builtins.input', return_value=os.getenv('GIST_TESTING_USER')):
+        with mock.patch('getpass.getpass', return_value=os.getenv('GIST_TESTING_KEY')):
             assert re.compile(r"^https://gist.github.com/.*$").match(
                 post_gist('Testing StoGrade gist upload',
                           {'stogradeTest-{}.md'.format(datetime.date.today()): {'content': 'fileContents'}})

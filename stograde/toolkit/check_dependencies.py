@@ -11,10 +11,9 @@ def check_dependencies():
 
 def is_stogit_known_host():
     status, output, _ = run(['ssh-keygen', '-F', 'stogit.cs.stolaf.edu'])
-    print(output, file=sys.stderr)
-    if status is RunStatus.CALLED_PROCESS_ERROR and 'exit status 1' in output:
-        return False
-    return True
+    if status is RunStatus.SUCCESS:
+        return True
+    return False
 
 
 def check_stogit_known_host():

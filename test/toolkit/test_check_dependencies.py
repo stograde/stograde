@@ -1,6 +1,5 @@
 import contextlib
 import os
-import pytest
 from pathlib import Path
 from unittest import mock
 
@@ -54,7 +53,6 @@ def test_check_dependencies_passing(capsys):
         assert not err
 
 
-@pytest.mark.skip(reason='Skipping to get tests to work for now')
 def test_check_stogit_known_host_failing(capsys):
     with stogit_not_as_known_host():
         try:

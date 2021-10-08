@@ -1,5 +1,6 @@
 import contextlib
 import os
+import sys
 from pathlib import Path
 from unittest import mock
 
@@ -57,6 +58,7 @@ def test_check_stogit_known_host_failing(capsys):
     with stogit_not_as_known_host():
         try:
             check_stogit_known_host()
+            print(capsys.readouterr()[1], file=sys.stderr)
             raise AssertionError
         except SystemExit:
             pass

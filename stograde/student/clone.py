@@ -23,6 +23,7 @@ def clone_url(url: str, into: Optional[str] = None):
         print('cloning {}'.format(url, into), file=sys.stderr)
         status, output, _ = run(['git', 'clone', '--quiet', url])
     print(status, file=sys.stderr)
+    print(output, file=sys.stderr)
     if status is RunStatus.CALLED_PROCESS_ERROR:
         if 'Permission denied (publickey)' in output:
             print('Permission denied when cloning from {}'.format(url), file=sys.stderr)

@@ -49,7 +49,7 @@ jobs:
         with:
           file: Dockerfile${{ matrix.dockerfile-extension }}
           platforms: linux/arm/v7,linux/amd64
-          push: yes
+          push: true
           tags: ${{ steps.docker-tags.output }}
 
 #      - name: Log in to GH registry

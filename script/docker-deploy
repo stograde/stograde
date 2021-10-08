@@ -68,16 +68,16 @@ docker buildx create --name stogradebuilder
 docker buildx inspect stogradebuilder --bootstrap
 docker buildx use stogradebuilder
 
-if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
-if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
-
-if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
-then
-  (>&2 echo "Logged into Docker Hub")
-else
-  (>&2 echo "Failed to log into Docker properly")
-  exit 1
-fi
+#if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
+#if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
+#
+#if docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" >/dev/null 2>&1;
+#then
+#  (>&2 echo "Logged into Docker Hub")
+#else
+#  (>&2 echo "Failed to log into Docker properly")
+#  exit 1
+#fi
 
 tags=""
 

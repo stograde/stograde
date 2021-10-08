@@ -22,9 +22,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.3.4
-      - run: script/docker-deploy Dockerfile "$GITHUB_REF"
+      - name: Log in to GH registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Create normal docker images
+        run: script/docker-deploy Dockerfile "$GITHUB_REF"
         env:
           DOCKER_IMAGE: stodevx/stograde
-      - run: script/docker-deploy Dockerfile.gcc "$GITHUB_REF" "-gcc"
+      - name: Create docker images based on gcc
+        run: script/docker-deploy Dockerfile.gcc "$GITHUB_REF" "-gcc"
         env:
           DOCKER_IMAGE: stodevx/stograde

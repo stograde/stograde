@@ -7,6 +7,7 @@ from unittest import mock
 from stograde.common import run
 from stograde.toolkit.check_dependencies import check_git_installed, is_stogit_known_host, check_stogit_known_host, \
     check_dependencies
+from test.utils import remove_hostkeys_foreach_failed
 
 
 @contextlib.contextmanager
@@ -27,11 +28,6 @@ def stogit_as_known_host():
 
 @contextlib.contextmanager
 def stogit_not_as_known_host():
-    if not (Path.home() / '.ssh').exists():
-        os.mkdir(Path.home() / '.ssh')
-    if not (Path.home() / '.ssh' / 'known_hosts').exists():
-        with open(Path.home() / '.ssh' / 'known_hosts', 'w'):
-            pass
     modify_known_hosts = is_stogit_known_host()
 
     try:
@@ -56,7 +52,7 @@ def test_check_dependencies_passing(capsys):
             raise AssertionError
 
         _, err = capsys.readouterr()
-        assert not err
+        assert not remove_hostkeys_foreach_failed(err)
 
 
 def test_check_stogit_known_host_failing(capsys):
@@ -69,8 +65,9 @@ def test_check_stogit_known_host_failing(capsys):
             pass
 
     _, err = capsys.readouterr()
-    assert err == ('stogit.cs.stolaf.edu not in known hosts\n'
-                   'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix\n')
+    assert remove_hostkeys_foreach_failed(err) == \
+           ('stogit.cs.stolaf.edu not in known hosts\n'
+            'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix\n')
 
 
 def test_check_git_installed_failing(capsys):

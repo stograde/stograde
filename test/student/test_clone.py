@@ -9,6 +9,7 @@ from stograde.common import run
 from stograde.common.run_status import RunStatus
 from stograde.student import clone_url, clone_student
 from test.toolkit.test_check_dependencies import stogit_as_known_host
+from test.utils import remove_hostkeys_foreach_failed
 
 
 def test_clone_student(tmpdir, caplog):
@@ -70,8 +71,9 @@ def test_clone_url_permission_denied(tmpdir, capsys):
 
     _, err = capsys.readouterr()
 
-    assert err == ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
-                   'Make sure that this SSH key is registered with StoGit.\n')
+    assert remove_hostkeys_foreach_failed(err) == \
+           ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
+            'Make sure that this SSH key is registered with StoGit.\n')
 
 
 def test_clone_url_repo_not_found(tmpdir, capsys):
@@ -92,4 +94,5 @@ def test_clone_url_repo_not_found(tmpdir, capsys):
 
     _, err = capsys.readouterr()
 
-    assert err == 'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'
+    assert remove_hostkeys_foreach_failed(err) == \
+           'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'

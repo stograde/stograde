@@ -61,7 +61,7 @@ def test_clone_url_permission_denied(tmpdir, capsys):
             with stogit_as_known_host():
                 with mock.patch.dict(os.environ, {'GIT_SSH_COMMAND': 'ssh -i {}'.format(key_file)}):
                     clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
-            raise AssertionError
+            raise AssertionError(capsys.readouterr()[1])
         except SystemExit:
             pass
 

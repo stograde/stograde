@@ -1,9 +1,9 @@
 name: Deploy Docker
 
 on:
-#  push:
-#    branches:
-#      - migrate-to-gh-actions
+  push:
+    branches:
+      - migrate-to-gh-actions
   workflow_run:
     workflows:
       - Test
@@ -29,9 +29,9 @@ jobs:
             dockerimage-suffix: "-gcc"
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Log in to GH registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+#      - name: Log in to GH registry
+#        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Create docker images based on Dockerfile${{ matrix.dockerfile-extension }}
-        run: script/docker-deploy "Dockerfile${{ matrix.dockerfile-extension }}" "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
+        run: script/docker-deploy "Dockerfile${{ matrix.dockerfile-extension }}" "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}" "${{ secrets.GITHUB_TOKEN }}" "${{ github.actor }}"
         env:
           DOCKER_IMAGE: stodevx/stograde

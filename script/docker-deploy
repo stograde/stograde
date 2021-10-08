@@ -68,6 +68,8 @@ docker buildx create --name stogradebuilder
 docker buildx inspect stogradebuilder --bootstrap
 docker buildx use stogradebuilder
 
+echo "$4" | docker login ghcr.io -u "$5" --password-stdin
+
 #if [ -z "$DOCKER_USERNAME" ]; then (>&2 echo "DOCKER_USERNAME empty or not set!"); exit 1; fi
 #if [ -z "$DOCKER_PASSWORD" ]; then (>&2 echo "DOCKER_PASSWORD empty or not set!"); exit 1; fi
 #

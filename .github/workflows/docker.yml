@@ -44,7 +44,7 @@ jobs:
       - name: Determine tags
         id: docker-tags
         run: script/docker-tags.bash "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
-      - name: Build and push
+      - name: Build and push with tags ${{ steps.docker-tags.output }}
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile${{ matrix.dockerfile-extension }}

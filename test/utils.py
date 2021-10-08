@@ -26,4 +26,5 @@ def check_e2e_err_output(err: str):
 
 
 def remove_hostkeys_foreach_failed(output: str) -> str:
-    return output.replace('do_known_hosts: hostkeys_foreach failed: No such file or directory\r\n\n', '')
+    return output
+    # return output.replace('do_known_hosts: hostkeys_foreach failed: No such file or directory\r\n\n', '')

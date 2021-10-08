@@ -32,6 +32,8 @@ jobs:
 #      - name: Log in to GH registry
 #        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Create docker images based on Dockerfile${{ matrix.dockerfile-extension }}
-        run: script/docker-deploy "Dockerfile${{ matrix.dockerfile-extension }}" "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}" "${{ secrets.GITHUB_TOKEN }}" "${{ github.actor }}"
+        run: script/docker-deploy "Dockerfile${{ matrix.dockerfile-extension }}" "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
         env:
           DOCKER_IMAGE: stodevx/stograde
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

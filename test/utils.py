@@ -23,8 +23,3 @@ def check_e2e_err_output(err: str):
                       rf"\r\[{re.escape(CHAR)}{{4}} {{2}}\] .*, .*"
                       rf"\r\[{re.escape(CHAR)}{{5}} \] .*"
                       rf"\r\[{re.escape(CHAR)}{{6}}\] *").match(err)
-
-
-def remove_hostkeys_foreach_failed(output: str) -> str:
-    return output
-    # return output.replace('do_known_hosts: hostkeys_foreach failed: No such file or directory\r\n\n', '')

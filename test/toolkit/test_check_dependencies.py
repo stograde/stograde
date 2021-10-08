@@ -7,7 +7,6 @@ from unittest import mock
 from stograde.common import run
 from stograde.toolkit.check_dependencies import check_git_installed, is_stogit_known_host, check_stogit_known_host, \
     check_dependencies
-from test.utils import remove_hostkeys_foreach_failed
 
 
 @contextlib.contextmanager
@@ -52,7 +51,7 @@ def test_check_dependencies_passing(capsys):
             raise AssertionError
 
         _, err = capsys.readouterr()
-        assert not remove_hostkeys_foreach_failed(err)
+        assert not err
 
 
 def test_check_stogit_known_host_failing(capsys):
@@ -65,9 +64,8 @@ def test_check_stogit_known_host_failing(capsys):
             pass
 
     _, err = capsys.readouterr()
-    assert remove_hostkeys_foreach_failed(err) == \
-           ('stogit.cs.stolaf.edu not in known hosts\n'
-            'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix\n')
+    assert err == ('stogit.cs.stolaf.edu not in known hosts\n'
+                   'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix\n')
 
 
 def test_check_git_installed_failing(capsys):

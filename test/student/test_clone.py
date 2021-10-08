@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 
 from unittest import mock
 
@@ -8,7 +7,6 @@ from stograde.common import run
 from stograde.common.run_status import RunStatus
 from stograde.student import clone_url, clone_student
 from test.toolkit.test_check_dependencies import stogit_as_known_host
-from test.utils import remove_hostkeys_foreach_failed
 
 
 def test_clone_student(tmpdir, caplog):
@@ -63,16 +61,14 @@ def test_clone_url_permission_denied(tmpdir, capsys):
             with stogit_as_known_host():
                 with mock.patch.dict(os.environ, {'GIT_SSH_COMMAND': 'ssh -i {}'.format(key_file)}):
                     clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
-            print(capsys.readouterr()[1], file=sys.stderr)
             raise AssertionError
         except SystemExit:
             pass
 
     _, err = capsys.readouterr()
 
-    assert remove_hostkeys_foreach_failed(err) == \
-           ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
-            'Make sure that this SSH key is registered with StoGit.\n')
+    assert err == ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
+                   'Make sure that this SSH key is registered with StoGit.\n')
 
 
 def test_clone_url_repo_not_found(tmpdir, capsys):
@@ -93,5 +89,4 @@ def test_clone_url_repo_not_found(tmpdir, capsys):
 
     _, err = capsys.readouterr()
 
-    assert remove_hostkeys_foreach_failed(err) == \
-           'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'
+    assert err == 'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'

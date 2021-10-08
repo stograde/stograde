@@ -16,11 +16,13 @@ def clone_student(student: str, base_url: str):
 def clone_url(url: str, into: Optional[str] = None):
     if into:
         logging.info('cloning {} into {}'.format(url, into))
+        print('cloning {} into {}'.format(url, into), file=sys.stderr)
         status, output, _ = run(['git', 'clone', '--quiet', url, into])
     else:
         logging.info('cloning {}'.format(url))
+        print('cloning {}'.format(url, into), file=sys.stderr)
         status, output, _ = run(['git', 'clone', '--quiet', url])
-
+    print(status, file=sys.stderr)
     if status is RunStatus.CALLED_PROCESS_ERROR:
         if 'Permission denied (publickey)' in output:
             print('Permission denied when cloning from {}'.format(url), file=sys.stderr)

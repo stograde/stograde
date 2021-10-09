@@ -44,6 +44,8 @@ jobs:
       - name: Determine tags
         id: docker_tags
         run: script/docker-tags.bash "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
+        env:
+          DOCKER_IMAGE: stodevx/stograde
       - run: echo ${{ steps.docker_tags.output }}
       - name: Build and push with tags ${{ steps.docker_tags.output }}
         uses: docker/build-push-action@v2

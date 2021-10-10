@@ -28,6 +28,6 @@ then
   fi
 fi
 
-tags=$(${tags# } | tr " " ",")
+tags=$(echo "${tags# }" | tr " " ",")
 
 echo "::set-output name=tags::$tags"

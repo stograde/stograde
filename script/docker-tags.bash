@@ -3,25 +3,25 @@
 ref="$1"
 suffix="$2"
 
-if [[ "$ref" == "ref/heads/master" ]]
+if [[ $GITHUB_REF == "ref/heads/master" ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:HEAD$suffix"
 fi
 
-if [[ "$ref" =~ ref/heads/travis-.* ]]
+if [[ $GITHUB_REF =~ ref/heads/travis-.* ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:$GITHUB_SHA$suffix"
 fi
 
-if [[ "$ref" == "refs/heads/migrate-to-gh-actions" ]]
+if [[ $GITHUB_REF == "refs/heads/migrate-to-gh-actions" ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:$GITHUB_SHA$suffix"
 fi
 
-if [[ "$ref" =~ ref/tags/v.* ]]
+if [[ $GITHUB_REF =~ ref/tags/v.* ]]
 then
   deploy_targets="$deploy_targets $DOCKER_IMAGE:$TRAVIS_TAG$suffix"
-  if [[ "$(script/github-latest-release)" == "${ref#refs/tags/}" ]]
+  if [[ "$(script/github-latest-release)" == "${GITHUB_REF#refs/tags/}" ]]
   then
     deploy_targets="$deploy_targets $DOCKER_IMAGE:latest$suffix"
   fi

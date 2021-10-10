@@ -41,14 +41,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Determine tags
-        id: docker_tags
-        run: script/docker-tags.bash ${{ github.ref }} "${{ matrix.dockerimage-suffix }}"
-        env:
-          DOCKER_IMAGE: stodevx/stograde
       - run: |
           echo ${{ steps.docker_tags.output }}
-          echo ${{ github.ref }}
+          echo $GITHUB_REF
+          echo $GITHUB_SHA
+      - name: Determine tags
+        id: docker_tags
+        run: script/docker-tags.bash "${{ matrix.dockerimage-suffix }}"
+        env:
+          DOCKER_IMAGE: stodevx/stograde
+          GITHUB_REF: $GITHUB_REF
+          GITHUB_SHA: $GITHUB_SHA
       - name: Build and push with tags ${{ steps.docker_tags.output }}
         uses: docker/build-push-action@v2
         with:

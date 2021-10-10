@@ -48,17 +48,13 @@ jobs:
           DOCKER_IMAGE: stodevx/stograde
           GITHUB_REF: $GITHUB_REF
           GITHUB_SHA: $GITHUB_SHA
-      - run: |
-          echo ${{ steps.docker_tags.outputs.tags }}
-          echo $GITHUB_REF
-          echo $GITHUB_SHA
-      - name: Build and push with tags ${{ steps.docker_tags.output }}
+      - name: Build and push with tags ${{ steps.docker_tags.outputs.tags }}
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile${{ matrix.dockerfile-extension }}
           platforms: linux/arm/v7,linux/amd64
           push: true
-          tags: ${{ steps.docker_tags.output }}
+          tags: ${{ steps.docker_tags.outputs.tags }}
 
 #      - name: Log in to GH registry
 #        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin

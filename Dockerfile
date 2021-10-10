@@ -30,8 +30,8 @@ ADD . /stograde/
 ## Add a marked dependency volume folder.
 #VOLUME /stograde_share/
 #
-## Change into our project directory.
-#WORKDIR /stograde
+# Change into our project directory.
+WORKDIR /stograde
 #
 ## Make a symlink between /stograde_share/blah and /stograde/blah
 #RUN ln -sv /stograde_share/data /stograde/data

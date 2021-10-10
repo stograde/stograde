@@ -44,7 +44,7 @@ ADD . /stograde/
 #RUN ln -sv /stograde_share/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
 
 # Install the toolkit from the source directory.
-RUN --mount=type=cache,target=/tmp/.pip-cache pip pip3 install .
+RUN --mount=type=cache,target=/tmp/.pip-cache pip3 install .
 
 # Print out the versions of the installed tools.
 RUN gcc --version \

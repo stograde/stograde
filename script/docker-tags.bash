@@ -1,7 +1,6 @@
 #!/bin/bash
 
-ref="$1"
-suffix="$2"
+suffix="$1"
 
 if [[ $GITHUB_REF == "ref/heads/master" ]]
 then

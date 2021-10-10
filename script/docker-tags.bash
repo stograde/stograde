@@ -15,11 +15,13 @@ fi
 if [[ $GITHUB_REF == "refs/heads/migrate-to-gh-actions" ]]
 then
   tags="$tags $DOCKER_IMAGE:$GITHUB_SHA$suffix"
+  tags="$tags $DOCKER_IMAGE:HEAD$suffix"
+
 fi
 
 if [[ $GITHUB_REF =~ ref/tags/v.* ]]
 then
-  tags="$tags $DOCKER_IMAGE:$TRAVIS_TAG$suffix"
+  tags="$tags $DOCKER_IMAGE:${GITHUB_REF#refs/tags/}$suffix"
   if [[ "$(script/github-latest-release)" == "${GITHUB_REF#refs/tags/}" ]]
   then
     tags="$tags $DOCKER_IMAGE:latest$suffix"

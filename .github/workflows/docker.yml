@@ -43,10 +43,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Determine tags
         id: docker_tags
-        run: script/docker-tags.bash "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
+        run: script/docker-tags.bash ${{ github.ref }} "${{ matrix.dockerimage-suffix }}"
         env:
           DOCKER_IMAGE: stodevx/stograde
-      - run: echo ${{ steps.docker_tags.output }}
+      - run: |
+          echo ${{ steps.docker_tags.output }}
+          echo ${{ github.ref }}
       - name: Build and push with tags ${{ steps.docker_tags.output }}
         uses: docker/build-push-action@v2
         with:

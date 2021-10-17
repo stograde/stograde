@@ -11,7 +11,7 @@ def test_compute_stogit_url_infer_course(tmpdir, capsys):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs251-specs.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/cs251-specs.git')
         assert compute_stogit_url(stogit='',
                                   course='',
                                   _now=datetime.date(2020, 4, 16)) == 'git@stogit.cs.stolaf.edu:sd/s20'
@@ -48,7 +48,7 @@ def test_get_course_from_specs_sd(tmpdir):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs251-specs.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/cs251-specs.git')
         assert get_course_from_specs() == 'SD'
 
 
@@ -57,7 +57,7 @@ def test_get_course_from_specs_hd(tmpdir):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs241-specs.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/cs241-specs.git')
         assert get_course_from_specs() == 'HD'
 
 
@@ -66,7 +66,7 @@ def test_get_course_from_specs_ads(tmpdir):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs253-specs.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/cs253-specs.git')
         assert get_course_from_specs() == 'ADS'
 
 
@@ -75,7 +75,7 @@ def test_get_course_from_specs_os(tmpdir):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/cs273-specs.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/cs273-specs.git')
         assert get_course_from_specs() == 'OS'
 
 
@@ -84,12 +84,12 @@ def test_get_course_from_specs_fallback(tmpdir, capsys):
         os.makedirs('data')
         with chdir('data'):
             git('init')
-            git('remote', 'add', 'origin', 'https://github.com/StoDevX/stograde.git')
+            git('remote', 'add', 'origin', 'https://github.com/stograde/stograde.git')
         assert get_course_from_specs() == 'SD'
 
     _, err = capsys.readouterr()
 
-    assert err == ('Could not determine course from url: https://github.com/StoDevX/stograde.git\n'
+    assert err == ('Could not determine course from url: https://github.com/stograde/stograde.git\n'
                    'Defaulting to SD\n')
 
 

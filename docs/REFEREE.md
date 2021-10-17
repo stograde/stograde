@@ -23,7 +23,7 @@ time.)
 on the server. Only the master branch is pulled.
 3. (daily) Git: Pull the specs. Since the specs can change over time, we should keep them up-to-date.
 
-The contents of these are stored in [`/script/crontab`](https://github.com/StoDevX/stograde/blob/master/script/crontab).
+The contents of these are stored in [`/script/crontab`](https://github.com/stograde/stograde/blob/master/script/crontab).
 
 ## email
 Referee sends email through Gmail’s smtp server, which means that we have to authenticate with gmail. Set the

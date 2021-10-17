@@ -28,7 +28,7 @@ setup(
     description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
-    url='https://github.com/stodevx/stograde',
+    url='https://github.com/stograde/stograde',
     license='MIT',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[

@@ -28,21 +28,21 @@ def test_clone_student(tmpdir, caplog):
 def test_clone_url(tmpdir, caplog):
     with tmpdir.as_cwd():
         with caplog.at_level(logging.INFO):
-            clone_url('https://github.com/StoDevX/cs251-specs.git')
+            clone_url('https://github.com/stograde/cs251-specs.git')
         assert os.path.exists('cs251-specs')
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
-    assert log_messages == {('cloning https://github.com/StoDevX/cs251-specs.git', 'INFO')}
+    assert log_messages == {('cloning https://github.com/stograde/cs251-specs.git', 'INFO')}
 
 
 def test_clone_url_into(tmpdir, caplog):
     with tmpdir.as_cwd():
         with caplog.at_level(logging.INFO):
-            clone_url('https://github.com/StoDevX/cs251-specs.git', 'another_dir')
+            clone_url('https://github.com/stograde/cs251-specs.git', 'another_dir')
         assert os.path.exists('another_dir')
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
-    assert log_messages == {('cloning https://github.com/StoDevX/cs251-specs.git into another_dir', 'INFO')}
+    assert log_messages == {('cloning https://github.com/stograde/cs251-specs.git into another_dir', 'INFO')}
 
 
 def test_clone_url_permission_denied(tmpdir, capsys):

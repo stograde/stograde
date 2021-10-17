@@ -2,7 +2,7 @@
 
 ## Starting to Develop for StoGrade
 
-- `git clone https://github.com/StoDevX/stograde`
+- `git clone https://github.com/stograde/stograde`
 - `cd stograde`
 - `python3 setup.py develop`
 - go to your grading folder that contains the data/ and students/ folders
@@ -35,7 +35,7 @@ To skip integration tests (those located in `test/integration_tests`) which take
 Tests is an important part of any codebase, and StoGrade is no different.
 StoGrade comes with hundreds of tests that test every aspect of the codebase.
 
-[![Coverage Status](https://coveralls.io/repos/github/StoDevX/stograde/badge.svg?branch=master)](https://coveralls.io/github/StoDevX/stograde?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/stograde/stograde/badge.svg?branch=master)](https://coveralls.io/github/stograde/stograde?branch=master)
 
 The 100% test coverage badge in the README (and above) indicates that every line of code in StoGrade is run at least once during testing, or is ignored from coverage.
 As new code is added to StoGrade, tests should be written to test it and verify that it works, keeping that coverage at 100%.

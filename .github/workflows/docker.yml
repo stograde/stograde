@@ -68,19 +68,10 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           file: Dockerfile${{ matrix.dockerfile-extension }}
-#          platforms: linux/arm/v7,linux/amd64
+          platforms: linux/arm/v7,linux/amd64
           push: true
           tags: ${{ steps.docker_tags.outputs.tags }}
       - name: Overwrite old cache with new cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-#      - name: Log in to GH registry
-#        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-#      - name: Create docker images based on Dockerfile${{ matrix.dockerfile-extension }}
-#        run: script/docker-deploy "Dockerfile${{ matrix.dockerfile-extension }}" "$GITHUB_REF" "${{ matrix.dockerimage-suffix }}"
-#        env:
-#          DOCKER_IMAGE: stodevx/stograde
-#          GITHUB_ACTOR: ${{ github.actor }}
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

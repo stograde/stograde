@@ -45,7 +45,7 @@ Because Software Design uses the React App, it needs a few extra libraries to be
 Thus it uses the `-gcc` version of the docker images, which are based off of the `gcc:latest` docker image (instead of the `python:3-slim` image).
 
 ```yaml
-image: stodevx/stograde:latest-gcc
+image: ghcr.io/stograde/stograde:latest-gcc
 stograde:
     stage: test
     script:
@@ -67,7 +67,7 @@ stages:
 
 stograde:
     stage: stograde
-    image: stodevx/stograde:latest-gcc
+    image: ghcr.io/stograde/stograde:latest-gcc
     script:
         - stograde ci
         
@@ -84,7 +84,7 @@ Because Hardware Design uses ARM assembly, the default runner on thing3 is unabl
 Thus, we add the `rasperrypi` tag which tells it to use a runner with the `raspberrypi` tag if possible.
 
 ```yaml
-image: stodevx/stograde:latest
+image: ghcr.io/stograde/stograde:latest
 stograde:
     stage: test
     tags:
@@ -98,7 +98,7 @@ stograde:
 Any other course that doesn't require special accommodations can use this config:
 
 ```yaml
-image: stodevx/stograde:latest
+image: ghcr.io/stograde/stograde:latest
 stograde:
     stage: test
     script:

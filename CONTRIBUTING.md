@@ -18,9 +18,10 @@ The release process for StoGrade is quite simple, yet does have a few steps:
 - Update the version in `setup.py` (Make sure you understand [semantic versioning](https://packaging.python.org/guides/distributing-packages-using-setuptools/#semantic-versioning-preferred) first!)
 - Commit the modification to `setup.py`
     - Don't include anything else in this branch, just the version change
-- Tag the commit with that same version, e.g. `git tag v2.1.3`
-- Push the commit and tag: `git push --tags`
-- Quickly go to GitHub and create a new release (you need to do it before the CI/CD process gets to deployment to PyPI, where it compares the tag to the latest release)
+- Push the commit
+- Create a new release
+  - **Enter the version name for the tag**
+  - **Enter the version name for the target branch**
 - Wait
 - Enjoy the new release
 
@@ -66,14 +67,13 @@ We also ignore any blocks of code within a `if TYPE_CHECKING:` guard because lin
 
 ### CI/CD
 
-`stograde` uses [Travis CI](https://travis-ci.com) for its CI/CD (Continuous Integration/Continuous Deployment) pipelines.
-The pipelines are configured in the [.travis.yml](.travis.yml) file.
+`stograde` uses [GitHub Actions](https://github.com/features/actions) for its CI/CD (Continuous Integration/Continuous Deployment) workflows.
+The pipelines are configured in [pull_request.yml](.github/workflows/pull_request.yml) and [push.yml](.github/workflows/push.yml).
 
-- Stages labeled `test` are used to test `stograde` to make sure it is working as we expect.
-It tests against python versions 3.6-3.8 (as of v4.2.1).
-- Stages labeled `deploy docker` handle building and pushing docker images to [dockerhub](https://hub.docker.com/r/stodevx/stograde).
-The actual docker build is done by the [docker-deploy](script/docker-deploy) script.
-- The stage labeled `deploy pypi` handles pushing a new version of `stograde` to [PyPI](https://pypi.org/project/stograde/).
+- The `test` job is used to test `stograde` to make sure it is working as we expect.
+It uses a matrix to test against python versions 3.6-3.9 (as of v4.4.3).
+- The `docker` job handles building and pushing docker images to the [GitHub container registry](https://github.com/stograde/stograde/pkgs/container/stograde)
+- The `pypi` job handles pushing a new version of `stograde` to [PyPI](https://pypi.org/project/stograde/).
 This only happens for tagged commits that are tagged with the tag associated with the most recent release.
 
 ### Dockerfiles
@@ -96,8 +96,10 @@ This is because the Hardware Design course uses ARM-based GitLab runners, which 
 So we create two versions of each image (though they are called the same thing), one for AMD and one for ARM.
 Docker is smart enough to pick the correct one for the architecture it is running on.
 
-*Note that, for whatever reason, the combination of the `gcc:latest` image plus the ARM build leads to a docker build that takes about 20 minutes. It seems like the python regex library may be partially to blame as it takes about 13 minutes to build.*
+Docker layer caching is set up to decrease the build time from ~8 minutes to ~2 minutes when the cache is present.
+The long part of the build process is installing the python dependencies on ARM, therefore the installation of `apt` and `pip` packages happens first in the dockerfiles to allow those steps to be cached
+If `setup.py` changes, the pip installation layer in the cache is invalidated, and the step is performed again.
 
 The docker builds happen as part of the CI/CD process.
-The final container images are uploaded to [docker hub](https://hub.docker.com/r/stodevx/stograde).
+The final container images are added to the [stograde package](https://github.com/stograde/stograde/pkgs/container/stograde).
 

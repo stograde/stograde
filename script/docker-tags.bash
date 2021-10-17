@@ -2,27 +2,20 @@
 
 suffix="$1"
 
-if [[ $GITHUB_REF == "ref/heads/master" ]]
+if [[ $TRIGGER == "push" && $GITHUB_REF == "refs/heads/master" ]]
 then
   tags="$tags $DOCKER_IMAGE:HEAD$suffix"
 fi
 
-if [[ $GITHUB_REF =~ ref/heads/travis-.* ]]
+if [[ $TRIGGER == "push" && $GITHUB_REF =~ refs/heads/.*gh-actions.* ]]
 then
   tags="$tags $DOCKER_IMAGE:$GITHUB_SHA$suffix"
 fi
 
-if [[ $GITHUB_REF == "refs/heads/migrate-to-gh-actions" ]]
-then
-  tags="$tags $DOCKER_IMAGE:$GITHUB_SHA$suffix"
-  tags="$tags $DOCKER_IMAGE:HEAD$suffix"
-
-fi
-
-if [[ $GITHUB_REF =~ ref/tags/v.* ]]
+if [[ $GITHUB_REF =~ refs/tags/v.* ]]
 then
   tags="$tags $DOCKER_IMAGE:${GITHUB_REF#refs/tags/}$suffix"
-  if [[ "$(script/github-latest-release)" == "${GITHUB_REF#refs/tags/}" ]]
+  if [[ $TRIGGER == "release" ]]
   then
     tags="$tags $DOCKER_IMAGE:latest$suffix"
   fi

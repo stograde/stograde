@@ -18,7 +18,7 @@ WORKDIR /stograde
 ADD ./setup.py /stograde/setup.py
 RUN python3 setup.py egg_info
 
-RUN pip install -r stograde.egg_info/requires.txt
+RUN pip install -r stograde.egg-info/requires.txt
 
 # Add the entire project directory to the /stograde/ directory in the
 # image.

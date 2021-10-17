@@ -69,14 +69,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx${{ matrix.dockerimage-suffix }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}${{ matrix.dockerimage-suffix }}-buildx-
-      - name: Cache pip packages
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.pip-cache
-          key: ${{ runner.os }}-pip${{ matrix.dockerimage-suffix }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}${{ matrix.dockerimage-suffix }}-pip-
+            ${{ runner.os }}-buildx${{ matrix.dockerimage-suffix }}-
       - name: Login to GH registry
         uses: docker/login-action@v1
         with:

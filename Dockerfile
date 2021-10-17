@@ -14,7 +14,10 @@ RUN apt-get update
 # Install any additional requirements.
 RUN apt-get install -y gcc git g++ make
 
+WORKDIR /stograde
+ADD ./setup.py /stograde/setup.py
 RUN python3 setup.py egg_info
+
 RUN pip install -r stograde.egg_info/requires.txt
 
 # Add the entire project directory to the /stograde/ directory in the
@@ -34,7 +37,7 @@ ADD . /stograde/
 #VOLUME /stograde_share/
 #
 # Change into our project directory.
-WORKDIR /stograde
+#WORKDIR /stograde
 #
 ## Make a symlink between /stograde_share/blah and /stograde/blah
 #RUN ln -sv /stograde_share/data /stograde/data

@@ -1,6 +1,6 @@
 # stograde
 [![PyPI](https://img.shields.io/pypi/v/stograde.svg)](https://pypi.python.org/pypi/stograde)
-[![Build Status](https://github.com/stograde/stograde/actions/workflows/test.yml/badge.svg)](https://github.com/stograde/stograde/actions/workflows/test.yml)
+[![Build Status](https://github.com/stograde/stograde/actions/workflows/push.yml/badge.svg)](https://github.com/stograde/stograde/actions/workflows/push.yml)
 [![Coverage Status](https://coveralls.io/repos/github/stograde/stograde/badge.svg?branch=master)](https://coveralls.io/github/stograde/stograde?branch=master)
 
 Welcome to the StoGrade toolkit, designed to help TAs and graders for St. Olaf's Computer Science courses.

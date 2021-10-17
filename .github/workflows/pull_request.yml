@@ -1,15 +1,9 @@
-name: Test
+name: Test PR
 
 on:
-#  push:
-#    branches:
-#      - master
-#      - gh-actions*
-#      - v*
-#      - migrate-to-gh-actions
   pull_request:
     branches:
-      - '**'
+      - master
 
 jobs:
   test:

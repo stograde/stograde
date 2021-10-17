@@ -53,8 +53,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: maxnz
-          password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Determine tags
         id: docker_tags
         run: script/docker-tags.bash "${{ matrix.dockerimage-suffix }}"

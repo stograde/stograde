@@ -59,7 +59,7 @@ jobs:
         id: docker_tags
         run: script/docker-tags.bash "${{ matrix.dockerimage-suffix }}"
         env:
-          DOCKER_IMAGE: stodevx/stograde
+          DOCKER_IMAGE: ghcr.io/stodevx/stograde
           GITHUB_REF: $GITHUB_REF
           GITHUB_SHA: $GITHUB_SHA
       - name: Build and push with tags ${{ steps.docker_tags.outputs.tags }}

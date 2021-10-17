@@ -14,6 +14,9 @@ RUN apt-get update
 # Install any additional requirements.
 RUN apt-get install -y gcc git g++ make
 
+RUN python3 setup.py egg_info
+RUN pip install -r stograde.egg_info/requires.txt
+
 # Add the entire project directory to the /stograde/ directory in the
 # image.
 ADD . /stograde/

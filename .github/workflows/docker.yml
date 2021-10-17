@@ -68,7 +68,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           file: Dockerfile${{ matrix.dockerfile-extension }}
-          platforms: linux/arm/v7,linux/amd64
+#          platforms: linux/arm/v7,linux/amd64
           push: true
           tags: ${{ steps.docker_tags.outputs.tags }}
       - name: Overwrite old cache with new cache

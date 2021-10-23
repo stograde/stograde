@@ -19,10 +19,11 @@ The release process for StoGrade is quite simple, yet does have a few steps:
 - Commit the modification to `setup.py`
     - Don't include anything else in this branch, just the version change
 - Push the commit
-- Create a new release
+- Create a new release based on the branch
   - **Enter the version name for the tag**
   - **Enter the version name for the target branch**
-- Wait
+- Wait for GitHub Actions release to complete
+- Merge branch into `master`
 - Enjoy the new release
 
 

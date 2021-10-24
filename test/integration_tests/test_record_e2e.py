@@ -64,8 +64,10 @@ def test_stograde_record_with_table(datafiles, capsys):
     assert check_e2e_err_output(err)
 
 
-@pytest.mark.skipif(os.getenv('GIST_TESTING_USER') is None, reason='Cannot run test without gist username')
-@pytest.mark.skipif(os.getenv('GIST_TESTING_KEY') is None, reason='Cannot run test without gist key')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_USER') is None or os.getenv('GIST_TESTING_USER') == '',
+                    reason='Cannot run test without gist username')
+@pytest.mark.skipif(os.getenv('GIST_TESTING_KEY') is None or os.getenv('GIST_TESTING_KEY') == '',
+                    reason='Cannot run test without gist key')
 @pytest.mark.datafiles(os.path.join(_dir, 'fixtures'))
 def test_stograde_record_to_gist(datafiles, capsys):
     args = [sys.argv[0]] + ['record', 'hw1', '--skip-repo-update', '--skip-spec-update', '--skip-version-check',

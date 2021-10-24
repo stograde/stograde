@@ -34,10 +34,23 @@ jobs:
           GIST_TESTING_USER: ${{ secrets.GIST_TESTING_USER }}
           GIST_TESTING_KEY: ${{ secrets.GIST_TESTING_KEY }}
       - name: Upload coverage
-        if: ${{ matrix.python-version }} -eq '3.8'
-        run: coveralls
+        run: coveralls --service=github
         env:
-          GITHUB_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: "py${{ matrix.python-version }}"
+          COVERALLS_PARALLEL: true
+
+  coveralls:
+    needs: test
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+      - name: Finish Coveralls
+        run: |
+          pip3 install --upgrade coveralls
+          coveralls --service=github --finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   docker:
     needs: test

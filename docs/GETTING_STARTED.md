@@ -82,7 +82,9 @@ Download specs? (Y/N)
 After answering with `Y`, it will then ask which class to download for:
 
 ```
-Which class? (SD/HD/ADS/OS)
+Which class? (SD/HD/ADS/OS/MCS)
 ``` 
 
 Once you have selected a class, it will download the specs and start to clone the student repos.
+
+*If your course is not supported by stograde, then 1) let us know, and 2) use the --course flag until we add it*

@@ -15,11 +15,11 @@ def format_supported_course_list(delimiter: str) -> str:
 
 
 def github_https_clone_address(repo: str):
-    return 'https://github.com/StoDevX/{}.git'.format(repo)
+    return 'https://github.com/stograde/{}.git'.format(repo)
 
 
 def github_ssh_clone_address(repo: str):
-    return 'git@github.com:StoDevX/{}.git'.format(repo)
+    return 'git@github.com:stograde/{}.git'.format(repo)
 
 
 SPEC_URLS = {course: github_https_clone_address(repo) for course, repo in SPEC_REPO_NAMES.items()}

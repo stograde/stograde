@@ -19,7 +19,7 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 def test_repo_clone(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    args = [sys.argv[0]] + ['repo', 'clone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'clone', '--stogit', 'https://github.com/stograde', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
 
     with chdir(str(datafiles)):
@@ -35,7 +35,7 @@ def test_repo_clone(datafiles):
 def test_repo_update(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    args = [sys.argv[0]] + ['repo', 'update', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'update', '--stogit', 'https://github.com/stograde', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
 
     with chdir(str(datafiles)):
@@ -51,12 +51,12 @@ def test_repo_update(datafiles):
 def test_repo_clean(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    args = [sys.argv[0]] + ['repo', 'clean', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'clean', '--stogit', 'https://github.com/stograde', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
 
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
-        clone_url('https://github.com/StoDevX/cs251-specs', student_path)
+        clone_url('https://github.com/stograde/cs251-specs', student_path)
         touch(os.path.join(student_path, 'a_file'))
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 
@@ -71,12 +71,12 @@ def test_repo_clean(datafiles):
 def test_repo_reclone(datafiles):
     student_path = os.path.join(datafiles, 'students', 'cs251-specs')
 
-    args = [sys.argv[0]] + ['repo', 'reclone', '--stogit', 'https://github.com/StoDevX', '--course', 'sd',
+    args = [sys.argv[0]] + ['repo', 'reclone', '--stogit', 'https://github.com/stograde', '--course', 'sd',
                             '--skip-version-check', '--skip-dependency-check']
 
     with chdir(str(datafiles)):
         assert not os.path.exists(student_path)
-        clone_url('https://github.com/StoDevX/cs251-specs', student_path)
+        clone_url('https://github.com/stograde/cs251-specs', student_path)
         touch(os.path.join(student_path, 'a_file'))
         assert os.path.exists(os.path.join(student_path, 'a_file'))
 

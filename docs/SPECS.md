@@ -3,10 +3,16 @@
 How each homework gets checked is defined using a specification (or spec) file.
 These are located in the `data/specs` directory.
 
+Each course gets a repository for its specs.
+To view a list of supported courses, [search for repositories tagged with `stograde-specs`](https://github.com/search?q=topic%3Astograde-specs+org%3Astograde).
+
+If your course is not supported, create a new spec repo based on the `template-specs` repository template.
+[Spec files](#Naming) are located in `specs` and any [supporting files](#Supporting-Files) are located in `supporting/$ASSIGNMENT`.
+
 To jump to the explanation of a specific tag, follow the following links:
 - [`assignment:`](#Creating-a-Spec-File)
 - [`folder:`](#Testing-a-Different-Directory)
-- [`architecture:`]()
+- [`architecture:`](#Testing-on-a-Specific-Architecture)
 - [`compilers:`](#Compilers)
 - [`files:`](#Files)
   - [`file:`](#Files)

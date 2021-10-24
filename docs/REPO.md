@@ -7,8 +7,6 @@ To simply manage student repositories using the toolkit, you have to:
 
 It will clone the repositories into `students/$USERNAME` and exit.
 
-- To specify course (e.g., OS), run `stograde repo clone --course xxx`
-
 ## Updating Repositories
 
 To update the student repositories, run `stograde repo update`. 

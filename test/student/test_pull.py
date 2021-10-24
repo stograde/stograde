@@ -6,7 +6,7 @@ from stograde.student import pull, clone_url
 
 def test_pull_success(tmpdir, caplog):
     with tmpdir.as_cwd():
-        clone_url('https://github.com/StoDevX/cs251-specs.git')
+        clone_url('https://github.com/stograde/cs251-specs.git')
         with caplog.at_level(logging.DEBUG):
             pull('cs251-specs')
 

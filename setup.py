@@ -12,7 +12,7 @@ install_requires = [
     'appdirs == 1.4.*',
     'python-dateutil == 2.7.*',
     'PyInquirer == 1.0.*',  # required by stograde web
-    'google-api-python-client==2.2.*',  # required by stograde drive
+    'google-api-python-client==2.24.*',  # required by stograde drive
     'google-auth-oauthlib == 0.4.*',  # required by stograde drive
     'six >= 1.13.0',  # required by google-api-core
     'setuptools >= 40.3.0',  # required by google-auth
@@ -28,7 +28,7 @@ setup(
     description='The StoGrade Toolkit',
     author='Hawken Rives',
     author_email='hawkrives@gmail.com',
-    url='https://github.com/stodevx/stograde',
+    url='https://github.com/stograde/stograde',
     license='MIT',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[

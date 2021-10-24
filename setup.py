@@ -10,7 +10,7 @@ install_requires = [
     'termcolor == 1.*',
     'natsort==7.1.*',
     'appdirs == 1.4.*',
-    'python-dateutil == 2.7.*',
+    'python-dateutil >= 2.7,< 2.9',
     'PyInquirer == 1.0.*',  # required by stograde web
     'google-api-python-client>=2.24,<2.28',  # required by stograde drive
     'google-auth-oauthlib == 0.4.*',  # required by stograde drive

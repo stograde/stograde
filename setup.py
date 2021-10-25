@@ -5,7 +5,7 @@ if sys.version_info < (3, 6):
     sys.exit("The toolkit requires Python 3.6 or greater.\nYou have {}".format(sys.version_info))
 
 install_requires = [
-    'PyYAML == 5.*',
+    'PyYAML >= 5,< 7',
     'requests >= 2.20.*',
     'termcolor == 1.*',
     'natsort==7.1.*',

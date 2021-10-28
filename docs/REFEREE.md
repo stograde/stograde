@@ -1,6 +1,6 @@
 # StoGrade Referee
 
-StoGrade Referee is a tool that, for all intensive purposes, has been superseded by `stograde ci`.
+StoGrade Referee is a tool that, for all intents and purposes, has been superseded by `stograde ci`.
 Its codebase has not been updated in many years.
 But, because the code still exists, here is the documentation that was created for it:
 

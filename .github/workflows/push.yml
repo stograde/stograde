@@ -80,7 +80,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx${{ matrix.dockerimage-suffix }}-
       - name: Login to GH registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

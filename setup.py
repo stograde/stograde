@@ -7,7 +7,7 @@ if sys.version_info < (3, 6):
 install_requires = [
     'PyYAML >= 5,< 7',
     'requests >= 2.20.*',
-    'termcolor == 1.*',
+    'termcolor >= 1,< 3',
     'natsort>=7.1,<8.2',
     'appdirs == 1.4.*',
     'python-dateutil >= 2.7,< 2.9',

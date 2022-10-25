@@ -223,6 +223,7 @@ def test_process_student_error_debug(mock_prepare):
 def test_prepare_student_clean(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=True,
                     do_clone=False,
                     do_pull=False,
@@ -243,6 +244,7 @@ def test_prepare_student_clean(mock_remove, mock_clone, mock_stash, mock_pull, m
 def test_prepare_student_clone(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=True,
                     do_pull=False,
@@ -263,6 +265,7 @@ def test_prepare_student_clone(mock_remove, mock_clone, mock_stash, mock_pull, m
 def test_prepare_student_pull(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=False,
                     do_pull=True,
@@ -283,6 +286,7 @@ def test_prepare_student_pull(mock_remove, mock_clone, mock_stash, mock_pull, mo
 def test_prepare_student_checkout(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=False,
                     do_pull=False,

@@ -26,6 +26,7 @@ def do_ci(specs: List['Spec'],
           students: List[str],
           base_dir: str,
           stogit_url: str,
+          branch: str,
           args: Dict[str, Any]):
     skip_web_compile: bool = args['skip_web_compile']
 
@@ -33,6 +34,7 @@ def do_ci(specs: List['Spec'],
                                                       students=students,
                                                       analyze=True,
                                                       base_dir=base_dir,
+                                                      branch=branch,
                                                       clean=False,
                                                       date='',
                                                       interact=False,
@@ -94,6 +96,7 @@ def do_record(specs: List['Spec'],
               students: List[str],
               base_dir: str,
               stogit_url: str,
+              branch: str,
               args: Dict[str, Any]):
     clean: bool = args['clean']
     date: str = args['date']
@@ -122,6 +125,7 @@ def do_record(specs: List['Spec'],
                                                       students=students,
                                                       analyze=show_table,
                                                       base_dir=base_dir,
+                                                      branch=branch,
                                                       clean=clean,
                                                       date=date,
                                                       interact=interact,
@@ -145,6 +149,7 @@ def do_record(specs: List['Spec'],
 
 def do_repo_clean(students: List[str],
                   stogit_url: str,
+                  branch: str,
                   base_dir: str,
                   no_progress_bar: bool,
                   workers: int):
@@ -152,6 +157,7 @@ def do_repo_clean(students: List[str],
         single_repo = functools.partial(
             prepare_student,
             stogit_url=stogit_url,
+            branch=branch,
             do_clean=True,
             do_clone=True,
             do_pull=True,
@@ -166,6 +172,7 @@ def do_repo_clean(students: List[str],
 
 def do_repo_update(students: List[str],
                    stogit_url: str,
+                   branch: str,
                    base_dir: str,
                    no_progress_bar: bool,
                    workers: int):
@@ -173,6 +180,7 @@ def do_repo_update(students: List[str],
         single_repo = functools.partial(
             prepare_student,
             stogit_url=stogit_url,
+            branch=branch,
             do_clean=False,
             do_clone=True,
             do_pull=True,
@@ -189,6 +197,7 @@ def do_table(specs: List['Spec'],
              students: List[str],
              base_dir: str,
              stogit_url: str,
+             branch: str,
              args: Dict[str, Any]):
     clean: bool = args['clean']
     date: str = args['date']
@@ -202,6 +211,7 @@ def do_table(specs: List['Spec'],
                                                       students=students,
                                                       analyze=True,
                                                       base_dir=base_dir,
+                                                      branch=branch,
                                                       clean=clean,
                                                       date=date,
                                                       interact=False,
@@ -221,6 +231,7 @@ def do_web(specs: List['Spec'],
            students: List[str],
            base_dir: str,
            stogit_url: str,
+           branch: str,
            args: Dict[str, Any]):
     clean: bool = args['clean']
     date: str = args['date']
@@ -237,6 +248,7 @@ def do_web(specs: List['Spec'],
     Thread(target=server.run_server, args=(port,), daemon=True).start()
 
     launch_cli(base_dir=base_dir,
+               branch=branch,
                clean=clean,
                date=date,
                no_progress_bar=no_progress_bar,

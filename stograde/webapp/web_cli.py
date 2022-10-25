@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 
 def launch_cli(base_dir: str,
+               branch: str,
                clean: bool,
                date: str,
                no_progress_bar: bool,
@@ -39,6 +40,7 @@ def launch_cli(base_dir: str,
         single_repo = functools.partial(
             prepare_student,
             stogit_url=stogit_url,
+            branch=branch,
             do_clean=clean,
             do_clone=not skip_repo_update,
             do_pull=not skip_repo_update,

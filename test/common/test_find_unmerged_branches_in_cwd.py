@@ -9,6 +9,7 @@ _dir = os.path.dirname(os.path.realpath(__file__))
 def test_find_unmerged_branches_in_cwd(tmpdir):
     with tmpdir.as_cwd():
         git('init')
+        git('symbolic-ref', 'HEAD', 'refs/heads/main')  # Workaround for older versions of git without default main
         git('config', 'user.email', 'an_email@email_provider.com')
         git('config', 'user.name', 'Some Random Name')
 

@@ -15,6 +15,7 @@ def test_process_student_prepare_student_call(mock_prepare, mock_reset):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='a_date',
                     interact=False,
@@ -40,6 +41,7 @@ def test_process_student_prepare_student_call_skip_repo_update(mock_prepare):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -64,6 +66,7 @@ def test_process_student_prepare_student_call_ci(mock_prepare):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -88,6 +91,7 @@ def test_process_student_record(mock_record, mock_analyze):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -108,6 +112,7 @@ def test_process_student_analyze(mock_record, mock_analyze):
     process_student(student='student',
                     analyze=True,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -127,6 +132,7 @@ def test_process_student_unmerged_branches(tmpdir):
         os.makedirs('student')
         with chdir('student'):
             git('init')
+            git('symbolic-ref', 'HEAD', 'refs/heads/main')  # Workaround for older versions of git without default main
             git('config', 'user.email', 'an_email@email_provider.com')
             git('config', 'user.name', 'Some Random Name')
 
@@ -145,6 +151,7 @@ def test_process_student_unmerged_branches(tmpdir):
         result = process_student(student='student',
                                  analyze=True,
                                  basedir='',
+                                 branch='main',
                                  clean=False,
                                  date='',
                                  interact=False,
@@ -174,6 +181,7 @@ def test_process_student_error(mock_prepare):
     student_result = process_student(student='student',
                                      analyze=False,
                                      basedir='',
+                                     branch='main',
                                      clean=False,
                                      date='',
                                      interact=False,
@@ -197,6 +205,7 @@ def test_process_student_error_debug(mock_prepare):
         process_student(student='student',
                         analyze=False,
                         basedir='',
+                        branch='main',
                         clean=False,
                         date='',
                         interact=False,

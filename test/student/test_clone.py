@@ -60,14 +60,14 @@ def test_clone_url_permission_denied(tmpdir, capsys):
         try:
             with stogit_as_known_host():
                 with mock.patch.dict(os.environ, {'GIT_SSH_COMMAND': 'ssh -i {}'.format(key_file)}):
-                    clone_url('git@stogit.cs.stolaf.edu:sd/s20/narvae1.git')
+                    clone_url('git@stogit2.cs.stolaf.edu:sd/s20/narvae1.git')
             raise AssertionError
         except SystemExit:
             pass
 
     _, err = capsys.readouterr()
 
-    assert err == ('Permission denied when cloning from git@stogit.cs.stolaf.edu:sd/s20/narvae1.git\n'
+    assert err == ('Permission denied when cloning from git@stogit2.cs.stolaf.edu:sd/s20/narvae1.git\n'
                    'Make sure that this SSH key is registered with StoGit.\n')
 
 
@@ -83,10 +83,10 @@ def test_clone_url_repo_not_found(tmpdir, capsys):
                                       False)):
             with tmpdir.as_cwd():
                 try:
-                    clone_student(student='nonexistent', base_url='git@stogit.cs.stolaf.edu:sd/s20')
+                    clone_student(student='nonexistent', base_url='git@stogit2.cs.stolaf.edu:sd/s20')
                 except SystemExit:
                     pass
 
     _, err = capsys.readouterr()
 
-    assert err == 'Could not find repository git@stogit.cs.stolaf.edu:sd/s20/nonexistent.git\n'
+    assert err == 'Could not find repository git@stogit2.cs.stolaf.edu:sd/s20/nonexistent.git\n'

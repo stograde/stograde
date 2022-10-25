@@ -8,6 +8,7 @@ def test_find_unmerged_branches(tmpdir):
 
     with tmpdir.as_cwd():
         git('init')
+        git('symbolic-ref', 'HEAD', 'refs/heads/main')  # Workaround for older versions of git without default main
         git('config', 'user.email', 'an_email@email_provider.com')
         git('config', 'user.name', 'Some Random Name')
 

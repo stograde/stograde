@@ -5,6 +5,7 @@ from test.utils import git, touch
 def test_reset(tmpdir):
     with tmpdir.as_cwd():
         git('init')
+        git('symbolic-ref', 'HEAD', 'refs/heads/main')  # Workaround for older versions of git without default main
         git('config', 'user.email', 'an_email@email_provider.com')
         git('config', 'user.name', 'Some Random Name')
         touch('test_file.txt')

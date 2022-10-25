@@ -140,7 +140,7 @@ def test_process_student_unmerged_branches(tmpdir):
             git('add', 'file2')
             git('commit', '-m', 'newcommit')
 
-            git('checkout', 'master')
+            git('checkout', 'main')
 
         result = process_student(student='student',
                                  analyze=True,

@@ -50,7 +50,7 @@ def test_authenticate_drive_no_client_secret_json(tmpdir, capsys):
     _, err = capsys.readouterr()
 
     assert err == ('client_secret.json is required for stograde drive functionality.\n'
-                   'Follow the steps at https://github.com/stograde/stograde/blob/master/docs/DRIVE.md '
+                   'Follow the steps at https://github.com/stograde/stograde/blob/main/docs/DRIVE.md '
                    'to create the file.\n'
                    'If you have already created it, please make sure it is located in the directory where you are '
                    'running stograde.\n')

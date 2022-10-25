@@ -22,7 +22,7 @@ def test_find_unmerged_branches_in_cwd(tmpdir):
         git('add', 'file2')
         git('commit', '-m', 'newcommit')
 
-        git('checkout', 'master')
+        git('checkout', 'main')
 
         assert find_unmerged_branches_in_cwd() == ['branch']
 

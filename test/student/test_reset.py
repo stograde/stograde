@@ -11,11 +11,11 @@ def test_reset(tmpdir):
         git('add', 'test_file.txt')
         git('commit', '-m', '"First commit"')
         _, out, _ = git('branch')
-        assert out == '* master\n'
+        assert out == '* main\n'
         git('branch', 'another_branch')
         git('checkout', 'another_branch')
         _, out, _ = git('branch')
-        assert out == '* another_branch\n  master\n'
+        assert out == '* another_branch\n  main\n'
         reset('.')
         _, out, _ = git('branch')
-        assert out == '  another_branch\n* master\n'
+        assert out == '  another_branch\n* main\n'

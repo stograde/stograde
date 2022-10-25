@@ -21,7 +21,7 @@ def test_find_unmerged_branches(tmpdir):
         git('add', 'file2')
         git('commit', '-m', 'newcommit')
 
-        git('checkout', 'master')
+        git('checkout', 'main')
 
         find_unmerged_branches(student_result)
 

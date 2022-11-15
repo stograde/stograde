@@ -27,11 +27,11 @@ def test_process_student_prepare_student_call(mock_prepare, mock_reset):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': True,
-                                                             'do_pull': True,
-                                                             'do_checkout': True,
-                                                             'date': 'a_date'})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': True,
+                                                                     'do_pull': True,
+                                                                     'do_checkout': True,
+                                                                     'date': 'a_date'})
 
     assert mock_reset.called
 
@@ -53,11 +53,11 @@ def test_process_student_prepare_student_call_skip_repo_update(mock_prepare):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': False,
-                                                             'do_pull': False,
-                                                             'do_checkout': True,
-                                                             'date': ''})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': False,
+                                                                     'do_pull': False,
+                                                                     'do_checkout': True,
+                                                                     'date': ''})
 
 
 @mock.patch('stograde.toolkit.global_vars.CI', True)
@@ -78,11 +78,11 @@ def test_process_student_prepare_student_call_ci(mock_prepare):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': False,
-                                                             'do_pull': False,
-                                                             'do_checkout': False,
-                                                             'date': ''})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': False,
+                                                                     'do_pull': False,
+                                                                     'do_checkout': False,
+                                                                     'date': ''})
 
 
 @mock.patch('stograde.student.process_student.analyze_student')

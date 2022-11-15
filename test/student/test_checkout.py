@@ -2,11 +2,14 @@ import logging
 import os
 from unittest import mock
 
+import pytest
+
 from stograde.common import chdir
 from stograde.student import checkout_date
 from test.utils import git, touch
 
 
+@pytest.mark.skip
 def test_checkout_date(tmpdir, caplog):
     with tmpdir.as_cwd():
         os.makedirs('student')

@@ -51,8 +51,8 @@ def build_argparser():
                                 .format(format_supported_course_list(delimiter=', ')))
     repo_selection.add_argument('--stogit', metavar='URL',
                                 help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
-    repo_selection.add_argument('--branch', '-b', metavar='BRANCH',
-                                help='Use an alternate default branch (e.g. main)')
+    repo_selection.add_argument('--branch', '-b', default='main', metavar='BRANCH',
+                                help='Use an alternate default branch')
 
     # Recording options
     record_options = argparse.ArgumentParser(add_help=False)

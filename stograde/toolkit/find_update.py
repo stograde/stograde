@@ -19,12 +19,10 @@ def get_all_versions(pkg='stograde'):
     page = re.sub(r'.*</h1>|<br/>.*', '', req.text)
     # Grab just the links from the page
     lines = [line for line in page.splitlines() if line.strip().startswith('<a')]
-    # Grab just the middles of the links
-    packages = [re.sub('.*>(.*)<.*', '\\1', line) for line in lines]
-    # Remove the suffixes
-    versions = [re.sub(r'(\d)-.*|\.tar.gz', '\\1', line) for line in packages]
-    # Remove the prefixes
-    versions = [re.sub(r'.*-(\d)', '\\1', line) for line in versions]
+    # Grab the file name and extract the version
+    matches = [re.search(r">stograde-(?P<version>\d+\.\d+\.\d+)\.tar\.gz</a>", line) for line in lines]
+    # Get the versions
+    versions = [line.group("version") for line in matches if line]
     # Return the sorted list of all available versions
     return natsort.natsorted(set(versions))
 

@@ -14,4 +14,5 @@ def checkout_date(student: str, branch: str, date: Optional[str] = None):
 
 def checkout_ref(student: str, ref: str):
     with chdir(student):
-        run(['git', 'checkout', ref, '--force', '--quiet'])
+        _, out, _ = run(['git', 'checkout', ref, '--force', '--quiet'])
+        print(out)

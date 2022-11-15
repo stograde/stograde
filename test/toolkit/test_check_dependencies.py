@@ -1,48 +1,13 @@
-import contextlib
 import os
 import sys
-from pathlib import Path
 from unittest import mock
 
-from stograde.common import run
-from stograde.toolkit.check_dependencies import check_git_installed, is_stogit_known_host, check_stogit_known_host, \
+from stograde.toolkit.check_dependencies import check_git_installed, check_stogit_known_host, \
     check_dependencies
 
 
-@contextlib.contextmanager
-def stogit_as_known_host():
-    modify_known_hosts = not is_stogit_known_host()
-
-    try:
-        if modify_known_hosts:
-            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
-            with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
-                known_hosts.write(out)
-                known_hosts.close()
-        yield
-    finally:
-        if modify_known_hosts:
-            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
-
-
-@contextlib.contextmanager
-def stogit_not_as_known_host():
-    modify_known_hosts = is_stogit_known_host()
-
-    try:
-        if modify_known_hosts:
-            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
-        yield
-    finally:
-        if modify_known_hosts:
-            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
-            with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
-                known_hosts.write(out)
-                known_hosts.close()
-
-
 def test_check_dependencies_passing(capsys):
-    with stogit_as_known_host():
+    with mock.patch('stograde.toolkit.check_dependencies.is_stogit_known_host', return_value=True):
         try:
             # Note that this test requires that git is actually installed on the system,
             # which I think should always be true
@@ -55,7 +20,7 @@ def test_check_dependencies_passing(capsys):
 
 
 def test_check_stogit_known_host_failing(capsys):
-    with stogit_not_as_known_host():
+    with mock.patch('stograde.toolkit.check_dependencies.is_stogit_known_host', return_value=False):
         try:
             check_stogit_known_host()
             print(capsys.readouterr()[1], file=sys.stderr)

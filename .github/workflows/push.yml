@@ -125,6 +125,6 @@ jobs:
         run:
           python -m build --sdist --wheel --outdir dist/
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.6.1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}

@@ -231,7 +231,7 @@ def test_compile_file_failure(datafiles):
 
     for c_result in result.compile_results:
         c_result.output = c_result.output.replace('\r\n', '\n')
-
+    print(result.compile_results)
     assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./bad.cpp -o ./bad.cpp.exec',
                                                     output='./bad.cpp: In function ‘int main()’:\n'
                                                            './bad.cpp:7:13: error: expected ‘}’ at end of input\n'

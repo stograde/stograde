@@ -215,6 +215,10 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # web SubCommand
     elif command == 'web':
+        if sys.version_info >= (3, 10):
+            print('stograde web is not supported on python 3.10+', file=sys.stderr)
+            sys.exit(1)
+
         assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
 

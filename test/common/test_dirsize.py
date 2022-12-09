@@ -23,4 +23,4 @@ def test_dirsize_fail(fs):
     fs.create_file('/folder/file5', contents='0123456789')
 
     with mock.patch('os.path.getsize', side_effect=OSError('An error was thrown')):
-        assert dirsize('/folder') == 0
+        assert dirsize('/folder2') == 0

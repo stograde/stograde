@@ -22,6 +22,9 @@ install_requires = [
 if sys.version_info < (3, 7):
     install_requires.append('dataclasses >= 0.6')
 
+if sys.version_info < (3, 10):
+    install_requires.append('PyInquirer == 1.0.*')  # required by stograde web
+
 setup(
     name='stograde',
     version='4.4.0',

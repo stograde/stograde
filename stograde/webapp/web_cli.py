@@ -1,6 +1,7 @@
 import functools
 import os
-from PyInquirer import prompt, style_from_dict, Token
+import sys
+
 from typing import List, TYPE_CHECKING
 
 from . import server
@@ -11,6 +12,9 @@ from ..process_file.file_result import FileResult
 from ..process_file.process_file import get_file
 from ..toolkit.process_parallel import process_parallel
 from ..student.process_student import prepare_student
+
+if sys.version_info < (3, 10):
+    from PyInquirer import prompt, style_from_dict, Token
 
 if TYPE_CHECKING:
     from ..specs.spec import Spec

@@ -11,6 +11,9 @@ from stograde.webapp import server
 if os.getenv('SKIP_E2E') is not None:
     pytest.skip('Skipping Integration Tests', allow_module_level=True)
 
+if sys.version_info >= (3, 10):
+    pytest.skip('Skipping Web Integration Tests', allow_module_level=True)
+
 _dir = os.path.dirname(os.path.realpath(__file__))
 
 

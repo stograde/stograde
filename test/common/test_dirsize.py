@@ -13,7 +13,5 @@ def test_dirsize(fs):
 
     assert dirsize('/folder') == 50
 
-    with mock.patch('os.path.getsize', side_effect=OSError('An error was thrown')) as mock_fun:
-        size = dirsize('/folder')
-        assert mock_fun.called
-        assert size == 0
+    with mock.patch('os.path.getsize', side_effect=OSError('An error was thrown')):
+        assert dirsize('/folder') == 0

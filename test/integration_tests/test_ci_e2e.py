@@ -138,6 +138,7 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
     out, _ = capsys.readouterr()
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
+    print(log_messages)
     assert log_messages == {("hw1: File hello.cpp compile error:\n\n\t"
                              ""
                              "./hello.cpp: In function ‘int main()’:\n\t"

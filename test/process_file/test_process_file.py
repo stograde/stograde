@@ -243,7 +243,7 @@ def test_compile_file_failure(datafiles):
                                                     status=RunStatus.CALLED_PROCESS_ERROR)] \
            or result.compile_results == [CompileResult(command='g++ --std=c++11 ./bad.cpp -o ./bad.cpp.exec',
                                                        output='./bad.cpp: In function ‘int main()’:\n'
-                                                              './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
+                                                              './bad.cpp:7:14: error: expected ‘}’ at end of input\n'
                                                               '    7 |     return 0;\n'
                                                               '      |              ^\n'
                                                               './bad.cpp:5:12: note: to match this ‘{’\n'
@@ -424,24 +424,10 @@ def test_process_file_fail_compile(datafiles):
                                 '    5 | int main() {\n'
                                 '      |            ^\n',
                          status=RunStatus.CALLED_PROCESS_ERROR)])
-    print(result.compile_results[0].output)
-    print('./bad.cpp: In function ‘int main()’:\n'
-          './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
-          '    7 |     return 0;\n'
-          '      |              ^\n'
-          './bad.cpp:5:12: note: to match this ‘{’\n'
-          '    5 | int main() {\n'
-          '      |            ^\n')
-    print(result.compile_results[0].output == './bad.cpp: In function ‘int main()’:\n'
-                                              './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
-                                              '    7 |     return 0;\n'
-                                              '      |              ^\n'
-                                              './bad.cpp:5:12: note: to match this ‘{’\n'
-                                              '    5 | int main() {\n'
-                                              '      |            ^\n')
+
     assert result.compile_results == [CompileResult(command='g++ --std=c++11 ./bad.cpp -o ./bad.cpp.exec',
                                                     output='./bad.cpp: In function ‘int main()’:\n'
-                                                           './bad.cpp:7:13: error: expected ‘}’ at end of input\n'
+                                                           './bad.cpp:7:14: error: expected ‘}’ at end of input\n'
                                                            '    7 |     return 0;\n'
                                                            '      |             ^\n'
                                                            './bad.cpp:5:12: note: to match this ‘{’\n'

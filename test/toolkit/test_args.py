@@ -97,10 +97,16 @@ def test_process_args_web():
     args = [sys.argv[0]] + ['web', 'hw1', '--student', 'student12', '--port', '12345']
 
     with mock.patch('sys.argv', args):
-        _, students, assignments = process_args()
+        try:
+            _, students, assignments = process_args()
 
-    assert students == ['student12']
-    assert assignments == ['hw1']
+            assert students == ['student12']
+            assert assignments == ['hw1']
+        except SystemExit:
+            if sys.version_info >= (3, 10):
+                pass
+            else:
+                raise AssertionError
 
 
 def test_process_args_repo():

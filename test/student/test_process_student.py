@@ -15,6 +15,7 @@ def test_process_student_prepare_student_call(mock_prepare, mock_reset):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='a_date',
                     interact=False,
@@ -26,11 +27,11 @@ def test_process_student_prepare_student_call(mock_prepare, mock_reset):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': True,
-                                                             'do_pull': True,
-                                                             'do_checkout': True,
-                                                             'date': 'a_date'})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': True,
+                                                                     'do_pull': True,
+                                                                     'do_checkout': True,
+                                                                     'date': 'a_date'})
 
     assert mock_reset.called
 
@@ -40,6 +41,7 @@ def test_process_student_prepare_student_call_skip_repo_update(mock_prepare):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -51,11 +53,11 @@ def test_process_student_prepare_student_call_skip_repo_update(mock_prepare):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': False,
-                                                             'do_pull': False,
-                                                             'do_checkout': True,
-                                                             'date': ''})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': False,
+                                                                     'do_pull': False,
+                                                                     'do_checkout': True,
+                                                                     'date': ''})
 
 
 @mock.patch('stograde.toolkit.global_vars.CI', True)
@@ -64,6 +66,7 @@ def test_process_student_prepare_student_call_ci(mock_prepare):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -75,11 +78,11 @@ def test_process_student_prepare_student_call_ci(mock_prepare):
                     stogit_url='a_url')
 
     assert mock_prepare.called
-    assert mock_prepare.call_args == (('student', 'a_url'), {'do_clean': False,
-                                                             'do_clone': False,
-                                                             'do_pull': False,
-                                                             'do_checkout': False,
-                                                             'date': ''})
+    assert mock_prepare.call_args == (('student', 'a_url', 'main'), {'do_clean': False,
+                                                                     'do_clone': False,
+                                                                     'do_pull': False,
+                                                                     'do_checkout': False,
+                                                                     'date': ''})
 
 
 @mock.patch('stograde.student.process_student.analyze_student')
@@ -88,6 +91,7 @@ def test_process_student_record(mock_record, mock_analyze):
     process_student(student='student',
                     analyze=False,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -108,6 +112,7 @@ def test_process_student_analyze(mock_record, mock_analyze):
     process_student(student='student',
                     analyze=True,
                     basedir='',
+                    branch='main',
                     clean=False,
                     date='',
                     interact=False,
@@ -127,6 +132,7 @@ def test_process_student_unmerged_branches(tmpdir):
         os.makedirs('student')
         with chdir('student'):
             git('init')
+            git('symbolic-ref', 'HEAD', 'refs/heads/main')  # Workaround for older versions of git without default main
             git('config', 'user.email', 'an_email@email_provider.com')
             git('config', 'user.name', 'Some Random Name')
 
@@ -140,11 +146,12 @@ def test_process_student_unmerged_branches(tmpdir):
             git('add', 'file2')
             git('commit', '-m', 'newcommit')
 
-            git('checkout', 'master')
+            git('checkout', 'main')
 
         result = process_student(student='student',
                                  analyze=True,
                                  basedir='',
+                                 branch='main',
                                  clean=False,
                                  date='',
                                  interact=False,
@@ -174,6 +181,7 @@ def test_process_student_error(mock_prepare):
     student_result = process_student(student='student',
                                      analyze=False,
                                      basedir='',
+                                     branch='main',
                                      clean=False,
                                      date='',
                                      interact=False,
@@ -197,6 +205,7 @@ def test_process_student_error_debug(mock_prepare):
         process_student(student='student',
                         analyze=False,
                         basedir='',
+                        branch='main',
                         clean=False,
                         date='',
                         interact=False,
@@ -223,6 +232,7 @@ def test_process_student_error_debug(mock_prepare):
 def test_prepare_student_clean(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=True,
                     do_clone=False,
                     do_pull=False,
@@ -243,6 +253,7 @@ def test_prepare_student_clean(mock_remove, mock_clone, mock_stash, mock_pull, m
 def test_prepare_student_clone(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=True,
                     do_pull=False,
@@ -263,6 +274,7 @@ def test_prepare_student_clone(mock_remove, mock_clone, mock_stash, mock_pull, m
 def test_prepare_student_pull(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=False,
                     do_pull=True,
@@ -283,6 +295,7 @@ def test_prepare_student_pull(mock_remove, mock_clone, mock_stash, mock_pull, mo
 def test_prepare_student_checkout(mock_remove, mock_clone, mock_stash, mock_pull, mock_checkout):
     prepare_student(student='',
                     stogit_url='',
+                    branch='main',
                     do_clean=False,
                     do_clone=False,
                     do_pull=False,

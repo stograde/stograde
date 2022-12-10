@@ -88,7 +88,7 @@ def test_stograde_record_to_gist(datafiles, capsys):
 
 def test_do_record_bad_formatter():
     try:
-        do_record([], [], '', '', {'clean': False, 'date': '', 'format': 'non-format'})
+        do_record([], [], '', '', 'main', {'clean': False, 'date': '', 'format': 'non-format'})
         raise AssertionError
     except ValueError:
         pass

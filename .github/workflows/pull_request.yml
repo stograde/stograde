@@ -2,13 +2,16 @@ name: Test PR
 
 on:
   pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+#        python-version: [ '3.7', '3.8', '3.9' ]
     steps:
       - uses: actions/checkout@v3
       - name: Test against Python ${{ matrix.python-version }}
@@ -23,7 +26,7 @@ jobs:
           mkdir -p ~/.ssh
           touch ~/.ssh/known_hosts
       - name: Test with tox
-        run: tox
+        run: tox -v
         env:
           GIST_TESTING_USER: ${{ secrets.GIST_TESTING_USER }}
           GIST_TESTING_KEY: ${{ secrets.GIST_TESTING_KEY }}

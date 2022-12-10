@@ -19,6 +19,7 @@ def process_student(
         *,
         analyze: bool,
         basedir: str,
+        branch: str,
         clean: bool,
         date: str,
         interact: bool,
@@ -32,6 +33,7 @@ def process_student(
     try:
         prepare_student(student,
                         stogit_url,
+                        branch,
                         do_clean=clean,
                         do_clone=not global_vars.CI and not skip_repo_update,
                         do_pull=not global_vars.CI and not skip_repo_update,
@@ -65,6 +67,7 @@ def process_student(
 
 def prepare_student(student: str,
                     stogit_url: str,
+                    branch: str,
                     do_clean: bool,
                     do_clone: bool,
                     do_pull: bool,
@@ -76,8 +79,8 @@ def prepare_student(student: str,
         clone_student(student, base_url=stogit_url)
     if do_pull:
         stash(student)
-        pull(student)
+        pull(student, branch=branch)
     if do_checkout:
-        checkout_date(student, date=date)
+        checkout_date(student, branch=branch, date=date)
 
     return student

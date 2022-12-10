@@ -1,4 +1,4 @@
-from unittest import mock
+import os.path
 
 from stograde.common.dirsize import dirsize
 
@@ -13,5 +13,10 @@ def test_dirsize(fs):
 
     assert dirsize('/folder') == 50
 
-    with mock.patch('os.path.getsize', side_effect=OSError('An error was thrown')):
-        assert dirsize('/folder') == 0
+
+def test_dirsize_fail(fs):
+    fs.create_dir('/folder')
+
+    assert not os.path.exists("/folder/subfolder")
+
+    assert dirsize('/folder/subfolder') == 0

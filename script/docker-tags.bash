@@ -2,7 +2,7 @@
 
 suffix="$1"
 
-if [[ $TRIGGER == "push" && $GITHUB_REF == "refs/heads/master" ]]
+if [[ $TRIGGER == "push" && $GITHUB_REF == "refs/heads/main" ]]
 then
   tags="$tags $DOCKER_IMAGE:HEAD$suffix"
 fi

@@ -1,6 +1,7 @@
 import functools
 import os
-from PyInquirer import prompt, style_from_dict, Token
+import sys
+
 from typing import List, TYPE_CHECKING
 
 from . import server
@@ -12,11 +13,15 @@ from ..process_file.process_file import get_file
 from ..toolkit.process_parallel import process_parallel
 from ..student.process_student import prepare_student
 
+if sys.version_info < (3, 10):
+    from PyInquirer import prompt, style_from_dict, Token
+
 if TYPE_CHECKING:
     from ..specs.spec import Spec
 
 
 def launch_cli(base_dir: str,
+               branch: str,
                clean: bool,
                date: str,
                no_progress_bar: bool,
@@ -39,6 +44,7 @@ def launch_cli(base_dir: str,
         single_repo = functools.partial(
             prepare_student,
             stogit_url=stogit_url,
+            branch=branch,
             do_clean=clean,
             do_clone=not skip_repo_update,
             do_pull=not skip_repo_update,

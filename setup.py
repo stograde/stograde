@@ -11,7 +11,7 @@ install_requires = [
     'natsort>=7.1,<8.2',
     'appdirs == 1.4.*',
     'python-dateutil >= 2.7,< 2.9',
-    'PyInquirer == 1.0.*',  # required by stograde web
+    # 'PyInquirer == 1.0.*',  # required by stograde web
     'google-api-python-client>=2.24,<2.50',  # required by stograde drive
     'google-auth-oauthlib == 0.4.*',  # required by stograde drive
     'six >= 1.13.0',  # required by google-api-core
@@ -21,6 +21,9 @@ install_requires = [
 # This allows us to use dataclasses in python 3.6
 if sys.version_info < (3, 7):
     install_requires.append('dataclasses >= 0.6')
+
+if sys.version_info < (3, 10):
+    install_requires.append('PyInquirer == 1.0.*')  # required by stograde web
 
 setup(
     name='stograde',

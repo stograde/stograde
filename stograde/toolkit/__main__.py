@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 def main():
     base_dir = getcwd()
     args, students, assignments = process_args()  # Dict[str, Any], List[str], List[str]
+    branch: str = args.get('branch', 'main')
     command: str = args['command']  # The name of the SubCommand specified
     command_func = args['func']  # The function associated with the SubCommand
     course: str = args.get('course', '')
@@ -56,6 +57,7 @@ def main():
         # command_func will be do_repo_clean() or do_repo_update()
         command_func(students=students,
                      stogit_url=stogit_url,
+                     branch=branch,
                      base_dir=base_dir,
                      no_progress_bar=args['no_progress_bar'],
                      workers=args['workers'])
@@ -91,4 +93,5 @@ def main():
                  students=students,
                  base_dir=base_dir,
                  stogit_url=stogit_url,
+                 branch=branch,
                  args=args)

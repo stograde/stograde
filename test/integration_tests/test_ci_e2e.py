@@ -138,6 +138,7 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
     out, _ = capsys.readouterr()
 
     log_messages = {(log.msg, log.levelname) for log in caplog.records}
+
     assert log_messages == {("hw1: File hello.cpp compile error:\n\n\t"
                              ""
                              "./hello.cpp: In function ‘int main()’:\n\t"
@@ -148,6 +149,16 @@ def test_stograde_ci_failing_compile(datafiles, capsys, caplog):
                              "    5 | {\n\t"
                              "      | ^\n\t",
                              'ERROR')} \
+           or log_messages == {("hw1: File hello.cpp compile error:\n\n\t"
+                                ""
+                                "./hello.cpp: In function ‘int main()’:\n\t"
+                                "./hello.cpp:11:13: error: expected ‘}’ at end of input\n\t"
+                                "   11 |    return 0;\n\t"
+                                "      |             ^\n\t"
+                                "./hello.cpp:5:1: note: to match this ‘{’\n\t"
+                                "    5 | {\n\t"
+                                "      | ^\n\t",
+                                'ERROR')} \
            or log_messages == {("hw1: File hello.cpp compile error:\n\n\t"
                                 "./hello.cpp: In function ‘int main()’:\n\t"
                                 "./hello.cpp:11:12: error: expected ‘}’ at end of input\n\t"

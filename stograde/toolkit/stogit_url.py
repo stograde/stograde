@@ -7,7 +7,7 @@ from ..common import chdir, run
 from ..common.run_status import RunStatus
 from ..specs.spec_repos import get_course_from_spec_url, default_course
 
-COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
+COURSE_REGEX = re.compile(r'^(\w{2,3}/[sf]\d\d)$')
 
 
 def compute_stogit_url(*,

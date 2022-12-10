@@ -51,6 +51,8 @@ def build_argparser():
                                 .format(format_supported_course_list(delimiter=', ')))
     repo_selection.add_argument('--stogit', metavar='URL',
                                 help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
+    repo_selection.add_argument('--branch', '-b', default='main', metavar='BRANCH',
+                                help='Use an alternate default branch')
 
     # Recording options
     record_options = argparse.ArgumentParser(add_help=False)
@@ -213,6 +215,10 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
 
     # web SubCommand
     elif command == 'web':
+        if sys.version_info >= (3, 10):
+            print('stograde web is not supported on python 3.10+', file=sys.stderr)
+            sys.exit(1)
+
         assignments = natsorted(set(args['assignments']))  # Has only one assignment (enforced by argparser)
         students = get_students(args)
 

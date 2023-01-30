@@ -95,7 +95,7 @@ jobs:
           GITHUB_SHA: $GITHUB_SHA
           TRIGGER: ${{ github.event_name }}
       - name: Build and push with tags ${{ steps.docker_tags.outputs.tags }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
